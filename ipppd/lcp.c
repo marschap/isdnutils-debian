@@ -21,7 +21,7 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-char lcp_rcsid[] = "$Id: lcp.c,v 1.3 1997/05/19 10:16:04 hipp Exp $";
+char lcp_rcsid[] = "$Id: lcp.c,v 1.9 1998/09/23 08:10:25 paul Exp $";
 
 /*
  * TODO:
@@ -49,10 +49,10 @@ char lcp_rcsid[] = "$Id: lcp.c,v 1.3 1997/05/19 10:16:04 hipp Exp $";
 
 #ifdef __linux__		/* Needs ppp ioctls */
 #if defined __GLIBC__ && __GLIBC__ >= 2
-# include <net/if.h>
-# include <net/if_ppp.h>
+# include </usr/include/net/if.h>
+# include </usr/include/net/if_ppp.h>
 #else
-# include <net/if.h>
+# include </usr/include/net/if.h>
 # include <linux/if_ppp.h>
 #endif
 #endif
@@ -77,6 +77,10 @@ static u_char nak_buffer[PPP_MRU];	/* where we construct a nak packet */
 #ifdef __linux__
 u_int32_t idle_timer_running = 0;
 extern int idle_time_limit;
+#ifdef RADIUS
+u_int32_t session_timer_running = 0;
+extern int session_time_limit;
+#endif
 #endif
 
 /*
@@ -184,8 +188,8 @@ static void lcp_init(int unit)
 
     if(first_call)
     {
-      *(long *) (&our_discr_addr[0]) = magic();
-      *(long *) (&our_discr_addr[4]) = magic();
+      *(u_int32_t *) (&our_discr_addr[0]) = magic();
+      *(u_int32_t *) (&our_discr_addr[4]) = magic();
       first_call = 0;
     }
 
@@ -221,6 +225,7 @@ static void lcp_init(int unit)
     wo->mp_mrru = DEFMRU;
     wo->mp_class = our_discr_class;
     wo->mp_alen = sizeof(our_discr_addr);
+    wo->numloops = 0;
     memcpy(wo->mp_addr,our_discr_addr,wo->mp_alen);
 
     ao->neg_mru = 1;
@@ -319,7 +324,7 @@ static void IdleTimeCheck __P((caddr_t));
  * Timer expired for the LCP echo requests from this process.
  */
 
-static void RestartIdleTimer(fsm *f)
+void RestartIdleTimer(fsm *f)
 {
   struct link_struct *tlns = &lns[f->unit];
     u_long             delta;
@@ -362,6 +367,47 @@ IdleTimeCheck (arg)
         RestartIdleTimer ((fsm *) arg);
     }
 }
+#ifdef RADIUS
+/***************************************************************************
+ *
+ * Name: StopSession 
+ *
+ * Purpose: Stops the session after session_time_limit seconds
+ *
+ ***************************************************************************/
+static void 
+StopSession (f)
+
+	fsm *f;
+
+{
+	lcp_close(f->unit,"session max time expired"); 	/* Reset connection */
+	lns[f->unit].phase = PHASE_TERMINATE;		/* Mark it down     */
+}
+
+/***************************************************************************
+ *
+ * Name: RestartSessionTimer
+ *
+ * Purpose: Restarts session timer
+ *
+ ***************************************************************************/
+      
+void
+RestartSessionTimer (f)
+	fsm *f;
+{
+	if (session_timer_running == 1) 
+	{
+		UNTIMEOUT (StopSession, (caddr_t) f);
+	}
+	
+        TIMEOUT (StopSession, (caddr_t) f, session_time_limit);
+        
+        session_timer_running = 1;
+}
+#endif
+
 #endif
 
 /*
@@ -371,16 +417,14 @@ void lcp_lowerup(int unit)
 {
   fsm *f = &lcp_fsm[unit];
   struct link_struct *tlns = &lns[f->unit];
-#ifndef ISDN4LINUX_PATCH
-    sifdown(f->unit);
-#endif
-    ppp_set_xaccm(f->unit, xmit_accm[unit]);
-    ppp_send_config(f->unit, PPP_MRU, 0xffffffff, 0, 0);
-    ppp_recv_config(f->unit, PPP_MRU, 0x00000000, 0, 0);
-    tlns->peer_mru = PPP_MRU;
-    lcp_allowoptions[tlns->lcp_unit].asyncmap = xmit_accm[unit][0];
 
-	fsm_lowerup(&lcp_fsm[unit]);
+  ppp_set_xaccm(f->unit, xmit_accm[unit]);
+  ppp_send_config(f->unit, PPP_MRU, 0xffffffff, 0, 0);
+  ppp_recv_config(f->unit, PPP_MRU, 0x00000000, 0, 0);
+
+  tlns->peer_mru = PPP_MRU;
+  lcp_allowoptions[tlns->lcp_unit].asyncmap = xmit_accm[unit][0];
+  fsm_lowerup(&lcp_fsm[unit]);
 }
 
 
@@ -538,7 +582,9 @@ static void lcp_resetci(fsm *f)
   struct link_struct *tlns = &lns[f->unit];
 
     lcp_wantoptions[tlns->lcp_unit].magicnumber = magic();
+#if 0
     lcp_wantoptions[tlns->lcp_unit].numloops = 0;
+#endif
     lcp_gotoptions[tlns->lcp_unit] = lcp_wantoptions[tlns->lcp_unit];
     tlns->peer_mru = PPP_MRU;
 }
@@ -1601,8 +1647,7 @@ static int lcp_reqci(fsm *f,u_char *inp,int *lenp,int reject_if_disagree)
 	    break;
 	case CI_MPDISCRIMINATOR:
           LCPDEBUG((LOG_INFO, "lcp_reqci: rcvd MP Discriminator"));
-          if(!ao->neg_mpdiscr)
-          {
+          if(!ao->neg_mpdiscr || cilen < 3) {
             orc = CONFREJ;
             break; 
           }
@@ -1618,8 +1663,7 @@ static int lcp_reqci(fsm *f,u_char *inp,int *lenp,int reject_if_disagree)
           ho->mp_alen = cilen-3;
           break;
 	case CI_MPMRRU:
-          if(!ao->neg_mpmrru || cilen != CILEN_SHORT)
-          {
+          if(!ao->neg_mpmrru || cilen != CILEN_SHORT) {
             orc = CONFREJ;
             break;
           }
@@ -2128,6 +2172,13 @@ static void lcp_echo_lowerup (int unit)
     /* If a idle time limit is given then start it */
     if (idle_time_limit != 0)
         RestartIdleTimer (f);
+#ifdef RADIUS
+	if ( session_time_limit != 0 ) 
+	{
+
+		RestartSessionTimer ( f );
+	}
+#endif
 #endif
 }
 
@@ -2149,7 +2200,12 @@ static void lcp_echo_lowerdown (int unit)
         UNTIMEOUT (IdleTimeCheck, (caddr_t) f);
         idle_timer_running = 0;
     }
+#ifdef RADIUS
+	if ( session_time_limit != 0 ) 
+	{
+		UNTIMEOUT (StopSession, (caddr_t) f );
+		session_timer_running = 0 ;
+	}
+#endif
 #endif
 }
-
-

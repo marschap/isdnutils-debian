@@ -5,18 +5,18 @@ DISTCLEANFILES=${man_MANS}
 EXTRA_DIST=autovbox.man rmdtovbox.man vbox.conf.man vbox.man vboxbeep.man vboxconvert.man vboxd.conf.man vboxd.man vboxgetty.conf.man vboxgetty.man vboxmode.man vboxrc.man vboxtcl.man vboxtoau.man vboxctrl.man vboxmail.man vboxplay.man
 
 %.1 %.5 %.8: %.man
-	MANDATE=`grep CHECKIN $< | awk '{print $4}'`    
+	MANDATE=`grep CHECKIN $< | awk '{print $$4}'`; \
 	sed \
-		-e "s#\@MANDATE\@#${MANDATE}#g" \
-		-e "s#\@I4LVERSION\@#@VERSION@#g" \
-        	-e "s#\@BINDIR\@#@bindir@#g" \
-        	-e "s#\@SBINDIR\@#@sbindir@#g" \
+		-e "s#\@MANDATE\@#$${MANDATE}#g" \
+		-e "s#\@I4LVERSION\@#$${I4LVERSION}#g" \
+        	-e "s#\@BINDIR\@#@CONFIG_BINDIR@#g" \
+        	-e "s#\@SBINDIR\@#@CONFIG_SBINDIR@#g" \
         	-e "s#\@VERSION\@#@VERSION@#g" \
         	-e "s#\@VERDATE\@#@VERDATE@#g" \
         	-e "s#\@PACKAGE\@#@PACKAGE@#g" \
-        	-e "s#\@SPOOLDIR\@#@SPOOLDIR@#g" \
-        	-e "s#\@I4LCONFDIR\@#@I4LCONFDIR@#g" \
-        	-e "s#\@LOGFILEDIR\@#@LOGFILEDIR@#g" \
-        	-e "s#\@PIDFILEDIR\@#@RUNDIR@#g" \
-        	-e "s#\@LCKFILEDIR\@#@LOCKDIR@#g" \
+        	-e "s#\@SPOOLDIR\@#@VBOX_SPOOLDIR@#g" \
+        	-e "s#\@I4LCONFDIR\@#@ISDN_GLOBAL_CONFIG@#g" \
+        	-e "s#\@LOGFILEDIR\@#@VBOX_LOGDIR@#g" \
+        	-e "s#\@PIDFILEDIR\@#@VBOX_PIDDIR@#g" \
+        	-e "s#\@LCKFILEDIR\@#@VBOX_LCKDIR@#g" \
 		< $< > $@

@@ -4,6 +4,7 @@
 #include <X11/Xosdefs.h>		/* for X_NOT_POSIX def */
 #include <pwd.h>			/* for getting username */
 #include <sys/stat.h>			/* for stat() ** needs types.h ***/
+#include <unistd.h>
 #include <stdio.h>			/* for printing error messages */
 #include <stdlib.h>
 #include <sys/types.h>
@@ -36,18 +37,20 @@ typedef union wait	waitType;
 #endif /* SYSV else */
 #endif /* ! X_NOT_POSIX else */
 
-#include "netactive"
-#include "netinactive"
-#include "netwaiting"
-#include "netactiveout"
-#include "netstart"
-#include "netstop"
+#include <X11/bitmaps/netactive>
+#include <X11/bitmaps/netinactive>
+#include <X11/bitmaps/netwaiting>
+#include <X11/bitmaps/netactiveout>
+#include <X11/bitmaps/netstart>
+#include <X11/bitmaps/netstop>
 
 #include <X11/Xaw/XawInit.h>
 #include "NetP.h"
 #include <X11/Xmu/Drawing.h>
 #include <X11/extensions/shape.h>
 
+/* Only allow calling scripts when setuid root if the -r option is given */
+extern int allow_setuid;
 /*
  * The default user interface is to have the netstat turn itself off whenever
  * the user presses a button in it.  Expert users might want to make this 
@@ -90,27 +93,27 @@ static XtResource resources[] = {
     { XtNvolume, XtCVolume, XtRInt, sizeof(int),
 	offset (volume), XtRString, "33"},
     { XtNactivePixmap, XtCPixmap, XtRBitmap, sizeof(Pixmap),
-	offset (active.bitmap), XtRString, NULL },
+	offset (active.bitmap), XtRString, "netactive" },
     { XtNactivePixmapMask, XtCPixmapMask, XtRBitmap, sizeof(Pixmap),
 	offset (active.mask), XtRBitmap, (XtPointer) &nopix },
     { XtNactiveoutPixmap, XtCPixmap, XtRBitmap, sizeof(Pixmap),
-	offset (activeout.bitmap), XtRString, NULL },
+	offset (activeout.bitmap), XtRString, "netactiveout" },
     { XtNactiveoutPixmapMask, XtCPixmapMask, XtRBitmap, sizeof(Pixmap),
 	offset (activeout.mask), XtRBitmap, (XtPointer) &nopix },
     { XtNwaitingPixmap, XtCPixmap, XtRBitmap, sizeof(Pixmap),
-	offset (waiting.bitmap), XtRString, NULL },
+	offset (waiting.bitmap), XtRString, "netwaiting" },
     { XtNwaitingPixmapMask, XtCPixmapMask, XtRBitmap, sizeof(Pixmap),
 	offset (waiting.mask), XtRBitmap, (XtPointer) &nopix },
     { XtNinactivePixmap, XtCPixmap, XtRBitmap, sizeof(Pixmap),
-	offset (inactive.bitmap), XtRString, NULL },
+	offset (inactive.bitmap), XtRString, "netinactive" },
     { XtNinactivePixmapMask, XtCPixmapMask, XtRBitmap, sizeof(Pixmap),
 	offset (inactive.mask), XtRBitmap, (XtPointer) &nopix },
     { XtNstartPixmap, XtCPixmap, XtRBitmap, sizeof(Pixmap),
-	offset (start.bitmap), XtRString, NULL },
+	offset (start.bitmap), XtRString, "netstart" },
     { XtNstartPixmapMask, XtCPixmapMask, XtRBitmap, sizeof(Pixmap),
 	offset (start.mask), XtRBitmap, (XtPointer) &nopix },
     { XtNstopPixmap, XtCPixmap, XtRBitmap, sizeof(Pixmap),
-	offset (stop.bitmap), XtRString, NULL },
+	offset (stop.bitmap), XtRString, "netstop" },
     { XtNstopPixmapMask, XtCPixmapMask, XtRBitmap, sizeof(Pixmap),
 	offset (stop.mask), XtRBitmap, (XtPointer) &nopix },
     { XtNflip, XtCFlip, XtRBoolean, sizeof(Boolean),
@@ -245,15 +248,23 @@ static int paranoia_check(cmd)
 #ifdef PARANOIA_CHECK
     struct stat stbuf;
 
-	if (stat(cmd, &stbuf))
+    /* only check if setuid root */
+    if (geteuid() != 0 || getuid() == 0)
+	return 1;
+
+    /* don't allow any scripts if setuid root and not called with -r option */
+    if (!allow_setuid)
+	return 0;
+
+    if (stat(cmd, &stbuf))
       /* stat failed, stay on the safe side */
-      return 0;
+	return 0;
     if (stbuf.st_uid != 0)
       /* owner is not root */
-      return 0;
+	return 0;
     if (stbuf.st_mode & (S_IWGRP | S_IWOTH))
       /* writable by group or world */
-      return 0;
+	return 0;
 #endif
     return 1;
 }
@@ -268,13 +279,14 @@ static void NetUp (gw, event, params, nparams)
     NetstatWidget w = (NetstatWidget) gw;
 
     
-    if ((w->netstat.state <= 1) && (!updownwait)) {
+    if (!updownwait) {
       w->netstat.state = 5;
       updownwait = 150 / w->netstat.update;
-      if (updownwait < 2) updownwait = 2;
+      if (updownwait < 2)
+	  updownwait = 2;
       redraw_netstat(w);
       if (paranoia_check(NETUP_COMMAND))
-      	system(NETUP_COMMAND);
+      	  system(NETUP_COMMAND);
     }
     return;
 }
@@ -290,13 +302,14 @@ static void NetDown (gw, event, params, nparams)
 {
     NetstatWidget w = (NetstatWidget) gw;
 
-    if ((w->netstat.state > 1) && (w->netstat.state < 5) && (!updownwait)) {
+    if (!updownwait) {
       w->netstat.state = 6;
       redraw_netstat(w);
       updownwait = 150 / w->netstat.update;
-      if (updownwait < 2) updownwait = 2;
+      if (updownwait < 2)
+	  updownwait = 2;
       if (paranoia_check(NETDOWN_COMMAND))
-      system(NETDOWN_COMMAND);
+          system(NETDOWN_COMMAND);
     }
     return;
 }
@@ -592,9 +605,13 @@ static int parse_info()
     infoptr = infoline + 7;
     for (i=0; i<ISDN_MAX_CHANNELS; i++) {
       sscanf(infoptr,"%d",&num);
-      if ((num&ISDN_USAGE_MASK) == ISDN_USAGE_NET) 
-	if (num&ISDN_USAGE_OUTGOING) newstate = 4;
-	else if (newstate < 3) newstate = 3;
+      if ((num&ISDN_USAGE_MASK) == ISDN_USAGE_NET) {
+	if (num&ISDN_USAGE_OUTGOING)
+	   newstate = 4;
+	else
+	   if (newstate < 3)
+	      newstate = 3;
+      }
       sscanf(infoptr,"%s",temp);
       infoptr = infoptr + strlen(temp) + 1;
     }

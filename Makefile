@@ -1,9 +1,11 @@
-# $Id: Makefile,v 1.16 1997/05/25 23:36:23 fritz Exp $
+# $Id: Makefile,v 1.31 1998/11/23 10:02:13 fritz Exp $
 #
 # Toplevel Makefile for isdn4k-utils
 #
 
-export I4LVERSION = 2.1b1
+.EXPORT_ALL_VARIABLES:
+
+export I4LVERSION = 3.0beta2
 
 all:	do-it-all
 
@@ -23,6 +25,16 @@ do-it-all:      config
 endif
 
 SUBDIRS :=
+ifeq ($(CONFIG_LIB_AREACODE),y)
+	SUBDIRS := $(SUBDIRS) areacode
+endif
+ifeq ($(CONFIG_ISDNLOG),y)
+	SUBDIRS := $(SUBDIRS) areacode lib
+else
+	ifeq ($(CONFIG_CTRL_CONF),y)
+		SUBDIRS := $(SUBDIRS) areacode lib
+	endif
+endif
 ifeq ($(CONFIG_ISDNCTRL),y)
 	SUBDIRS := $(SUBDIRS) isdnctrl
 endif
@@ -42,11 +54,26 @@ else
 		SUBDIRS := $(SUBDIRS) teles
 	endif
 endif
+
+ifeq ($(CONFIG_RCAPID),y)
+	SUBDIRS := $(SUBDIRS) capi20
+else
+	ifeq ($(CONFIG_AVMCAPICTRL),y)
+		SUBDIRS := $(SUBDIRS) capi20
+	endif
+endif
+
 ifeq ($(CONFIG_AVMCAPICTRL),y)
 	SUBDIRS := $(SUBDIRS) avmb1
 endif
+ifeq ($(CONFIG_ACTCTRL),y)
+	SUBDIRS := $(SUBDIRS) act2000
+endif
 ifeq ($(CONFIG_LOOPCTRL),y)
 	SUBDIRS := $(SUBDIRS) loop
+endif
+ifeq ($(CONFIG_DIEHLCTRL),y)
+	SUBDIRS := $(SUBDIRS) diehl
 endif
 ifeq ($(CONFIG_IMON),y)
 	SUBDIRS := $(SUBDIRS) imon
@@ -55,11 +82,7 @@ ifeq ($(CONFIG_IMONTTY),y)
 	SUBDIRS := $(SUBDIRS) imontty
 endif
 ifeq ($(CONFIG_ISDNLOG),y)
-	SUBDIRS := $(SUBDIRS) areacode lib isdnlog
-else
-	ifeq ($(CONFIG_LIB_AREACODE),y)
-		SUBDIRS := $(SUBDIRS) areacode
-	endif
+	SUBDIRS := $(SUBDIRS) isdnlog
 endif
 ifeq ($(CONFIG_IPPPSTATS),y)
 	SUBDIRS := $(SUBDIRS) ipppstats
@@ -75,6 +98,12 @@ ifeq ($(CONFIG_IPPPD),y)
 endif
 ifeq ($(CONFIG_VBOX),y)
 	SUBDIRS := $(SUBDIRS) vbox
+endif
+ifeq ($(CONFIG_RCAPID),y)
+	SUBDIRS := $(SUBDIRS) rcapid
+endif
+ifeq ($(CONFIG_CAPIFAX),y)
+	SUBDIRS := $(SUBDIRS) capifax
 endif
 ifeq ($(CONFIG_GENMAN),y)
 	SUBDIRS := $(SUBDIRS) doc
@@ -100,6 +129,14 @@ rootperm:
 
 install: rootperm
 	set -e; for i in `echo $(SUBDIRS)`; do $(MAKE) -C $$i install; done
+	@if [ ! -d debian ]; then \
+	if [ -c $(DESTDIR)/dev/isdnctrl0 ] && ls -l $(DESTDIR)/dev/isdnctrl0 | egrep "[[:space:]]45,[[:space:]]+64[[:space:]]" > /dev/null; \
+	then \
+		echo -e '(some) ISDN devices already exist, not creating them.\nUse scripts/makedev.sh manually if necessary.'; \
+	else \
+		sh scripts/makedev.sh $(DESTDIR) ; \
+	fi \
+	fi
 
 uninstall: rootperm
 	set -e; for i in `echo $(SUBDIRS)`; do $(MAKE) -C $$i uninstall; done
@@ -116,7 +153,7 @@ clean:
 	-set -e; \
 	for i in `echo ${wildcard */Makefile}`; do \
 		$(MAKE) -i -C `dirname $$i` clean; \
-    done;
+	done;
 	-rm -f *~ *.o
 
 distclean: clean
@@ -132,33 +169,39 @@ distclean: clean
 		fi ; \
 	done;
 	-rm -f *~ .config .config.old scripts/autoconf.h .menuconfig \
-		Makefile.tmp .menuconfig.log scripts/defconfig.old .#* scripts/.#*
+		Makefile.tmp .menuconfig.log scripts/defconfig.old
+	find . -name '.#*' -exec rm -f {} \;
 
 scripts/lxdialog/lxdialog:
 	@$(MAKE) -C scripts/lxdialog all
 
-#
+scripts/autoconf.h: .config
+	perl scripts/mk_autoconf.pl
+
+cfgerror:
+	@echo ""
+	@echo "WARNING! Configure in $(ERRDIR) failed, disabling package"
+	@echo ""
+	@sleep 1
+	@cp etc/Makefile.disabled $(ERRDIR)/Makefile
+
 # Next target makes three attempts to configure:
-#  - if a Makefile already exists, make config
 #  - if a configure script exists, execute it
 #  - if a Makefile.in exists, make -f Makefile.in config
+#  - if a Makefile already exists, make config
 #
-subconfig:
+subconfig: scripts/autoconf.h
 	@echo Selected subdirs: $(SUBDIRS)
 	@set -e; for i in `echo $(SUBDIRS)`; do \
 		if [ -x $$i/configure ] ; then \
 			echo -e "\nRunning configure in $$i ...\n"; sleep 1; \
-			(cd $$i; ./configure); \
-		else \
-			if [ -f $$i/Makefile.in ] ; then \
-				echo -e "\nRunning make -f Makefile.in config in $$i ...\n"; sleep 1; \
-				$(MAKE) -C $$i -f Makefile.in config; \
-			else \
-				if [ -f $$i/Makefile ] ; then \
-					echo -e "\nRunning make config in $$i ...\n"; sleep 1; \
-					$(MAKE) -C $$i config; \
-				fi; \
-			fi; \
+			(cd $$i; ./configure || $(MAKE) -C ../ ERRDIR=$$i cfgerror); \
+		elif [ -f $$i/Makefile.in ] ; then \
+			echo -e "\nRunning make -f Makefile.in config in $$i ...\n"; sleep 1; \
+			$(MAKE) -C $$i -f Makefile.in config; \
+		elif [ -f $$i/Makefile ] ; then \
+			echo -e "\nRunning make config in $$i ...\n"; sleep 1; \
+			$(MAKE) -C $$i config; \
 		fi; \
 	done
 
@@ -191,7 +234,7 @@ archive: distclean
 distarch: distclean
 	(cd .. ;\
 	ln -nfs isdn4k-utils isdn4k-utils-$(I4LVERSION) ;\
-	tar -cvhz --exclude=CVS -f distisdn/isdn4k-utils-$(I4LVERSION).tar.gz \
+	tar -cvhz -X isdn4k-utils/distexclude -f distisdn/isdn4k-utils-$(I4LVERSION).tar.gz \
 	isdn4k-utils-$(I4LVERSION) ;\
 	rm isdn4k-utils-$(I4LVERSION) )
 

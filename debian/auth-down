@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# auth-down -	Executed after an incoming PPP connection terminates
+#		Not really needed, but supplied for completeness.
+#
+# Arguments:
+#	$1 - interface name
+#       $2 - peer's authname
+#	$3 - peer's real name
+#	$4 - tty name	(N/A)
+#	$5 - speed	(always 64000 with ISDN)
+#	$6 - remote phone number
+
+exit 0

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ -x /usr/sbin/install-docs ]; then
+	install-docs -r isdn4linux-FAQ-de
+	install-docs -r isdn4linux-FAQ-eng
+fi
+
+# rest is done automagically by debstd
+

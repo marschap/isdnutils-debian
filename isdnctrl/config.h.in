@@ -6,20 +6,24 @@
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
-/* Package name - never used, but required for autoheader */
-#undef PACKAGE
+/* Define this if your system has the old dbm library. */
+#undef HAVE_LIBDBM
 
-/* Package version - same as I4LVERSION */
-#undef VERSION
+/* Define this if your system has the GNU dbm library. */
+#undef HAVE_LIBGDBM
 
-/* Define if you have the <linux/isdn.h> header file.  */
-#undef HAVE_LINUX_ISDN_H
+/* Define this if your system has the db library. */
+#undef HAVE_LIBDB
 
-/* Define if you have the <linux/isdnif.h> header file.  */
-#undef HAVE_LINUX_ISDNIF_H
+/* Define this if triggercps is defined in struct isdn_net_ioctl_cfg. */
+#undef HAVE_TRIGGERCPS
 
 /* Define if you have the <sys/ioctl.h> header file.  */
 #undef HAVE_SYS_IOCTL_H
 
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
+
+/* Define if you have the TIMRU facility.  */
+#undef HAVE_TIMRU
+

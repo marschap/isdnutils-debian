@@ -1,8 +1,8 @@
-/* $Id: isdnconf.c,v 1.13 1997/06/24 23:35:33 luethje Exp $
+/* $Id: isdnconf.c,v 1.20 1998/11/24 20:53:03 akool Exp $
  *
  * ISDN accounting for isdn4linux. (Utilities)
  *
- * Copyright 1995, 1997 by Andreas Kool (akool@Kool.f.EUnet.de)
+ * Copyright 1995, 1998 by Andreas Kool (akool@isdn4linux.de)
  *                     and Stefan Luethje (luethje@sl-gw.lake.de)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,59 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: isdnconf.c,v $
+ * Revision 1.20  1998/11/24 20:53:03  akool
+ *  - changed my email-adress
+ *  - new Option "-R" to supply the preselected provider (-R24 -> Telepassport)
+ *  - made Provider-Prefix 6 digits long
+ *  - full support for internal S0-bus implemented (-A, -i Options)
+ *  - isdnlog now ignores unknown frames
+ *  - added 36 allocated, but up to now unused "Auskunft" Numbers
+ *  - added _all_ 122 Providers
+ *  - Patch from Jochen Erwied <mack@Joker.E.Ruhr.DE> for Quante-TK-Anlagen
+ *    (first dialed digit comes with SETUP-Frame)
+ *
+ * Revision 1.19  1998/09/26 18:30:08  akool
+ *  - quick and dirty Call-History in "-m" Mode (press "h" for more info) added
+ *    - eat's one more socket, Stefan: sockets[3] now is STDIN, FIRST_DESCR=4 !!
+ *  - Support for tesion)) Baden-Wuerttemberg Tarif
+ *  - more Providers
+ *  - Patches from Wilfried Teiken <wteiken@terminus.cl-ki.uni-osnabrueck.de>
+ *    - better zone-info support in "tools/isdnconf.c"
+ *    - buffer-overrun in "isdntools.c" fixed
+ *  - big Austrian Patch from Michael Reinelt <reinelt@eunet.at>
+ *    - added $(DESTDIR) in any "Makefile.in"
+ *    - new Configure-Switches "ISDN_AT" and "ISDN_DE"
+ *      - splitted "takt.c" and "tools.c" into
+ *          "takt_at.c" / "takt_de.c" ...
+ *          "tools_at.c" / "takt_de.c" ...
+ *    - new feature
+ *        CALLFILE = /var/log/caller.log
+ *        CALLFMT  = %b %e %T %N7 %N3 %N4 %N5 %N6
+ *      in "isdn.conf"
+ *  - ATTENTION:
+ *      1. "isdnrep" dies with an seg-fault, if not HTML-Mode (Stefan?)
+ *      2. "isdnlog/Makefile.in" now has hardcoded "ISDN_DE" in "DEFS"
+ *      	should be fixed soon
+ *
+ * Revision 1.18  1998/06/14 15:34:35  akool
+ * AVM B1 support (Layer 3)
+ * Telekom's new currency DEM 0,121 supported
+ * Disable holiday rates #ifdef ISDN_NL
+ * memory leak in "isdnrep" repaired
+ *
+ * Revision 1.17  1998/05/20 12:34:38  paul
+ * More paranoid about freeing pointers.
+ *
+ * Revision 1.16  1998/05/19 15:55:57  paul
+ * Moved config stuff for City Weekend from isdnlog.c to tools/isdnconf.c, so
+ * that isdnrep also understands a "cityweekend=y" line in isdn.conf.
+ *
+ * Revision 1.15  1998/03/08 11:43:13  luethje
+ * I4L-Meeting Wuerzburg final Edition, golden code - Service Pack number One
+ *
+ * Revision 1.14  1998/03/01 20:36:22  keil
+ * bugfixes from Florian La Roche
+ *
  * Revision 1.13  1997/06/24 23:35:33  luethje
  * isdnctrl can use a config file
  *
@@ -59,8 +112,6 @@
 
 /****************************************************************************/
 
-
-#define  PUBLIC /**/
 #define  _ISDNCONF_C_
 
 /****************************************************************************/
@@ -639,7 +690,7 @@ static section* writeglobal(section *SPtr)
 	if (currency != NULL && currency_factor != 0)
 	{
 		strcpy(s, CONF_ENT_CURR);
-		sprintf(s1, "%.2f,%s",currency_factor,currency);
+		sprintf(s1, "%.3f,%s",currency_factor,currency);
 		if (Set_Entry(Ptr,NULL,s,s1,C_OVERWRITE | C_WARN) == NULL)
 		{
 			_print_msg("Can't set entry `%s'!\n",CONF_ENT_CURR);
@@ -809,6 +860,8 @@ void setDefaults()
     currency = "NLG";
 #elif defined(ISDN_CH)
     currency = "SFR";
+#elif defined(ISDN_AT)
+    currency = "ATS";
 #else
     currency = "DM";
 #endif
@@ -821,13 +874,16 @@ void setDefaults()
     currency_factor = 0.15;
 #elif defined(ISDN_CH)
     currency_factor = 0.01;
+#elif defined(ISDN_AT)
+    currency_factor = 1.056;
 #else
-    currency_factor = 0.12;
+    currency_factor = 0.121;
 #endif
 
   } /* if */
 
   currency_mode = AOC_UNITS;
+
 } /* setDefaults */
 
 /****************************************************************************/
@@ -934,6 +990,7 @@ static int _readconfig(char *_myname)
   auto int      i;
   int  cur_msn = 0;
 
+
   Myname         = _myname;
   mymsns         = 0;
   mycountry      = "";
@@ -951,6 +1008,8 @@ static int _readconfig(char *_myname)
   stopcmd        = STOPCMD;
   rebootcmd      = REBOOTCMD;
   logfile        = LOGFILE;
+  callfile       = NULL;
+  callfmt        = NULL;
   start_procs.infoargs = NULL;
   start_procs.flags    = 0;
   conf_dat       = NULL;
@@ -1084,6 +1143,12 @@ static int Set_Globals(section *SPtr)
 		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_LOGFILE)) != NULL)
 			logfile = CEPtr->value;
 
+		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_CALLFILE)) != NULL)
+			callfile = CEPtr->value;
+
+		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_CALLFMT)) != NULL)
+			callfmt = CEPtr->value;
+
 		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_CW)) != NULL)
 			CityWeekend = toupper(*(CEPtr->value)) == 'Y'?1:0;
 
@@ -1177,12 +1242,12 @@ static int Set_Globals(section *SPtr)
 		_print_msg("%s: WARNING: Variable `%s' is not set!\n", Myname, CONF_ENT_AREA);
 		myarea = "";
 	}
-
+#if 0
   if (chargemax == 0)
   {
   	_print_msg("%s: WARNING: Variable `%s' is not set, \nperforming no action when chargemax-overflow\n", Myname, CONF_ENT_CHARGE);
   }
-
+#endif
 	return 0;
 }
 
@@ -1355,8 +1420,11 @@ static int Set_Numbers(section *SPtr, char *Section, int msn)
 			{
 				if (msn < 0)
 				{
+                                       if((known[Index]->zone=area_diff(NULL, num))<1)
+                                       {
 					_print_msg("%s: WARNING: There is no variable `%s' for number `%s'!\n", Myname, CONF_ENT_ZONE, num);
 					known[Index]->zone = 4;
+                                       }
 				}
 				else
 					known[Index]->zone = 1;

@@ -1,12 +1,12 @@
-.\" $Id: ttyI.man.in,v 1.4 1997/02/26 20:00:41 fritz Exp $
+.\" $Id: ttyI.man.in,v 1.6 1998/12/02 16:53:31 paul Exp $
 .\"
-.\" CHECKIN $Date: 1997/02/26 20:00:41 $
+.\" CHECKIN $Date: 1998/12/02 16:53:31 $
 .\"
 .\" Process this file with
 .\" groff -man -Tascii ttyI.4 for ASCII output, or
 .\" groff -man -Tps ttyI.4 for PostScript output
 .\"
-.TH TTYI 4 "@MANDATE@" Linux "Special files"
+.TH ttyi 4 "@MANDATE@" "ISDN 4 Linux @I4LVERSION@" "Special files"
 .SH NAME
 ttyI, cui \- ISDN character devices with modem emulator
 .SH DESCRIPTION
@@ -173,6 +173,12 @@ should be only the last digit of the Number.
 .B AT&F
 Set all registers and profile to "factory-defaults".
 .TP
+.BI AT&L plist
+Set list of phone numbers to listen on.
+.I plist
+is a list of wildcard patterns separated by semicolon. If this is
+set, it has precedence over the MSN set by AT&E.
+.TP
 .B AT&V
 Show current register settings.
 .TP
@@ -304,6 +310,18 @@ Bit	Description
 4	0 = CALLER NUMBER before every RING.
 .br
 	1 = CALLER NUMBER after first RING.
+.br
+5	0 = Disable extended T.70 protocol.
+.br
+	1 = Enable extended T.70 protocol.
+.br
+6	0 = Disable RUNG message.
+.br
+	1 = RUNG on cancelled incoming call.
+.br
+7	0 = Disable CPN extended RING.
+.br
+	1 = Enable CPN extended RING.
 .TP
 .BR 14 " (default 0)
 Layer-2 protocol.

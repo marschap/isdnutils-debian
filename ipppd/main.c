@@ -25,7 +25,7 @@
  * PATCHLEVEL 9
  */
 
-char main_rcsid[] = "$Id: main.c,v 1.9 1997/10/26 23:06:19 fritz Exp $";
+char main_rcsid[] = "$Id: main.c,v 1.16 1999/06/21 13:28:49 hipp Exp $";
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -49,18 +49,19 @@ char main_rcsid[] = "$Id: main.c,v 1.9 1997/10/26 23:06:19 fritz Exp $";
 #include <sys/socket.h>
 #include </usr/include/net/if.h>
 
-#include "pathnames.h"
 #include "fsm.h"
 #include "ipppd.h"
 #include "magic.h"
 #include "lcp.h"
 #include "ipcp.h"
 #include "ipxcp.h"
+#include "environ.h"
 
 #include "upap.h"
 #include "chap.h"
 #include "cbcp.h"
 #include "ccp.h"
+#include "pathnames.h"
 #include "patchlevel.h"
 #include "protos.h"
 
@@ -96,18 +97,19 @@ char *no_ppp_msg = "Sorry - this system lacks PPP kernel support.\n"
 	"Check whether you configured at least the ippp0 device!\n";
 
 /* prototypes */
-static void hup __P((int));
-static void term __P((int));
-static void chld __P((int));
-static void toggle_debug __P((int));
-static void open_ccp __P((int));
-static void bad_signal __P((int));
-static void get_input __P((int));
-static void connect_time_expired __P((caddr_t));
+static void hup(int);
+static void term(int);
+static void chld(int);
+static void toggle_debug(int);
+static void reload_param(int);
+static void bad_signal(int);
+static void get_input(int);
+static void connect_time_expired(caddr_t);
 static int init_unit(int);
 static int exit_unit(int);
 
 void remote_sys_options __P((void));
+void reload_config(void);
 
 extern	char	*ttyname __P((int));
 extern	char	*getlogin __P((void));
@@ -130,6 +132,7 @@ struct protent *protocols[] = {
     &cbcp_protent,
     &ipcp_protent,
     &ccp_protent,
+    &ccp_link_protent,
     &ipxcp_protent,
     NULL
 };
@@ -147,7 +150,12 @@ int main(int argc,char **argv)
 	struct protent *protp;
 
 	if(argc > 1 && !strcmp(argv[1],"-version")) {
+#ifndef RADIUS	  
 		fprintf(stderr,"ipppd %s.%d (isdn4linux version of pppd by MH) started\n", VERSION, PATCHLEVEL);
+#else
+		fprintf(stderr,"ipppd %s.%d (isdn4linux version of pppd with RADIUS extension by mla) started\n", VERSION, PATCHLEVEL);
+#endif		
+		
 		fprintf(stderr,"%s\n%s\n%s\n%s\n%s\n",lcp_rcsid,ipcp_rcsid,ipxcp_rcsid,ccp_rcsid,magic_rcsid);
 		fprintf(stderr,"%s\n%s\n%s\n%s\n",chap_rcsid,upap_rcsid,main_rcsid,options_rcsid);
 		fprintf(stderr,"%s\n%s\n%s\n",fsm_rcsid,cbcp_rcsid,sys_rcsid);
@@ -164,12 +172,11 @@ int main(int argc,char **argv)
 		lns[i].bundle_next = &lns[i];
 		lns[i].ifname[0] = 0;
 		lns[i].ifunit = -1;
-		lns[i].open_ccp_flag = 0;
 		lns[i].phase = PHASE_WAIT;
 		lns[i].fd = -1;
 		lns[i].logged_in = 0;
 		lns[i].lcp_unit = lns[i].ipcp_unit = lns[i].ccp_unit = -1;
-		lns[i].cbcp_unit = -1;
+		lns[i].cbcp_unit = lns[i].ccp_l_unit = -1;
 		lns[i].ipxcp_unit = -1;
 		lns[i].unit = i;
 		lns[i].chap_unit = lns[i].upap_unit = -1;
@@ -183,7 +190,7 @@ int main(int argc,char **argv)
 	}
 	hostname[MAXNAMELEN-1] = 0;
 
-    pidfilename[0] = 0;
+	pidfilename[0] = 0;
 	uid = getuid();
 
     /*
@@ -197,8 +204,14 @@ int main(int argc,char **argv)
 		for(j=0;j<NUM_PPP;j++)
 			(*protp->init)(j); /* modifies our options .. !!!! */
 
+#ifdef OPTIONS_TTY_FIRST
+	if (!options_from_file(_PATH_SYSOPTIONS, REQ_SYSOPTIONS, 0, 0 ) ||
+	    !options_for_tty() ||
+	    !parse_args(argc-1, argv+1))
+#else
 	if (!options_from_file(_PATH_SYSOPTIONS, REQ_SYSOPTIONS, 0 , 0) ||
 			!parse_args(argc-1, argv+1) || !options_for_tty() )
+#endif	  
 		die(1);
 
     /*
@@ -217,20 +230,18 @@ int main(int argc,char **argv)
 
     sys_init(); /* init log stuff and open socket for ioctl commands */
 
-    if(!numdev)
-    {
+    if(!numdev) {
       fprintf(stderr,"ipppd: No devices found.\n");
       die(1);
     }
-    else
-    {
+    else {
       char devstr[1024];
       sprintf(devstr,"Found %d device%s: ",numdev, numdev==1?"":"s");
       for(i=0;i<numdev;i++)
       {
         strcat(devstr,lns[i].devnam);
         if (i < numdev - 1)
-            strcat(devstr,", ");
+          strcat(devstr,", ");
       }
       syslog(LOG_NOTICE,devstr);
     }
@@ -270,14 +281,19 @@ int main(int argc,char **argv)
 	pid = getpid();
 
 	/* write pid to file */
-	if(! *pidfilename) {
+	if(!strlen(pidfilename))
+#if 0 /* old style, default is to use same pidfile for all devices */
+		sprintf(pidfilename, "%s%s.pid", _PATH_VARRUN, "ipppd" );
+#else /* new style, incorporate device name into pidfile (like mgetty does) */
+	{
 		char *p;
 		if ((p = strrchr(lns[0].devnam, '/')))
 			p++;
 		else
 			p = lns[0].devnam;
-		sprintf(pidfilename, "%sipppd.%s.pid", _PATH_VARRUN, p);
+		sprintf(pidfilename, "%s%s.%s.pid", _PATH_VARRUN, "ipppd", p);
 	}
+#endif
 	
 	if ((pidfile = fopen(pidfilename, "w")) != NULL) {
 		fprintf(pidfile, "%d\n", pid);
@@ -316,7 +332,7 @@ int main(int argc,char **argv)
     SIGNAL(SIGCHLD, chld);
 
     SIGNAL(SIGUSR1, toggle_debug);	/* Toggle debug flag */
-    SIGNAL(SIGUSR2, open_ccp);		/* Reopen CCP */
+    SIGNAL(SIGUSR2, reload_param);		/* reload parameters */
 
     /*
      * Install a handler for other signals which would otherwise
@@ -357,10 +373,8 @@ int main(int argc,char **argv)
     SIGNAL(SIGXFSZ, bad_signal);
 #endif
 
-        for(i=0;i<numdev;i++)
-        {
-          if(lns[i].fd == -1)
-          {
+        for(i=0;i<numdev;i++) {
+          if(lns[i].fd == -1) {
             syslog(LOG_NOTICE,"init_unit: %d\n",i);
             if(init_unit(i) < 0) {
 				/* Error */
@@ -368,36 +382,30 @@ int main(int argc,char **argv)
           }
         }
 
-        for(;!kill_link;)
-        {
+        for(;!kill_link;) {
           fd_set ready;
           int n,i,max=-1;
     
           FD_ZERO(&ready);
           for(i=0;i<numdev;i++)
-            if(lns[i].fd >= 0)
-            {
+            if(lns[i].fd >= 0) {
               if(lns[i].fd > max)
                 max = lns[i].fd;
               FD_SET(lns[i].fd, &ready);
             }
 
           n = select(max+1, &ready, NULL, NULL, timeleft(&timo) );
-          if (n < 0 && errno != EINTR)
-          {
+          if (n < 0 && errno != EINTR) {
 	    syslog(LOG_ERR, "select: %m");
 	    die(1);
           }
 
           calltimeout();
           
-          for(i=0;i<numdev && n>0;i++)
-          {
-            if(lns[i].fd >= 0 && FD_ISSET(lns[i].fd,&ready))
-            {
+          for(i=0;i<numdev && n>0;i++) {
+            if(lns[i].fd >= 0 && FD_ISSET(lns[i].fd,&ready)) {
             /*  n--; */
-              if(lns[i].phase == PHASE_WAIT)
-              {
+              if(lns[i].phase == PHASE_WAIT) {
                 /* ok, now we (usually) have a unit */
                 lns[i].hungup = 0;
                 establish_ppp(i);
@@ -410,23 +418,13 @@ int main(int argc,char **argv)
               }
               get_input(i);
             }
-            if (lns[i].open_ccp_flag) /* ugly: set by SIGUSR2 signal for all units */
-            {
-              if (lns[i].phase == PHASE_NETWORK) 
-              {
-                ccp_fsm[lns[i].ccp_unit].flags = OPT_RESTART; /* clears OPT_SILENT */
-                (*ccp_protent.open)(lns[i].ccp_unit);
-              }
-	      lns[i].open_ccp_flag = 0;
-	    }
           }
 	  reap_kids();	/* Don't leave dead kids lying around */
           for(i=0;i<numdev;i++)
-            if(kill_link || lns[i].phase == PHASE_DEAD)
-            {
+            if(kill_link || lns[i].phase == PHASE_DEAD) {
 			  if(!kill_link)
                 syslog(LOG_NOTICE,"taking down PHASE_DEAD link %d, linkunit: %d",i,lns[i].unit);
-              untimeout(connect_time_expired,(void *)(long)i);
+              untimeout(connect_time_expired,(void *) (long)i);
               lcp_close(lns[i].lcp_unit,"link closed");
               lcp_lowerdown(lns[i].lcp_unit);
               lcp_freeunit(lns[i].lcp_unit);
@@ -438,8 +436,7 @@ int main(int argc,char **argv)
             }
           if(!kill_link) {
             for(i=0;i<numdev;i++)
-              if(lns[i].fd == -1)
-              {
+              if(lns[i].fd == -1) {
                 syslog(LOG_NOTICE,"reinit_unit: %d\n",i);
                 if(init_unit(i) < 0) { /* protokolle hier neu initialisieren?? */
 					/* error */
@@ -497,6 +494,8 @@ static int init_unit(int linkunit)
 		return -1;
 	}
 	syslog(LOG_NOTICE, "Connect[%d]: %s, fd: %d",linkunit, lns[linkunit].devnam,lns[linkunit].fd);
+
+	set_kdebugflag (kdebugflag,linkunit);
 
 	lns[linkunit].openfails = 0;
 	lns[linkunit].auth_up_script = 0;
@@ -627,7 +626,7 @@ static void get_input(int linkunit)
 		char *s;
 		s = protocol2name(protocol);
 		if(!s)
-    		syslog(LOG_WARNING, "Unknown protocol (0x%x) received", protocol);
+    			syslog(LOG_WARNING, "Unknown protocol (0x%x) received", protocol);
 		else
 			syslog(LOG_WARNING, "Unsupported protocol '%s' (0x%x) received", s,protocol);
 	}
@@ -708,6 +707,7 @@ void close_fd(int tu)
 	if (lns[tu].initfdflags != -1 && fcntl(lns[tu].fd, F_SETFL, lns[tu].initfdflags) < 0)
 		syslog(LOG_WARNING, "Couldn't restore device fd flags: %m");
 	lns[tu].initfdflags = -1;
+    syslog(LOG_INFO, "closing fd %d from unit %d",lns[tu].fd,tu);
     close(lns[tu].fd);
     lns[tu].fd = -1;
 }
@@ -883,16 +883,11 @@ static void toggle_debug(int sig)
 
 
 /*
- * open_ccp - Catch SIGUSR2 signal.
- *
- * Try to (re)negotiate compression on all links (ugly).
+ * reload param - Catch SIGUSR2 signal.
  */
-/*ARGSUSED*/
-static void open_ccp(int sig)
+static void reload_param(int sig)
 {
-	int i;
-	for(i=0;i<NUM_PPP;i++)
-		lns[i].open_ccp_flag = 1;
+	reload_config();
 }
 
 
@@ -906,6 +901,7 @@ int run_program(char *prog,char **args,int must_exist,int unit)
 {
 	int pid;
 	char *nullenv[1];
+	char **envtouse;
 
 	pid = fork();
 	if (pid < 0) {
@@ -940,7 +936,11 @@ int run_program(char *prog,char **args,int must_exist,int unit)
 		}
 
 		nullenv[0] = NULL;
-		execve(prog, args, nullenv);
+		if (script_env)
+			envtouse = script_env;
+		else
+			envtouse = nullenv;
+		execve(prog, args, envtouse);
 		if (must_exist || errno != ENOENT)
 			syslog(LOG_WARNING, "Can't execute %s: %m", prog);
 		exit(99); /* CHILD exit */
@@ -1241,10 +1241,10 @@ int vfmtmsg(char *buf,int buflen,char *fmt,va_list args)
          * what gets passed for a va_list is like a void * in some sense.
          */
         a = va_arg(args, void *);
-#ifdef __alpha__	/* always do this? */
-        n = fmtmsg(buf, buflen + 1, f, a);
+#ifdef __alpha__       /* always do this? */
+	n = fmtmsg(buf, buflen + 1, f, a);
 #else
-        n = vfmtmsg(buf, buflen + 1, f, a);
+	n = vfmtmsg(buf, buflen + 1, f, a);
 #endif
         buf += n;
         buflen -= n;
@@ -1351,4 +1351,8 @@ int vfmtmsg(char *buf,int buflen,char *fmt,va_list args)
     return buf - buf0;
 }
  
+void reload_config(void)
+{
+  auth_reload_upap_pw();
+}
 

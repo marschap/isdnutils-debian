@@ -1,35 +1,54 @@
-/* src/config.h.in.  Generated automatically from configure.in by autoheader.  */
-/* vbox spool directory */
-#define SPOOLDIR "/var/spool/vbox"
 
-/* directories for modem lock files */
-#define LOCKDIR "/var/lock"
+#ifndef _VBOX_CONFIG_H
+#define _VBOX_CONFIG_H 1
 
-/* directories for vbox log files */
-#define LOGDIR "/var/log/isdn"
+/*
+ * Define to include both, <time.h> *and* <sys/time.h>:
+ */
 
-/* directory for vbox .pid files */
-#define RUNDIR "/var/run"
+#undef TIME_WITH_SYS_TIME
 
+/*
+ * Define if you have the <sys/time.h> header file:
+ */
 
-/* Define to empty if the keyword does not work.  */
+#undef HAVE_SYS_TIME_H
+
+/*
+ * Define if you have the vsnprintf() function:
+ */
+
+#undef HAVE_VSNPRINTF
+
+/*
+ * Define if libncurses has a resizeterm() function:
+ */
+
+#undef HAVE_RESIZETERM
+
+/*
+ * Define to empty if the keyword does not work:
+ */
+
 #undef const
 
-/* Define as __inline if that's what the C compiler calls it.  */
-#undef inline
+/*
+ * Do not change any of the options below by hand - use the configure script
+ * insteed! The directory pathes are stored in other files too!
+ */
 
-/* Define if you can safely include both <sys/time.h> and <time.h>.  */
-#undef TIME_WITH_SYS_TIME
+#undef SPOOLDIR
+#undef LOGFILEDIR
+#undef PIDFILEDIR
+#undef LCKFILEDIR
+#undef I4LCONFDIR
+
+/*
+ * No need to change anything below this line!
+ */
 
 #undef VERSION
 #undef VERDATE
 #undef PACKAGE
 
-/* Define if you have the resizeterm function.  */
-#undef HAVE_RESIZETERM
-
-/* Define if you have the vsnprintf function.  */
-#undef HAVE_VSNPRINTF
-
-/* Define if you have the <sys/time.h> header file.  */
-#undef HAVE_SYS_TIME_H
+#endif /* _VBOX_CONFIG_H */

@@ -6,10 +6,10 @@
 
 #define NETINFO_FILE "/dev/isdninfo"
 #ifndef NETUP_COMMAND
-#define NETUP_COMMAND "/etc/init.d/isdnutils start &"
+#define NETUP_COMMAND "/sbin/isdnnet start &"
 #endif
 #ifndef NETDOWN_COMMAND
-#define NETDOWN_COMMAND "/etc/init.d/isdnutils stop &"
+#define NETDOWN_COMMAND "/sbin/isdnnet stop &"
 #endif
 
 

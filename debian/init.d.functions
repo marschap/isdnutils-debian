@@ -1,0 +1,232 @@
+
+# don't call this file directly.
+
+
+# Try not to change this file!  It should not be necessary.
+#
+#
+# Please read /usr/doc/isdnutils/README.debian
+# and         /usr/doc/isdnutils/CONFIG.gz .
+#
+# This file is for use from the /etc/init.d/isdn* scripts.
+# If you want to do things differently, I advise you to put the
+# parts you want to change into the init.d script directly after the
+# line where this file is sourced, and change it there. Any changes
+# here may be overwritten when isdnutils is updated!
+#
+# If you have an idea that something here could/should be done
+# differently, let me (isdnutils@packages.debian.org) know and
+# we'll try to work something out.
+
+if [ ! -d /etc/isdn ]
+then
+       echo "The /etc/isdn directory does not exist!"
+       exit 1
+fi
+
+if [ "${VERBOSE:=yes}" = yes ]
+then    isdn_verbose=true
+else    isdn_verbose=false
+fi
+
+
+#################
+# misc. functions
+#################
+
+NOT_CONFIGED='not configured yet'
+not_configured=''
+
+listdevices() {
+	DEVS=`find /etc/isdn -regex '/etc/isdn/device\.\(ippp\|isdn\)[0-9]+' -printf '%f\n'`
+}
+listdaemons() {
+	DAEMONS=`find /etc/isdn -regex '/etc/isdn/ipppd\.ippp[0-9]+' -printf '%f\n'`
+}
+
+list_unconfigured() {
+    if [ -n "$not_configured" ]; then
+        echo "Note: the following configuration files are not configured yet:"
+        for i in $not_configured; do echo "	$i"; done
+    fi
+}
+
+# needs to be called at least once per init.d/isdnutils invocation...
+isdncards_unchecked=true
+
+check_isdncards() {
+    if $isdncards_unchecked
+    then
+	isdncards_unchecked=false
+	set -- `perl -ne 's/^idmap:\s+//; s/ -//g; s/(\S+) \1/\1/g; print; exit;' /dev/isdninfo 2>/dev/null`
+	if [ $# -eq 0 ]; then
+	    echo " no ISDN cards configured! aborting..."
+	    exit 0
+	fi
+	isdncards="$@"
+    fi
+}
+
+
+##########################
+# start and stop functions
+##########################
+
+start_isdnlog() {
+    check_isdncards # side-effect: sets $isdncards
+    what=' isdnlog'
+    set -- $isdncards
+    for optionfile in /etc/isdn/isdnlog.isdnctrl?; do
+        test -e $optionfile || continue;
+        device=${optionfile#*.}
+        device=${device%.*}
+	cardid=$1; shift
+        #old cardid=line`expr ${device#*l} / 2`
+        if grep -s "$NOT_CONFIGED" $optionfile > /dev/null
+        then
+	    not_configured="$not_configured$optionfile "
+	else
+	    if $isdn_verbose; then echo -n "$what"; what=''; fi
+	    # Enable debugging for this card (isdnlog requires "1 4",
+	    # for D-Channel Q.931, call control messages).
+	    hisaxctrl $cardid 1 4
+            start-stop-daemon --start --quiet --exec \
+                /usr/sbin/isdnlog -- -f$optionfile /dev/$device &
+        fi
+    done
+}
+
+stop_isdnlog() {
+    check_isdncards # side-effect: sets $isdncards
+    what=' isdnlog'
+    for optionfile in /etc/isdn/isdnlog.isdnctrl?; do
+        test -e $optionfile || continue;
+	if $isdn_verbose; then echo -n "$what"; what=''; fi
+        device=${optionfile#*.}
+        start-stop-daemon --stop --quiet \
+                --pidfile /var/run/isdnlog.$device.pid --exec /usr/sbin/isdnlog
+    done
+}
+
+reload_isdnlog() {
+    check_isdncards # side-effect: sets $isdncards
+    what=' isdnlog'
+    for optionfile in /etc/isdn/isdnlog.isdnctrl?; do
+        test -e $optionfile || continue;
+	if $isdn_verbose; then echo -n "$what"; what=''; fi
+        device=${optionfile#*.}
+        start-stop-daemon --stop --quiet --signal 1 \
+                --pidfile /var/run/isdnlog.$device.pid --exec /usr/sbin/isdnlog
+    done
+}
+
+start_devices() {
+    # the next part doesn't belong here, but there isn't really any choice...
+    if [ "x$quiet_start" != 'x' ]; then	# user didn't replace old init.d script
+	echo -e "\n\tplease update your copy of /etc/init.d/isdnutils to\n\tinclude the 'isdn_verbose' setting instead of 'quiet_start'\n\t(see /etc/init.d/isdnutils.dpkg-new)."
+    	case "$quiet_start" in
+		true)	isdn_verbose=false;;
+		*)	isdn_verbose=true;;
+	esac
+    fi
+    check_isdncards # side-effect: sets $isdncards
+    what=' interfaces'
+    olddir=`pwd`
+    cd /etc/isdn
+    listdevices
+    for devicefile in $DEVS ; do
+        test -e $devicefile || continue;
+        device=${devicefile#*.}
+        if grep -s "$NOT_CONFIGED" $devicefile > /dev/null
+        then
+	    not_configured="$not_configured$devicefile "
+	else
+            if test -f $devicefile; then
+		if $isdn_verbose; then echo -n "$what"; what=''; fi
+		if [ ! -c /dev/$device ]; then
+			cd /dev
+			echo -n " (creating /dev/$device)"
+			./MAKEDEV $device || true
+			cd /etc/isdn
+		fi
+		sh ${devicefile} start > /dev/null
+	    fi
+        fi
+    done
+    cd $olddir
+}
+
+stop_devices() {
+    check_isdncards # side-effect: sets $isdncards
+    what=' interfaces'
+    olddir=`pwd`
+    cd /etc/isdn
+    listdevices
+    for devicefile in $DEVS ; do
+        test -e $devicefile || continue;
+        # device=${devicefile#*.}
+        if test -f $devicefile; then
+	    if $isdn_verbose; then echo -n "$what"; what=''; fi
+	    sh ${devicefile} stop > /dev/null
+	fi
+    done
+    cd $olddir
+}
+
+start_ipppd() {
+    check_isdncards # side-effect: sets $isdncards
+    what=' ipppd'
+    olddir=`pwd`
+    cd /etc/isdn
+    listdaemons
+    for optionfile in $DAEMONS; do
+        test -e $optionfile || continue;
+        device=${optionfile#*.}
+        if grep -s "$NOT_CONFIGED" $optionfile > /dev/null
+        then
+	    not_configured="$not_configured$optionfile "
+	else
+	    if $isdn_verbose; then echo -n "$what"; what=''; fi
+            start-stop-daemon --start --quiet \
+		--pidfile /var/run/ipppd.$device.pid \
+		--exec /usr/sbin/ipppd -- file $optionfile /dev/$device &
+        fi
+    done
+    cd $olddir
+}
+
+stop_ipppd() {
+    check_isdncards # side-effect: sets $isdncards
+    what=' ipppd'
+    olddir=`pwd`
+    cd /etc/isdn
+    listdaemons
+    for optionfile in $DAEMONS; do
+        test -e $optionfile || continue;
+	if $isdn_verbose; then echo -n "$what"; what=''; fi
+        device=${optionfile#*.}
+        start-stop-daemon --stop --quiet \
+		--pidfile /var/run/ipppd.$device.pid \
+		--exec /usr/sbin/ipppd
+    done
+    cd $olddir
+}
+
+start_iprofd() {
+    check_isdncards # side-effect: sets $isdncards
+    what=' iprofd'
+    if test -e /etc/isdn/iprofd.data ; then
+	if $isdn_verbose; then echo -n "$what"; what=''; fi
+	start-stop-daemon --start --quiet \
+	    --exec /usr/sbin/iprofd -- /etc/isdn/iprofd.data &
+    fi
+}
+
+stop_iprofd() {
+    check_isdncards # side-effect: sets $isdncards
+    what=' iprofd'
+    if test -n "`pidof iprofd`"; then
+	if $isdn_verbose; then echo -n "$what"; what=''; fi
+	start-stop-daemon --stop --quiet --exec /usr/sbin/iprofd
+    fi
+}

@@ -22,14 +22,6 @@
 
 typedef struct
 {
-    char  Magic[4];
-    char  Modem[16];
-    short Compression;
-    char  Reserved[10];
-} RMD_header_t;
-
-typedef struct
-{
     int magic;               						 /* Magic number SND_MAGIC	*/
     int dataLocation;        				/* Offset or pointer to the data	*/
     int dataSize;            						/* Number of bytes of data	*/

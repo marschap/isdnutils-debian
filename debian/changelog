@@ -1,3 +1,274 @@
+isdnutils (1:3.0-12slink13) stable; urgency=high
+
+  * build of 3.0-13 for slink, as this is fixes a security problem (see next
+    point).
+  * don't install xmonisdn as setuid root. It calls shell scripts in a
+    non-secure way. It's better to have the user be in group dialout.
+  * now compiles with glibc2. I left this too long in the pipeline, sorry.
+    This also closes:#36975
+  * isdnlog now should handle the german "cityweekend" option correctly.
+    closes:#39002
+  * the init.d script calls MAKEDEV to create the interface devices if
+    necessary (the default is to only create the first 8 devices).
+    closes:#39149
+  * xisdnload now handles more than one simultaneous connection correctly.
+  * isdnctrl 'status' command added.
+  * ipppd should now work with 2.3.x kernels (SIOCGIFCONF ioctl failed).
+  * ipppd now has support for negotiating ms-dns and ms-wins values.
+  * let ipppd ignore errors when adding routes if the error is that the route
+    already exists (particular to kernel 2.2.x apparently).
+  * Due to the great perl reshuffle, the location of the uudecode script
+    (in /usr/doc/perl*) isn't fixed anymore, so I've implemented some magic
+    (/usr/doc/perl? /usr/doc/perl-5.005-doc?)
+  * Changed configure.in here and there to handle new 2.2.x isdn.h that
+    also references isdn_compat.h
+  * Last version in this form. After this I'm going to split isdnutils up,
+    and probably change around the config script for the devices to take
+    advantage of isdnctrl's capability of reading a config from a file.
+
+ -- Paul Slootman <paul@debian.org>  Thu, 29 Jul 1999 12:57:25 +0200
+
+isdnutils (1:3.0-12) unstable; urgency=low
+
+  * Don't attempt to start any ISDN services (in init.d) if there is no ISDN
+    card configured.
+  * Remove radius support from ipppd again as that plays havoc with the routing
+    and interface configuration if dynamic IP addresses are used. Radius support
+    will be made available in a separate package. If it looks like radius is
+    being used, the current ipppd will optionally be renamed to ipppd.radius .
+  * Changed the example config scripts to account for the changed IP route
+    behaviour in 2.2.x kernels. These changes are backwards compatible with
+    2.0.x kernels.
+  * This isdnutils is certified for use with 2.2.x kernels (even with the old
+    ISDN code in the earlier 2.2.x kernels up to and including 2.2.5), with
+    the exception of iprofd (for storing the ttyI AT default parameters, which
+    most people don't use).
+
+ -- Paul Slootman <paul@debian.org>  Thu,  8 Apr 1999 14:59:29 +0200
+
+isdnutils (1:3.0-11) unstable; urgency=low
+
+  * "fixing" the init.d.functions code broke /etc/init.d/isdnutils if called
+    from another dir than /etc/isdn (which is normal...).      closes:#34464
+  * isdn.conf.new in root directory removed.
+  * If an empty /var/log/vbox directory existed, the postinst would fail.
+
+ -- Paul Slootman <paul@debian.org>  Sun, 14 Mar 1999 16:13:28 +0100
+
+isdnutils (1:3.0-10) unstable; urgency=low
+
+  * iprofd will only work on 2.0.x (or 2.2.x if it is compiled there). This can
+    not be made flexible like isdnlog was, unfortunately. OTOH, who uses it...
+  * /etc/ppp/ip-down.d/isdnutils script contained a nasty shell syntax error.
+    Wonder why (almost :-) no one noticed... closes:#33807
+  * Extra comments in ipfwadm code in device.DEVICE about extra interfaces.
+  * isdnlog example config now contains "console=/dev/null" to prevent verbose
+    logging on the system console.
+  * added isdn.conf and isdnformat manpages.
+  * added glibc2.1 and (some) powerpc patches (see bug #32482).
+  * radius support now included in ipppd. closes:#31830
+  * moved /var/log/isdn.log to /var/lib/isdn/calls , which is standard upstream
+    and makes more sense (it's collected data, not really a log file). postinst
+    moves this if necessary.
+  * init.d.functions code now handles more than 10 devices, thanks to
+    Paul Stevens <paul@nfg.nl>. closes:#33850
+
+ -- Paul Slootman <paul@debian.org>  Wed, 10 Mar 1999 14:42:40 +0100
+
+isdnutils (1:3.0-9) frozen unstable; urgency=low
+
+  * isdnlog now will run on 2.0.36 _and_ 2.1.xxx / 2.2.xxx (same fix as for
+    isdnctrl in 3.0-8; I missed the isdnlog case).  closes:#31647
+  * reversed order of "ifconfig up" and "ifconfig ... pointopoint ..." in
+    example device.xxx config file.  closes:#31507
+  * added option to example device.xxx config file to NOT add a leading zero.
+    This is for (amongst others) Norway, where there are no area codes.
+  * possible fix for #28482 (isdnlog doesn't log first number in dualmode)
+  * fix permissions of existing /etc/ppp/ip-{up,down}.d/isdnutils if necessary.
+  * thinko in prerm when invoking 'install-docs -r' fixed.
+  * isdnlog started writing to stdout again (got broken in 3.0-7).
+  * "nohostroute" is now a synonym for "-hostroute" as an ipppd option.
+
+ -- Paul Slootman <paul@debian.org>  Tue, 12 Jan 1999 17:46:12 +0100
+
+isdnutils (1:3.0-8) frozen unstable; urgency=high
+
+  * install into frozen as well, because 2.0.36 (also in frozen) needs the
+    new isdnutils.
+    closes:#31317
+  * patch from Oliver Schoett <schoett@muc.de> to fix isdnlog cityweekend
+    handling on holidays
+    closes:#31354
+  * use /var/log/isdn/ for vbox logfiles again, instead of /var/log/vbox/.
+    postinst moves anything it finds in /var/log/vbox to /var/log/isdn.
+    closes:#31363
+  * isdnctrl now will run on 2.0.36 _and_ 2.1.xxx / 2.2.xxx
+  * added some extra docs from the source to /usr/doc/isdnutils/
+  * make /etc/isdn/vboxd.conf root/0600 as it contains passwords
+    closes:#31498
+  * fixed device.DEVICE example in the case of ippp0 (the expr failed)
+    closes:#31505
+  * you can now use local copies of vboxplay and vboxmail, by placing them in
+    /etc/isdn (the /usr/bin versions exec the /etc/isdn versions if those exist)
+    closes:#30586
+
+ -- Paul Slootman <paul@debian.org>  Wed,  6 Jan 1999 13:30:54 +0100
+
+isdnutils (1:3.0-7) unstable; urgency=low
+
+  * new upstream source (which is basically the previous one with the debian
+    changes folded back in)
+  * added some extra text to /usr/doc/isdnutils/CONFIG.
+  * /etc/isdn/device.* example files now handle ippp devices with double digits
+    in their names.
+  * new format menu file
+  * added support for doc-base (now recommends doc-base)
+  * changed etc/isdn/init.d.functions a bit
+  * added manpages for isdnconf and imontty
+  * now lintian-clean (as far as lintian does it right...)
+  * made the cardid (as assigned by the loading of hisax) variable (it used to
+    have to be lineX). closes:#31313
+
+ -- Paul Slootman <paul@debian.org>  Thu, 31 Dec 1998 11:23:23 +0100
+
+isdnutils (1:3.0-6) unstable; urgency=low
+
+  * /etc/ppp/ioptions is not required any longer. closes:#30594
+  * added a comment to isdnlog.DEVICE example.
+  * isdnconfig no longer assumes user's group == user's name; instead, the
+    group is dug out of /etc/passwd. closes:#30585
+  * use /usr/bin/X11/auplay instead of /usr/local/bin/auplay... Ouch. Thanks to
+    Andreas Wohlfeld <agw@supersonic.ruhr.de> for spotting this.
+  * Also check to see if NAS is running; only then use auplay, else try
+    alsautils' aplay, else default to /usr/bin/play.
+  * added comment to isdn.conf example about cityweekend.
+  * fixed isdnctrl manpage not to include parts that aren't configured.
+    closes:#30728
+
+ -- Paul Slootman <paul@debian.org>  Thu, 17 Dec 1998 15:33:55 +0100
+
+isdnutils (1:3.0-5) unstable; urgency=low
+
+  * set PACKAGES='' at beginning of preinst script. fixes:#30243
+  * taken care of lzs messages in ipppd.
+  * fixed the xmonisdn manpage part of #29106
+  * example device config script now defaults to setting only ippp0 as the
+    default route.
+  * updated some other stuff to the upstream CVS version.
+
+ -- Paul Slootman <paul@debian.org>  Wed,  2 Dec 1998 08:19:20 +0100
+
+isdnutils (1:3.0-4) unstable; urgency=low
+
+  * prevented isdnlog output to stdout.
+  * fixed up manpages for vbox and isdnlog.
+  * hopefully #28482 is now fixed (isdnlog doesnt' log first number in dualmode)
+  * fixed usage of more than one outgoing phone number. fixes:#30163
+  * some extra explanatory comments in example device.DEVICE file.
+  * now recommends instead of suggests ppp. fixes:#29206
+  * #29443 was already fixed in -3 (upon removing, suidunregister a couple of
+    things that are suidregistered when installing).
+
+ -- Paul Slootman <paul@debian.org>  Tue,  1 Dec 1998 14:39:23 +0100
+
+isdnutils (1:3.0-3) unstable; urgency=low
+
+  * first public release of new isdnutils package, based on new upstream
+    sources (1 & 2 were only for a couple of beta testers). See the changelog
+    file for full details of all changes. This version is necessary for
+    kernel 2.0.36 !
+  * ipppd now adds the device name into the lock file name (as it used to).
+  * old netup / netdown scripts now moved to netup.old / netdown.old and
+    message is given about this.
+  * depend on "makedev << 2.3.1 | makedev >= 2.3.1-10" as the earlier 2.3.1
+    versions of makedev were badly broken.
+
+ -- Paul Slootman <paul@debian.org>  Thu, 26 Nov 1998 11:49:20 +0100
+
+isdnutils (1:3.0-2) unstable; urgency=low
+
+  * postinst inspects the device config files for the `dialmode' setting.
+    If not found, it offers to add it.
+  * /etc/ppp/ip-{up,down}.d/isdnutils are now conffiles.
+  * xmonisdn now _always_ runs /etc/isdn/xmonisdn-netup on mousebutton2 press,
+    and _always_ runs /etc/isdn/xmonisdn-netdown on mousebutton3 press.
+    Previously it would only run the netup script if there was no route to any
+    ISDN interface.
+  * xisdnload now runs /etc/isdn/xisdnload-netup on a mouseclick if there is no
+    route to an ISDN interface, and /etc/isdn/xisdnload-netdown otherwise. The
+    script names are configured in /usr/X11R6/lib/X11/app-defaults/XISDNLoad
+    and can be overridden by the user's .Xdefaults file.
+  * moved imon and imontty back to /usr/bin.
+
+ -- Paul Slootman <paul@debian.org>  Wed, 25 Nov 1998 14:19:02 +0100
+
+isdnutils (1:3.0-1) unstable; urgency=low
+
+  * Initial Release of the new upstream source.
+    This version is for the ISDN code in 2.0.36.
+  * This version is only for a couple of betatesters; not released officially.
+  * Upstream source fixes the manpage problems reported in #29303
+  * (not yet) Split into different binary packages (not everyone needs
+    all parts).
+  * Removed many of the old changelog messages (who wants a 500-line
+    changelog...). I left the changes since hamm in.
+  * Added sparc to architectures, as I've a report of someone who's used
+    isdn4linux on a Sparc.
+  * Unregister the suid programs when removing. fixes:#29443
+
+ -- Paul Slootman <paul@debian.org>  Tue, 17 Nov 1998 11:03:38 +0100
+
+isdnutils (1:2.1.beta1-28) unstable; urgency=low
+
+  * REMOTEMSN in the device.xxxx script may now be a list of numbers.
+  * fixed broken references in isdnlog(8) manpage yet again...
+
+ -- Paul Slootman <paul@debian.org>  Mon,  9 Nov 1998 13:31:03 +0100
+
+isdnutils (1:2.1.beta1-27) frozen; urgency=medium
+
+  * Create symlink /dev/isdnctrl -> isdnctrl0.  /dev/isdnctrl used to be
+    created by MAKEDEV. Sigh...  Not having this prevents isdnutils from
+    working. fixes:#28644,#28527,#28605
+  * Added manpage for isdnctrl(4).
+  * Updated manpage for hisaxctrl(1).
+  * Updated hisaxctrl.
+  * Don't include telesctrl and telesctrl.man anymore (that was for the old
+    pre-HiSax kernel driver).
+    This and the previous 3 points fixes:#28606
+  * auth-up and auth-down scripts weren't installed when configuring an ippp
+    link. Fixes:#28832
+
+ -- Paul Slootman <paul@debian.org>  Tue,  3 Nov 1998 18:15:39 +0100
+
+isdnutils (1:2.1.beta1-26) unstable; urgency=medium
+
+  * Unsecure use of a /tmp file fixed (/tmp/isdnctrl0 is checked not to be a
+    symlink now).
+  * cd /dev before calling MAKEDEV to account for MAKEDEV's changed behaviour
+    (now created in current directory, where it used to always create in /dev).
+
+ -- Paul Slootman <paul@debian.org>  Mon, 26 Oct 1998 17:52:24 +0100
+
+isdnutils (1:2.1.beta1-25) unstable; urgency=low
+
+  * couple of documentation changes; thanks to olly@lfix.co.uk. fixes:#27369
+  * isdnlog can now be restarted more than once via SIGHUP (previously, after
+    the first time, SIGHUP was blocked).
+
+ -- Paul Slootman <paul@debian.org>  Mon,  5 Oct 1998 15:53:15 +0200
+
+isdnutils (1:2.1.beta1-24) unstable; urgency=low
+
+  * 
+  * the ip-up.d and ip-down.d scripts are now made executable. fixes:#25219
+  * added auth-up and auth-down example scripts for ipppd.     fixes:#23985
+  * vboxplay now checks for NAS and uses auplay if applicable. fixes:#25088
+  * sample inittab line no longer wordwrapped (which happened courtesy of
+    the default vim config, arghh...)
+
+ -- Paul Slootman <paul@debian.org>  Tue,  8 Sep 1998 12:27:09 +0200
+
 isdnutils (1:2.1.beta1-23) frozen unstable; urgency=medium
 
   * fixed buffer overrun in isdnlog which caused it to crash. fixes:#23460
@@ -8,382 +279,3 @@ isdnutils (1:2.1.beta1-23) frozen unstable; urgency=medium
 
  -- Paul Slootman <paul@debian.org>  Tue,  2 Jun 1998 13:51:37 +0200
 
-isdnutils (1:2.1.beta1-22) unstable; urgency=low
-
-  * integrated some changes from CVS version, which allowed the compilation
-    on Alpha.
-  * added "SHELL = /bin/bash" to debian/rules
-
- -- Paul Slootman <paul@debian.org>  Wed, 27 May 1998 20:24:00 +0200
-
-isdnutils (1:2.1.beta1-21) unstable; urgency=low
-
-  * isdnlog bugfix for international calls to USA (countrycode 1 digit long)
-  * isdnrep now also pays attention to the "cityweekend=y" option.
-  * "cityweekend" option documented in the isdnlog manpage.
-  * isdnlog "outfile" may now begin with "+" to indicate that isdnlog must
-    append data to an existing file instead of truncating it when opening it
-  * (source change only) building with ms-chap enabled now works
-  * added /etc/isdn/net{up,down} to conffiles
-  * now suggest mgetty; mgetty is used in example inittab entry for X.75 login
-  * changed device.* file to make configuration thereof easier (hopefully)
-  * fixed ipfwadm examples (in device.* and /etc/ppp/ip-*.d/isdnutils) so that
-    there is a better chance that they will work (at least better than first)
-  * /etc/ppp/ip-down.d/isdnutils now sets the default route to the interface
-    instead of deleting it. The latter is safer (no unexpected dialout
-    sessions) but generated complaints, as that was not expected.
-  * isdnctrl manpage is better (synced with upstream version)
-
- -- Paul Slootman <paul@debian.org>  Tue, 19 May 1998 10:03:07 +0200
-
-isdnutils (1:2.1.beta1-20) unstable; urgency=low
-
-  * ipppd pidfile now has correct name (/dev/ is now stripped off).
-  * Fixed copyright speling misteak (thanks, Lintian).
-  * The following changes were in -19 but somehow didn't get into the changelog:
-    - Fixed ipppd messages about "bad file descriptor" when ip-up or
-      ip-down doesn't exist (from upstream CVS version).
-    - Added isdnlog and ipppd to the "Replaces" field so that an automatic
-      upgrade with dselect is possible. fixes: #17018
-    - Added IP dynamic address hack to device.DEVICE script if kernel version
-      is greater than 2.0.30 (i.e. if /proc/sys/net/ipv4/ip_dynaddr exists).
-
- -- Paul Slootman <paul@debian.org>  Mon,  9 Mar 1998 10:07:35 +0100
-
-isdnutils (1:2.1.beta1-19) unstable; urgency=low
-
-  * sources brought into sync with CVS development version where possible.
-  * isdnlog patched to prevent crashes under certain conditions with 1TR6
-    protocol.
-  * isdnlog patched to prevent crashes under certain buffer conditions (it was
-    assumed that BUFSIZ == 1024, and glibc has BUFSIZ == 8192)
-  * /usr/doc/isdnutils/examples/default/* remain compressed (else md5sums is
-    not in sync, and lintian complains). Isdnconfig was changed to handle this.
-  * init.d script referred to Readme.debian and CONFIG, which were actually
-    called README.debian and CONFIG.gz.
-  * isdn.conf now has correct CODELIB= and AREALIB= entries. Also fixed
-    unescaped $ signs in START definitions.
-  * reworked the CONFIG file a bit.
-  * cron.weekly script is a bit more robust.
-  * Example ip-up.d and ip-down.d scripts are now only installed if ipppd is
-    selected during isdnconfig; the scripts have some more examples in them.
-
- -- Paul Slootman <paul@debian.org>  Thu,  5 Mar 1998 10:14:36 +0100
-
-isdnutils (1:2.1.beta1-18) unstable; urgency=low
-
-  * replaces vbox, isdnlog, ipppd instead of only vbox. fixes: Bug#17018
-  * preliminary patches to compile on Alpha
-  * ipppd fixed to stop "bad fd" etc. messages when ip-up and/or ip-down
-    don't exist
-  * VERSION=... and AC_ARG_PROGRAM=... added to vbox/configure.in
-  * added -ldl to vboxgetty libs
-  * example config file now has skeleton entry for "IP dynamic hack"
-  * example ip-up.d and ip-down.d scripts are now created under /etc/ppp/
-  * if ../dot.config exists, use that instead of supplied debian/dot.config
-  * chmod +x the "*/missing" files in debian/rules. fixes: Bug#17714
-  * use tcl8.0
-  * now (partial) manpages for imontty, isdnconf*, vbox*, iprofd, pcbitctrl
-  * init.d script handles restart and force-reload (handled identically)
-  * avmb1/configure.in changed, upstream maintainer notified. fixes: Bug#17689
-  * uses tcl8.0 instead of tcl4.2
-
- -- Paul Slootman <paul@debian.org>  Thu, 12 Feb 1998 19:38:12 +0100
-
-isdnutils (1:2.1.beta1-17) unstable; urgency=low
-
-  * new maintainer
-  * changed Standards-version to 2.3.0.1
-  * (ver -17) => libc6 versionm in unstable
-    isdnutils (1:2.1.beta1-17) unstable; urgency=low
-  * (ver -15bo17) => libc5 compiled under debian-1.3.1
-    isdnutils (1:2.1.beta1-15bo17) experimental; urgency=low
-  * added configure checks for building on both libc5 and libc6 systems
-  * isdnlog fixed for crash in the Netherlands (and wherever the phone
-    company also sends "seconds" byte in date/time message)
-  * workaround for isdnlog crash upon SIGHUP (exec's itself) (closes bug 11384)
-  * fixed isdnlog bus error upon startup (closes bug 15221)
-  * fixed typo's in changelog and CONFIG (closes bug 15134)
-  * from init.d script, config files are checked to see if they have been
-    edited. If not, don't start the daemon(s)
-  * hisaxctrl is only done if isdnlog is to be started
-  * isdnconfig - stricter checks on user input
-  * orig source version correct (closes bug 12065)
-
- -- Paul Slootman <paul@debian.org>  Mon,  8 Dec 1997 22:06:03 +0100
-
-isdnutils (1:2.1.beta1-16) unstable; urgency=low
-
-  * now using pristine source.
-  * enhanced text in isdnconfig for ppp daemon.
-  * enhanced documentation for xmonisdn (credits to Michael Grimm).
-  * changed isdnlog default config (the old one did not work).
-  * added libc6 patches for ipppd
-    (credits to andreas jaeger <aj@arthur.rhein-neckar.de>)
-  * recompiled with libc6 and kernel 2.0.31
-  * bugfix in device.DEVICE example file (route -host REMOTEIP !).
-
- -- Andreas Jellinghaus <aj@debian.org>  Mon,  3 Nov 1997 11:37:06 +0100
-
-isdnutils (1:2.1.beta1-15) unstable; urgency=low
-
-  * now no longer generating diffs, so i can include a binary file
-  * added beep.msg file (the upstream version is broken due to cvs)
-  * fixed stupid bug in preinst.
-
- -- Andreas Jellinghaus <aj@debian.org>  Thu, 18 Sep 1997 22:19:30 +0200
-
-isdnutils (1:2.1.beta1-14) unstable; urgency=low
-
-  * -nb
-  * fixed bug in configure scripte (vbox logdir was "$withval")
-  * corrected source format : now orig.tar.gz + diff
-
- -- Andreas Jellinghaus <aj@debian.org>  Sun, 14 Sep 1997 10:45:16 +0200
-
-isdnutils (1:2.1.beta1-13) bo-updates unstable; urgency=low
-
-  * fixed bug in postinst.
-  * closed bug 12525 (too old software, now obsolete).
-  * bug #10024 obsolete (sais the bug reporter :-)
-  * isdnutils will go to bo-updates and unstable (closes bug 12065)
-  * isdnctrl working ok (no sigbus, closes bug #11972)
-  * isdnlog and isdnrep have manpages (closes bug #11414
-  * isdnlog logfile renamed to  /var/lib/isdn/calls 
-  * vboxgetty logfiles rotated one a week  (should be enough ?)
-  * fixed isdnlog.DEVICE : first line should be "[options]".
-  * corrected init.d script : will now ignore backup files.
-  * corrected makedev call.
-  * vbox logdir corrected.
-
- -- Andreas Jellinghaus <aj@debian.org>  Wed, 10 Sep 1997 09:01:24 +0200
-
-isdnutils (1:2.1.beta1-12) unstable; urgency=low
-
-  * vbox now working, other bugfixes and typos
-
- -- Andreas Jellinghaus <aj@debian.org>  Tue,  9 Sep 1997 10:55:54 +0200
-
-isdnutils (1:2.1.beta1-11) unstable; urgency=low
-
-  * only create 8 device, not all 64 (if makedev >= 1.6-20 is installed)
-
- -- Andreas Jellinghaus <aj@debian.org>  Mon,  8 Sep 1997 20:22:26 +0200
-
-isdnutils (1:2.1.beta1-10) unstable; urgency=low
-
-  * more bug fixes.
-
- -- Andreas Jellinghaus <aj@debian.org>  Sun,  7 Sep 1997 22:42:28 +0200
-
-isdnutils (1:2.1.beta1-9) unstable; urgency=low
-
-  * Improved script/ configure system. Ready for beta release.
-
- -- Andreas Jellinghaus <aj@debian.org>  Sun,  7 Sep 1997 20:14:54 +0200
-
-isdnutils (1:2.1.beta1-8) unstable; urgency=low
-
-  * removed CONFIG.swp :-( 
-
- -- Andreas Jellinghaus <aj@debian.org>  Thu,  4 Sep 1997 21:51:47 +0200
-
-isdnutils (1:2.1.beta1-7) unstable; urgency=low
-
-  * rewrote all makefile
-  * new and improved configuration
-
- -- Andreas Jellinghaus <aj@debian.org>  Thu,  4 Sep 1997 21:42:57 +0200
-
-isdnutils (1:2.1.beta1-6) unstable; urgency=low
-
-  * added patch from german suse distribution
-  * added vboxconvert diff
-  * moved into cvs archive
-  * added man pages (very alpha, but better than nothing)
-  * prevented -5 to go into stable (dependency problem, bug 11516)
-  * removed note about /etc/rc.boot/isdn (that file doesn't exist).
-  * added "exit 0" to cron.daily 
-  * minor bugfix.
-
- -- Andreas Jellinghaus <aj@debian.org>  Tue, 22 Jul 1997 21:47:21 +0200
-
-isdnutils (1:2.1.beta1-5) unstable stable; urgency=low
-
-  * don't start isdnlog (causes problems on my machine. couldn't figure
-    out why). isdnlog now uses a config file /etc/isdn/isdnlog.options
-  * fixed postinst, ioptions and init.d script (thanks to heiko schlitterman)
-  * changed description (thanks to christian schwarz)
-  * bugfixes in init.d script (thanks to Andreas Wohlfeld)
-  * now isdnlog should create /var/lib/isdn/calls
-  * activated MS_CHAP to ipppd.
-
- -- Andreas Jellinghaus <aj@debian.org>  Thu,  3 Jul 1997 21:12:32 +0200
-
-isdnutils (1:2.1.beta1-4) unstable stable; urgency=low
-
-  * moved xisdnload and xmonisdn to /usr/X11R6/...
-  * removed ioptions.ipppX. added help text in postinst.
-
- -- Andreas Jellinghaus <aj@debian.org>  Sat, 28 Jun 1997 11:17:15 +0200
-
-isdnutils (1:2.1.beta1-3) unstable; urgency=low
-
-  * 2.1.beta1-2 released.
-  * patch from heiko schlitterman added.
-  * small changes and bugfixes.
-
- -- Andreas Jellinghaus <aj@debian.org>  Tue, 17 Jun 1997 08:39:10 +0200
-
-isdnutils (1:2.1.beta1-1.1) unstable; urgency=low
-
-  * minor changes to make dpkg-source and
-    ./debian/rules run smoothly
-  * epoch used for version, since there are minor (very minor)
-    changes to *orig.tar.gz!
-
- -- Heiko Schlittermann <heiko@lotte.sax.de>  Sun, 15 Jun 1997 20:13:32 +0200
-
-isdnutils (2.1.beta1-2) unstable; urgency=low
-
-  * corrected preinst.
-  * moved some code from postinst to preinst, added checking for
-    updates from 2.0.*
-  * 2.1.beta1-1 released. 
-
- -- Andreas Jellinghaus <aj@debian.org>  Sun, 15 Jun 1997 13:40:08 +0200
-
-isdnutils (2.1.beta1-1) unstable; urgency=low
-
-  * new ipppd creates correct pidfiles. (closes bug #9269)
-  * new vbox does not need pvftools. (closes bug #10531)
-  * new ipppd responds to signal (so you can kill it). (closes bug #9270)
-  * isdnbutton was removed (in upstream source). 
-    (closes bug #9137 and #10316 and #10317)
-  * imontty manpage removed (in upstream source), all command line
-    options removed (in upstream source). (closes bug #8426).
-  * device permissions are changed (by makedev), isdnbutton is no longer
-    included in isdnutils. (closes bug #8230)
-  * 2.1b1 release of isdn4k-utils.
-
- -- Andreas Jellinghaus <aj@debian.org>  Tue, 27 May 1997 17:22:20 +0200
-
-isdnutils (2.0.970524-1) unstable; urgency=low
-
-  * Switched to use new cvs tree to prepare for the next release
-
- -- Andreas Jellinghaus <aj@debian.org>  Sat, 24 May 1997 10:07:44 +0200
-
-isdnutils (2.0.1-3) experimental; urgency=low
-
-  * changes to menu file : added xisdnload, changed xled
-
- -- Andreas Jellinghaus <aj@debian.org>  Sun, 4 May 1997 22:05:07 +0200
-
-isdnutils (2.0.1-2) experimental; urgency=low
-
-  * corrected paths to install imon and imontty.
-  * added /etc/rc.boot/isdn, replaced /etc/init.d scripts.
-  * fixed typo in preinst.
-
- -- Andreas Jellinghaus <aj@debian.org>  Sat, 3 May 1997 20:23:25 +0200
-
-isdnutils (2.0.1-1) experimental; urgency=low
-
-  * copied icn.h from kernel source 2.0.30 + hisax patch into icn/,
-    so it can cleanly compile (icn.h is not a part of the kernel
-    headers, but required to compile icnctrl).
-  * same with pcbit.h
-  * new versions of nearly anything. new structures. re-united with
-  * isdnlog and vbox, splitted into isdnutils and xisdnutils.
-  * moved to section net priority extra
-  * now purging /var/log/isdn, /var/lib/isdn, /etc/isdn, /var/spool/vbox
-  * changed vbox to use uLAW format
-  * vboxgetty now started via inittab
-  * vbox logfiles not rotated at boot-up
-  * vbox logfiles rotated every night
-  * no longer installing README.tcpdump, tcpdump-patch, README.mgetty,
-    mgetty-voice-patch
-  * device files now created by makedev, not by a script
-  * cui* devices are not created by default
-  * GPL not included. tried to get all copyrights (aaarrrrgggg).
-  * /var/log/isdnctrl0, not /tmp/isdnctrl0 (mabye /var/run/isdnctrl0 ?)
-  * imported isdnlog.8 and isdnrep.1 from unstable cvs tree (maybe to new)
-  * isdnlog : logfiles now rotated daily, not on bootup.
-  * isdnlog : calls file now in /var/lib/isdn (not rotated).
-  * isdnbutton no longer suid root. added note to call suidmanager.
-  * isdnbutton new uses /etc/isdn for its config files.
-  * added isdn4linux faq's (text version and html version).
-  * ipppd updated. can now be killd with signal 15. (bug 9270)
-  * ipppd uses /etc/ppp/options and other files.
-  * imontty updated (new version does not support any options). (bug 8426)
-  * nearly all documentation is only german
-  * need to test menu files
-  * marked all german documentation with ".de"
-
- -- Andreas Jellinghaus <aj@debian.org>  Tue, 15 Apr 1997 20:20:28 +0200
-
-isdnutils (2.0-7) unstable; urgency=low
-
-  * imontty not linked against libtermcap or libncurses anymore (bug #8196)
-
- -- Christian Schwarz <schwarz@debian.org>  Fri, 21 Mar 1997 00:17:20 +0100
-
-isdnutils (2.0-6) unstable; urgency=low
-
-  * Removed isdnlog, vbox, and related programs.
-  * Fix bug: /dev/isdninfo had wrong major number.
-  * Upgraded to Debian package standard 2.1.2.2.
-  * Moved isdnbutton into /usr/X11R6/bin.
-  * Changed priority to extra.
-  * Added dependency on xlib6.
-
- -- Christian Schwarz <schwarz@debian.org>  Thu, 6 Mar 1997 19:51:18 +0100
-
-isdnutils (2.0-5) unstable; urgency=low
-
-  * Fixed log rotating (now done on each boot up).
-  * Renamed source package directory to isdnutils-2.0.
-
- -- Christian Schwarz <schwarz@debian.org>  Sun, 27 Oct 1996 23:06:29 +0100
-
-isdnutils (2.0-4) unstable; urgency=low
-
-  * First public release.
-  * Fixed bug in postinst.
-  * Renamed log files.
-  * Better support for log rotating.
-
- -- Christian Schwarz <schwarz@debian.org>  Tue, 8 Oct 1996 13:57:45 +0200
-
-isdnutils (2.0-3) unstable; urgency=low
-
-  * Moved files into better locations.
-  * Renamed log files.
-  * Marked files in /etc/init.d as conffiles.
-  * Upgraded to Debian package standard 2.1.1.0
-
- -- Christian Schwarz <schwarz@debian.org>  Sat, 5 Oct 1996 17:56:30 +0200
-
-isdnutils (2.0-2) unstable; urgency=low
-
-  * Added debian files for automatic package generation via debian.rules.
-  * Fixed bug: /etc/init.d/isdn referred to `line0' instead of `teles0'.
-  * Moved log files into directory /var/log/isdn.
-  * Added log file rotation.
-  * Improved /etc/init.d scripts.
-
- -- Christian Schwarz <C.Schwarz@monet.m.isar.de>  Thu, 15 Aug 1996 17:16:00 +0200 
-
-isdnutils (2.0-1) unstable; urgency=low
-
-  * Initial release.
-
- -- Christian Schwarz <C.Schwarz@monet.m.isar.de>  Mon, 29 Jul 1996 22:41:06 +0200
- 
-End:
-
-Local variables:
-mode: debian-changelog
-add-log-mailing-address: "paul@debian.org"
-End:

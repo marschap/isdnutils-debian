@@ -1,4 +1,4 @@
-/* $Id: isdnctrl.h,v 1.8 1998/02/12 23:14:44 he Exp $
+/* $Id: isdnctrl.h,v 1.14 1999/06/07 19:25:42 paul Exp $
  * ISDN driver for Linux. (Control-Utility)
  *
  * Copyright 1994,95 by Fritz Elfert (fritz@wuemaus.franken.de)
@@ -21,6 +21,44 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: isdnctrl.h,v $
+ * Revision 1.14  1999/06/07 19:25:42  paul
+ * 'status' command added
+ *
+ * Revision 1.12  1998/10/21 16:18:48  paul
+ * Implementation of "dialmode" (successor of "status")
+ *
+ * Revision 1.11  1998/06/09 18:11:33  cal
+ * added the command "isdnctrl name ifdefaults": the named device is reset
+ * to some reasonable defaults.
+ *
+ * Internally, isdnctrl.c contains a list of functions (defs_fcns []), which
+ * are called one after the other with the interface-name as a patameter.
+ * Each function returns a char* to a string containing iscnctrl-commands
+ * to be executed. Example:
+ *
+ * char *
+ * defs_budget(char *id) {
+ * 	static char	r [1024];
+ * 	char	*p = r;
+ *
+ * 	p += sprintf(p, "budget %s dial 10 1min\n", id);
+ * 	p += sprintf(p, "budget %s charge 100 1day\n", id);
+ * 	p += sprintf(p, "budget %s online 8hour 1day\n", id);
+ *
+ * 	return(r);
+ * }
+ *
+ * The advantage of this approach is, that even complex commands can be executed.
+ *
+ * PS: The function defs_basic() in isdnctrl.c is not complete.
+ *
+ * Revision 1.10  1998/03/16 09:40:56  cal
+ * fixed a problem parsing TimRu-Commands
+ * started with TimRu-man-page
+ *
+ * Revision 1.9  1998/03/07 18:25:58  cal
+ * added support for dynamic timeout-rules vs. 971110
+ *
  * Revision 1.8  1998/02/12 23:14:44  he
  * added encap x25iface and l2_prot x25dte, x25dce
  *
@@ -65,9 +103,18 @@ enum {
         CBHUP, IHUP, SECURE, CALLBACK,
         L2_PROT, L3_PROT, ADDLINK, REMOVELINK,
         ENCAP, TRIGGER, RESET,
+        DIALTIMEOUT, DIALWAIT, DIALMODE,
+#ifdef I4L_CTRL_TIMRU
+        ADDRULE, INSRULE, DELRULE, SHOWRULES,
+        FLUSHRULES, FLUSHALLRULES, DEFAULT,
+		BUDGET, SHOWBUDGETS,
+		SAVEBUDGETS, RESTOREBUDGETS,
+#endif
 #ifdef I4L_CTRL_CONF
-        WRITECONF, READCONF
+        WRITECONF, READCONF,
 #endif /* I4L_CTRL_CONF */
+	STATUS,
+		IFDEFAULTS
 };
 
 typedef struct {
@@ -116,10 +163,28 @@ cmd_struct cmds[] =
         {"encap", "12"},
         {"trigger", "12"},
         {"reset", "01"},
+        {"dialtimeout", "12"},
+        {"dialwait", "12"},
+        {"dialmode", "12"},
+#ifdef I4L_CTRL_TIMRU
+        {"addrule", "12"},
+        {"insrule", "1"},
+        {"delrule", "1"},
+        {"showrules", "1"},
+        {"flushrules", "1"},
+        {"flushallrules", "1"},
+        {"default", "1"},
+        {"budget", "1"},
+        {"showbudgets", "1"},
+        {"savebudgets", "1"},
+        {"restorebudgets", "1"},
+#endif
 #ifdef I4L_CTRL_CONF
         {"writeconf", "01"},
         {"readconf", "01"},
 #endif /* I4L_CTRL_CONF */
+        {"status", "1"},
+        {"ifdefaults", "01"},
         {NULL,}
 };
 
@@ -205,6 +270,8 @@ _EXTERN char *cmd;
 _EXTERN int key2num(char *key, char **keytable, int *numtable);
 _EXTERN char * num2key(int num, char **keytable, int *numtable);
 _EXTERN int exec_args(int fd, int argc, char **argv);
+
+_EXTERN char * defs_basic(char *id);
 
 #undef _EXTERN
 

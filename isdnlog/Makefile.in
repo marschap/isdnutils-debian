@@ -1,316 +1,585 @@
-# Makefile.in generated automatically by automake 1.3 from Makefile.am
-
-# Copyright (C) 1994, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
-# This Makefile.in is free software; the Free Software Foundation
-# gives unlimited permission to copy and/or distribute it,
-# with or without modifications, as long as this notice is preserved.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
-# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-# PARTICULAR PURPOSE.
-
-
-SHELL = /bin/sh
-
-srcdir = @srcdir@
-top_srcdir = @top_srcdir@
-VPATH = @srcdir@
-prefix = @prefix@
-exec_prefix = @exec_prefix@
-
-bindir = @bindir@
-sbindir = @sbindir@
-libexecdir = @libexecdir@
-datadir = @datadir@
-sysconfdir = @sysconfdir@
-sharedstatedir = @sharedstatedir@
-localstatedir = @localstatedir@
-libdir = @libdir@
-infodir = @infodir@
-mandir = @mandir@
-includedir = @includedir@
-oldincludedir = /usr/include
-
-DISTDIR =
-
-pkgdatadir = $(datadir)/@PACKAGE@
-pkglibdir = $(libdir)/@PACKAGE@
-pkgincludedir = $(includedir)/@PACKAGE@
-
-top_builddir = .
-
-ACLOCAL = @ACLOCAL@
-AUTOCONF = @AUTOCONF@
-AUTOMAKE = @AUTOMAKE@
-AUTOHEADER = @AUTOHEADER@
-
-INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
-INSTALL_DATA = @INSTALL_DATA@
-INSTALL_SCRIPT = @INSTALL_SCRIPT@
-transform = @program_transform_name@
-
-NORMAL_INSTALL = :
-PRE_INSTALL = :
-POST_INSTALL = :
-NORMAL_UNINSTALL = :
-PRE_UNINSTALL = :
-POST_UNINSTALL = :
-ALIBDIR = @ALIBDIR@
-ALINK = @ALINK@
-CC = @CC@
-I4LCONFDIR = @I4LCONFDIR@
-MAKEINFO = @MAKEINFO@
-PACKAGE = @PACKAGE@
-RANLIB = @RANLIB@
-VERSION = @VERSION@
-
-AUTOMAKE_OPTIONS=foreign no-dependencies
-MAINTAINERCLEANFILES=install-sh missing mkinstalldirs aclocal.m4 \
-	configure Makefile.in config.h.in stamp-h.in
-SUBDIRS=doc tools connect misc isdnlog isdnrep isdnconf
-ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = 
-DIST_COMMON =  README COPYING Makefile.am Makefile.in NEWS TODO \
-acconfig.h aclocal.m4 config.h.in configure configure.in install-sh \
-missing mkinstalldirs stamp-h.in
-
-
-DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
-
-TAR = tar
-GZIP = --best
-all: all-recursive-am all-am
+## $Id: Makefile.in,v 1.51 1998/12/29 14:51:37 paul Exp $
+##
+## ISDN accounting for isdn4linux.
+##
+## Copyright 1995, 1998 by Andreas Kool (akool@isdn4linux.de)
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2, or (at your option)
+## any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+##
+## $Log: Makefile.in,v $
+## Revision 1.51  1998/12/29 14:51:37  paul
+## added isdnconf manpage
+##
+## Revision 1.50  1998/12/01 16:57:09  paul
+## support for .in manpages
+##
+## Revision 1.49  1998/11/24 20:50:59  akool
+##  - changed my email-adress
+##  - new Option "-R" to supply the preselected provider (-R24 -> Telepassport)
+##  - made Provider-Prefix 6 digits long
+##  - full support for internal S0-bus implemented (-A, -i Options)
+##  - isdnlog now ignores unknown frames
+##  - added 36 allocated, but up to now unused "Auskunft" Numbers
+##  - added _all_ 122 Providers
+##  - Patch from Jochen Erwied <mack@Joker.E.Ruhr.DE> for Quante-TK-Anlagen
+##    (first dialed digit comes with SETUP-Frame)
+##
+## Revision 1.48  1998/11/07 17:12:45  akool
+## Final cleanup. This _is_ isdnlog-3.00
+##
+## Revision 1.47  1998/11/05 19:09:42  akool
+##  - Support for all the new L2 frames from HiSax 3.0d (RR, UA, SABME and
+##    tei management)
+##  - CityWeekend reimplemented
+##    Many thanks to Rainer Gallersdoerfer <gallersd@informatik.rwth-aachen.de>
+##    for the tip
+##  - more providers
+##  - general clean-up
+##
+## Revision 1.46  1998/11/01 08:49:22  akool
+##  - fixed "configure.in" problem with NATION_*
+##  - DESTDIR fixes (many thanks to Michael Reinelt <reinelt@eunet.at>)
+##  - isdnrep: Outgoing calls ordered by Zone/Provider/MSN corrected
+##  - new Switch "-i" -> running on internal S0-Bus
+##  - more providers
+##  - "sonderrufnummern.dat" extended (Frag Fred, Telegate ...)
+##  - added AVM-B1 to the documentation
+##  - removed the word "Teles" from the whole documentation ;-)
+##
+## Revision 1.45  1998/10/16 12:38:04  keil
+## fixes to compile and install under 2.0.36
+##
+## Revision 1.44  1998/10/13 22:17:09  luethje
+## isdnlog: evaluate the variable PATH for program starts.
+##
+## Revision 1.43  1998/10/03 18:05:48  akool
+##  - processor.c, takt_at.c : Patch from Michael Reinelt <reinelt@eunet.at>
+##    try to guess the zone of the calling/called party
+##
+##  - isdnrep.c : cosmetics (i hope, you like it, Stefan!)
+##
+## Revision 1.42  1998/09/27 11:47:21  akool
+## fix segfault of isdnlog after each RELASE
+##
+## Revision 1.41  1998/09/26 18:28:32  akool
+##  - quick and dirty Call-History in "-m" Mode (press "h" for more info) added
+##    - eat's one more socket, Stefan: sockets[3] now is STDIN, FIRST_DESCR=4 !!
+##  - Support for tesion)) Baden-Wuerttemberg Tarif
+##  - more Providers
+##  - Patches from Wilfried Teiken <wteiken@terminus.cl-ki.uni-osnabrueck.de>
+##    - better zone-info support in "tools/isdnconf.c"
+##    - buffer-overrun in "isdntools.c" fixed
+##  - big Austrian Patch from Michael Reinelt <reinelt@eunet.at>
+##    - added $(DESTDIR) in any "Makefile.in"
+##    - new Configure-Switches "ISDN_AT" and "ISDN_DE"
+##      - splitted "takt.c" and "tools.c" into
+##          "takt_at.c" / "takt_de.c" ...
+##          "tools_at.c" / "takt_de.c" ...
+##    - new feature
+##        CALLFILE = /var/log/caller.log
+##        CALLFMT  = %b %e %T %N7 %N3 %N4 %N5 %N6
+##      in "isdn.conf"
+##  - ATTENTION:
+##      1. "isdnrep" dies with an seg-fault, if not HTML-Mode (Stefan?)
+##      2. "isdnlog/Makefile.in" now has hardcoded "ISDN_DE" in "DEFS"
+##      	should be fixed soon
+##
+## Revision 1.40  1998/06/14 15:33:42  akool
+## AVM B1 support (Layer 3)
+## Telekom's new currency DEM 0,121 supported
+## Disable holiday rates #ifdef ISDN_NL
+## memory leak in "isdnrep" repaired
+##
+## Revision 1.39  1998/06/07 21:07:50  akool
+## - Accounting for the following new providers implemented:
+##     o.tel.o, Tele2, EWE TEL, Debitel, Mobilcom, Isis, NetCologne,
+##     TelePassport, Citykom Muenster, TelDaFax, Telekom, Hutchison Telekom,
+##     tesion)), HanseNet, KomTel, ACC, Talkline, Esprit, Interoute, Arcor,
+##     WESTCom, WorldCom, Viag Interkom
+##
+##     Code shamelessly stolen from G.Glendown's (garry@insider.regio.net)
+##     program http://www.insider.org/tarif/gebuehr.c
+##
+## - Telekom's 10plus implemented
+##
+## - Berechnung der Gebuehrenzone implementiert
+##   (CityCall, RegioCall, GermanCall, GlobalCall)
+##   The entry "ZONE" is not needed anymore in the config-files
+##
+##   you need the file
+##     http://swt.wi-inf.uni-essen.de/~omatthes/tgeb/vorwahl2.exe
+##   and the new entry
+##     [GLOBAL]
+##       AREADIFF = /usr/lib/isdn/vorwahl.dat
+##   for that feature.
+##
+##   Many thanks to Olaf Matthes (olaf.matthes@uni-essen.de) for the
+##   Data-File and Harald Milz for his first Perl-Implementation!
+##
+## - Accounting for all "Sonderrufnummern" (0010 .. 11834) implemented
+##
+##   You must install the file
+##     "isdn4k-utils/isdnlog/sonderrufnummern.dat.bz2"
+##   as "/usr/lib/isdn/sonderrufnummern.dat"
+##   for that feature.
+##
+## ATTENTION: This is *NO* production-code! Please test it carefully!
+##
+## Revision 1.38  1998/05/10 22:11:47  luethje
+## Added support for VORWAHLEN2.EXE
+##
+## Revision 1.37  1998/03/29 23:17:47  luethje
+## mySQL-Patch of Sascha Matzke
+##
+## Revision 1.36  1998/03/29 19:54:04  luethje
+## idnrep: added html feature (incoming/outgoing calls)
+##
+## Revision 1.35  1998/03/15 22:35:44  tsbogend
+## not every CPU is from Intel (greetings from Digital :-))
+##
+## Revision 1.34  1998/03/08 11:42:27  luethje
+## I4L-Meeting Wuerzburg final Edition, golden code - Service Pack number One
+##
+## Revision 1.33  1997/10/26 23:14:38  fritz
+## Get rid of including ../.config in Makefile
+## Now all configuration is done in configure.
+## Moved depend depency from install to build
+## where it belongs.
+##
+## Revision 1.32  1997/09/26 09:13:01  fritz
+## Set SUBDIRS always to overwrite environment.
+##
+## Revision 1.31  1997/09/07 00:43:06  luethje
+## create new error messages for isdnrep
+##
+## Revision 1.30  1997/06/21 13:48:55  fritz
+## Create ./bin if necessary
+##
+## Revision 1.29  1997/06/15 23:49:28  luethje
+## Some new variables for the isdnlog
+## isdnlog starts programs noe with the file system rights
+## bugfixes
+##
+## Revision 1.28  1997/05/25 19:40:43  luethje
+## isdnlog:  close all files and open again after kill -HUP
+## isdnrep:  support vbox version 2.0
+## isdnconf: changes by Roderich Schupp <roderich@syntec.m.EUnet.de>
+## conffile: ignore spaces at the end of a line
+##
+## Revision 1.27  1997/05/20 19:00:51  luethje
+## some primitve changes
+##
+## Revision 1.26  1997/05/19 22:58:02  luethje
+## - bugfix: it is possible to install isdnlog now
+## - improved performance for read files for vbox files and mgetty files.
+## - it is possible to decide via config if you want to use avon or
+##   areacode.
+##
+## Revision 1.25  1997/05/17 01:08:11  luethje
+## some bugfixes
+##
+## Revision 1.24  1997/05/15 22:32:41  luethje
+## new version
+##
+## Revision 1.23  1997/05/11 22:59:14  luethje
+## new version
+##
+## Revision 1.22  1997/05/10 01:20:52  luethje
+## some primitive changes
+##
+## Revision 1.21  1997/05/09 23:30:37  luethje
+## isdnlog: new switch -O
+## isdnrep: new format %S
+## bugfix in handle_runfiles()
+##
+## Revision 1.20  1997/05/06 22:13:21  luethje
+## bugfixes in HTML-Code of the isdnrep
+##
+## Revision 1.19  1997/05/05 21:22:14  luethje
+## new version
+##
+## Revision 1.18  1997/05/04 20:19:34  luethje
+## README completed
+## isdnrep finished
+## interval-bug fixed
+##
+## Revision 1.17  1997/04/20 23:44:46  luethje
+## some primitve changes
+##
+## Revision 1.16  1997/04/20 22:55:14  luethje
+## isdnrep has new features (Documentation will follow ;-)):
+##   -variable format string
+##   -can create html output (option -w1 or ln -s isdnrep isdnrep.cgi)
+##    idea and design by Dirk Staneker (dirk.staneker@student.uni-tuebingen.de
+## bugfix of processor.c from akool
+##
+## Revision 1.15  1997/04/17 23:29:39  luethje
+## new structure of isdnrep completed.
+##
+## Revision 1.14  1997/04/16 22:22:43  luethje
+## some bugfixes, README completed
+##
+## Revision 1.13  1997/04/15 22:36:58  luethje
+## allows the character `"' in the program argument like the shell.
+## some bugfixes.
+##
+## Revision 1.12  1997/04/15 00:19:53  luethje
+## replace variables: some bugfixes, README comleted
+##
+## Revision 1.11  1997/04/10 23:32:04  luethje
+## Added the feature, that environment variables are allowed in the config files.
+##
+## Revision 1.10  1997/04/08 21:56:42  luethje
+## Create the file isdn.conf
+## some bug fixes for pid and lock file
+## make the prefix of the code in `isdn.conf' variable
+##
+## Revision 1.9  1997/04/08 00:02:05  luethje
+## Bugfix: isdnlog is running again ;-)
+## isdnlog creates now a file like /var/lock/LCK..isdnctrl0
+## README completed
+## Added some values (countrycode, areacode, lock dir and lock file) to
+## the global menu
+##
+## Revision 1.8  1997/04/06 21:07:25  luethje
+## renamed file isdnrep.c to rep_main.c and function.c to isdnrep.c
+##
+## Revision 1.7  1997/04/03 22:32:36  luethje
+## copy the old config files into the new dirctory and create the new config files.
+##
+## Revision 1.6  1997/04/03 08:56:58  fritz
+## Bugfix: Changes for bash-2.00.0:
+##         workaround for empty list in for-loops.
+##         workaround for missing allow_null_glob_expansion
+## Bugfix: CONFIG_HASX11 was not reset on non-X11 systems.
+##
+## Revision 1.5  1997/03/24 22:52:00  luethje
+## isdnrep completed.
+##
+## Revision 1.4  1997/03/24 04:03:12  fritz
+## Added uninstall target, changed rootperm target.
+##
+## Revision 1.3  1997/03/24 01:42:31  fritz
+## Added capbility to override CFLAGS from commandline.
+##
+## Revision 1.2  1997/03/23 23:11:48  luethje
+## improved performance
+##
+## Revision 1.1  1997/03/23 19:22:33  fritz
+## Make isdnlog configurable.
+##
+## Revision 2.6.37  1997/02/11  17:53:19  akool
 
 .SUFFIXES:
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign Makefile
+.SUFFIXES: .c .o
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
-	cd $(top_builddir) \
-	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+SHELL			:= /bin/sh
+GENCONF   := install/genconf
 
-$(ACLOCAL_M4):  configure.in 
-	cd $(srcdir) && $(ACLOCAL)
+#
+# autoconf generic stuff
+#
+PREFIX			:= @prefix@
+EXEC_PREFIX		:= @exec_prefix@
+BINDIR			:= @bindir@
+SBINDIR			:= @sbindir@
+LIBEXECDIR		:= @libexecdir@
+DATADIR			:= @datadir@
+SYSCONFDIR		:= @sysconfdir@
+SHAREDSTATEDIR		:= @sharedstatedir@
+LOCALSTATEDIR		:= @localstatedir@
+LIBDIR			:= @libdir@
+INFODIR			:= @infodir@
+INCLUDEDIR		:= @includedir@
+OLDINCLUDEDIR		:= @oldincludedir@
+MANDIR			:= @mandir@
+MAN1DIR			:= $(MANDIR)/man1
+MAN5DIR			:= $(MANDIR)/man5
+MAN8DIR			:= $(MANDIR)/man8
+MAN1EXT			:= .1
+MAN5EXT			:= .5
+MAN8EXT			:= .8
+SRCDIR			:= @srcdir@
 
-config.status: $(srcdir)/configure
-	$(SHELL) ./config.status --recheck
-$(srcdir)/configure: $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
-	cd $(srcdir) && $(AUTOCONF)
+#
+# end of autoconf generic stuff
+#
 
-config.h: stamp-h
-	@:
-stamp-h: $(srcdir)/config.h.in $(top_builddir)/config.status
-	cd $(top_builddir) \
-	  && CONFIG_FILES= CONFIG_HEADERS=config.h \
-	     $(SHELL) ./config.status
-	@echo timestamp > stamp-h
-$(srcdir)/config.h.in: $(srcdir)/stamp-h.in
-$(srcdir)/stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL_M4) acconfig.h
-	cd $(top_srcdir) && $(AUTOHEADER)
-	@echo timestamp > $(srcdir)/stamp-h.in
+#
+# autoconf isdnlog specific stuff
+#
+INSTALL			:= @INSTALL@
+INSTALL_DIR		:= $(INSTALL) -m 0755 -o 0 -g 0 -d
+INSTALL_SBIN		:= $(INSTALL) -m 0700 -o 0 -g 0
+INSTALL_BIN		:= $(INSTALL) -m 0755 -o 0 -g 0
+INSTALL_DATA		:= $(INSTALL) -m 0644 -o 0 -g 0
 
-mostlyclean-hdr:
+LIBISDNDIR		:= @LIBISDNDIR@
+CONFFILE		:= @CONFFILE@
+CALLERIDFILE		:= @CALLERIDFILE@
+OLDCONFDIR		:= @OLDCONFDIR@
+OLDCONFFILE		:= @OLDCONFFILE@
+LIBAREA			:= @LIBAREA@
+RUNDIR			:= @RUNDIR@
+DBMLIB			:= @DBMLIB@
+POSTGRES		:= @POSTGRES@
+POSTGRESDIR		:= @POSTGRESDIR@
+MYSQLDB			:= @MYSQLDB@
+MYSQLDIR		:= @MYSQLDIR@
+SERV_PORT		:= @SERV_PORT@
+USERFILE		:= @USERFILE@
+DEFS			:=
+SUBDIRS			:=
 
-clean-hdr:
+NATION			:= @NATION@
 
-distclean-hdr:
-	-rm -f config.h
+export LOGFILE		:= @LOGFILE@
+export COUNTRYCODE	:= @COUNTRYCODE@
+export COUNTRYPREFIX	:= @COUNTRYPREFIX@
+export AREACODE		:= @AREACODE@
+export AREAPREFIX	:= @AREAPREFIX@
 
-maintainer-clean-hdr:
+export ILABEL        := %b %e %T %ICall to tei %t from %N2 on %n2
+export OLABEL        := %b %e %T %Itei %t calling %N2 with %n2
+export CHARGEMAX     := 1000.00
 
-# This directory's subdirectories are mostly independent; you can cd
-# into them and run `make' without going through this Makefile.
-# To change the values of `make' variables: instead of editing Makefiles,
-# (1) if the variable is set in `config.status', edit `config.status'
-#     (which will cause the Makefiles to be regenerated when you run `make');
-# (2) otherwise, pass the desired values on the `make' command line.
 
-@SET_MAKE@
+ifndef ROOTDIR
+export ROOTDIR=$(shell pwd)
+MAKELIB  =1
+else
+#PREFIXDIR=$(ROOTDIR)
+endif
 
-all-recursive install-data-recursive install-exec-recursive \
-installdirs-recursive install-recursive uninstall-recursive  \
-check-recursive installcheck-recursive info-recursive dvi-recursive:
-	@set fnord $(MAKEFLAGS); amf=$$2; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  target=`echo $@ | sed s/-recursive//`; \
-	  echo "Making $$target in $$subdir"; \
-	  (cd $$subdir && $(MAKE) $$target) \
-	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
-	done && test -z "$$fail"
+PREFIXDIR=.
 
-mostlyclean-recursive clean-recursive distclean-recursive \
-maintainer-clean-recursive:
-	@set fnord $(MAKEFLAGS); amf=$$2; \
-	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
-	  rev="$$subdir $$rev"; \
-	done; \
-	for subdir in $$rev; do \
-	  target=`echo $@ | sed s/-recursive//`; \
-	  echo "Making $$target in $$subdir"; \
-	  (cd $$subdir && $(MAKE) $$target) \
-	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
-	done && test -z "$$fail"
-tags-recursive:
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  (cd $$subdir && $(MAKE) tags); \
-	done
+ifeq ($(MAKELIB),1)
+SUBDIRS     += $(LIBISDNDIR)
+endif
 
-tags: TAGS
+export CFLAGS  = -Wall -pipe -O6 -fomit-frame-pointer -fforce-mem -fforce-addr -funroll-loops -fstrength-reduce
 
-ID: $(HEADERS) $(SOURCES) $(LISP)
-	here=`pwd` && cd $(srcdir) \
-	  && mkid -f$$here/ID $(SOURCES) $(HEADERS) $(LISP)
+ifndef _CC
+export _CC  = gcc
+endif
 
-TAGS: tags-recursive $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) $(LISP)
-	tags=; \
-	here=`pwd`; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
-	done; \
-	list='$(SOURCES) $(HEADERS)'; \
-	unique=`for i in $$list; do echo $$i; done | \
-	  awk '    { files[$$0] = 1; } \
-	       END { for (i in files) print i; }'`; \
-	test -z "$(ETAGS_ARGS)config.h.in$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags config.h.in $$unique $(LISP) -o $$here/TAGS)
+CC          = $(_CC)
 
-mostlyclean-tags:
+INCLUDE     = -I./isdnlog -I./connect -I./tools -I$(PREFIXDIR) -I$(LIBISDNDIR) -I@CONFIG_KERNELDIR@/include
 
-clean-tags:
+LIB         = $(DBMLIB)
 
-distclean-tags:
-	-rm -f TAGS ID
 
-maintainer-clean-tags:
 
-distdir = $(PACKAGE)-$(VERSION)
-top_distdir = $(distdir)
 
-# This target untars the dist file and tries a VPATH configuration.  Then
-# it guarantees that the distribution is self-contained by making another
-# tarfile.
-distcheck: dist
-	-rm -rf $(distdir)
-	GZIP=$(GZIP) $(TAR) zxf $(distdir).tar.gz
-	mkdir $(distdir)/=build
-	mkdir $(distdir)/=inst
-	dc_install_base=`cd $(distdir)/=inst && pwd`; \
-	cd $(distdir)/=build \
-	  && ../configure --srcdir=.. --prefix=$$dc_install_base \
-	  && $(MAKE) \
-	  && $(MAKE) dvi \
-	  && $(MAKE) check \
-	  && $(MAKE) install \
-	  && $(MAKE) installcheck \
-	  && $(MAKE) dist
-	-rm -rf $(distdir)
-	@echo "========================"; \
-	echo "$(distdir).tar.gz is ready for distribution"; \
-	echo "========================"
-dist: distdir
-	-chmod -R a+r $(distdir)
-	GZIP=$(GZIP) $(TAR) chozf $(distdir).tar.gz $(distdir)
-	-rm -rf $(distdir)
-dist-all: distdir
-	-chmod -R a+r $(distdir)
-	GZIP=$(GZIP) $(TAR) chozf $(distdir).tar.gz $(distdir)
-	-rm -rf $(distdir)
-distdir: $(DISTFILES)
-	-rm -rf $(distdir)
-	mkdir $(distdir)
-	-chmod 777 $(distdir)
-	@for file in $(DISTFILES); do \
-	  d=$(srcdir); \
-	  test -f $(distdir)/$$file \
-	  || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
-	  || cp -p $$d/$$file $(distdir)/$$file; \
-	done
-	for subdir in $(SUBDIRS); do \
-	  test -d $(distdir)/$$subdir \
-	  || mkdir $(distdir)/$$subdir \
-	  || exit 1; \
-	  chmod 777 $(distdir)/$$subdir; \
-	  (cd $$subdir && $(MAKE) top_distdir=../$(distdir) distdir=../$(distdir)/$$subdir distdir) \
-	    || exit 1; \
-	done
-info: info-recursive
-dvi: dvi-recursive
-check: all-am
-	$(MAKE) check-recursive
-installcheck: installcheck-recursive
-all-recursive-am: config.h
-	$(MAKE) all-recursive
+SERVICEFILE = /etc/services
 
-all-am: Makefile config.h
 
-install-exec: install-exec-recursive
-	@$(NORMAL_INSTALL)
+######################################################################
+# DON'T EDIT BELOW THIS LINE
+######################################################################
 
-install-data: install-data-recursive
-	@$(NORMAL_INSTALL)
+VERSION     = 3.00
 
-install: install-recursive
-	@:
+MANPAGES    = isdnlog/callerid.conf.5 isdnlog/isdn.conf.5 isdnlog/isdnformat.5 isdnlog/isdnlog.5 isdnlog/isdnlog.8 isdnlog/isdnlog.users.5 isdnrep/isdnrep.1 isdnconf/isdnconf.1
 
-uninstall: uninstall-recursive
+ifeq ($(POSTGRES),1)
+DEFS       += -DPOSTGRES
+INCLUDE    += -I$(POSTGRESDIR)/include
+LIB        += -L$(POSTGRESDIR)/lib -lpq
+endif
+
+ifeq ($(MYSQLDB),1)
+DEFS 	   += -DMYSQLDB
+INCLUDE    += -I$(MYSQLDIR)/include
+LIB        += -L$(MYSQLDIR)/lib -lmysqlclient -lm
+endif
+
+ifdef DBMALLOC
+DEFS       += -DDBMALLOC=1
+LIB        += -ldbmalloc
+endif
+
+DEFS       += \
+               -DVERSION=\"$(VERSION)\"   \
+               -DI4LVERSION=\"$(I4LVERSION)\"   \
+	       -D@NATION_MACRO@=1		\
+               -DDATADIR=\"$(DATADIR)\"		\
+                $(INCLUDE)
+
+%.o: %.c
+	$(CC) $(CFLAGS) $(DEFS) $(INCLUDE) -c -o $@ $<
+
+ISDNLOG_OBJS =  isdnlog/isdnlog.o isdnlog/processor.o isdnlog/functions.o \
+                isdnlog/server.o isdnlog/start_prog.o isdnlog/messages.o  \
+                connect/connect.o connect/socket.o tools/tools.o      	  \
+                connect/conv_address.o isdnlog/user_access.o 		  \
+                isdnrep/cheap.o isdnrep/gebuehr.o tools/isdnconf.o        \
+		tools/tools_$(NATION).o isdnlog/takt_$(NATION).o          \
+		$(LIBISDNDIR)/libisdn.a
+
+
+ifeq ($(POSTGRES),1)
+ISDNLOG_OBJS += isdnlog/postgres.o
+endif
+
+ifeq ($(MYSQLDB),1)
+ISDNLOG_OBJS += isdnlog/mysqldb.o
+endif
+
+ifdef TESTCENTER
+ISDNLOG_OBJS += isdnlog/test_center.o
+endif
+
+ISDNREP_OBJS =  isdnrep/rep_main.o isdnrep/cheap.o tools/tools.o          \
+                tools/isdnconf.o isdnlog/messages.o isdnrep/isdnrep.o     \
+				isdnrep/gebuehr.o											  \
+		tools/tools_$(NATION).o                                   \
+                $(LIBISDNDIR)/libisdn.a
+
+ISDNCONF_OBJS=  isdnconf/isdnconf.o tools/tools.o tools/isdnconf.o        \
+		tools/tools_$(NATION).o                                   \
+                $(LIBISDNDIR)/libisdn.a
+
+ISDNLOG      =  bin/isdnlog
+ISDNCONF     =  bin/isdnconf
+ISDNREP      =  bin/isdnrep
+
+MODS         =  *.o */*.o
+
+PROGS        =  $(ISDNLOG) $(ISDNREP) $(ISDNCONF)
+
+all:            depend libs mybin $(PROGS) $(MANPAGES)
+
+mybin:
+		-mkdir -p bin
+
+libs:
+		set -e; for i in `echo $(SUBDIRS)`; do $(MAKE) -C $$i; done
+
+clean:
+		-rm -f $(MODS)
+		set -e; for i in `echo $(SUBDIRS)`; do $(MAKE) -C $$i clean; done
+
+distclean:      clean
+		-rm -f $(MANPAGES)
+		-rm -f $(PROGS) .depend config.h config.status config.cache \
+		config.log Makefile confdefs.h policy.h *~
+		set -e; for i in `echo $(SUBDIRS)`; do $(MAKE) -C $$i distclean; done
+
+ifeq (.depend,$(wildcard .depend))
+include .depend
+HEADERS := $(HEADERS) .depend
+endif
+
+rootperm:
+	@echo 'main(int argc,char**argv){unlink(argv[0]);return(getuid()==0);}'>g
+	@if gcc -x c -o G g && rm -f g && ./G ; then \
+		echo ""; echo 'Do "make (un)install" as root!' ;echo ""; false; \
+	fi
+
+uninstall: rootperm
+		if ps x | fgrep $(ISDNLOG) >/dev/null; then kill `cat $(RUNDIR)/isdnlog.isdnctrl0.pid` 2>/dev/null; fi
+		rm -f	$(DESTDIR)$(SBINDIR)/$(ISDNLOG) \
+			$(DESTDIR)$(BINDIR)/$(ISDNREP)	\
+			$(DESTDIR)$(BINDIR)/$(ISDNCONF)
+		rm -f	$(DESTDIR)$(MAN8DIR)/isdnlog$(MAN8EXT)		\
+			$(DESTDIR)$(MAN1DIR)/isdnrep$(MAN1EXT)		\
+			$(DESTDIR)$(MAN1DIR)/isdnconf$(MAN1EXT)		\
+			$(DESTDIR)$(MAN5DIR)/callerid.conf$(MAN5EXT)	\
+			$(DESTDIR)$(MAN5DIR)/isdnlog$(MAN5EXT)		\
+			$(DESTDIR)$(MAN5DIR)/isdnlog.users$(MAN5EXT)
+
+installdirs: rootperm
+		$(INSTALL_DIR) $(DESTDIR)$(I4LCONFDIR)
+		$(INSTALL_DIR) $(DESTDIR)$(BINDIR)
+		$(INSTALL_DIR) $(DESTDIR)$(SBINDIR)
+		$(INSTALL_DIR) $(DESTDIR)$(MAN1DIR)
+		$(INSTALL_DIR) $(DESTDIR)$(MAN5DIR)
+		$(INSTALL_DIR) $(DESTDIR)$(MAN8DIR)
+
+install: all rootperm installdirs
+		@echo "Killing running isdnlog!"
+		-@if ps x | fgrep $(ISDNLOG) >/dev/null; then kill `cat $(RUNDIR)/isdnlog.isdnctrl0.pid 2>/dev/null`; fi
+		#PS -@test ! -d $(DESTDIR)$(OLDCONFDIR) || cp -auv $(DESTDIR)$(OLDCONFDIR)/$(USERFILE) $(DESTDIR)$(I4LCONFDIR)
+		#PS -@test ! -d $(DESTDIR)$(OLDCONFDIR) || (cp -auv $(DESTDIR)$(OLDCONFDIR)/$(OLDCONFFILE) $(DESTDIR)$(I4LCONFDIR) \
+		#PS  && $(ISDNREP) 1>/dev/null 2>&1) \
+		#PS  && mv $(DESTDIR)$(I4LCONFDIR)/$(OLDCONFFILE) $(DESTDIR)$(I4LCONFDIR)/$(OLDCONFFILE).old
+		#PS @if [ -n "$(DESTDIR)" ]; then \
+		#PS 	$(GENCONF) $(DESTDIR)$(I4LCONFDIR)/$(CONFFILE).new $(DESTDIR)$(I4LCONFDIR)/$(CALLERIDFILE).new ; \
+		#PS else \
+		#PS 	$(GENCONF) $(DESTDIR)$(I4LCONFDIR)/$(CONFFILE) $(DESTDIR)$(I4LCONFDIR)/$(CALLERIDFILE) ; \
+		#PS fi
+		#PS @echo "Generate config files. Wait a moment..."
+		#PS -@$(ISDNCONF) -c 040 1>/dev/null 2>&1 || echo "Can not read areacode/avon lib."
+		$(INSTALL_BIN) $(ISDNLOG)  $(DESTDIR)$(SBINDIR)
+		$(INSTALL_BIN) $(ISDNREP)  $(DESTDIR)$(BINDIR)
+		$(INSTALL_BIN) $(ISDNCONF) $(DESTDIR)$(BINDIR)
+		$(INSTALL_DATA) isdnlog/isdnlog.8       $(DESTDIR)$(MAN8DIR)/isdnlog$(MAN8EXT)
+		$(INSTALL_DATA) isdnrep/isdnrep.1       $(DESTDIR)$(MAN1DIR)/isdnrep$(MAN1EXT)
+		$(INSTALL_DATA) isdnconf/isdnconf.1     $(DESTDIR)$(MAN1DIR)/isdnconf$(MAN1EXT)
+		$(INSTALL_DATA) isdnlog/callerid.conf.5 $(DESTDIR)$(MAN5DIR)/callerid.conf$(MAN5EXT)
+		$(INSTALL_DATA) isdnlog/isdnlog.5       $(DESTDIR)$(MAN5DIR)/isdnlog$(MAN5EXT)
+		$(INSTALL_DATA) isdnlog/isdnlog.users.5 $(DESTDIR)$(MAN5DIR)/isdnlog.users$(MAN5EXT)
+		@echo ""
+		@echo "Don't forget to create $(I4LCONFDIR)/$(USERFILE)"
+		@echo ""
+		@(grep isdnlog $(SERVICEFILE) >/dev/null) || \
+		(echo "";echo "";echo "Add a line to the file $(SERVICEFILE)" ;echo "";echo ""; \
+		echo "isdnlog $(SERV_PORT)/tcp        isdnlog" >> $(SERVICEFILE))
 
 install-strip:
-	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
-installdirs: installdirs-recursive
+		$(MAKE) INSTALL_BIN='$(INSTALL_BIN) -s' \
+			INSTALL_SBIN='$(INSTALL_SBIN) -s' install
 
+distrib: distclean
+		cd .. && tar cf /tmp/isdnlog-$(I4LVERSION).tar    \
+		  isdnlog-$(I4LVERSION)/Makefile       \
+		  isdnlog-$(I4LVERSION)/Isdn           \
+		  isdnlog-$(I4LVERSION)/README         \
+		  isdnlog-$(I4LVERSION)/NEWS           \
+		  isdnlog-$(I4LVERSION)/COPYING        \
+		  isdnlog-$(I4LVERSION)/BUGS           \
+		  isdnlog-$(I4LVERSION)/TODO           \
+		  isdnlog-$(I4LVERSION)/FAQ            \
+		  isdnlog-$(I4LVERSION)/samples        \
+		  isdnlog-$(I4LVERSION)/tools          \
+		  isdnlog-$(I4LVERSION)/isdnconf       \
+		  isdnlog-$(I4LVERSION)/isdnlog        \
+		  isdnlog-$(I4LVERSION)/isdnrep        \
+		  isdnlog-$(I4LVERSION)/connect        \
+		  isdnlog-$(I4LVERSION)/lib            \
+		  isdnlog-$(I4LVERSION)/contrib	       \
+		  isdnlog-$(I4LVERSION)/bin
+		gzip -f9 /tmp/isdnlog-$(I4LVERSION).tar
+#		uuencode /tmp/isdnlog-$(I4LVERSION).tar.gz isdnlog-$(I4LVERSION).tar.gz > /tmp/isdnlog-$(I4LVERSION).uue
 
-mostlyclean-generic:
-	-test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+$(ISDNLOG):     $(ISDNLOG_OBJS)
+		$(CC) -o $(ISDNLOG) $(LFLAGS) $(ISDNLOG_OBJS) $(LIB)
 
-clean-generic:
-	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+$(ISDNREP):     $(ISDNREP_OBJS)
+		$(CC) -o $(ISDNREP) $(LFLAGS) $(ISDNREP_OBJS) $(LIB)
 
-distclean-generic:
-	-rm -f Makefile $(DISTCLEANFILES)
-	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
-	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+$(ISDNCONF):    $(ISDNCONF_OBJS)
+		$(CC) -o $(ISDNCONF) $(LFLAGS) $(ISDNCONF_OBJS) $(LIB)
 
-maintainer-clean-generic:
-	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
-	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean-am:  mostlyclean-hdr mostlyclean-tags mostlyclean-generic
+tools/tools.h: $(LIBISDNDIR)/libisdn.h $(PREFIXDIR)/policy.h
+		touch tools/tools.h
 
-clean-am:  clean-hdr clean-tags clean-generic mostlyclean-am
+depend: .depend
 
-distclean-am:  distclean-hdr distclean-tags distclean-generic clean-am
-
-maintainer-clean-am:  maintainer-clean-hdr maintainer-clean-tags \
-		maintainer-clean-generic distclean-am
-
-mostlyclean:  mostlyclean-recursive mostlyclean-am
-
-clean:  clean-recursive clean-am
-
-distclean:  distclean-recursive distclean-am
-	-rm -f config.status
-
-maintainer-clean:  maintainer-clean-recursive maintainer-clean-am
-	@echo "This command is intended for maintainers to use;"
-	@echo "it deletes files that may require special tools to rebuild."
-	-rm -f config.status
-
-.PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
-install-data-recursive uninstall-data-recursive install-exec-recursive \
-uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
-all-recursive check-recursive installcheck-recursive info-recursive \
-dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
-maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info dvi \
-installcheck all-recursive-am all-am install-exec install-data install \
-uninstall all installdirs mostlyclean-generic distclean-generic \
-clean-generic maintainer-clean-generic clean mostlyclean distclean \
-maintainer-clean
-
-
-# Tell versions [3.59,3.63) of GNU make to not export all variables.
-# Otherwise a system limit (for SysV at least) may be exceeded.
-.NOEXPORT:
+.depend:
+		$(CPP) -M $(CFLAGS) $(DEFS) $(INCLUDE) */*.c >.depend
+#		$(CPP) -M $(CFLAGS) $(DEFS) $(INCLUDE) */*.c */*/*.c >.depend

@@ -4,5 +4,4 @@
 # standard!)
 #
 #I0:2345:respawn:/usr/sbin/vboxgetty -d /dev/ttyI0
-#I1:2345:respawn:/sbin/mgetty -D -m '"" ATZ OK AT&Eyourmsnhere OK AT&B512 OK'
--s 38400 ttyI1
+#I1:2345:respawn:/sbin/mgetty -D -m '"" ATZ OK AT&Eyourmsnhere OK AT&B512 OK' -s 38400 ttyI1

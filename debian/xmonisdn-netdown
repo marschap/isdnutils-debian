@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Example netdown script for xmonisdn
+# Do with it what you want.
+
+# This sets the dialmode of all interfaces to `off'.
+# This prevents any connections from being made,
+# and terminates any existing connection.
+# It is run when you click button 3 (right button) on the xmonisdn icon.
+#
+# This script must be owned by root, and not writeable for group or others!
+
+# As this is only an example, there is 'exit 0' at the beginning of the
+# script. Remove it after changing this script to your liking.
+
+exit 0
+
+# check to see if there are any isdn interfaces
+egrep -s '^ i(sdn|ppp)' /proc/net/dev > /dev/null || exit 0
+/usr/sbin/isdnctrl dialmode all off

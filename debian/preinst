@@ -2,7 +2,8 @@
 
 set -e
 
-OLDPACKAGES="isdnlog ipppd xisdnutils"
+OLDPACKAGES='isdnlog ipppd xisdnutils'
+PACKAGES=''
 
 for i in $OLDPACKAGES 
 do 
@@ -13,10 +14,9 @@ do
 done
 
 # any old package installed ?
-test -z "$PACKAGES" && exit 0
-
-# yes ...
-echo " I see that you have one or more of the old isdn packages installed:
+if [ ! -z "$PACKAGES" ]
+then # yes ...
+	echo " I see that you have one or more of the old isdn packages installed:
 
 $PACKAGES
 
@@ -27,7 +27,88 @@ This is how to do it:
 	From the commandline call:            
 	dpkg --remove --force-depends $PACKAGES
 
-Please press [RETURN]:"
-read
-exit 1                   
+Press ENTER to continue 	[Return]"
+	read
+	exit 1                   
+fi
 
+# check for old netup / netdown files
+
+[ "x$1" != xupgrade ] && exit 0
+
+if [ -u /usr/X11R6/bin/xmonisdn ]; then
+	chmod u-s /usr/X11R6/bin/xmonisdn
+	echo "xmonisdn is no longer setuid root, as that is a potential security hole."
+	echo "Read the xmonisdn manpage for more information."
+	echo ''
+	if [ -x /usr/sbin/suidunregister ]; then
+		suidunregister -s isdnutils /usr/X11R6/bin/xmonisdn
+	fi
+fi
+
+if dpkg --compare-versions "$2" "<<" "1:3.0"
+then
+	[ -f /etc/isdn/netup -o -f /etc/isdn/netdown ] || exit 0
+	echo "
+You have /etc/isdn/netup and/or /etc/isdn/netdown.
+The functionality of those are replaced by:
+
+	- /etc/isdn/xisdnload-net{up,down}
+	- /etc/isdn/xmonisdn-net{up,down}
+
+This has been done so that the different behaviours of xisdnload and xmonisdn
+can be catered for. See the abovementioned files for more info.
+The old netup / netdown scripts have been renamed to netup.old and netdown.old.
+Please remove them manually.
+
+Press ENTER to continue 	[Return]"
+	read
+	[ -f /etc/isdn/netup   ] && mv -f /etc/isdn/netup   /etc/isdn/netup.old
+	[ -f /etc/isdn/netdown ] && mv -f /etc/isdn/netdown /etc/isdn/netdown.old
+fi
+
+# check for RADIUS installation
+RADIUSCONF=/etc/radiusclient/radiusclient.conf
+if dpkg --compare-versions "$2" ">=" "1:3.0-10" &&
+   dpkg --compare-versions "$2" "<=" "1:3.0-11"
+then
+	if [ -s $RADIUSCONF -a ! -x /usr/sbin/ipppd.radius ]
+	then
+		cat <<EOF
+I see you have $RADIUSCONF and an ipppd that
+supports RADIUS.
+The ipppd in this version of isdnutils does NOT support RADIUS due to
+problems when not using RADIUS and using dynamic IP addresses; RADIUS
+support in ipppd will be made available as a separate package in the
+future.
+
+For now, choose one of the following options:
+
+  1 or y) simply overwrite ipppd
+  2 or r) rename the current ipppd to ipppd.radius so that you can still use it
+  3 or n or q) abort the installation
+
+  1 is default.
+
+EOF
+		while :; do
+			echo -n 'Choice: '
+			read ans bla
+			case x"$ans" in
+				x1|xy|x)	ans=y;;
+				x2|xr)		ans=r;;
+				x3|xn|xq)	echo "Aborting."; exit 1;;
+				*)		echo "Enter 1 or 2 or 3 !";;
+			esac
+			if [ "$ans" = y ]; then
+				exit 0
+			fi
+			if [ "$ans" = r ]; then
+				mv -f /usr/sbin/ipppd /usr/sbin/ipppd.radius
+				exit 0
+			fi
+		done
+	fi
+fi
+
+exit 0

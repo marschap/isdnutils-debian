@@ -1,5 +1,5 @@
 /*
-** $Id: libvbox.c,v 1.9 1997/05/10 10:58:42 michael Exp $
+** $Id: libvbox.c,v 1.11 1997/10/22 20:47:06 fritz Exp $
 **
 ** Copyright (C) 1996, 1997 Michael 'Ghandi' Herold
 */

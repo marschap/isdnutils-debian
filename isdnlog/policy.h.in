@@ -81,8 +81,14 @@
 /* Define if you have the gdbm library (-lgdbm).  */
 #undef HAVE_LIBGDBM
 
+/* Define if you have the db library (-ldb).  */
+#undef HAVE_LIBDB
+
 /* Define if you have Swiss charge info */
 #undef ISDN_CH
+
+/* Define if you have Austrian charge info */
+#undef ISDN_AT
 
 /* Define if you have Netherlands charge info */
 #undef ISDN_NL
@@ -101,6 +107,9 @@
 
 /* Define if postgres should be used */
 #undef POSTGRES
+
+/* Define if mysql should be used */
+#undef MYSQLDB
 
 /* Define if server port */
 #undef SERV_PORT

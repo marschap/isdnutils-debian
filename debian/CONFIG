@@ -8,12 +8,14 @@ the naming system
 		doesn't mean you can use it to call an analog modem.
 /dev/cui0	isdn modem emulation device : old form. don't use (obsolete).
 /dev/ippp0	synchronous ppp device
-ippp0		isdn network device. This name is used if you transfer
-		with syncPPP encapsulation. You have to create the
-		connection to /dev/ippp0 (for the kernel it's only a
-		name without meaning).
-isdn0		isdn network device. This name is used with rawIP
-		network connections.
+ippp0		isdn network device. This name is used if you transfer with
+		syncPPP encapsulation. You have to create the connection to
+		/dev/ippp0 (for the kernel it's only a name without meaning).
+		If you have multiple ippp devices, assign the one you want to
+		have the default route to 'ippp0', this is what is expected by
+		the default scripts.
+isdn0		isdn network device. This name is used with rawIP network
+		connections.
 
 see also : ttyI(4) cui(4)
 	
@@ -22,9 +24,9 @@ ISDN kernel modules
 -------------------
 If you compile your own kernel :
  - Don't use the old teles driver; use HiSax instead (standard in
-   kernels > 2.0.30)
+   kernels > 2.0.30, best use >= 2.0.36)
  - Configure lilo to pass the right options to the kernel.
-   I use in /etc/lilo.conf : append="hisax=3,2,10,0xd80,0,line0"
+   E.g. in /etc/lilo.conf : append="hisax=3,2,10,0xd80,0,line0"
 
 If you use modules (preferable):
  - Use modconf, select the modules "isdn" and "hisax" with the right
@@ -82,6 +84,8 @@ or ippp0, ippp1, ippp2 ... (used for ippp devices).
 See also: isdnctrl(8) ifconfig(8) route(8)
 	  isdnctrl help text (pppbind is not documented in the man page)
 	  and any book about unix networking for ifconfig/route details.
+ippp0 should be the interface that is the default route; if not, you need to
+edit the device.xxx file(s).
 
 /etc/init.d/netbase may need to be modified for "IP spoofing protection".
 Basically, replace all "eth1" by "ippp0" or "isdn0" (whatever interface is
@@ -99,14 +103,21 @@ be edited before ipppd will be started:
 DEVICE can be ippp0, ippp1 ...
 Note: there is no connection between the network device "ipppX" and the
 real device /dev/ipppX, unless you create a pppbind with isdnctrl.
-Default is not to create pppbinds and let one ipppd handle all
-connections. But if you need different configurations (e.g. for different
-ISPs), create several files, and start several ipppd this way, and don't
-forget to bind every ipppX network interface to the right ipppd with pppbind.
+Default in debian is to create pppbinds and let one ipppd handle one
+connection.
 
 The ipppd does not support ioptions.<tty>. And this setup will neither
 read /etc/ppp/options nor ioptions. Put the whole configuration into
 /etc/isdn/ipppd.DEVICE !
+
+Ipppd will run the /etc/ppp/ip-up script when a connection is made and will run
+the /etc/ppp/ip-down script when a connection goes down. If you have the ppp
+package installed (as is recommended), those scripts will run each of the
+scripts in the /etc/ppp/ip-up.d/ and /etc/ppp/ip-down.d/ directories. Isdnutils
+will have put a script into each of these directories; this can be useful for
+setting the default route (if you have dynamic IP numbers). You can also do
+other things; read the comments in /etc/ppp/ip-up and /etc/ppp/ip-down, and
+also in the /etc/ppp/ip-up.d/isdnutils and /etc/ppp/ip-down.d/isdnutils scripts.
 
 see also : ipppd(8)
 
@@ -116,7 +127,7 @@ ISDN modem emulation
 
 With iprofd you can store your ttyI modem settings with AT&W as if it
 were a modem. isdnconf will create an empty file (or use "touch
-/etc/isdn/iprofd.data").
+/etc/isdn/iprofd.data"). Do not change this file when iprofd is running!
 
 see also : iprofd(8)
 

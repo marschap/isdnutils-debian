@@ -1,37 +1,12 @@
-/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+/* $Id: config.h.in,v 1.1 1997/02/17 00:08:59 fritz Exp $ */
+/* Define if you have the <curses.h> header file.  */
+#undef HAVE_CURSES_H
 
-/* Define as the return type of signal handlers (int or void).  */
-#undef RETSIGTYPE
-
-/* Define if you have the ANSI C header files.  */
-#undef STDC_HEADERS
-
-/* Define if you can safely include both <sys/time.h> and <time.h>.  */
-#undef TIME_WITH_SYS_TIME
-
-/* Define if your <sys/time.h> declares struct tm.  */
-#undef TM_IN_SYS_TIME
-
-/* Package name - never used, but required for autoheader */
-#undef PACKAGE
-
-/* Package version - same as I4LVERSION */
-#undef VERSION
-
-/* Define if you have the select function.  */
-#undef HAVE_SELECT
-
-/* Define if you have the <linux/isdn.h> header file.  */
-#undef HAVE_LINUX_ISDN_H
+/* Define if you have the <curses/ncurses.h> header file.  */
+#undef HAVE_CURSES_NCURSES_H
 
 /* Define if you have the <ncurses.h> header file.  */
 #undef HAVE_NCURSES_H
 
-/* Define if you have the <sys/time.h> header file.  */
-#undef HAVE_SYS_TIME_H
-
-/* Define if you have the <unistd.h> header file.  */
-#undef HAVE_UNISTD_H
-
-/* Define if you have the ncurses library (-lncurses).  */
-#undef HAVE_LIBNCURSES
+/* Define if you have the <ncurses/curses.h> header file.  */
+#undef HAVE_NCURSES_CURSES_H

@@ -1,5 +1,10 @@
-web Apps/Net isdn/en none "ISDN 4 Linux FAQ (english)" /usr/doc/isdn/en-i4l-faq.html
-web Apps/Net isdn/de none "ISDN 4 Linux FAQ (deutsch)" /usr/doc/isdn/de-i4l-faq.html      
-web Apps/Net vbox none "Voice Box Documentation (german)" /usr/doc/isdnutils/vbox/de/vbox.html
-x11 Apps/Net xmonisdn none "x11 isdn monitor" /usr/X11R6/bin/xmonisdn
-x11 Apps/Net xisdnload none "x11 isdn load" /usr/X11R6/bin/xisdnload
+?package(isdnutils):needs=X11 section=Apps/Net title="x11 isdn monitor"\
+  command="/usr/X11R6/bin/xmonisdn"\
+  description="xmonisdn is an xbiff-like display of the state of the ISDN line."
+?package(isdnutils):needs=X11 section=Apps/Net title="x11 isdn load"\
+  command="/usr/X11R6/bin/xisdnload"\
+  description="xisdnload shows a graphical display of the throughput, and the\
+ background colour tells you whether there is a connection."
+?package(isdnutils):needs=text section=Apps/System title="isdn monitor"\
+  command="/usr/bin/imon"\
+  description="imon is a curses-based program to display the status of all ISDN lines."

@@ -34,7 +34,11 @@
 #define _CREATEDB_H_
 
 #ifdef linux
+# if (__GLIBC__ > 2) || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 1)
+#      include <db1/ndbm.h>
+# else
 #	include <ndbm.h>
+# endif
 #else
 #	include "/usr/ucbinclude/ndbm.h"
 /*#	include <libgen.h>*/

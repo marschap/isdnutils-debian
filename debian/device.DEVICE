@@ -6,18 +6,26 @@ echo "Warning! $0 not configured yet! Aborting..."; exit 1
 
 
 # Instructions: read the comments for each command, and if necessary, edit
-# the command (e.g. replace EAZ with your real EAZ or MSN).
+# the command (e.g. replace EAZ with your real EAZ or MSN). Look for lines
+# marked with XXX_, which is probably all you need to change.
 # If the command is commented out, remove the leading '#' to enable it if
 # the command is needed.
 #
 # After you have configured this file, remove the "Warning!" line above to
 # enable this file.
 
+# If using dynamic IP addresses:
+# Check out the /etc/ppp/ip-up.d/isdnutils and /etc/ppp/ip-down.d/isdnutils
+# scripts, to ensure that any routing is done correctly there (the
+# ip-up.d/isdnutils script is run after a syncPPP link is established, and the
+# ip-down.d/isdnutils script is run after the link goes down).
+# You need to have the ppp package installed for those scripts to work.
 
 # Get the device name
 set -e ; device=`basename $0`; device=${device#*.}
 
-# set some important values
+# The (dummy) IP addresses
+#
 # Use 10.0.0.1 for LOCALIP and 10.0.0.2 for REMOTEIP if you have
 # dynamic IP addresses; with static address fill in the real values!
 
@@ -25,8 +33,40 @@ LOCALIP=10.0.0.1	# XXX_
 REMOTEIP=10.0.0.2	# XXX_
 
 # Phone numbers (without the leading zero)
-LOCALMSN=123456 	# XXX_
-REMOTEMSN=654321	# XXX_
+#
+# REMOTEMSN may be a list of numbers to dial, separated by a space.
+# If you do that, DO put quotes around the whole value! Like:
+# REMOTEMSN='221345788 221345789'
+#
+# The REMOTEMSN must be the areacode (without the leading zero) + phonenumber!
+#
+#      Example: areacode: 0221  phonenumber: 345789
+#               => REMOTEMSN='221345789'
+#
+# EXPLANATION:
+# A zero is added below when it is used as the outgoing number;
+# when it it used as the incoming number, it must be without a leading zero
+# (which is why you must leave that leading zero out below).
+# The local number must also be given without the leading zero!
+#
+# EXCEPTION:
+# In countries where there are NO areacodes, this leading zero must NOT be
+# added. In that case, change the value of LEADINGZERO below to ''
+# LEADINGZERO could conceivably need to be something else in certian
+# situations, so it is configurable.
+
+LOCALMSN=203123456 	# XXX_
+REMOTEMSN=221345789	# XXX_
+LEADINGZERO=0		# XXX_  use LEADINGZERO='' if you have no areacodes.
+
+# DIALMODE:
+# New with kernel 2.0.36 is the `dialmode' setting.
+# dialmode=auto is compatible with the old behaviour (dial-on-demand enabled).
+# Read the isdnctrl manpage for more info.
+# Change the value below if you want a different setting when the interface is
+# started.
+
+DIALMODE=auto		# XXX_	other values can be 'on' and 'off'
 
 # Encapsulation (default is syncppp for ipppX devices, rawip for isdnX devices)
 # Change the next four lines if you need some other value.
@@ -39,14 +79,9 @@ fi
 
 case "$1" in
 start)
-
 	# If running kernel 2.0.31 or higher, enable the IP dynamic hack
-	# (if needed). See linux/Documentation/ip_dynaddr.txt .
-	# You may also need to use the ip-up and ip-down scripts in
-	# /usr/doc/isdnutils/examples to get the routing correct. Those
-	# scripts should be put in /etc/ppp, but beware of overwriting any
-	# existing scripts belonging to the "ppp" package!
-	#[ -f /proc/sys/net/ipv4/ip_dynaddr ] && echo 1 > /proc/sys/net/ipv4/ip_dynaddr
+	# (if needed). See linux/Documentation/networking/ip_dynaddr.txt .
+	#[ -f /proc/sys/net/ipv4/ip_dynaddr ] && echo 5 > /proc/sys/net/ipv4/ip_dynaddr
 	
 	# First you need to create the interface
 	isdnctrl addif ${device}
@@ -66,16 +101,27 @@ start)
 	# after another. When using an german SPV-type connection, with a
 	# ICN-card, the number has to be preceeded by a capital S.   
 	# This is the "normal" number.
-	isdnctrl addphone ${device} out 0$REMOTEMSN
+
+	if [ ! -z "$REMOTEMSN" ]
+	then
+		for MSN in $REMOTEMSN; do
+			isdnctrl addphone ${device} out $LEADINGZERO$MSN
+		done
+	fi
 
 	#	addphone name in num
 	# Set the phone number(s) that the IP-interface "name" is supposed to
-	# accept for incoming calls. If no num­ ber is given incoming calls are
+	# accept for incoming calls. If no number is given, incoming calls are
 	# disabled. More than one number can be set by calling isdnctrl addphone
 	# repeatedly. Also wildcards can be used (see below). 
 	# In the Netherlands (and elsewhere?),
 	# this is with areacode but without leading 0
-	# isdnctrl addphone ${device} in $REMOTEMSN
+	#if [ ! -z "$REMOTEMSN" ]
+	#then
+	#	for MSN in $REMOTEMSN; do
+	#		isdnctrl addphone ${device} in $MSN
+	#	done
+	#fi
 
 	#	secure name on|off
 	# Turns on or off the security feature for interface "name". If set to
@@ -175,9 +221,10 @@ start)
 
 	# pppbind is needed when using one ipppd per ippp interface
 	# (like Debian does)
-	if bindnum=`expr $device : 'ippp\(.\)'`
+	bindnum=`expr $device : 'ippp\(.*\)'` || true
+	if [ ! -z "$bindnum" ]
 	then
-		isdnctrl pppbind ${device} `expr "$device" : 'ippp\(.\)'`
+		isdnctrl pppbind ${device} $bindnum
 	fi
 
 	#	 NETWORK SETUP
@@ -185,12 +232,15 @@ start)
 	# Network device setup as usual. 
 	# See also : ifconfig(8) route(8) or any book about unix networking.
 
-	ifconfig ${device} up
 	ifconfig ${device} $LOCALIP pointopoint $REMOTEIP
-	route add -host $REMOTEIP
+	ifconfig ${device} up
+	route add -host $REMOTEIP ${device}
 	# setting default route here is only useful if this is your only
-	# outside connection...
-	route add default ${device}                     
+	# outside connection... The default is ippp0 for the default route.
+	if [ "$bindnum" = 0 ]; then
+		route del default 2>/dev/null || true
+		route add default netmask 0 ${device}                     
+	fi
 	# firewall rules
 	# Note that the default rule should be to deny all incoming connections!
 	# That's done with the line below:
@@ -199,6 +249,7 @@ start)
 	#	ipfwadm -I -a accept -W lo -S 127.0.0.0/8
 	#	ipfwadm -I -a accept -W eth0 -S 192.168.0.0/16
 	# Of course, change 192.168.0.0 to fit your ethernet network number...
+	# and add ALL interfaces you have in such a way.
 	# The ipfwadm commands above should be done only once, e.g. in
 	# /etc/init.d/netbase in the function spoof_protect.
 	#
@@ -216,15 +267,23 @@ start)
 	#	ETH_IP=`hostname -i | tr -d ' '`
 	#	ipfwadm -F -a accept -m -P tcp -S $ETH_IP/24
 	#	ipfwadm -F -a accept -m -P udp -S $ETH_IP/24
+	# ignore errors in case of older kernel
+	isdnctrl dialmode $device $DIALMODE >/dev/null 2>&1 || true
 	;;
 
 # Delete the interface
 stop)
+	# ignore errors in case of older kernel
+	isdnctrl dialmode $device off >/dev/null 2>&1 || true
 	# Commands to undo the network stuff
 	# Undo any ipfwadm commands done above! Change the -a to -d, put below.
-	route del $REMOTEIP	2> /dev/null || true
+	route del $REMOTEIP $device	2> /dev/null || true
 	# only delete default route if set above!
-	route del default	2> /dev/null || true
+	# The default is to use ippp0 for your default route.
+	bindnum=`expr $device : 'ippp\(.*\)'` || true
+	if [ "$bindnum" = 0 ]; then
+		route del default 2>/dev/null || true
+	fi
 	ifconfig $device down	2> /dev/null || true
 	isdnctrl delif $device	2> /dev/null || true
 	;;

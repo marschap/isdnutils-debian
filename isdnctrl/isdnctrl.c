@@ -1,4 +1,4 @@
-/* $Id: isdnctrl.c,v 1.12 1997/10/26 23:12:20 fritz Exp $
+/* $Id: isdnctrl.c,v 1.33 1999/06/07 19:25:38 paul Exp $
  * ISDN driver for Linux. (Control-Utility)
  *
  * Copyright 1994,95 by Fritz Elfert (fritz@wuemaus.franken.de)
@@ -21,6 +21,102 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: isdnctrl.c,v $
+ * Revision 1.33  1999/06/07 19:25:38  paul
+ * 'status' command added
+ *
+ * Revision 1.32  1998/12/23 12:51:44  paul
+ * didn't compile with old kernel source
+ *
+ * Revision 1.31  1998/11/24 18:18:57  paul
+ * detect kernel < 2.0.36; warn if dialmode is accessed with older kernels
+ *
+ * Revision 1.30  1998/11/18 13:20:07  fritz
+ * Fixed display of dialmode.
+ *
+ * Revision 1.29  1998/11/17 18:29:31  paul
+ * isdnctrl.c now compiles with kernel sources without dialmode stuff.
+ *
+ * Revision 1.28  1998/11/11 23:53:02  fritz
+ * Make isdnctrl compile without TIMRU in kernel (2.0.36-pre20/21)
+ *
+ * Revision 1.27  1998/10/28 16:12:18  paul
+ * Implemented "dialmode all" mode.
+ *
+ * Revision 1.26  1998/10/21 16:18:45  paul
+ * Implementation of "dialmode" (successor of "status")
+ *
+ * Revision 1.25  1998/07/22 19:07:20  keil
+ * Make it compiling with older I4L versions
+ *
+ * Revision 1.24  1998/06/27 00:36:19  fritz
+ * Misc. Fixes.
+ * Added fallback to libdb for isdnctrl.
+ * Added -V version check in isdnctrl.
+ *
+ * Revision 1.23  1998/06/12 12:09:53  detabc
+ * cleanup abc
+ *
+ * Revision 1.22  1998/06/09 18:11:31  cal
+ * added the command "isdnctrl name ifdefaults": the named device is reset
+ * to some reasonable defaults.
+ *
+ * Internally, isdnctrl.c contains a list of functions (defs_fcns []), which
+ * are called one after the other with the interface-name as a patameter.
+ * Each function returns a char* to a string containing iscnctrl-commands
+ * to be executed. Example:
+ *
+ * char *
+ * defs_budget(char *id) {
+ * 	static char	r [1024];
+ * 	char	*p = r;
+ *
+ * 	p += sprintf(p, "budget %s dial 10 1min\n", id);
+ * 	p += sprintf(p, "budget %s charge 100 1day\n", id);
+ * 	p += sprintf(p, "budget %s online 8hour 1day\n", id);
+ *
+ * 	return(r);
+ * }
+ *
+ * The advantage of this approach is, that even complex commands can be executed.
+ *
+ * PS: The function defs_basic() in isdnctrl.c is not complete.
+ *
+ * Revision 1.21  1998/06/02 12:17:15  detabc
+ * wegen einer einstweiliger verfuegung gegen DW ist zur zeit
+ * die abc-extension bis zur klaerung der rechtslage nicht verfuegbar
+ *
+ * Revision 1.20  1998/04/28 08:34:28  paul
+ * Fixed compiler warnings from egcs.
+ *
+ * Revision 1.19  1998/04/18 17:36:13  detabc
+ * modify display of callbackdelay (cbdelay) value to %.1f sec.
+ * if abc-extension is enabled
+ *
+ * Revision 1.18  1998/03/21 17:10:36  detabc
+ * change to use the abc-ext-options -TU on all encapsulations
+ * the option -A (abc-router) will only works with rawip
+ *
+ * Revision 1.17  1998/03/19 15:39:02  detabc
+ * change define CONFIG_ISDN_WITH_ABC to HAVE_ABCEXT.
+ * HAVE_ABCEXT will be set with the configure utility.
+ * to enable isdnctrl with ABC-Extension-support please make
+ * first a kernelconfig with ABC-Extension enabled.
+ * Thanks
+ *
+ * Revision 1.16  1998/03/12 15:10:11  hipp
+ * Cosmetic. Changed 'addlink' error message.
+ *
+ * Revision 1.15  1998/03/08 01:04:19  fritz
+ * Fix: Did not compile without TIMRU in kernel.
+ *
+ * Revision 1.14  1998/03/08 00:18:25  detabc
+ * include config-support for abc-extension
+ * only isdnctrl encap will be used and only use the options [-ATU]rawip
+ * thanks
+ *
+ * Revision 1.13  1998/03/07 18:25:57  cal
+ * added support for dynamic timeout-rules vs. 971110
+ *
  * Revision 1.12  1997/10/26 23:12:20  fritz
  * Get rid of including ../.config in Makefile
  * Now all configuration is done in configure.
@@ -116,24 +212,57 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include <ctype.h>
+#include <errno.h>
 
 #include <linux/isdn.h>
+ /* fix version skew between 2.0 and 2.1 kernels (structs are identical) */
+#if (NET_DV == 0x04)
+# undef NET_DV
+# define NET_DV 0x05
+#endif
 #include <linux/isdnif.h>
 
 #include "config.h"
 #define _ISDNCTRL_C_
 #include "isdnctrl.h"
 
+#ifndef INF_DV
+#define INF_DV 0
+#endif
+
 #ifdef I4L_CTRL_CONF
 #	include "../lib/libisdn.h"
 #	include "ctrlconf.h"
 #endif /* I4L_CTRL_CONF */
 
+#ifdef I4L_CTRL_TIMRU
+#	include "ctrltimru.h"
+#endif /* I4L_CTRL_TIMRU */
+
 #define CMD_IFCONFIG "ifconfig"
 #define CMD_OPT_IFCONFIG "down"
 
-char nextlistif[10];
+
+/* list of functions to obtain default-configuration of interface */
+typedef	char *(*defs_fcn_t)();
+
+defs_fcn_t defs_fcns [] = {
+	defs_basic,
+
+#if defined(I4L_CTRL_TIMRU) && defined(HAVE_TIMRU)
+	defs_timru,
+	defs_budget,
+#endif
+
+	NULL
+};
+
+
+char nextslaveif[10];
 
 int exec_args(int fd, int argc, char **argv);
 
@@ -147,6 +276,9 @@ void usage(void)
         fprintf(stderr, "    addif [name]               add net-interface\n");
         fprintf(stderr, "    delif name [force]         remove net-interface\n");
         fprintf(stderr, "    reset [force]              remove all net-interfaces\n");
+#ifdef ISDN_NET_DM_OFF
+        fprintf(stderr, "    dialmode name [off|manual|auto]  set the dial mode\n");
+#endif
         fprintf(stderr, "    addphone name in|out num   add phone-number to interface\n");
         fprintf(stderr, "    delphone name in|out num   remove phone-number from interface\n");
         fprintf(stderr, "    eaz name [eaz|msn]         get/set eaz for interface\n");
@@ -160,6 +292,8 @@ void usage(void)
         fprintf(stderr, "    cbhup name [on|off]        get/set reject-before-callback for interface\n");
         fprintf(stderr, "    cbdelay name [seconds]     get/set delay before callback for interface\n");
         fprintf(stderr, "    dialmax name [num]         get/set number of dial-atempts for interface\n");
+        fprintf(stderr, "    dialtimeout name [seconds] get/set timeout for successful dial-attempt\n");
+        fprintf(stderr, "    dialwait name [seconds]    get/set waittime after failed dial-attempt\n");
         fprintf(stderr, "    encap name [encapname]     get/set packet-encapsulation for interface\n");
         fprintf(stderr, "    l2_prot name [protocol]    get/set layer-2-protocol for interface\n");
         fprintf(stderr, "    l3_prot name [protocol]    get/set layer-3-protocol for interface\n");
@@ -180,11 +314,32 @@ void usage(void)
         fprintf(stderr, "    removelink name            MPPP, decrease number of links\n");
         fprintf(stderr, "    pppbind name [devicenum]   PPP, bind interface to ippp-device (exclusive)\n");
         fprintf(stderr, "    pppunbind name             PPP, remove ippp-device binding\n");
+        fprintf(stderr, "    addrule name rule ...      add timeout-rule\n");
+        fprintf(stderr, "    insrule name rule ...      insert timeout-rule\n");
+        fprintf(stderr, "    delrule name rule ...      delete timeout-rule\n");
+        fprintf(stderr, "    showrules name             show all timeout-rules\n");
+        fprintf(stderr, "    flushrules name rule-type  delete all timeout-rules of a spec. type\n");
+        fprintf(stderr, "    flushallrules name         delete all timeout-rules\n");
+        fprintf(stderr, "    default name rule-type ... set default for a spec. rule-type\n");
+        fprintf(stderr, "    budget name type ...       set various budgets\n");
+        fprintf(stderr, "    showbudgets name           show budget-settings\n");
+        fprintf(stderr, "    savebudgets name           output budget-settings for later restore\n");
+        fprintf(stderr, "    restorebudgets name ...    restore budget-settings\n");
 #ifdef I4L_CTRL_CONF
         fprintf(stderr, "    writeconf [file]           write the settings to file\n");
         fprintf(stderr, "    readconf [file]            read the settings from file\n");
 #endif /* I4L_CTRL_CONF */
-
+        fprintf(stderr, "    status name                show interface status (connected or not)\n");
+#ifdef I4L_CTRL_TIMRU
+		fprintf(stderr,"Note: TIMRU Ctrl   Extension-Support enabled\n");
+#else
+		fprintf(stderr,"Note: TIMRU Ctrl   Extension-Support disabled\n");
+#endif
+#ifdef HAVE_TIMRU
+		fprintf(stderr,"Note: TIMRU Kernel Support enabled\n");
+#else
+		fprintf(stderr,"Note: TIMRU Kernel Support disabled\n");
+#endif
         exit(-2);
 }
 
@@ -268,6 +423,10 @@ static void listif(int isdnctrl, char *name, int errexit)
         } ph;
         char nn[1024];
 
+        memset(&cfg, 0, sizeof cfg);	/* clear in case of older kernel */
+#ifdef ISDN_NET_DM_OFF
+	cfg.dialmode = 0xDEADBEEF;
+#endif
         strcpy(cfg.name, name);
         if (ioctl(isdnctrl, IIOCNETGCF, &cfg) < 0) {
                 if (errexit) {
@@ -300,14 +459,34 @@ static void listif(int isdnctrl, char *name, int errexit)
         printf("Phone number(s):\n");
         printf("  Outgoing:             %s\n", ph.n);
         printf("  Incoming:             %s\n", nn);
+#ifdef ISDN_NET_DM_OFF
+        printf("Dial mode:              ");
+	if (cfg.dialmode == ISDN_NET_DM_OFF)
+		puts("off");
+	else if (cfg.dialmode == ISDN_NET_DM_AUTO)
+		puts("auto");
+	else if (cfg.dialmode == ISDN_NET_DM_MANUAL)
+		puts("manual");
+	else if (cfg.dialmode == 0xDEADBEEF)
+		puts("not in kernel (please upgrade your kernel)");
+	else
+		printf("unknown value (0x%x)\n", cfg.dialmode);
+#else
+#warning ISDN_NET_DM_OFF not defined? Old isdn4kernel?
+        printf("Dial mode:              not available at compilation\n");
+#endif
         printf("Secure:                 %s\n", cfg.secure ? "on" : "off");
         printf("Callback:               %s\n", num2callb[cfg.callback]);
         if (cfg.callback == 2)
                 printf("Hangup after Dial       %s\n", cfg.cbdelay ? "on" : "off");
         else
                 printf("Reject before Callback: %s\n", cfg.cbhup ? "on" : "off");
-        printf("Callback-delay:         %d\n", cfg.cbdelay / 5);
+        printf("Callback-delay:         %d\n",cfg.cbdelay / 5);
         printf("Dialmax:                %d\n", cfg.dialmax);
+#ifdef HAVE_TIMRU
+        printf("Dial-Timeout:           %d\n", cfg.dialtimeout);
+        printf("Dial-Wait:              %d\n", cfg.dialwait);
+#endif
         printf("Hangup-Timeout:         %d\n", cfg.onhtime);
         printf("Incoming-Hangup:        %s\n", cfg.ihup ? "on" : "off");
         printf("ChargeHangup:           %s\n", cfg.chargehup ? "on" : "off");
@@ -336,11 +515,56 @@ static void listif(int isdnctrl, char *name, int errexit)
         else
         	printf("Nothing\n");
 
-        if (cfg.slave && strlen(cfg.slave))
-                strcpy(nextlistif, cfg.slave);
+        if (cfg.slave && *cfg.slave) {
+                strncpy(nextslaveif, cfg.slave, 9);
+		nextslaveif[9] = 0;
+	}
         else
-                nextlistif[0] = '\0';
+                nextslaveif[0] = 0;
 }
+
+
+#ifdef IIOCNETGPN
+static void statusif(int isdnctrl, char *name, int errexit)
+{
+	isdn_net_ioctl_phone phone;
+	int rc;
+	static int isdninfo = -1;
+
+	if (isdninfo < 0) {
+		isdninfo = open("/dev/isdninfo", O_RDONLY);
+		if (isdninfo < 0) {
+			perror("Can't open /dev/isdninfo");
+			exit(-1);
+		}
+	}
+	memset(&phone, 0, sizeof phone);
+	strncpy(phone.name, name, sizeof phone.name);
+	rc = ioctl(isdninfo, IIOCNETGPN, &phone);
+	if (rc == 0) {
+		printf("%s connected %s %s\n",
+			name, phone.outgoing?"to":"from", phone.phone);
+		return;
+	}
+	if (errno == ENOTCONN) {
+		printf("%s is not connected\n", name);
+		if (errexit) {
+			exit(1); /* exit 1 if interface specified & not conn. */
+		}
+		return;
+	}
+	if (errno == EINVAL) {
+		puts("Sorry, not configured in your kernel");
+		exit(-1);
+	}
+	if (errexit) {
+		perror(name);
+		exit(-1);
+	}
+}
+#else
+#warning IIOCNETGPN not defined? Old isdn4kernel? Or 2.0.x kernel...
+#endif
 
 int findcmd(char *str)
 {
@@ -353,6 +577,77 @@ int findcmd(char *str)
 
 	return -1;
 }
+
+
+#ifdef ISDN_NET_DM_OFF
+/*
+ * do_dialmode() - handle dialmode settings
+ *		   parameters:
+ *			args	 - number of args given
+ *			dialmode - what to set it to
+ *			fd	 - fd for ioctl
+ *			id	 - name of interface
+ *			errexit  - exit if error (useful for nonisdn interfaces)
+ * 
+ * If called with args == 2, set the value of interface id,
+ * else show the setting.
+ */
+
+static void
+do_dialmode(int args, int dialmode, int fd, char *id, int errexit)
+{
+	isdn_net_ioctl_cfg cfg;
+
+	memset(&cfg, 0, sizeof cfg);	/* clear in case of older kernel */
+	cfg.dialmode = 0xDEADBEEF;
+	/* first get settings */
+	strcpy(cfg.name, id);
+	if (ioctl(fd, IIOCNETGCF, &cfg) < 0) {
+		if (!errexit)
+			return;
+		perror(id);
+		exit(-1);
+	}
+	if (cfg.dialmode == 0xDEADBEEF) {
+		fputs("dialmode setting not in kernel\n", stderr);
+		/*
+		 * exit true if setting "auto"
+		 * I want to be able to "isdnctrl dialmode if auto" without
+		 * error if kernel has no dialmode, as then the behaviour is
+		 * equivalent to "auto".
+		 */
+		exit((args == 2 && dialmode == ISDN_NET_DM_AUTO) ? 0 : -1);
+	}
+	/* hack for following a chain of interfaces */
+	if (cfg.slave && *cfg.slave) {
+		strncpy(nextslaveif, cfg.slave, 9);
+		nextslaveif[9] = 0;
+	}
+	else
+		nextslaveif[0] = 0;
+
+	if (args == 2) {	/* set a value */
+		cfg.dialmode = dialmode;
+		if (ioctl(fd, IIOCNETSCF, &cfg) < 0) {
+			perror(id);
+			exit(-1);
+		}
+		return;
+	}
+
+	printf("Dial mode for %s: ", id);
+	/* no args specified, so show dialmode */
+	if      (cfg.dialmode == ISDN_NET_DM_OFF)
+		puts("off");
+	else if (cfg.dialmode == ISDN_NET_DM_AUTO)
+		puts("auto");
+	else if (cfg.dialmode == ISDN_NET_DM_MANUAL)
+		puts("manual");
+	else
+		puts("illegal value (wrong kernel version?)");
+}
+#endif /* dialmode in kernel source */
+
 
 int exec_args(int fd, int argc, char **argv)
 {
@@ -417,6 +712,7 @@ int exec_args(int fd, int argc, char **argv)
 		argc -= args;
 		argv += args;
 
+		memset(&cfg, 0, sizeof cfg);	/* clear in case of older kernel */
 		switch (i) {
 			case ADDIF:
 			        strcpy(s, args?id:"");
@@ -661,13 +957,39 @@ int exec_args(int fd, int argc, char **argv)
 			        			*p = 0;
 			        			sscanf(s, "%s", name);
 			        			listif(fd, name, 0);
-			        			while (strlen(nextlistif))
-			        				listif(fd, nextlistif, 0);
+			        			while (*nextslaveif)
+			        				listif(fd, nextslaveif, 0);
 			        		}
 			        	}
 			        	fclose(iflst);
 			        } else
 			        	listif(fd, id, 1);
+			        break;
+
+			case STATUS:
+#ifdef IIOCNETGPN
+			        if (!strcmp(id, "all")) {
+			        	char name[10];
+			        	if ((iflst = fopen(FILE_PROC, "r")) == NULL) {
+			        		perror(FILE_PROC);
+			        		return -1;
+			        	}
+			        	while (!feof(iflst)) {
+			        		fgets(s, sizeof(s), iflst);
+			        		if ((p = strchr(s, ':'))) {
+			        			*p = 0;
+			        			sscanf(s, "%s", name);
+			        			statusif(fd, name, 0);
+			        			while (*nextslaveif)
+			        				statusif(fd, nextslaveif, 0);
+			        		}
+			        	}
+			        	fclose(iflst);
+			        } else
+			        	statusif(fd, id, 1);
+#else
+				puts("Sorry, not configured into isdnctrl");
+#endif /* defined IIOCNETGPN */
 			        break;
 
 			case EAZ:
@@ -1053,6 +1375,141 @@ int exec_args(int fd, int argc, char **argv)
 			case RESET:
 			        reset_interfaces(fd, args?id:NULL);
 			        break;
+
+                	case DIALMODE:
+#ifdef ISDN_NET_DM_OFF
+				if(args == 2) {
+					if (!strcmp(arg1, "on") || !strcmp(arg1, "manual"))
+						cfg.dialmode = ISDN_NET_DM_MANUAL;
+					else if (!strcmp(arg1, "off"))
+						cfg.dialmode = ISDN_NET_DM_OFF;
+					else if (!strncmp(arg1, "auto", 4))
+					    /* also automatic, autodial, ... */
+						cfg.dialmode = ISDN_NET_DM_AUTO;
+					else {
+						fprintf(stderr, "dialmode must be 'off', 'manual' or 'auto'\n");
+						exit(-1);
+					}
+				}
+				if (!strcmp(id, "all")) { /* do all interfaces*/
+					if ((iflst = fopen(FILE_PROC, "r")) == NULL) {
+						perror(FILE_PROC);
+						return -1;
+					}
+					while (!feof(iflst)) {
+						fgets(s, sizeof(s), iflst);
+						if ((p = strchr(s, ':'))) {
+							*p = 0;
+							p = s;
+							while (*p && isspace(*p))
+								p++;
+							do_dialmode(args, cfg.dialmode, fd, p, 0);
+							while (*nextslaveif)
+								do_dialmode(args, cfg.dialmode, fd, nextslaveif, 0);
+						}
+					}
+					fclose(iflst);
+				}
+				else {
+					do_dialmode(args, cfg.dialmode, fd, id, 1);
+				}
+
+#else	/* not in kernel include file */
+				fprintf(stderr, "No 'dialmode' field in kernel source when compiled, old isdn4kernel?\n");
+				exit(-1);
+#endif
+                        	break;
+
+
+#ifdef I4L_CTRL_TIMRU
+			case DIALTIMEOUT:
+#ifdef HAVE_TIMRU
+			        strcpy(cfg.name, id);
+                		if((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+                       			perror(id);
+                       			exit(-1);
+                		}
+                        	if (args) {
+                                	i = -1;
+                                	sscanf(arg1, "%d", &i);
+                                	if (i < 0) {
+                                        	fprintf(stderr, "Dial-Timeout must be >= 0\n");
+                                        	exit(-1);
+                                	}
+                                	cfg.dialtimeout = i;
+                                	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+                                        	perror(id);
+                                        	exit(-1);
+                                	}
+                        	}
+                        	printf("Dial-Timeout for %s is %d sec.\n", cfg.name, cfg.dialtimeout);
+#else
+					fprintf(stderr, "No TIMRU in Kernel\n");
+					exit(-1);
+#endif
+                        	break;
+
+                	case DIALWAIT:
+#ifdef HAVE_TIMRU
+                        	strcpy(cfg.name, id);
+                        	if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+                                	perror(id);
+                                	exit(-1);
+                        	}
+                        	if (args) {
+                                	i = -1;
+                                	sscanf(arg1, "%d", &i);
+                                	if (i < 0) {
+                                        	fprintf(stderr, "Dial-Wait must be >= 0\n");
+                                        	exit(-1);
+                                	}
+                                	cfg.dialwait = i;
+                                	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+                                        	perror(id);
+                                        	exit(-1);
+                                	}
+                        	}
+                        	printf("Dial-Wait for %s is %d sec.\n", cfg.name, cfg.dialwait);
+#else
+					fprintf(stderr, "No TIMRU in Kernel\n");
+					exit(-1);
+#endif
+                        	break;
+
+                	case ADDRULE:
+                	case INSRULE:
+                	case DELRULE:
+                	case SHOWRULES:
+                	case FLUSHRULES:
+                	case FLUSHALLRULES:
+                	case DEFAULT:
+#ifdef HAVE_TIMRU
+                        	if((args = hdl_timeout_rule(fd, id, i, argc, argv)) < 0)
+					exit(-1);
+				argc -= args;
+				argv += args;
+#else
+					fprintf(stderr, "No TIMRU in Kernel\n");
+					exit(-1);
+#endif
+                        	break;
+
+			case BUDGET:
+			case SHOWBUDGETS:
+			case SAVEBUDGETS:
+			case RESTOREBUDGETS:
+#ifdef HAVE_TIMRU
+                        	if((args = hdl_budget(fd, id, i, argc, argv)) < 0)
+					exit(-1);
+				argc -= args;
+				argv += args;
+#else
+					fprintf(stderr, "No TIMRU in Kernel\n");
+					exit(-1);
+#endif
+                        	break;
+#endif
+
 #ifdef I4L_CTRL_CONF
 			case WRITECONF:
 			        if (args == 0) {
@@ -1078,6 +1535,66 @@ int exec_args(int fd, int argc, char **argv)
 			        printf("ISDN Configuration read from %s.\n", id);
 			        break;
 #endif /* I4L_CTRL_CONF */
+
+			case IFDEFAULTS: {
+#define	MAX_DEFS_ARGS	64
+
+				int	defs_argc;
+				char	*defs_argv [MAX_DEFS_ARGS + 1];
+				defs_fcn_t	defs_fcn_p;
+				int		i;
+				char	*s, *s0, *t, *u;
+
+
+				i = 0;
+				while((defs_fcn_p = defs_fcns [i++]) != NULL) {
+
+					s = (*defs_fcn_p)(id);
+
+					if(!s || !*s)
+						continue;
+
+					s0 = s = strdup(s);
+
+					while(s && *s) {
+						t = strdup(strtok(s, "\n"));
+						s += strlen(t) + 1;
+
+						if(!t || !*t)
+							continue;
+
+						defs_argc = 0;
+						defs_argv [defs_argc] = NULL;
+
+						u = strtok(t, " \t");
+
+						while(u && *u) {
+							if(++defs_argc >= MAX_DEFS_ARGS) {
+								fprintf(stderr, "default-values overflow.");
+								exit(1);
+							}
+
+							defs_argv [defs_argc - 1] = strdup(u);
+							defs_argv [defs_argc] = NULL;
+
+							u = strtok(NULL, " \t");
+						}
+
+						if(defs_argc)  {
+							exec_args(fd, defs_argc, defs_argv);
+
+							while(defs_argc--)
+								free(defs_argv [defs_argc]);
+						}
+
+						free(t);
+					}
+
+					free(s0);
+				}
+
+			}
+			break;
 		}
 
 #if DEBUG
@@ -1090,9 +1607,24 @@ int exec_args(int fd, int argc, char **argv)
 	return 0;
 }
 
-void check_version() {
+
+char	*defs_basic(char *id) {
+	static char	r [1024];
+	char	*p = r;
+
+	p += sprintf(p, "dialmode %s off\n", id);
+	p += sprintf(p, "huptimeout %s 60\n", id);
+
+	return(r);
+}
+
+void check_version(int report) {
 	int fd;
 
+	if (report) {
+		printf("isdnctrl's view of API-Versions:\n");
+		printf("ttyI: %d, net: %d, info: %d\n", TTY_DV, NET_DV, INF_DV);
+	}
 	fd = open("/dev/isdninfo", O_RDWR);
 	if (fd < 0) {
 		perror("/dev/isdninfo");
@@ -1106,7 +1638,18 @@ void check_version() {
 		exit(-1);
 	}
 	close(fd);
+	if (report) {
+		printf("Kernel's view of API-Versions:\n");
+		printf("ttyI: %d, net: %d, info: %d\n",
+			data_version & 0xff,
+			(data_version >> 8) & 0xff,
+			(data_version >> 16) & 0xff);
+		return;
+	}
 	data_version = (data_version >> 8) & 0xff;
+	/* consider NET_DV 0x04 and 0x05 to be the same */
+	if (data_version == 0x04)
+		data_version = 0x05;
 	if (data_version != NET_DV) {
 		fprintf(stderr, "Version of kernel ioctl structs (%d) does NOT match\n",
 			data_version);
@@ -1149,7 +1692,11 @@ int main(int argc, char **argv)
 		usage();
 		exit(-1);
 	}
-	check_version();
+	if ((argc == 2) && (!strcmp(argv[1], "-V"))) {
+		check_version(1);
+		exit(0);
+	}
+	check_version(0);
 
 	fd = open("/dev/isdnctrl", O_RDWR);
 	if (fd < 0) {

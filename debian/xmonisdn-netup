@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Example netup script for xmonisdn
+# Do with it what you want.
+
+# This sets the dialmode of all interfaces to `auto'.
+# This allows any connection to be made automatically on demand.
+# It is run when you click button 2 (middle button) on the xmonisdn icon.
+#
+# This script must be owned by root, and not writeable for group or others!
+
+# As this is only an example, there is 'exit 0' at the beginning of the
+# script. Remove it after changing this script to your liking.
+
+exit 0
+
+# check to see if there are any isdn interfaces
+egrep -s '^ i(sdn|ppp)' /proc/net/dev > /dev/null || exit 0
+/usr/sbin/isdnctrl dialmode all auto

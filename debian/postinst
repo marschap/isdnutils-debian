@@ -1,17 +1,68 @@
 #!/bin/bash -e
 
-/dev/MAKEDEV isdn-tty isdn-io isdn-ippp 
+[ $1 = configure ] || exit 0
+
+cd /dev
+./MAKEDEV isdn-tty isdn-io isdn-ippp 
+rm -f isdnctrl
+ln -s isdnctrl0 isdnctrl
 
 if [ -f /var/log/isdn/calls ];
 then
+	if [ -s /var/lib/isdn/calls ]
+	then
+		savelog -l /var/lib/isdn/calls
+	fi
 	mv /var/log/isdn/calls* /var/lib/isdn
 fi
 
-touch /var/lib/isdn/calls
+# previous to 3.0-10, the calls info was stored in /var/log/isdn.log. This is
+# now changed to /var/lib/isdn/calls to conform to upstream standards.
+if [ -f /var/log/isdn.log ]
+then
+	if [ -s /var/lib/isdn/calls ]
+	then
+		savelog -l /var/lib/isdn/calls
+	fi
+	mv -f /var/log/isdn.log /var/lib/isdn/calls
+	echo "/var/log/isdn.log moved to /var/lib/isdn/calls ."
+else
+	touch /var/lib/isdn/calls
+fi
 
-if [ -e /etc/suid.conf -a -x /usr/sbin/suidregister ]; then
-        suidregister -s isdnutils /usr/bin/vboxbeep root root 755
-        suidregister -s isdnutils /usr/X11R6/bin/xmonisdn root root 755
+# 3.0-1 .. 3.0-7 put vbox logs in /var/log/vbox. This was an error.
+if [ -d /var/log/vbox ]; then
+	cd /var/log
+	rmdir -p vbox
+	if [ -d vbox ]
+	then
+		mv -f vbox/* isdn/. > /dev/null 2>&1 || true
+		rmdir -p vbox
+	fi
+fi
+
+# last versions of 2.1.beta1 installed /etc/ppp/ip-{up,down}.d/isdnutils
+# without execute permissions. Fix that here.
+
+TEXT=''
+if [ -f /etc/ppp/ip-up.d/isdnutils -a ! -x /etc/ppp/ip-up.d/isdnutils ]; then
+	chmod +x /etc/ppp/ip-up.d/isdnutils
+	TEXT='
+/etc/ppp/ip-up.d/isdnutils'
+fi
+if [ -f /etc/ppp/ip-down.d/isdnutils -a ! -x /etc/ppp/ip-down.d/isdnutils ]; then
+	chmod +x /etc/ppp/ip-down.d/isdnutils
+	if [ -z "$TEXT" ]; then
+		TEXT='
+/etc/ppp/ip-down.d/isdnutils was '
+	else
+		TEXT="$TEXT and /etc/ppp/ip-down.d/isdnutils were
+"
+	fi
+fi
+if [ ! -z "$TEXT" ]; then
+	echo "${TEXT}not executable; this is now remedied."
+	TEXT=''
 fi
 
 if ! dpkg --compare-versions "$2" ">=" "2.1"; then
@@ -30,14 +81,145 @@ files for you. Start this program now (y/n)? "
 	esac
 fi
 
-if ! dpkg --compare-versions "`uname -r`" ">=" "2.0.31" 
-then
-	echo "
-These isdnutils were compiled with kernel 2.0.31.
-You are running a kernel older than 2.0.31.
-This will not work. Please update your kernel to a newer version.
+# Stuff below is for editing the device config files...
 
-Press Enter to continue 	[Return]"
+choice() {
+	question="$1"
+	choices="$2"
+	while :
+	do
+		echo -n "$question"
+		read ans
+		case "x$ans" in
+			x$choices)	return $ans;;
+			x*) 		echo "Please respond with one of the given numbers";;
+		esac
+	done
+}
+
+get_dialmode() {
+	cat << 'EOF'
+The new ISDN kernel driver has a new 'dialmode' facility.
+By default this has the 'manual' setting, meaning that connections can only be
+made (AND DISCONNECTED!!!) manually. The old behaviour is represented by
+the 'auto' setting (dial-on-demand activated).
+
+You do not have the dialmode command in (at least) one of your
+/etc/isdn/device.* files. I can modify these files to add the dialmode command.
+What would you like?
+EOF
+	set +e
+	choice '
+0 - do not edit the files
+1 - add "dialmode auto"   (this is the same as the old behaviour)
+2 - add "dialmode manual" (you dial and hangup manually)
+3 - add "dialmode off"    (nothing possible until dialmode is changed)
+
+Enter your choice: ' '[0123]'
+	rc=$?
+	set -e
+	case $rc in
+		0)	doit=no;;
+		1)	doit=auto;;
+		2)	doit=manual;;
+		3)	doit=off;;
+		*)	echo "internal error, rc=$rc"
+			echo -n "Press ENTER to continue 	[Return]"
+			read
+			doit=no;;
+	esac
+}
+
+edit_failed=false
+edit_devfile() {
+	$edit_failed && return
+	devfile=$1
+	set +e
+	perl -i.bak - $doit $devfile << 'EOF'
+  $dialmode = shift;
+  while (<>) {
+	last if /^# Configuration \(start\)/;
+	print;
+  }
+  unless (/^# Configuration /) {
+	print STDERR "Sorry, modification failed. Please do it by hand\n(use /usr/doc/isdnutils/examples/default/device.DEVICE.gz as an example).";
+	exit 1;
+  }
+
+  print "# DIALMODE:
+# New with kernel 2.0.36 is the `dialmode' setting.
+# dialmode=auto is compatible with the old behaviour (dial-on-demand enabled).
+# Read the isdnctrl manpage for more info.
+# Change the value below if you want a different setting when the interface is
+# started.
+
+DIALMODE=$dialmode		# XXX_\n\n$_";
+
+  while (<>) {
+	last if /;;/;
+	print;
+  }
+
+  print "	isdnctrl dialmode \$device \$DIALMODE || true\n$_";
+
+  while (<>) {
+	last if /\bstop\)/;
+	print;
+  }
+
+  print "$_	isdnctrl dialmode \$device off || true\n";
+
+  while (<>) {
+	print;
+  }
+  exit 0;
+EOF
+	[ $? -ne 0 ] && edit_failed=true
+	set -e
+}
+
+# get list of device.{isdn,ippp}* files and check for dialmode
+
+doit=ask
+rm -f /etc/isdn/device.i[ps][pd][pn]*.bak
+for devfile in /etc/isdn/device.i[ps][pd][pn]*
+do
+	[ -f $devfile ] || break
+	grep -i dialmode $devfile > /dev/null && continue
+	if [ $doit = ask ]
+	then	get_dialmode
+	fi
+	[ $doit = no ] && break
+	edit_devfile $devfile
+done
+
+for devfile in /etc/isdn/device.i[ps][pd][pn]*.bak
+do
+	[ -f $devfile ] || break
+	$edit_failed && break
+	echo "Please check that the modification was done correctly, and"
+	echo "remove the .bak files."
+	break
+done
+if [ $doit != ask ]
+then
+	echo "Press ENTER to continue 	[Return]"
 	read
 fi
- 
+
+if ! dpkg --compare-versions "`uname -r`" ">=" "2.0.36" 
+then
+	echo "
+These isdnutils were compiled for kernel 2.0.36 and up.
+You are running a kernel older than 2.0.36.
+This will basically work, although the 'isdnctrl dialmode' facility will
+not work. You are urged to upgrade to 2.0.36 or higher.
+
+Press ENTER to continue 	[Return]"
+	read
+fi
+
+if [ -x /usr/sbin/install-docs ]; then
+	install-docs -i /usr/share/doc-base/isdn4linux-faq-de
+	install-docs -i /usr/share/doc-base/isdn4linux-faq-eng
+fi

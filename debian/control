@@ -2,17 +2,16 @@ Source: isdnutils
 Section: net
 Priority: extra
 Maintainer: Paul Slootman <paul@debian.org>
-Standards-Version: 2.3.0.1
+Standards-Version: 2.5.0
 
 Package: isdnutils
-Architecture: any
-Depends: ${shlibs:Depends}, makedev (>>1.6-10), suidmanager, netbase (>= 2.14), sox, psmisc
-Suggests: ppp, tcpdump (>= 3.3.1a2-1), mgetty
-Replaces: vbox, isdnlog, ipppd
-Conflicts: vbox, isdnlog, ipppd, xisdnutils
-Description: isdn utilities
- This package includes everything you need to run ISDN: interface
- controlling programs, an ISDN logging tool, a voice box program,
- a synchronous PPP daemon, an ISDN load viewer, and much more.
+Architecture: alpha i386 powerpc sparc
+Depends: ${shlibs:Depends}, makedev (>= 2.3.1-10) | makedev (<< 2.3.1)
+Recommends: ppp, sox, suidmanager, doc-base
+Suggests: mgetty
+Replaces: vbox, isdnlog, ipppd, xisdnutils
+Description: ISDN utilities
+ This package includes all the utilities to get an ISDN system up and
+ running.
  .
- This package will only run with 2.0.31 or 2.0.32 (and possibly higher) kernels.
+ This package works best with a 2.0.36 kernel (or higher).

@@ -38,6 +38,11 @@
 #define MAX_CLIENTS_LISTEN    5
 
 #define PROT_VERSION					"V0.2"
+#define PROT_ELEMENTS					20
+
+#ifndef SERV_PORT
+#	define SERV_PORT 20011
+#endif
 
 /****************************************************************************/
 
@@ -62,6 +67,7 @@
 #define MSG_CHANGE_CHAN  13  /* Vom Server: Kanal wurde gewechselt */
 #define MSG_VERSION      14  /* Vom Server: Version des Protokolls: "PROT_VERSION" */
 #define MSG_CLOSE				 15  /* Die Verbindung wird beendet ohne Parameter, Dummy-Message */
+#define MSG_ISDN_CMD		 16  /* Es kann ein Befehl vom Client ausgefuehrt werden */
 
 /****************************************************************************/
 
@@ -93,6 +99,7 @@
 #define NO_LISTEN		-4
 #define NO_CONNECT	-5
 #define NO_MEMORY  	-6
+#define NO_HOST  	  -7
 
 /****************************************************************************/
 

@@ -7,11 +7,13 @@ LOCAL_LIBRARIES = XawClientLibs
            OBJS = xmonisdn.o Net.o
         HEADERS = NetP.h Net.h
 
-   INSTPGMFLAGS = -m 4755 -s
+   INSTPGMFLAGS = -m 0755 -s
 
 ComplexProgramTarget(xmonisdn)
 
 install.bitmap:
+	[ -d $(DESTDIR)$(INCROOT)/X11/bitmaps ] || \
+		mkdir -p $(DESTDIR)$(INCROOT)/X11/bitmaps
 	$(INSTALL) $(INSTALLFLAGS) -m 644 netinactive netwaiting netactive netactiveout netstart netstop $(DESTDIR)$(INCROOT)/X11/bitmaps/
 
 install.all: install 	install.man 	install.bitmap

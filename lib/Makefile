@@ -28,7 +28,7 @@ endif
 # USER CONFIGURATION AREA
 ######################################################################
 
-CFLAGS      = -Wall -pipe -O6
+CFLAGS      = -g -Wall -pipe #-O6
 DEFS        =
 ifndef _CC
 export _CC  = gcc
@@ -94,6 +94,7 @@ deinstall: distclean
 
 libisdn.a: conffile.o isdntools.o libtools.o $(LIB_AREA) $(LIB_AVON)
 		ar rs libisdn.a isdntools.o conffile.o libtools.o $(LIB_AREA) $(LIB_AVON)
+		ranlib libisdn.a
 
 ifeq (.depend,$(wildcard .depend))
 include .depend

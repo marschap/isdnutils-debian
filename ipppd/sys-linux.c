@@ -22,7 +22,7 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-char sys_rcsid[] = "$Id: sys-linux.c,v 1.7 1997/10/26 23:06:26 fritz Exp $";
+char sys_rcsid[] = "$Id: sys-linux.c,v 1.20 1999/08/03 14:17:34 paul Exp $";
 
 #define _LINUX_STRING_H_
 
@@ -50,17 +50,23 @@ char sys_rcsid[] = "$Id: sys-linux.c,v 1.7 1997/10/26 23:06:26 fritz Exp $";
 #include <unistd.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <net/if.h>
-#include <net/if_arp.h>
-#include <net/route.h>
+#include </usr/include/net/if.h>
+#include </usr/include/net/if_arp.h>
+#include </usr/include/net/route.h>
 #if defined __GLIBC__ && __GLIBC__ >= 2
-# include <net/ppp_defs.h>
-# include <net/if_ppp.h>
-# include <net/ethernet.h>
+# include </usr/include/net/ppp_defs.h>
+# include </usr/include/net/if_ppp.h>
+# include </usr/include/net/ethernet.h>
+# include "route.h"
 #else
 # include <linux/ppp_defs.h>
 # include <linux/if_ppp.h>
 # include <linux/if_ether.h>
+#endif
+
+#include <linux/isdn_ppp.h>
+#if __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 1
+# include <netipx/ipx.h>
 #endif
 
 #include "fsm.h"
@@ -69,6 +75,8 @@ char sys_rcsid[] = "$Id: sys-linux.c,v 1.7 1997/10/26 23:06:26 fritz Exp $";
 #include "ipxcp.h"
 #include "ccp.h"
 #include "lcp.h"
+
+extern int force_driver;
 
 static int prev_kdebugflag     = 0;
 static int has_default_route   = 0;
@@ -85,7 +93,7 @@ int sockfd;			/* socket for doing interface ioctls */
 
 static char *lock_file;
 
-#define MAX_IFS		5000
+#define MAX_IFS		4096
 
 #define FLAGS_GOOD (IFF_UP          | IFF_BROADCAST)
 #define FLAGS_MASK (IFF_UP          | IFF_BROADCAST | \
@@ -144,7 +152,7 @@ static int get_flags (int tu,int *error)
 	}
 
 	if (ioctl(lns[tu].fd, PPPIOCGFLAGS, (caddr_t) &flags) < 0) {
-		syslog(LOG_ERR, "ioctl(PPPIOCGFLAGS): %m");
+		syslog(LOG_ERR, "ioctl(PPPIOCGFLAGS) on %d: %m",lns[tu].fd);
 		*error = 1;
 		return 0;
 	}
@@ -211,7 +219,7 @@ void note_debug_level (void)
 /*
  * set_kdebugflag - Define the debugging level for the kernel
  */
-static int set_kdebugflag (int requested_level,int tu)
+int set_kdebugflag (int requested_level,int tu)
 {
 	if (ioctl(lns[tu].fd, PPPIOCGDEBUG, &prev_kdebugflag) < 0) {
 		syslog(LOG_ERR, "ioctl(PPPIOCGDEBUG): %m");
@@ -238,12 +246,16 @@ void establish_ppp (int linkunit)
 		lns[linkunit].ifunit = -1;
 		return;
 	}
+	lns[linkunit].master = -1;
 	sprintf(lns[linkunit].ifname,"%s%d","ippp",lns[linkunit].ifunit);
 
 	if( ioctl(lns[linkunit].fd, PPPIOCGCALLINFO, &lns[linkunit].pci) == 0) {
 		struct pppcallinfo *pci = &lns[linkunit].pci;
 		syslog(LOG_NOTICE, "Local number: %s, Remote number: %s, Type: %s",
 			pci->local_num,pci->remote_num,pci->calltype & CALLTYPE_INCOMING ? "incoming" : "outgoing" );
+#ifdef RADIUS
+               strncpy ( lns[linkunit].remote_number, pci->remote_num, sizeof( lns[linkunit].remote_number ) ) ;
+#endif
 	}
 
 	if(useifmtu) {   
@@ -256,7 +268,7 @@ void establish_ppp (int linkunit)
 		else
 			lcp_allowoptions[lns[linkunit].lcp_unit].mru = ifr.ifr_mtu;
 	}
- 
+
 #if 0
 	set_kdebugflag (kdebugflag,linkunit);
 #endif
@@ -268,7 +280,7 @@ void establish_ppp (int linkunit)
 /*
  * output - Output PPP packet.
  */
-void output (int linkunit, unsigned char *p, int len)
+void output_ppp (int linkunit, unsigned char *p, int len)
 {
 	if (debug)
 		log_packet(p, len, "sent ",linkunit);
@@ -315,14 +327,16 @@ void ppp_send_config (int unit,int mtu,u_int32_t asyncmap,int pcomp,int accomp)
 		/*
 		 * Set the MTU and other parameters for the ppp device
 		 */
-		memset (&ifr, '\0', sizeof (ifr));
-		strncpy(ifr.ifr_name, lns[unit].ifname, sizeof (ifr.ifr_name));
-		ifr.ifr_mtu = mtu;
-
-		if (ioctl(sockfd, SIOCSIFMTU, (caddr_t) &ifr) < 0) {
-			syslog(LOG_ERR, "ioctl(SIOCSIFMTU): %m, %d %s %d.",sockfd,ifr.ifr_name,ifr.ifr_mtu);
+		if(lns[unit].master < 0) {
+			memset (&ifr, '\0', sizeof (ifr));
+			strncpy(ifr.ifr_name, lns[unit].ifname, sizeof (ifr.ifr_name));
+			ifr.ifr_mtu = mtu;
+	
+			if (ioctl(sockfd, SIOCSIFMTU, (caddr_t) &ifr) < 0) {
+				syslog(LOG_ERR, "ioctl(SIOCSIFMTU): %m, %d %s %d.",sockfd,ifr.ifr_name,ifr.ifr_mtu);
+			}
 		}
-
+	
 		x = get_flags(unit,&err);
 		if(err)
 			return;
@@ -398,19 +412,43 @@ void ppp_recv_config (int unit,int mru,u_int32_t asyncmap,int pcomp,int accomp)
  */
 int ccp_test (int ccp_unit, u_char *opt_ptr, int opt_len, int for_transmit)
 {
-	struct ppp_option_data data;
+#ifdef NEW_VERS
+	struct isdn_ppp_comp_data data;
 	int linkunit = ccp_fsm[ccp_unit].unit;
 
 	memset (&data, '\0', sizeof (data));
-	data.ptr      = opt_ptr;
-	data.length   = opt_len;
-	data.transmit = for_transmit;
+	data.num = opt_ptr[0];
+	data.optlen = opt_len - 2;
+	if(data.optlen > ISDN_PPP_COMP_MAX_OPTIONS) {
+		syslog(LOG_NOTICE, "ccp_test: options field too long!\n");
+		return -1;
+	}
+	memcpy(data.options,opt_ptr+2,data.optlen);
 
-	if (ioctl(lns[linkunit].fd, PPPIOCSCOMPRESS, (caddr_t) &data) >= 0)
+	data.flags = 0;
+	if(for_transmit)
+		data.flags |= IPPP_COMP_FLAG_XMIT;
+	if(ccp_fsm[ccp_unit].protocol == PPP_LINK_CCP)
+		data.flags |= IPPP_COMP_FLAG_LINK;
+
+	if (ioctl(lns[linkunit].fd, PPPIOCSCOMPRESSOR, (caddr_t) &data) >= 0)
 		return 1;
-
 	return (errno == ENOBUFS)? 0: -1;
+#else
+	return -1;
+#endif
+
 }
+
+int ccp_get_compressors(int ccp_unit,unsigned long *protos)
+{
+  int linkunit = ccp_fsm[ccp_unit].unit;
+
+  if (ioctl(lns[linkunit].fd, PPPIOCGCOMPRESSORS, protos) >= 0)
+	return 0;
+  return -1;
+}
+
 
 /*
  * ccp_flags_set - inform kernel about the current state of CCP.
@@ -483,22 +521,22 @@ int sifup (int u)
 	memset (&ifr, '\0', sizeof (ifr));
 	strncpy(ifr.ifr_name, lns[u].ifname, sizeof (ifr.ifr_name));
 	if (ioctl(sockfd, SIOCGIFFLAGS, (caddr_t) &ifr) < 0) {
-		syslog(LOG_ERR, "ioctl (SIOCGIFFLAGS): %m");
+		syslog(LOG_ERR, "Ifup: ioctl (SIOCGIFFLAGS): %m");
 		return 0;
 	}
 
 	ifr.ifr_flags |= (IFF_UP | IFF_POINTOPOINT);
     if (ioctl(sockfd, SIOCSIFFLAGS, (caddr_t) &ifr) < 0) {
-		syslog(LOG_ERR, "ioctl(SIOCSIFFLAGS): %m");
+		syslog(LOG_ERR, "Ifup: ioctl(SIOCSIFFLAGS): %m");
 		return 0;
 	}
     if( ioctl(lns[u].fd,PPPIOCGFLAGS,(caddr_t) &x) < 0) {
-		syslog(LOG_ERR,"ioctl(PPPIOCGFLAGS): %m");
+		syslog(LOG_ERR,"Ifup: ioctl(PPPIOCGFLAGS) on %d: %m",lns[u].fd);
 		return 0;
 	}
 	x |= SC_ENABLE_IP;
 	if( ioctl(lns[u].fd,PPPIOCSFLAGS,(caddr_t) &x) < 0) {
-		syslog(LOG_ERR,"ioctl(PPPIOCSFLAGS): %m");
+		syslog(LOG_ERR,"Ifup: ioctl(PPPIOCSFLAGS): %m");
 		return 0;
 	}
 	return 1;
@@ -609,11 +647,23 @@ int sifaddr (int unit, int our_adr, int his_adr, int net_mask)
 			rt.rt_flags |= RTF_HOST;
 
 		if (ioctl(sockfd, SIOCADDRT, &rt) < 0) {
-			syslog (LOG_ERR, "ioctl(SIOCADDRT) device route (%s/%s/%08x): %m",
+			int severity;
+			/*
+			 * It's not fatal IMHO if the route already exists!
+			 * Give a notice, though...
+			 */
+			if (errno == EEXIST) {
+				severity = LOG_NOTICE;
+			}
+			else {
+				severity = LOG_ERR;
+			}
+			syslog (severity, "ioctl(SIOCADDRT) device route (%s/%s/%08x): %m",
 				rt.rt_dev,
 				inet_ntoa(((struct sockaddr_in *)&rt.rt_dst)->sin_addr),
 				ntohl(net_mask));
-            return (0);
+			if (severity == LOG_ERR)
+				return 0;
 		}
 
 	}
@@ -853,8 +903,20 @@ int sifdefaultroute (int unit, int gateway)
     
 		rt.rt_flags = RTF_UP | RTF_GATEWAY;
 		if (ioctl(sockfd, SIOCADDRT, &rt) < 0) {
-			syslog (LOG_ERR, "default route ioctl(SIOCADDRT): %m");
-			return 0;
+			int severity;
+			/*
+			 * It's not fatal IMHO if the route already exists!
+			 * Give a notice, though...
+			 */
+			if (errno == EEXIST) {
+				severity = LOG_NOTICE;
+			}
+			else {
+				severity = LOG_ERR;
+			}
+			syslog (severity, "default route ioctl(SIOCADDRT): %m");
+			if (severity == LOG_ERR)
+				return 0;
 		}
 	}
 	has_default_route = 1;
@@ -1194,7 +1256,7 @@ static void decode_version (char *buf, int *version,
 	  }
       }
     
-    if (*buf != '\0')
+    if (*buf != '\0' && strncmp(buf, "-pre", 4))  /* ignore any "-preX" part */
       {
 	*version      =
 	*modification =
@@ -1238,16 +1300,16 @@ int ppp_available(void)
 /*
  * Validate the version of the driver against the version that we used.
  */
-	decode_version (PPP_VERSION, &my_version, &my_modification, &my_patch);
+	decode_version (IPPP_VERSION, &my_version, &my_modification, &my_patch);
 
     /* The version numbers must match and the modification levels must be legal */
-    if (driver_version != my_version || driver_modification < my_modification)
+    if ( (driver_version != my_version || driver_modification < my_modification) && !force_driver)
 	{
 		extern char *no_ppp_msg;
 		no_ppp_msg = route_buffer;
 
 		sprintf(no_ppp_msg,
-			"Sorry - PPP driver version %d.%d.%d is out of date.\n"
+			"Sorry - isdnPPP driver version %d.%d.%d is out of date.\n"
 			"Maybe ippp0 has no 'syncppp' encapsulation?\n",
 			driver_version, driver_modification, driver_patch);
 		return 0;
@@ -1485,7 +1547,7 @@ void setifip(int ipcp_unit)
   ouraddr = ((struct sockaddr_in *) &ifr.ifr_addr)->sin_addr.s_addr;
 
   if(debug)
-    syslog (LOG_DEBUG, "got if-src: %08lx\n",(unsigned long) ouraddr);
+    syslog (LOG_DEBUG, "Useifip for %s: Got IF-Src-IP: %08lx\n",ifr.ifr_name,(unsigned long) ouraddr);
   
   if(ouraddr)
     wo->ouraddr = ouraddr;
@@ -1499,7 +1561,7 @@ void setifip(int ipcp_unit)
   hisaddr = ((struct sockaddr_in *) &ifr.ifr_dstaddr)->sin_addr.s_addr;
 
   if(debug)
-    syslog (LOG_DEBUG, "got if-dst: %08lx\n",(unsigned long) hisaddr);
+    syslog (LOG_DEBUG, "Useifip for %s: Got IF-Dst-IP: %08lx\n",ifr.ifr_name,(unsigned long) hisaddr);
 
   if(hisaddr)
     wo->hisaddr = hisaddr;
@@ -1512,7 +1574,11 @@ void setifip(int ipcp_unit)
 # define _LINUX_SOCKET_H
 #endif
 
-#include <linux/ipx.h>
+#if (__GLIBC__ > 2) || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 1)
+  /* glibc-2.1 includes all the stuff via /usr/include/netipx/ipx.h */
+#else
+# include <linux/ipx.h>
+#endif
 
 /*
  * sipxfaddr - Config the interface IPX networknumber

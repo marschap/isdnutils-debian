@@ -1,4 +1,4 @@
-/* $Id: isdnconf.c,v 1.9 1997/05/25 19:40:53 luethje Exp $
+/* $Id: isdnconf.c,v 1.12 1998/09/22 20:59:08 luethje Exp $
  *
  * ISDN accounting for isdn4linux. (Report-module)
  *
@@ -19,6 +19,18 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: isdnconf.c,v $
+ * Revision 1.12  1998/09/22 20:59:08  luethje
+ * isdnrep:  -fixed wrong provider report
+ *           -fixed wrong html output for provider report
+ *           -fixed strange html output
+ * kisdnlog: -fixed "1001 message window" bug ;-)
+ *
+ * Revision 1.11  1998/05/11 19:43:43  luethje
+ * Some changes for "vorwahlen.dat"
+ *
+ * Revision 1.10  1998/05/10 22:11:52  luethje
+ * Added support for VORWAHLEN2.EXE
+ *
  * Revision 1.9  1997/05/25 19:40:53  luethje
  * isdnlog:  close all files and open again after kill -HUP
  * isdnrep:  support vbox version 2.0
@@ -236,6 +248,7 @@ int find_data(char *_alias, char *_number, section *conf_dat)
 	auto char *ptr;
 	auto entry *CEPtr;
 	auto section *SPtr;
+	const char *area;
 
 	if (quiet)
 	{
@@ -254,7 +267,8 @@ int find_data(char *_alias, char *_number, section *conf_dat)
 			ptr = (CEPtr = Get_Entry(conf_dat->entries,CONF_ENT_SI))?(CEPtr->value?CEPtr->value:"0"):"0";
 			print_msg(PRT_NORMAL,"%s:\t\t%s\n",CONF_ENT_SI,ptr);
 
-			ptr = (CEPtr = Get_Entry(conf_dat->entries,CONF_ENT_ZONE))?(CEPtr->value?CEPtr->value:""):"";
+			area = area_diff_string(NULL,_number);
+			ptr = (char*)(const char*) (area[0] != '\0'?area:(CEPtr = Get_Entry(conf_dat->entries,CONF_ENT_ZONE))?(CEPtr->value?CEPtr->value:""):"");
 			print_msg(PRT_NORMAL,"%s:\t\t%s\n",make_word(CONF_ENT_ZONE),ptr);
 
 			ptr = (CEPtr = Get_Entry(conf_dat->entries,CONF_ENT_INTFAC))?(CEPtr->value?CEPtr->value:""):"";
@@ -639,9 +653,11 @@ int main(int argc, char *argv[], char *envp[])
 		{
 			if (!isdnmon)
 			{
-				print_msg(PRT_NORMAL,"%s\n",ptr);
+				const char *area = area_diff_string(NULL,areacode);
+
+				print_msg(PRT_NORMAL,"%s%s%s\n",ptr,area[0] != '\0'?" / ":"", area[0] != '\0'?area:"");
 				exit(0);
-		}
+			}
 			
 			print_msg(PRT_NORMAL,"%s\t%d\t",ptr,len);
 		}

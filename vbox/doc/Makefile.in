@@ -58,13 +58,32 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 CC = @CC@
-I4LCONFDIR = @I4LCONFDIR@
+CONFIG_BINDIR = @CONFIG_BINDIR@
+CONFIG_I4LCONFDIR = @CONFIG_I4LCONFDIR@
+CONFIG_MANDIR = @CONFIG_MANDIR@
+CONFIG_SBINDIR = @CONFIG_SBINDIR@
+HAVE_NCURSES_PACK = @HAVE_NCURSES_PACK@
+HAVE_TCL_PACK = @HAVE_TCL_PACK@
+ISDN_GLOBAL_CONFIG = @ISDN_GLOBAL_CONFIG@
+LINK_NCURSES_INCL = @LINK_NCURSES_INCL@
+LINK_NCURSES_LIBS = @LINK_NCURSES_LIBS@
+LINK_TCL_INCL = @LINK_TCL_INCL@
+LINK_TCL_LIBS = @LINK_TCL_LIBS@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
-NCLIB = @NCLIB@
 PACKAGE = @PACKAGE@
-RANLIB = @RANLIB@
-TCLLIB = @TCLLIB@
+VBOX_AR = @VBOX_AR@
+VBOX_DOCDIR = @VBOX_DOCDIR@
+VBOX_LCKDIR = @VBOX_LCKDIR@
+VBOX_LOCKDIR = @VBOX_LOCKDIR@
+VBOX_LOGDIR = @VBOX_LOGDIR@
+VBOX_MAIL = @VBOX_MAIL@
+VBOX_MV = @VBOX_MV@
+VBOX_PIDDIR = @VBOX_PIDDIR@
+VBOX_RANLIB = @VBOX_RANLIB@
+VBOX_RM = @VBOX_RM@
+VBOX_SED = @VBOX_SED@
+VBOX_SPOOLDIR = @VBOX_SPOOLDIR@
 VERDATE = @VERDATE@
 VERSION = @VERSION@
 
@@ -367,20 +386,20 @@ mostlyclean distclean maintainer-clean
 
 
 %.1 %.5 %.8: %.man
-	MANDATE=`grep CHECKIN $< | awk '{print $4}'`    
+	MANDATE=`grep CHECKIN $< | awk '{print $$4}'`; \
 	sed \
-		-e "s#\@MANDATE\@#${MANDATE}#g" \
-		-e "s#\@I4LVERSION\@#@VERSION@#g" \
-        	-e "s#\@BINDIR\@#@bindir@#g" \
-        	-e "s#\@SBINDIR\@#@sbindir@#g" \
+		-e "s#\@MANDATE\@#$${MANDATE}#g" \
+		-e "s#\@I4LVERSION\@#$${I4LVERSION}#g" \
+        	-e "s#\@BINDIR\@#@CONFIG_BINDIR@#g" \
+        	-e "s#\@SBINDIR\@#@CONFIG_SBINDIR@#g" \
         	-e "s#\@VERSION\@#@VERSION@#g" \
         	-e "s#\@VERDATE\@#@VERDATE@#g" \
         	-e "s#\@PACKAGE\@#@PACKAGE@#g" \
-        	-e "s#\@SPOOLDIR\@#@SPOOLDIR@#g" \
-        	-e "s#\@I4LCONFDIR\@#@I4LCONFDIR@#g" \
-        	-e "s#\@LOGFILEDIR\@#@LOGFILEDIR@#g" \
-        	-e "s#\@PIDFILEDIR\@#@RUNDIR@#g" \
-        	-e "s#\@LCKFILEDIR\@#@LOCKDIR@#g" \
+        	-e "s#\@SPOOLDIR\@#@VBOX_SPOOLDIR@#g" \
+        	-e "s#\@I4LCONFDIR\@#@ISDN_GLOBAL_CONFIG@#g" \
+        	-e "s#\@LOGFILEDIR\@#@VBOX_LOGDIR@#g" \
+        	-e "s#\@PIDFILEDIR\@#@VBOX_PIDDIR@#g" \
+        	-e "s#\@LCKFILEDIR\@#@VBOX_LCKDIR@#g" \
 		< $< > $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

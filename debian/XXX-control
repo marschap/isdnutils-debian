@@ -1,0 +1,38 @@
+Source: isdnutils
+Section: net
+Priority: extra
+Maintainer: Paul Slootman <paul@debian.org>
+Standards-Version: 2.5.0
+
+Package: isdnutils
+Architecture: alpha i386 sparc
+Depends: ${shlibs:Depends}
+Description: basic ISDN utilities
+ This package includes the basic utilities to get an ISDN system up and
+ running.
+ It does NOT include all logging and monitoring utilities (it includes
+ imon and imontty only), nor the `vbox' answering machine program.
+
+Package: isdnextra
+Architecture: alpha i386 sparc
+Depends: ${shlibs:Depends}
+Description: various ISDN logging and monitoring utilities
+ This package adds to the basic ISDN utilities the other, enhanced, logging
+ and monitoring utilities.  You want this if e.g. you want a record of in and
+ outgoing calls or various X window utilities.
+
+Package: isdnvbox
+Architecture: alpha i386 sparc
+Depends: ${shlibs:Depends}
+Description: ISDN "voice box" answering machine
+ If you want to use your Linux system as a digital answering machine, choose
+ this package. You can let the system answer more than one number, give
+ different messages to different callers, have recorded messages emailed to
+ you, and much more. It's a very flexible package.
+
+Package: isdnutils-doc
+Section: doc
+Architecture: all
+Description: documentation for all ISDN-related packages
+ The other ISDN-related packages only include basic documentation (e.g.
+ manpages); this package supplies more detailed information.

@@ -1,14 +1,14 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(icnctrl.c)
-AM_INIT_AUTOMAKE(icn,2.1b1)
+AC_PREFIX_DEFAULT("/usr")
 
-AC_ARG_WITH(kernel,\
-	[  --with-kernel=DIR        location of kernel source],
-        [ KERNEL="$withval" ] )
-
-AC_ARG_WITH(include,\
-	[  --with-include=DIR     	   add include (for kernel headers)],
-        [ CPPFLAGS=" $CPPFLAGS -I$withval" ] )
+I4LVERSION=${I4LVERSION:-"?.?"}
+CONFIG_DATADIR=${CONFIG_DATADIR:-"/usr/lib/isdn"}
+CONFIG_SBINDIR=${CONFIG_SBINDIR:-"/sbin"}
+CONFIG_MANDIR=${CONFIG_MANDIR:-"/usr/man"}
+CONFIG_ICNCTRL_DEBUG=${CONFIG_ICNCTRL_DEBUG:-"n"}
+CONFIG_KERNELDIR=`eval echo ${CONFIG_KERNELDIR:-"/usr/src/linux"}`
+MANDATE=`grep CHECKIN icnctrl.man.in | awk '{print $4}'`
 
 dnl Checks for programs.
 AC_PROG_INSTALL
@@ -20,8 +20,18 @@ dnl Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS(fcntl.h sys/ioctl.h unistd.h)
 
-AC_CHECK_HEADERS(linux/isdn.h ,,
-	    AC_MSG_ERROR("Missing linux/isdn.h. Kernel source installed?"))
+dnl Find current kernel source
+AC_FIND_KERNEL
+OLD_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="-I$CONFIG_KERNELDIR/include $CPPFLAGS"
+AC_CHECK_HEADERS(linux/isdn.h,,
+	AC_MSG_ERROR("$CONFIG_KERNELDIR/include/linux/isdn.h missing. Kernel installed?")
+)
+CPPFLAGS="$OLD_CPPFLAGS"
+
+AC_CHECK_HEADERS($CONFIG_KERNELDIR/drivers/isdn/icn/icn.h,,
+	AC_MSG_ERROR("$CONFIG_KERNELDIR/drivers/isdn/icn/icn.h missing. Kernel installed?")
+)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 
@@ -36,10 +46,32 @@ AC_ARG_WITH(firmware,
 	AC_DEFINE(CONFIG_DATADIR,"${withval}"),
 )
 
-dnl Check, if user wants dump option for debugging
-AC_ARG_ENABLE(dump,\
-	[  --enable-dump           Enable dump feature for debugging],\
-	AC_DEFINE(__DEBUGVAR__))
+dnl Optional sbin directory
+AC_ARG_WITH(sbin,
+	[  --with-sbin=DIR         Set dir where binary is istalled. [/sbin]],
+	CONFIG_SBINDIR="${withval}"
+	AC_DEFINE(CONFIG_SBINDIR,"${withval}"),
+)
 
-AC_SUBST(KERNEL)
-AC_OUTPUT(Makefile)
+dnl Optional man directory
+AC_ARG_WITH(man,
+	[  --with-man=DIR          Set manpage dir. [/usr/man]],
+	CONFIG_MANDIR="${withval}"
+	AC_DEFINE(CONFIG_MANDIR,"${withval}"),
+)
+
+dnl Check, if user wants dump option for debugging
+AC_ARG_ENABLE(dump,
+	[  --enable-dump           Enable dump feature for debugging [no]],
+	CONFIG_ICNCTRL_DEBUG="y"
+)
+
+AC_SUBST(INSTALL)
+AC_SUBST(MANDATE)
+AC_SUBST(CONFIG_ICNCTRL_DEBUG)
+AC_SUBST(CONFIG_DATADIR)
+AC_SUBST(CONFIG_KERNELDIR)
+AC_SUBST(CONFIG_SBINDIR)
+AC_SUBST(CONFIG_MANDIR)
+AC_SUBST(I4LVERSION)
+AC_OUTPUT(Makefile icnctrl.man)

@@ -39,12 +39,12 @@ lcp-restart 1		# Set timeout for LCP
 
 # AUTHENTICATION
 
-#name X			# set local name for auth
-#user X			# set name for auth with peer
+name X			# set local name for auth
+#user X			# set name for auth with peer; default is value for name
 #usehostname		# use hostname for auth
 #remotename X		# set remote name for auth
 #noauth			# (dont) require peer (the other) to auth
-#require-pap		# allow only pap authetication
+#require-pap		# allow only pap authentication
 #require-chap		# allow only chap authentication
 #login			# use system password database for pap
 #papcrypt		# pap passwords are encrypted
@@ -67,19 +67,20 @@ lcp-restart 1		# Set timeout for LCP
 #nobsdcomp		# bsd compression on/off
 #nodeflate		# deflate compression on/off
 #nopredictor1		# predictor1 compression in/off
-#noccp			# compression negotation on/off
+noccp			# compression negotation on/off
+nolzs			# LZS compression off (not yet supported fully)
 
 
 # IP NETWORKING
 
 #noip			# en/disable ip transfer
 #X:Y			# set local ip to X, remote ip to Y
-#noipdefault		# don't use name for default ip addr
+noipdefault		# don't use name for default ip addr
 #useifip		# use ip addresses form interface
 #usefirstip		# use first ip from auth file for remote
 #netmask X		# set netmask X
 #defaultroute 		# (dont) set default route 
-#hostroute		# (dont) set host route
+nohostroute		# dont set host route
 #noproxyarp		# (dont) set an proxy arp entry
 #mru X			# set maximum size of recive units to X
 #default-mru		# disable mru negotation
@@ -95,8 +96,8 @@ mtu 1500		# set maximum size of transmit units to X (1500 is OK)
 #ipcp-max-terminate X	# Set max #xmits for term-reqs 
 #ipcp-max-configure X	# Set max #xmits for conf-reqs 
 #ipcp-max-failure X	# Set max #conf-naks for IPCP 
-#ipcp-accept-local	# Accept peer's address for us 
-#ipcp-accept-remote	# Accept peer's address for it 
+ipcp-accept-local	# Accept peer's address for us 
+ipcp-accept-remote	# Accept peer's address for it 
 
 # IPX NETWORKING
 

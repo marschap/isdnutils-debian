@@ -20,6 +20,7 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+#ifdef USE_MSCHAP
 char chap_ms_rcsid[] = "$Id: chap_ms.c,v 1.3 1997/05/19 10:15:41 hipp Exp $";
 
 #include <stdio.h>
@@ -28,8 +29,6 @@ char chap_ms_rcsid[] = "$Id: chap_ms.c,v 1.3 1997/05/19 10:15:41 hipp Exp $";
 #include <sys/time.h>
 #include <syslog.h>
 
-#include "config.h"
-#ifdef USE_MSCHAP
 #include "ipppd.h"
 #include "chap.h"
 #include "chap_ms.h"
@@ -137,6 +136,7 @@ static void MakeKey(key, des_key)
 	       des_key[0], des_key[1], des_key[2], des_key[3], des_key[4], des_key[5], des_key[6], des_key[7]));
 #endif
 }
+#endif /* USE_MSCHAP */
 
 void
 ChapMS(cstate, rchallenge, rchallenge_len, secret, secret_len)
@@ -146,6 +146,7 @@ ChapMS(cstate, rchallenge, rchallenge_len, secret, secret_len)
     char *secret;
     int secret_len;
 {
+#ifdef USE_MSCHAP
     int			i;
     MDstruct		md4Context;
     MS_ChapResponse	response;
@@ -173,5 +174,5 @@ ChapMS(cstate, rchallenge, rchallenge_len, secret, secret_len)
 
     BCOPY(&response, cstate->response, MS_CHAP_RESPONSE_LEN);
     cstate->resp_length = MS_CHAP_RESPONSE_LEN;
-}
 #endif /* USE_MSCHAP */
+}

@@ -159,21 +159,22 @@ Name for new configuration (ippp0 ippp1 ...) : "
 		echo "Installed new config file /etc/isdn/ipppd.$device ."
 		done=1
 	    fi
-	    if [ -d /etc/ppp/ip-up.d -a ! -e /etc/ppp/ip-up.d/isdnutils ]
-	    then
-		if mycp $EXAMPLES/ip-up.d /etc/ppp/ip-up.d/isdnutils
-		then
-		   echo "Installed new config file /etc/ppp/ip-up.d/isdnutils ."
-		   [ -e /etc/ppp/ip-up -a ! -x /etc/ppp/ip-up ] &&
-						chmod +x /etc/ppp/ip-up
-		   if [ $done -eq 0 ]
-		   then	done=1
-		   else	done=2
-		   fi
-		else
-		   echo "Existing /etc/ppp/ip-up.d/isdnutils not overwritten."
-		fi
-	    fi
+#OLD# The files installed below are now conffiles.
+#OLD	    if [ -d /etc/ppp/ip-up.d -a ! -e /etc/ppp/ip-up.d/isdnutils ]
+#OLD	    then
+#OLD		if mycp $EXAMPLES/ip-up.d /etc/ppp/ip-up.d/isdnutils
+#OLD		then
+#OLD		   echo "Installed new config file /etc/ppp/ip-up.d/isdnutils ."
+#OLD		   [ -e /etc/ppp/ip-up -a ! -x /etc/ppp/ip-up ] &&
+#OLD						chmod +x /etc/ppp/ip-up
+#OLD		   if [ $done -eq 0 ]
+#OLD		   then	done=1
+#OLD		   else	done=2
+#OLD		   fi
+#OLD		else
+#OLD		   echo "Existing /etc/ppp/ip-up.d/isdnutils not overwritten."
+#OLD		fi
+#OLD	    fi
 	    if [ -d /etc/ppp/ip-down.d -a ! -e /etc/ppp/ip-down.d/isdnutils ]
 	    then
 		if mycp $EXAMPLES/ip-down.d /etc/ppp/ip-down.d/isdnutils
@@ -189,6 +190,33 @@ Name for new configuration (ippp0 ippp1 ...) : "
 		   echo "Existing /etc/ppp/ip-up.d/isdnutils not overwritten."
 		fi
 	    fi
+	    if [ -d /etc/ppp -a ! -e /etc/ppp/auth-up ]
+	    then
+		if mycp $EXAMPLES/auth-up /etc/ppp/.
+		then
+		   echo "Installed new config file /etc/ppp/auth-up ."
+		   if [ $done -eq 0 ]
+		   then	done=1
+		   else	done=2
+		   fi
+		else
+		   echo "Existing /etc/ppp/auth-up not overwritten."
+		fi
+	    fi
+	    if [ -d /etc/ppp -a ! -e /etc/ppp/auth-down ]
+	    then
+		if mycp $EXAMPLES/auth-down /etc/ppp/.
+		then
+		   echo "Installed new config file /etc/ppp/auth-down ."
+		   if [ $done -eq 0 ]
+		   then	done=1
+		   else	done=2
+		   fi
+		else
+		   echo "Existing /etc/ppp/auth-down not overwritten."
+		fi
+	    fi
+	    chmod +x /etc/ppp/ip-*.d/isdnutils /etc/ppp/auth-* 2> /dev/null || true
 	    if [ $done -eq 1 ]
 	    then
 		create_warning
@@ -305,6 +333,8 @@ function config_vbox {
 		echo "$FILE	installed."
 		INSTALL=true
 	    fi
+	    chmod 600 /etc/isdn/vboxd.conf
+	    chown root /etc/isdn/vboxd.conf
 #	fi
     done
     if $INSTALL
@@ -345,7 +375,9 @@ function config_vbox {
 		echo "Installed default sound file /var/spool/vbox/$user/messages/beep.msg"
 	    mycp $EXAMPLES/standard.msg /var/spool/vbox/$user/messages/ &&
 		echo "Installed default sound file /var/spool/vbox/$user/messages/standard.msg"
-	    chown -Rv $user.$user /var/spool/vbox/$user
+	    usergrp=`grep "^$user:" /etc/passwd | cut -f4 -d:`
+	    [ -z "$usergrp" ] && usergrp=$user
+	    chown -Rv $user.$usergrp /var/spool/vbox/$user
 	    INSTALL=true
 	else
 	    echo "User $user doesn't exist."

@@ -108,14 +108,14 @@ int main(int argc, char **argv)
 
 	parse_sound_times(NULL, 0, 23);
 
-	if (!(pidname = malloc(strlen(RUNDIR) + strlen("/vboxbeep.pid") + 1)))
+	if (!(pidname = malloc(strlen(PIDFILEDIR) + strlen("/vboxbeep.pid") + 1)))
 	{
 		log(LOG_ERR, "not enough memory to create pid name.\n", vbasename);
 		
 		exit(5);
 	}
 
-	printstring(pidname, "%s/vboxbeep.pid", RUNDIR);
+	printstring(pidname, "%s/vboxbeep.pid", PIDFILEDIR);
 
 	killmode	  = 0;
 	starttime  = 0;
