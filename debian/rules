@@ -110,13 +110,15 @@ endif
 
 	$(MAKE) subconfig
 
-	$(MAKE)
-
 ifneq ($(some_arch_match),yes)
+	$(MAKE) -C capi20
 	: # rebuild libcapi20dyn using -fPIC -DPIC.
 	rm -f capi20/capidyn.o capi20/libcapi20dyn.*
 	$(MAKE) -C capi20 CFLAGS="-fPIC -DPIC -g -O2"
 endif
+
+	$(MAKE)
+
 
 ifneq ($(some_arch_match),yes)
 	cd isdnlog/tools/zone; $(MAKE) zonefiles
@@ -170,9 +172,11 @@ install: build
 	# Add here commands to install the package into debian/tmp
 	# (the files get moved out by dh_movefiles later)
 	$(MAKE) install DESTDIR=`pwd`/debian/tmp
+
 ifneq ($(some_arch_match),yes)
 	chmod +x debian/finish-install-first.sh
 	debian/finish-install-first.sh
+	mv debian/tmp/usr/bin/capifaxrcvd debian/tmp/usr/sbin/
 	dh_movefiles -i
 endif
 	: # These apply to all arch'es:
@@ -182,12 +186,12 @@ endif
 	    debian/isdnvboxclient/usr/share/doc/isdnvboxclient/examples/vboxrc
 
 ifneq ($(some_arch_match),yes)
-	gcc -shared -Wl,-soname -Wl,libcapi20-3.so.1 \
-	    -o debian/tmp/usr/lib/libcapi20-3.so.1 \
-	    capi20/.libs/capi20.o capi20/.libs/capifunc.o capi20/.libs/convert.o
-	ln -sf libcapi20-3.so.1 debian/tmp/usr/lib/libcapi20-3.so
-	ln -sf libcapi20-3.so debian/tmp/usr/lib/libcapi20.so
-	cp debian/libcapi20.la debian/tmp/usr/lib/
+#	gcc -shared -Wl,-soname -Wl,libcapi20-3.so.1 \
+#	    -o debian/tmp/usr/lib/libcapi20-3.so.1 \
+#	    capi20/.libs/capi20.o capi20/.libs/capifunc.o capi20/.libs/convert.o
+#	ln -sf libcapi20-3.so.1 debian/tmp/usr/lib/libcapi20-3.so
+#	ln -sf libcapi20-3.so debian/tmp/usr/lib/libcapi20.so
+#	cp debian/libcapi20.la debian/tmp/usr/lib/
 endif
 
 	dh_movefiles -s
@@ -196,6 +200,7 @@ ifneq ($(some_arch_match),yes)
 	chmod +x debian/finish-install-last.sh
 	debian/finish-install-last.sh
 endif
+
 
 	# These apply to all arch'es:
 	# the binary is called vboxcnvt, not vboxconvert
@@ -222,6 +227,10 @@ binary-indep: build install
 	dh_compress
 	dh_fixperms
 	dh_installdeb
+	for i in debian/*/DEBIAN/conffiles; do \
+	  [ -f $$i ] || continue; \
+	  sort -u $$i > $$i.sorted; mv $$i.sorted $$i; \
+	done
 #	dh_perl
 	dh_gencontrol
 	dh_md5sums
@@ -281,8 +290,8 @@ endif
 	install -m 644 debian/pppdcapiplugin.lintian-overrides debian/pppdcapiplugin/usr/share/lintian/overrides/pppdcapiplugin
 	# - there's no -dev package, so shut up about the shlib symlink
 	# - No, I don't call ldconfig in an unsafe manner
-	install -d debian/libcapi20-3/usr/share/lintian/overrides
-	install -m 644 debian/libcapi20-3.lintian-overrides debian/libcapi20-3/usr/share/lintian/overrides/libcapi20-3
+	install -d debian/libcapi20-2/usr/share/lintian/overrides
+	install -m 644 debian/libcapi20-2.lintian-overrides debian/libcapi20-2/usr/share/lintian/overrides/libcapi20-2
 	# - not much chance of more processed with the name "vboxgetty", and start-stop-daemon won't work
 	# - db_input in postinst only in extreme situations
 	install -d debian/isdnvboxserver/usr/share/lintian/overrides
@@ -294,7 +303,7 @@ endif
 
 	dh_installchangelogs
 	rm -rf debian/libcapi20-dev/usr/share/doc/libcapi20-dev
-	ln -s libcapi20-3 debian/libcapi20-dev/usr/share/doc/libcapi20-dev
+	ln -s libcapi20-2 debian/libcapi20-dev/usr/share/doc/libcapi20-dev
 	dh_strip
 	dh_link
 	dh_compress
@@ -302,10 +311,14 @@ endif
 	dh_installdeb
 #	dh_makeshlibs
 #	dh_perl
-	dh_shlibdeps
+	dh_shlibdeps -L libcapi20-2 -l debian/libcapi20-2/usr/lib
+	for i in debian/*/DEBIAN/conffiles; do \
+	  [ -f $$i ] || continue; \
+	  sort -u $$i > $$i.sorted; mv $$i.sorted $$i; \
+	done
 	dh_gencontrol
 ##	# dont build isdnvboxclient on all architectures.
-##	for pkg in isdnutils isdnutils-xtools ipppd isdnlog isdnvbox isdnvboxserver libcapi20-3 isdnactivecards pppdcapiplugin isdneurofile; do \
+##	for pkg in isdnutils isdnutils-xtools ipppd isdnlog isdnvbox isdnvboxserver libcapi20-2 isdnactivecards pppdcapiplugin isdneurofile; do \
 ##	    dpkg-gencontrol -ldebian/changelog -isp -p$pkg -Tdebian/$pkg.substvars -Pdebian/$pkg; \
 ##	done
 ##	case $(DEB_HOST_ARCH) in \
@@ -338,7 +351,6 @@ debian_patches = \
 	hisax-firmware \
 	ppdcapiplugin-dialmax \
 	capi20-pic \
-	capi20-soversion \
 	capiinit-conffile \
 	capiinit-manpage \
 	eicon-manpages \
@@ -350,7 +362,10 @@ debian_patches = \
 	vbox-vboxplay \
 	vbox-diffs \
 	vbox-autotools \
-	gcc-3.4-build-fixes \
+	capifax-fix \
+	capifax-manpages \
+	capi20-soname \
+	libtool \
 
 patch: patch-stamp
 

@@ -86,7 +86,7 @@ check_isdncards() {
             # apparently a devfs system...
             echo "    Before you can use any ISDN facilities, ensure you have the proper kernel"
             echo "    modules loaded. These will probably be 'isdn' and 'hisax'."
-            echo "    Read /usr/share/doc/isdnutils/README.HiSax.gz for more information"
+            echo "    Read /usr/share/doc/isdnutils-base/README.HiSax.gz for more information"
             echo "    (e.g. with 'zless /usr/share/doc/isdnutils-base/README.HiSax.gz')."
             exit 0
         fi
@@ -94,8 +94,8 @@ check_isdncards() {
 	if [ $# -eq 0 -a "$do_what" != stop ]; then
             echo " "
             echo " no ISDN cards configured! Please configure 'hisax' module with modconf"
-            echo "    Read /usr/share/doc/isdnutils/README.HiSax.gz for more information"
-            echo "    (e.g. with 'zless /usr/share/doc/isdnutils/README.HiSax.gz')."
+            echo "    Read /usr/share/doc/isdnutils-base/README.HiSax.gz for more information"
+            echo "    (e.g. with 'zless /usr/share/doc/isdnutils-base/README.HiSax.gz')."
 	    exit 0
 	fi
 	isdncards="$@"

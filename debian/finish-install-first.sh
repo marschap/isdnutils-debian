@@ -7,7 +7,7 @@
 	rm -f             debian/tmp/etc/isdn/eftusers
 	ln -s ../ftpusers debian/isdneurofile/etc/isdn/eftusers
 	install -m 0444 Mini-FAQ/isdn-faq.*           debian/isdnutils-doc/usr/share/doc/isdnutils-doc/Mini-FAQ/
-	mv debian/tmp/usr/share/man/man1/xisdnload.1x debian/isdnutils-xtools/usr/X11R6/man/man1/
+	mv debian/tmp/usr/share/man/man1/xisdnload.1* debian/isdnutils-xtools/usr/X11R6/man/man1/
 	mv debian/tmp/usr/bin/x*                      debian/isdnutils-xtools/usr/X11R6/bin/
 	cp xmonisdn/README                            debian/isdnutils-xtools/usr/share/doc/isdnutils-xtools/README.xmonisdn
 	# move some extra stuff from upstream source into debian tree
@@ -20,6 +20,8 @@
 	cp isdnlog/TODO	                              debian/isdnlog/usr/share/doc/isdnlog/TODO.de
 	cp isdnlog/contrib/winpopup/winpopup          debian/isdnlog/usr/share/doc/isdnlog/examples/winpopup.de
 	cp isdnlog/samples/*                          debian/isdnlog/usr/share/isdn/default/
+	rm -f debian/isdnlog/usr/share/isdn/default/*.in
+
 	# not this one
 	rm -f debian/isdnlog/usr/share/isdn/default/callerid.conf
 	rm -f debian/tmp/etc/isdn/callerid.conf	\

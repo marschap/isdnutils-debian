@@ -74,7 +74,7 @@ case "$1" in
                     reload_isdnlog || ( stop_isdnlog; start_isdnlog )
                 fi;;
 	    *)
-                echo " unknown service to stop: $1"; exit 1;;
+                echo " unknown service to restart: $1"; exit 1;;
 	esac
 	echo .
 	exit 0

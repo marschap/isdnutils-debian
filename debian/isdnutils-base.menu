@@ -1,3 +1,5 @@
-?package(isdnutils-base):needs=text section=Apps/System title="isdn monitor"\
+?package(isdnutils-base):needs="text"\
+  section="Apps/System"\
+  title="ISDN Monitor"\
   command="/usr/bin/imon"\
-  description="imon is a curses-based program to display the status of all ISDN lines."
+  description="A curses-based program to display the status of all ISDN lines"

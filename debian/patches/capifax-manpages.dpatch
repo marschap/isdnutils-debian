@@ -1,0 +1,140 @@
+#! /bin/sh -e
+
+# DP: Add capifax manpages
+
+dir=
+if [ $# -eq 3 -a "$2" = '-d' ]; then
+    pdir="-d $3"
+    dir="$3/"
+elif [ $# -ne 1 ]; then
+    echo >&2 "usage: `basename $0`: -patch|-unpatch [-d <srcdir>]"
+    exit 1
+fi
+case "$1" in
+    -patch)
+        patch $pdir -f --no-backup-if-mismatch -p0 < $0
+        #cd ${dir}gcc && autoconf
+        ;;
+    -unpatch)
+        patch $pdir -f --no-backup-if-mismatch -R -p0 < $0
+        #rm ${dir}gcc/configure
+        ;;
+    *)
+	echo >&2 "usage: `basename $0`: -patch|-unpatch [-d <srcdir>]"
+        exit 1
+esac
+exit 0
+
+diff -urN capifax.orig/Makefile.am capifax/Makefile.am
+--- capifax.orig/Makefile.am	2000-03-03 16:54:12.000000000 +0100
++++ capifax/Makefile.am	2004-10-29 00:56:04.000000000 +0200
+@@ -13,6 +13,7 @@
+ LDADD = -lcapi20
+ 
+ bin_PROGRAMS = capifax capifaxrcvd
++man_MANS = capifax.1 capifaxrcvd.8
+ 
+ common = c20msg.c capi.c connect.c contr.c data.c id.c init.c fax.c
+ 
+diff -urN capifax.orig/capifax.1 capifax/capifax.1
+--- capifax.orig/capifax.1	1970-01-01 01:00:00.000000000 +0100
++++ capifax/capifax.1	2004-10-29 00:51:49.000000000 +0200
+@@ -0,0 +1,37 @@
++.\" $Id: capifax.1,v 1.1 2002/07/04 11:30:59 paul Exp $
++.\"
++.\" CHECKIN $Date: 2002/07/04 11:30:59 $
++.\"
++.TH capifax 1
++.SH NAME
++capifax \- a FAX send application for CAPI
++.SH SYNOPSIS
++capifax [ -v ] [ -c calling_party_num ] [ -i station_ID ] [-h headline] dest_num
++.SH DESCRIPTION
++.B capifax
++is an application to send faxes via CAPI; you need a CAPI capable ISDN
++card with the appropriate drivers.
++
++The final argument must be the phone number of the receiving fax machine.
++
++This stuff is based heavily on AVM's CAPI-adk for linux.
++
++.SH OPTIONS
++.TP
++.BI -v
++Be verbose.
++
++.TP
++.BI "-c" " calling_party_num"
++the phone number used as the sender.
++
++.TP
++.BI "-i" " station_ID"
++the sender's station ID. Typically the company name or similar.
++
++.TP
++.BI "-h" " headline"
++title of sent document.
++
++.SH AUTHOR
++manpage written from C source by Paul Slootman <paul@debian.org>.
+diff -urN capifax.orig/capifaxrcvd.8 capifax/capifaxrcvd.8
+--- capifax.orig/capifaxrcvd.8	1970-01-01 01:00:00.000000000 +0100
++++ capifax/capifaxrcvd.8	2004-10-29 00:52:28.000000000 +0200
+@@ -0,0 +1,57 @@
++.\" $Id: capifaxrcvd.8,v 1.1 2002/07/04 11:30:59 paul Exp $
++.\"
++.\" CHECKIN $Date: 2002/07/04 11:30:59 $
++.\"
++.TH capifaxrcvd 8
++.SH NAME
++capifaxrcvd \- a FAX receive daemon for CAPI
++.SH SYNOPSIS
++capifaxrcvd [-i stationID] [-h header] [-c controller] [-l listenNumber] [-n notifyCmd] rcvDirectory
++.SH DESCRIPTION
++.B capifaxrcvd
++is a daemon to receive faxes via CAPI; you need a CAPI capable ISDN
++card with the appropriate drivers.
++
++The final argument must be the directory in which the
++received faxes are to be placed.
++The filenames of the received faxes are of the form:
++.br
++f[fn]xxxtttttttt
++.br
++[fn] indicates the resolution (fine or normal),
++.br
++xxx indicated the number of pages,
++.br
++tttttttt is the (hexadecimal) timestamp of the fax
++(seconds since the Unix epoch, 00:00 on January 1st, 1970 UTC).
++
++The daemon will fork itself into the background.
++
++This stuff is based heavily on AVM's CAPI-adk for linux.
++
++.SH OPTIONS
++.TP
++.BI "-l" " listenNumber"
++the phone number on which to receive faxes, i.e. the number to listen on.
++
++.TP
++.BI "-c" " controller"
++Specify a specific controller number to use for receiving the faxes.
++
++.TP
++.BI "-i" " station_ID"
++the station ID. Typically the company name or similar.
++
++.TP
++.BI "-h" " headline"
++title of sent document. (?)
++
++.TP
++.BI "-n" " notifyCmd"
++command to execute when a fax has been received.
++It will be called with three arguments, namely
++the filename of the received fax (without the directory name),
++the sender phone number, and the receiver phone number.
++
++.SH AUTHOR
++manpage written from C source by Paul Slootman <paul@debian.org>.

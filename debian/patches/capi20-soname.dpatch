@@ -1,6 +1,6 @@
 #! /bin/sh -e
 
-# DP: change libcapi20 so version name to libcapi20-3.so.2
+# DP: capi20/capidyn.c: Search for libcapi20.so.2
 
 dir=
 if [ $# -eq 3 -a "$2" = '-d' ]; then
@@ -25,15 +25,14 @@ case "$1" in
 esac
 exit 0
 
-# append the patch here and adjust the -p? flag in the patch calls.
---- capi20/Makefile.am~	2004-08-24 20:22:01.000000000 +0200
-+++ capi20/Makefile.am	2004-09-04 07:45:03.000000000 +0200
-@@ -9,7 +9,7 @@
- lib_LIBRARIES   = libcapi20dyn.a
+--- capi20/capidyn.c~	2004-01-16 16:27:11.000000000 +0100
++++ capi20/capidyn.c	2004-09-10 16:22:10.000000000 +0200
+@@ -26,7 +26,7 @@
+ #include <dlfcn.h>
  
- libcapi20_la_SOURCES = capi20.c capifunc.c convert.c
--libcapi20_la_LDFLAGS = -version-info 2:8:0
-+libcapi20_la_LDFLAGS = -release 3 --version-info 2:8:0
- libcapi20_la_CFLAGS = -fno-strict-aliasing
  
- libcapi20dyn_a_SOURCES = capidyn.c
+-#define LIBCAPI	"libcapi20.so"
++#define LIBCAPI	"libcapi20.so.2"
+ static int loadlib(void);
+ 
+ /* ---------------------------------------------------------------------- */

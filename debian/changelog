@@ -1,3 +1,51 @@
+isdnutils (1:3.3.0.20041110-1) unstable; urgency=low
+
+  * New CVS snapshot (20041110).
+  * Remove dependency on libtool-1.4 (closes: #279390), apply fixes
+    to build with Xorg (as well as with XFree86). Patch by LaMont Jones.
+
+ -- Matthias Klose <doko@debian.org>  Sun,  5 Dec 2004 12:06:51 +0100
+
+isdnutils (1:3.3.0.20041024-3) unstable; urgency=high
+
+  * pppdcapiplugin: Don't rely on libcapi20-dev beeing installed.
+    Closes: #282846.
+
+ -- Matthias Klose <doko@debian.org>  Fri, 26 Nov 2004 00:01:10 +0100
+
+isdnutils (1:3.3.0.20041024-2) unstable; urgency=low
+
+  * Fix pppdcapiplugin dependency.
+
+ -- Matthias Klose <doko@debian.org>  Fri,  5 Nov 2004 23:52:08 +0100
+
+isdnutils (1:3.3.0.20041024-1) unstable; urgency=high
+
+  * New CVS snapshot (20041024).
+    - Upstream decided to revert the binary incompatibility introduced
+      with the 20040704 versions. Well, interesting.
+  * Rename the libcapi20-3 package back to libcapi20-2, packages build-
+    depending on the new version should depend on this version of
+    libcapi20-dev.
+  * Build-depend on libssl-dev.
+  * Add fax commands to the isdnactivecards package (closes: #275974).
+  * Update dutch debconf translation (closes: #278717).
+
+ -- Matthias Klose <doko@debian.org>  Tue, 26 Oct 2004 06:45:43 +0200
+
+isdnutils (1:3.3.0.20040728-4) unstable; urgency=high
+
+  * Use shlibs info from just built libcapi library (closes: #271615).
+
+ -- Matthias Klose <doko@debian.org>  Tue, 14 Sep 2004 20:11:23 +0200
+
+isdnutils (1:3.3.0.20040728-3) unstable; urgency=high
+
+  * capi20/capidyn.c: Change libcapi soname as well.
+  * Fix message in isdnutils-base init script (closes: #270330).
+
+ -- Matthias Klose <doko@debian.org>  Fri, 10 Sep 2004 18:24:18 +0200
+
 isdnutils (1:3.3.0.20040728-2) unstable; urgency=high
 
   * Put libcapi20 development files into new libcapi20-dev package,

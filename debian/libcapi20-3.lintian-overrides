@@ -1,3 +1,0 @@
-libcapi20-3: non-dev-pkg-with-shlib-symlink usr/lib/libcapi20.so.2 usr/lib/libcapi20.so
-libcapi20-3: postinst-unsafe-ldconfig
-libcapi20-3: postrm-unsafe-ldconfig
