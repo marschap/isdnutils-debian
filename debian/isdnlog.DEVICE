@@ -7,14 +7,14 @@
 
 [options]
 
-#log=X 		# log d-channel messages. X=0-15 (bit coded flags)
+#log=1 		# log d-channel messages. value may be 0-15 (bit coded flags)
 daemon=no	# "yes"/"no" : (dont) start isdnlog as daemon.
-stdout=0x3ff	# log to stdout or file, and set log level
-outfile=/var/log/isdn.log	# logfile to log to
+#stdout=0x3f7	# log to stdout or file, and set log level
+outfile=+/var/log/isdn/isdnlog	# logfile to log to ('+' is append mode)
 #monitor=yes	# enable support for imon and imontty (monitor progs)
-#syslog=X	# log to syslog with log level X
-#thruput=X	# if you log thruput : one message every X seconds
-#time=0		# 1=get time from isdn one, 2=everytime 
+syslog=0x1bf7	# log to syslog with log level X
+#thruput=60	# if you log thruput : one message every X seconds
+#time=2		# 1=get time from isdn one, 2=everytime 
 #hangup=5:3	# enable chargehup with 5 / 3 seconds security gap
+#cityweekend=y	# you have the Deutsche Telekom cityweekend option
 #start=yes	# enable program start on events
-

@@ -1,5 +1,5 @@
 /*
-** $Id: script.h,v 1.4 1997/05/10 10:58:50 michael Exp $
+** $Id: script.h,v 1.5 1997/10/22 20:47:14 fritz Exp $
 **
 ** Copyright (C) 1996, 1997 Michael 'Ghandi' Herold
 */

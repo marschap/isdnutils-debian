@@ -1,5 +1,5 @@
 /*
-** $Id: modem.c,v 1.10 1997/05/10 10:58:44 michael Exp $
+** $Id: modem.c,v 1.11 1997/10/22 20:47:10 fritz Exp $
 **
 ** Copyright (C) 1996, 1997 Michael 'Ghandi' Herold
 */

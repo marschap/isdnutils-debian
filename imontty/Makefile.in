@@ -55,9 +55,10 @@ PACKAGE = @PACKAGE@
 VERSION = @VERSION@
 
 AUTOMAKE_OPTIONS=foreign no-dependencies
+bin_PROGRAMS=imontty
+man_MANS=imontty.8
 MAINTAINERCLEANFILES=install-sh missing mkinstalldirs aclocal.m4 \
 	configure Makefile.in 
-bin_PROGRAMS=imontty
 noinst_DIST=Changelog README
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -76,6 +77,9 @@ imontty_LDFLAGS =
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+MANS = imontty.8
+
+NROFF = nroff
 DIST_COMMON =  README Makefile.am Makefile.in aclocal.m4 configure \
 configure.in install-sh missing mkinstalldirs
 
@@ -147,6 +151,21 @@ maintainer-clean-compile:
 imontty: $(imontty_OBJECTS) $(imontty_DEPENDENCIES)
 	@rm -f imontty
 	$(LINK) $(imontty_LDFLAGS) $(imontty_OBJECTS) $(imontty_LDADD) $(LIBS)
+install-man: $(MANS)
+	$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(mandir)/man8
+	@sect=8;				\
+	inst=`echo "imontty" | sed '$(transform)'`.8; \
+	if test -f $(srcdir)/imontty.8; then file=$(srcdir)/imontty.8; \
+	else file=imontty.8; fi; \
+	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
+	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
+
+uninstall-man:
+	$(NORMAL_UNINSTALL)
+	inst=`echo "imontty" | sed '$(transform)'`.8; \
+	rm -f $(mandir)/man8/$$inst
+
 
 tags: TAGS
 
@@ -218,20 +237,20 @@ installcheck:
 install-exec: install-binPROGRAMS
 	@$(NORMAL_INSTALL)
 
-install-data: 
+install-data: install-man
 	@$(NORMAL_INSTALL)
 
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-binPROGRAMS
+uninstall: uninstall-binPROGRAMS uninstall-man
 
-all: Makefile $(PROGRAMS)
+all: Makefile $(PROGRAMS) $(MANS)
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(bindir)
+	$(mkinstalldirs)  $(bindir) $(mandir)/man8
 
 
 mostlyclean-generic:
@@ -268,11 +287,12 @@ maintainer-clean:  maintainer-clean-binPROGRAMS maintainer-clean-compile \
 .PHONY: default mostlyclean-binPROGRAMS distclean-binPROGRAMS \
 clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
 install-binPROGRAMS mostlyclean-compile distclean-compile clean-compile \
-maintainer-clean-compile tags mostlyclean-tags distclean-tags \
-clean-tags maintainer-clean-tags distdir info dvi installcheck \
-install-exec install-data install uninstall all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+maintainer-clean-compile install-man uninstall-man tags \
+mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
+distdir info dvi installcheck install-exec install-data install \
+uninstall all installdirs mostlyclean-generic distclean-generic \
+clean-generic maintainer-clean-generic clean mostlyclean distclean \
+maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

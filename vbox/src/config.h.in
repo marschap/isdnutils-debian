@@ -25,6 +25,9 @@
 #undef VERDATE
 #undef PACKAGE
 
+/* Define if you have the resizeterm function.  */
+#undef HAVE_RESIZETERM
+
 /* Define if you have the vsnprintf function.  */
 #undef HAVE_VSNPRINTF
 

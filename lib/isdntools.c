@@ -1,8 +1,8 @@
-/* $Id: isdntools.c,v 1.14 1997/05/19 23:37:05 luethje Exp $
+/* $Id: isdntools.c,v 1.16 1997/06/22 22:57:08 luethje Exp $
  *
  * ISDN accounting for isdn4linux. (Utilities)
  *
- * Copyright 1995, 1997 and Stefan Luethje (luethje@sl-gw.lake.de)
+ * Copyright 1995, 1997 by Stefan Luethje (luethje@sl-gw.lake.de)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: isdntools.c,v $
+ * Revision 1.16  1997/06/22 22:57:08  luethje
+ * bugfixes
+ *
+ * Revision 1.15  1997/06/15 23:50:34  luethje
+ * some bugfixes
+ *
  * Revision 1.14  1997/05/19 23:37:05  luethje
  * bugfix for isdnconf
  *
@@ -120,6 +126,7 @@
 
 #define  PUBLIC /**/
 #define  _ISDNTOOLS_C_
+#define  _GNU_SOURCE
 
 /****************************************************************************/
 
@@ -170,20 +177,20 @@ static char areacodes[][2][30] = {
 };
 
 static char countrycodes[][2][30] = {
-	{"+30", "Greek"},
-	{"+31", "Nethland"},
+	{"+30", "Greece"},
+	{"+31", "Netherlands"},
 	{"+32", "Belgium"},
 	{"+33", "France"},
 	{"+34", "Spain"},
 	{"+39", "Italy"},
-	{"+41", "Swiss"},
+	{"+41", "Switzerland"},
 	{"+43", "Austria"},
 	{"+44", "Great Britain"},
-	{"+45", "Danmark"},
+	{"+45", "Denmark"},
 	{"+46", "Sweden"},
 	{"+47", "Norway"},
 	{"+49", "Germany"},
-	{"+352", "Luxembourg"},
+	{"+352", "Luxemburg"},
 	{"+1", "United States"},
 	{"", ""},
 };
@@ -364,6 +371,7 @@ int handle_runfiles(const char *_progname, char **_devices, int flag)
 {
 	static char   progname[SHORT_STRING_SIZE] = "";
   static char **devices = NULL;
+  auto   char **mydevices = NULL;
   auto   char   string[PATH_MAX];
   auto   char   string2[SHORT_STRING_SIZE];
   auto   char  *Ptr = NULL;
@@ -394,24 +402,29 @@ int handle_runfiles(const char *_progname, char **_devices, int flag)
 		if ((RetCode = create_runfile(string,"%d\n")) != 0)
 		{
 			if (RetCode > 0)
+			{
 				print_msg("Another %s is running with pid %d!\n", progname, RetCode);
+				print_msg("If not delete the file `%s' and try it again!\n", string);
+			}
 
 			return RetCode;
 		}
 
-		while (*devices != NULL)
+		mydevices = devices;
+
+		while (*mydevices != NULL)
 		{
-			sprintf(string,"%s%c%s%s",LOCKDIR,C_SLASH,LOCKFILE,*devices);
+			sprintf(string,"%s%c%s%s",LOCKDIR,C_SLASH,LOCKFILE,*mydevices);
 
 			if ((RetCode = create_runfile(string,"%10d\n")) != 0)
 			{
 				if (RetCode > 0)
-					print_msg("Another process (pid=%d) is running on device %s!\n", RetCode, *devices);
+					print_msg("Another process (pid=%d) is running on device %s!\n", RetCode, *mydevices);
 
 				return RetCode;
 			}
 
-			devices++;
+			mydevices++;
 		}
 
 		RetCode = 0;
@@ -419,8 +432,25 @@ int handle_runfiles(const char *_progname, char **_devices, int flag)
 
 	if (flag == STOP_PROG)
 	{
-		sprintf(string,"%s%c%s.pid",RUNDIR,C_SLASH,progname);
-		unlink(string);
+		sprintf(string,"%s%c%s.%s.pid",RUNDIR,C_SLASH,progname,devices[0]);
+
+		if ((fp = fopen(string, "r")) != NULL)
+		{
+			if (fgets(string2,SHORT_STRING_SIZE,fp) != NULL)
+			{
+				if (atoi(string2) == (int)getpid())
+				{
+					if (unlink(string))
+						print_msg("Can not remove file %s (%s)!\n", string, strerror(errno));
+					else
+						print_msg("File %s removed!\n", string, strerror(errno));
+				}
+				else
+					print_msg("This is not my lock file `%s': Has PID %d!\n", string, atoi(string2));
+			}
+
+			fclose(fp);
+		}
 
 		while (*devices != NULL)
 		{
@@ -434,7 +464,11 @@ int handle_runfiles(const char *_progname, char **_devices, int flag)
 					{
 						if (unlink(string))
 							print_msg("Can not remove file %s (%s)!\n", string, strerror(errno));
+						else
+							print_msg("File %s removed!\n", string, strerror(errno));
 					}
+					else
+						print_msg("This is not my lock file `%s': Has PID %d!\n", string, atoi(string2));
 				}
 
 				fclose(fp);

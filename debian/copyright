@@ -1,7 +1,7 @@
 This package was debianized by Andreas Jellinghaus <aj@debian.org> on
 Thu, 5 Jun 1997 09:26:43 +0200
 
-it was downloaded from ftp.franken.de
+It was downloaded from ftp.franken.de
 /pub/isdn4linux/2.0/isdn4k-utils-2.1b1.tar.gz
 
 GPL Copyrights:
@@ -10,15 +10,15 @@ under the terms of the GNU General Public License as published by the
 Free Software Foundation; either version 2, or (at your option) any
 later version.  
 
-All changes for debian are done by Christian Schwarz
-<schwarz@debian.org> or Andreas Jellinghaus <aj@debian.org> or derived
-from the work of other debian developers and licensed under GPL.
+All changes for debian are done by Christian Schwarz <schwarz@debian.org>,
+Andreas Jellinghaus <aj@debian.org>, Paul Slootman <paul@debian.org> or
+derived from the work of other debian developers and licensed under GPL.
 
-the ippp ioptions file was taken from the ppp package, and was written
+The ippp ioptions file was taken from the ppp package, and was written
 by Alvar Bray <alvar@debian.org> or Ian Murdock <imurdock@debian.org> or
 Christoph Lameter <clameter@debian.org>.
 
-All other things not mentioned seperate are 
+All other things not mentioned separately are 
 Copyright 1994,95,96,97 Fritz Elfert (fritz@wuemaus.franken.de)
 Copyright 1995,96,97 Thinking Objects Software GmbH Wuerzburg   
 

@@ -1,4 +1,4 @@
-/* $Id: isdnlog.c,v 1.12 1997/05/25 19:40:58 luethje Exp $
+/* $Id: isdnlog.c,v 1.14 1998/02/08 09:36:51 calle Exp $
  *
  * ISDN accounting for isdn4linux. (log-module)
  *
@@ -19,6 +19,14 @@
  * along with this program; if not, write to the Free Software
  *
  * $Log: isdnlog.c,v $
+ * Revision 1.14  1998/02/08 09:36:51  calle
+ * fixed problems with FD_ISSET and glibc, if descriptor is not open.
+ *
+ * Revision 1.13  1997/06/22 23:03:23  luethje
+ * In subsection FLAGS it will be checked if the section name FLAG is korrect
+ * isdnlog recognize calls abroad
+ * bugfix for program starts
+ *
  * Revision 1.12  1997/05/25 19:40:58  luethje
  * isdnlog:  close all files and open again after kill -HUP
  * isdnrep:  support vbox version 2.0
@@ -71,6 +79,8 @@
  /* Letzte Exit-Nummer: 47 */
 
 /*****************************************************************************/
+
+#define X_FD_ISSET(fd, mask)    ((fd) >= 0 && FD_ISSET(fd,mask))
 
 static void loop(void);
 static void init_variables(int argc, char* argv[]);
@@ -195,9 +205,7 @@ static void loop(void)
       now();
 
       for (Cnt = first_descr; Cnt < socket_size(sockets); Cnt++) {
-        if (sockets[Cnt].descriptor < 0)
-          continue;
-        if (FD_ISSET(sockets[Cnt].descriptor, &exceptmask)) {
+        if (X_FD_ISSET(sockets[Cnt].descriptor, &exceptmask)) {
           if (sockets[Cnt].fp == NULL) {
             disconnect_client(Cnt);
             break;
@@ -215,7 +223,7 @@ static void loop(void)
             break;
           } /* else */
         }
-        else if (FD_ISSET(sockets[Cnt].descriptor, &readmask))
+        else if (X_FD_ISSET(sockets[Cnt].descriptor, &readmask))
           if (sockets[Cnt].fp == NULL) {
             eval_message(Cnt);
             /* Arbeite immer nur ein Client ab, du weisst nicht, ob der
@@ -226,7 +234,7 @@ static void loop(void)
             Print_Cmd_Output(Cnt);
       } /* for */
 
-      if (xinfo && FD_ISSET(sockets[IN_PORT].descriptor, &readmask)) {
+      if (xinfo && X_FD_ISSET(sockets[IN_PORT].descriptor, &readmask)) {
         len = sizeof(incoming);
 
         if ((NewSocket = accept(sockets[IN_PORT].descriptor, &incoming, &len)) == -1)
@@ -243,15 +251,17 @@ static void loop(void)
           NewClient = queuenumber - 1;
         } /* else */
       }
-      else if (FD_ISSET(sockets[ISDNINFO].descriptor, &readmask))
+      else if (X_FD_ISSET(sockets[ISDNINFO].descriptor, &readmask))
         moreinfo();
-      else if (FD_ISSET(sockets[ISDNCTRL].descriptor, &readmask))
+      else if (X_FD_ISSET(sockets[ISDNCTRL].descriptor, &readmask))
         (void)morectrl(0);
-      else if (*isdnctrl2 && FD_ISSET(sockets[ISDNCTRL2].descriptor, &readmask))
+      else if (X_FD_ISSET(sockets[ISDNCTRL2].descriptor, &readmask))
         (void)morectrl(1);
     } /* else */
   } /* while */
 } /* loop */
+
+#undef X_FD_ISSET
 
 /*****************************************************************************/
 
@@ -618,9 +628,6 @@ static int read_param_file(char *FileName)
 				if (!strcmp(Ptr->name,CONF_ENT_WIDTH))
 					width = (int)strtol(Ptr->value, NIL, 0);
 				else
-				if (!strcmp(Ptr->name,CONF_ENT_CW))
-					CityWeekend = toupper(*(Ptr->value)) == 'Y'?1:0;
-				else
 				if (!strcmp(Ptr->name,CONF_ENT_DUAL))
 					dual = (int)strtol(Ptr->value, NIL, 0);
 				else
@@ -765,7 +772,17 @@ int main(int argc, char *argv[], char *envp[])
 		}
 		else
 		{
-			if ((fout = fopen(outfile,"w")) == NULL)
+			char *openmode;
+			if (*outfile == '+')
+			{
+				outfile++;
+				openmode = "a";
+			}
+			else
+			{
+				openmode = "w";
+			}
+			if ((fout = fopen(outfile, openmode)) == NULL)
 			{
  	 			print_msg(PRT_ERR,"Can not open file `%s': %s!\n",outfile, strerror(errno));
  	  		Exit(45);
@@ -961,3 +978,4 @@ int main(int argc, char *argv[], char *envp[])
   Exit(res);
   return(res);
 } /* main */
+/* vim:set ts=2 sw=2: */

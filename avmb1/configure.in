@@ -15,13 +15,20 @@ dnl Checks for libraries.
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS(fcntl.h sys/ioctl.h unistd.h)
-AC_CHECK_HEADERS(linux/isdn.h linux/b1lli.h linux/capi.h ,,
-	AC_MSG_ERROR("Missing linux/isdn.h. Kernel source installed?"))
+AC_CHECK_HEADERS(linux/isdn.h linux/b1lli.h linux/kernelcapi.h linux/capi.h ,,
+	AC_MSG_ERROR("Missing $ac_hdr. Kernel source installed?"))
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 
 dnl Checks for library functions.
 AC_PROG_GCC_TRADITIONAL
 AC_CHECK_FUNCS(mmap)
+
+dnl Optional firmware directory
+AC_ARG_WITH(firmware,
+	[  --with-firmware=DIR     Set dir where firmware istalled. [/usr/lib/isdn]],
+	CONFIG_DATADIR="${withval}"
+	AC_DEFINE(CONFIG_DATADIR,"${withval}"),
+)
 
 AC_OUTPUT(Makefile)

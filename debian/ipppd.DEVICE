@@ -1,6 +1,6 @@
 # Options file for ipppd.
-# ipppd will neither read /etc/ppp/options nor /etc/ppp/ioptions nor
-# any other config file. Everything has to be in here.
+# ipppd will not read /etc/ppp/options or /etc/ppp/ioptions or any other
+# config file. Everything has to be in here.
 
 # REMOVE the next line once configuration is complete #########################
 # Warning! not configured yet!
@@ -17,7 +17,7 @@
 #lock			# create a lock file for device 
 #domain X		# add domain X to a given hostname
 #pidfile X		# save pid in file X
-#call X			# take options from priviledges file (???)
+#call X			# take options from privileges file (???)
 #idle X			# idle time limit (seconds)
 #holdoff X		# holdoff time limit (seconds)
 #maxconnect X		# set maximum connection time (in seconds ?)
@@ -31,7 +31,7 @@
 #passive		# wait for the peer to initiate the connection
 #lcp-echo-failure X	# consecutive echo failures
 #lcp-echo-interval X	# time for lcp echo events 
-#lcp-restart X		# Set timeout for LCP 
+lcp-restart 1		# Set timeout for LCP 
 #lcp-max-terminate X	# Set max #xmits for term-reqs
 #lcp-max-configure X	# Set max #xmits for conf-reqs 
 #lcp-max-failure X 	# Set max #conf-naks for LCP
@@ -42,7 +42,7 @@
 #name X			# set local name for auth
 #user X			# set name for auth with peer
 #usehostname		# use hostname for auth
-#remotename X		# set remote anme for auth
+#remotename X		# set remote name for auth
 #noauth			# (dont) require peer (the other) to auth
 #require-pap		# allow only pap authetication
 #require-chap		# allow only chap authentication
@@ -60,7 +60,7 @@
 # COMPRESSION
 
 #noaccomp		# address compression on/off
-#nopcomp		# protocoll field compression on/off
+#nopcomp		# protocol field compression on/off
 #novj			# van jacobsen compression on/off
 #novjccomp		# van jacobsen connection-ID compression on/off
 #vj-max-slots X		# tune maximum vj header slots
@@ -78,12 +78,12 @@
 #useifip		# use ip addresses form interface
 #usefirstip		# use first ip from auth file for remote
 #netmask X		# set netmask X
-#nodefaultroute 	# (dont) set default route 
-#nohostroute		# (dont) set host route
+#defaultroute 		# (dont) set default route 
+#hostroute		# (dont) set host route
 #noproxyarp		# (dont) set an proxy arp entry
 #mru X			# set maximum size of recive units to X
 #default-mru		# disable mru negotation
-#mtu X			# set maximum size of transmit units to X
+mtu 1500		# set maximum size of transmit units to X (1500 is OK)
 #useifmtu		# use mtu from interface
 #ipparam X		# set ip parameters in script X
 #ms-dns X		# dns address for the peers use

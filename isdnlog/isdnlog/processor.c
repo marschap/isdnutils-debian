@@ -343,8 +343,6 @@ static void info(int chan, int reason, int state, char *msg)
   if (allflags & PRT_DEBUG_GENERAL)
     if (allflags & PRT_DEBUG_INFO)
       print_msg(PRT_DEBUG_INFO, "%d INFO> ", chan);
-    else
-      return;
 
   (void)iprintf(s, chan, call[chan].dialin ? ilabel : olabel, left, msg, right);
 
@@ -392,10 +390,10 @@ static int facility(int type, int l)
 
   switch(type) {
     case AOC_INITIAL          : ID = OP = EH = MP = 0;
-#if 0
+
                                 if (asnp == NULL)
                                   return(AOC_OTHER);
-#endif
+
                                 c = strtol(asnp += 3, NIL, 16);              /* Ext/Spare/Profile */
 
                                 switch (c) {                                 /* Remote Operation Protocol */
@@ -1223,10 +1221,13 @@ static void buildnumber(char *num, int oc3, int oc3a, char *result, int version)
                   if (*num != '0')
                     sprintf(result, "%s%s", mycountry, myarea);
                   else {
-                    strcpy(result, mycountry);
+                  	if (num[1] != '0') /* Falls es doch Ausland ist -> nichts machen!!! */
+                    	strcpy(result, mycountry);
+                    else
+                    	strcpy(result, countryprefix);
 
-                    while (*num && (*num == '0'))
-                      num++;
+                   	while (*num && (*num == '0'))
+                   		num++;
                   } /* else */
                 } /* if */
                 break;
@@ -1241,7 +1242,14 @@ static void buildnumber(char *num, int oc3, int oc3a, char *result, int version)
 
     case 0x30 : break;                       /* 011 Network specific number */
 
-    case 0x40 : sprintf(result, "%s%s", mycountry, myarea); /* 100 Subscriber number */
+    case 0x40 : if (*num != '0')             /* 100 Subscriber number */
+                  sprintf(result, "%s%s", mycountry, myarea);
+                else {
+                  strcpy(result, mycountry);
+                  
+                  while (*num && (*num == '0')) 
+                    num++;
+                } /* else */
                 break;
 
     case 0x60 : break;                       /* 110 Abbreviated number */
@@ -1468,7 +1476,7 @@ static void decode(int chan, register char *p, int type, int version)
 
       pd = qmsg(TYPE_ELEMENT, version, element);
 
-      if (*pd == 'U') {
+      if (strncmp(pd, "UNKNOWN", 7) == 0) {
         register char *p1 = p, *p2;
         register int   i, c;
         auto     char  s[LONG_STRING_SIZE];
@@ -1658,7 +1666,7 @@ static void decode(int chan, register char *p, int type, int version)
                         print_msg(PRT_DEBUG_DECODE, " DEBUG> %s: 1TR6 AOCD %i\n", st + 4, n);
                       } /* if */
                     }
-                    else
+                    else {
 #if defined(ISDN_NL) || defined(ISDN_CH)
                       n = AOC_1TR6(l, p);
 #else
@@ -1863,20 +1871,51 @@ static void decode(int chan, register char *p, int type, int version)
                           } /* if */
                         } /* else */
                       } /* if */
+                    } /* if */
 
                     p += (l * 3);
                     break;
 
-        case 0x29 : /* Date/Time */
-                    tm.tm_year  = strtol(p += 3, NIL, 16);
-                    tm.tm_mon   = strtol(p += 3, NIL, 16) - 1;
-                    tm.tm_mday  = strtol(p += 3, NIL, 16);
-                    tm.tm_hour  = strtol(p += 3, NIL, 16);
-                    tm.tm_min   = strtol(p += 3, NIL, 16);
-                    if (l > 5)
-                      tm.tm_sec = strtol(p += 3, NIL, 16);
-                    else
-                      tm.tm_sec = 0;
+	case 0x03 : /* Date/Time 1TR6   */
+        case 0x29 : /* Date/Time E-DSS1 */
+                    if ((element == 0x03) && (version == VERSION_1TR6)) {
+			if (l != 17)	/* 1TR6 date/time is always 17? */
+  				/* "Unknown Codeset 7 attribute 3 size 5" */
+				goto UNKNOWN_ELEMENT;
+			tm.tm_mday  = (strtol(p+=3,NIL,16)-'0') * 10;
+			tm.tm_mday +=  strtol(p+=3,NIL,16)-'0';
+			p += 3;	/* skip '.' */
+			tm.tm_mon   = (strtol(p+=3,NIL,16)-'0') * 10;
+			tm.tm_mon  +=  strtol(p+=3,NIL,16)-'0' - 1;
+			p += 3;	/* skip '.' */
+			tm.tm_year  = (strtol(p+=3,NIL,16)-'0') * 10;
+			tm.tm_year +=  strtol(p+=3,NIL,16)-'0';
+			if (tm.tm_year < 70)
+			    tm.tm_year += 100;
+			p += 3; /* skip '-' */
+			tm.tm_hour  = (strtol(p+=3,NIL,16)-'0') * 10;
+			tm.tm_hour +=  strtol(p+=3,NIL,16)-'0';
+			p += 3; /* skip ':' */
+			tm.tm_min   = (strtol(p+=3,NIL,16)-'0') * 10;
+			tm.tm_min  +=  strtol(p+=3,NIL,16)-'0';
+			p += 3; /* skip ':' */
+			tm.tm_sec   = (strtol(p+=3,NIL,16)-'0') * 10;
+			tm.tm_sec  +=  strtol(p+=3,NIL,16)-'0';
+		    }
+		    else if ((element == 0x29) && (version != VERSION_1TR6)) {
+			tm.tm_year  = strtol(p += 3, NIL, 16);
+			tm.tm_mon   = strtol(p += 3, NIL, 16) - 1;
+			tm.tm_mday  = strtol(p += 3, NIL, 16);
+			tm.tm_hour  = strtol(p += 3, NIL, 16);
+			tm.tm_min   = strtol(p += 3, NIL, 16);
+			if (l > 5)
+			  tm.tm_sec = strtol(p += 3, NIL, 16);
+			else
+			  tm.tm_sec = 0;
+		    }
+		    else {
+		    	goto UNKNOWN_ELEMENT; /* no choice... */
+		    }
                     tm.tm_wday  = tm.tm_yday = 0;
                     tm.tm_isdst = -1;
 
@@ -2148,6 +2187,38 @@ static void decode(int chan, register char *p, int type, int version)
                           ringer(chan, RING_RING);
                       } /* if */
                     } /* else */
+                    break;
+
+
+        case 0x74 : /* Redirecting number */
+        case 0x76 : /* Redirection number */
+
+                    oc3 = strtol(p += 3, NIL, 16);
+
+                    pd = s;
+
+                    while (--l)
+                      *pd++ = strtol(p += 3, NIL, 16);
+
+                    *pd = 0;
+
+                    strcpy(call[chan].onum[REDIR], s);
+                    buildnumber(s, oc3, -1, call[chan].num[REDIR], version);
+
+                    strcpy(call[chan].vnum[REDIR], vnum(chan, REDIR));
+#ifdef Q931
+                    if (q931dmp && (*call[chan].vnum[REDIR] != '?') && *call[chan].vorwahl[REDIR] && oc3 && ((oc3 & 0x70) != 0x40)) {
+                      auto char s[BUFSIZ];
+
+                      sprintf(s, "%s %s/%s, %s",
+                        call[chan].areacode[REDIR],
+                        call[chan].vorwahl[REDIR],
+                        call[chan].rufnummer[REDIR],
+                        call[chan].area[REDIR]);
+
+                      Q931dump(TYPE_STRING, -2, s, version);
+                    } /* if */
+#endif
                     break;
 
 
@@ -2471,7 +2542,7 @@ escape:             for (c = 0; c <= sxp; c++)
                       Q931dump(TYPE_STRING, sn[0], sx[0], version);
                     else
 #endif
-                      info(chan, PRT_SHOWNUMBERS, STATE_RING, sx[0]);
+                      info(chan, PRT_SHOWBEARER, STATE_RING, sx[0]);
 
                     if (c == 0x8a)
                       call[chan].channel = 2;
@@ -2539,7 +2610,7 @@ escape:             for (c = 0; c <= sxp; c++)
                       else
 #endif
                       if (*sx[c])
-                        info(chan, PRT_SHOWNUMBERS, STATE_RING, sx[c]);
+                        info(chan, PRT_SHOWBEARER, STATE_RING, sx[c]);
 
                     p += (l * 3);
                     break;
@@ -2689,9 +2760,9 @@ escape:             for (c = 0; c <= sxp; c++)
 
 
         default   : {
-                      register char *p1 = p, *p2 = s;
+                      register char *p1, *p2;
                       register int  i;
-
+UNKNOWN_ELEMENT:      p1 = p; p2 = s;
 
                       for (i = 0; i < l; i++)
                         p2 += sprintf(p2, "%02x ", (int)strtol(p1 += 3, NIL, 16));
@@ -2804,7 +2875,7 @@ void dotrace(void)
 
 
   print_msg(PRT_NORMAL, ">>>>>>> TRACE (CR=next, q=quit, d=dump, g=go):");
-  gets(s);
+  fgets(s, BUFSIZ, stdin);
 
   if (*s == 'q')
     exit(0);
@@ -2851,6 +2922,9 @@ static int b2c(register int b)
 } /* b2c */
 
 
+/* NET_DV since 'chargeint' field exists */
+#define	NETDV_CHARGEINT		0x02
+
 static void huptime(int chan, int bchan)
 {
   register int                c = call[chan].confentry[OTHER];
@@ -2865,21 +2939,36 @@ static void huptime(int chan, int bchan)
     strcpy(cfg.name, known[c]->interface);
 
     if (ioctl(sockets[ISDNCTRL].descriptor, IIOCNETGCF, &cfg) >= 0) {
-#ifndef OLD_I4L
-      call[chan].chargeint = oldchargeint = cfg.chargeint;
+#if NET_DV >= NETDV_CHARGEINT
+      if (net_dv >= NETDV_CHARGEINT)
+        call[chan].chargeint = oldchargeint = cfg.chargeint;
 #endif
       call[chan].huptimeout = oldhuptimeout = cfg.onhtime;
 
       newchargeint = (int)cheap96(cur_time, known[c]->zone, &zeit);
 
-      if (hup1 && hup2)
-        newhuptimeout = (newchargeint < 20) ? hup1 : hup2;
+#if NET_DV >= NETDV_CHARGEINT
+      if (net_dv >= NETDV_CHARGEINT) {
+        if (hup1 && hup2)
+          newhuptimeout = (newchargeint < 20) ? hup1 : hup2;
+        else
+          newhuptimeout = oldhuptimeout;
+      }
       else
-        newhuptimeout = oldhuptimeout;
+#endif
+        /* for old kernels/kernel headers use old behaviour: hangup is charge
+         * time minus -h param */
+        if (hup1) {
+          newhuptimeout = newchargeint - hup1;
+          oldchargeint = newchargeint;
+        }
+        else
+          newhuptimeout = oldhuptimeout;
 
-      if (oldchargeint != newchargeint) {
-#ifndef OLD_I4L
-        call[chan].chargeint = cfg.chargeint = newchargeint;
+      if (oldchargeint != newchargeint || oldhuptimeout != newhuptimeout) {
+#if NET_DV >= NETDV_CHARGEINT
+        if (net_dv >= NETDV_CHARGEINT)
+          call[chan].chargeint = cfg.chargeint = newchargeint;
 #endif
         call[chan].huptimeout = cfg.onhtime = newhuptimeout;
 
@@ -3112,7 +3201,12 @@ static void processinfo(char *s)
 
       if (!replay)
         if ((version = ioctl(sockets[ISDNINFO].descriptor, IIOCGETDVR)) != -EINVAL) {
-
+#ifdef NET_DV
+          int my_net_dv = NET_DV;
+#else
+          int my_net_dv = 0;
+#endif
+		  
           tty_dv = version & 0xff;
           version = version >> 8;
           net_dv = version & 0xff;
@@ -3120,6 +3214,17 @@ static void processinfo(char *s)
           inf_dv = version & 0xff;
 
           print_msg(PRT_NORMAL, "(Data versions: iprofd=0x%02x  net_cfg=0x%02x  /dev/isdninfo=0x%02x)\n", tty_dv, net_dv, inf_dv);
+          if (/* Abort if kernel version is greater, since struct has probably
+               * become larger and would overwrite our stack */
+              net_dv > my_net_dv ||
+              /* version 0x03 is special, because it changed a field in the
+               * middle of the struct and thus is compatible only to itself */
+              ((my_net_dv == 0x03 || net_dv == 0x03) && my_net_dv != net_dv)) {
+            print_msg(PRT_ERR, "isdn_net_ioctl_cfg version mismatch "
+                      "(kernel 0x%02x, isdnlog 0x%02x)\n",
+                      net_dv, my_net_dv);
+            Exit(99);
+          }
         } /* if */
 
       if (chans > 2) /* coming soon ;-) */
@@ -3290,10 +3395,11 @@ static void processctrl(int card, char *s)
   register char       *ps = s;
   register int         i, c;
   register int         wegchan; /* fuer gemakelte */
-  auto     int         dialin, type, cref = -1, creflen, version;
+  auto     int         dialin, type = 0, cref = -1, creflen, version;
   static   int         tei = BROADCAST, sapi = 0, net = 1, firsttime = 1;
   auto     char        sx[BUFSIZ], s2[BUFSIZ];
   static   char        last[BUFSIZ];
+  auto     int         isAVMB1 = 0;
 
 
   hexSeen = 1;
@@ -3331,7 +3437,7 @@ static void processctrl(int card, char *s)
 
   if (!memcmp(ps, "HEX: ", 5)) { /* new HiSax Driver */
 
-    if ((verbose & VERBOSE_HEX) && !(verbose & VERBOSE_CTRL))
+    if (((verbose & VERBOSE_HEX) && !(verbose & VERBOSE_CTRL)) || stdoutput)
       print_msg(PRT_LOG, "%2d %s\n", card, s);
 
     if (firsttime) {
@@ -3452,6 +3558,25 @@ static void processctrl(int card, char *s)
 
     ps += (tei == BROADCAST) ? 1 : 4;
   }
+
+  else  if (!memcmp(ps, "D3", 2)) { /* AVMB1 */
+
+    if (firsttime) {
+      firsttime = 0;
+      print_msg (PRT_NORMAL, "(AVM B1 driver detected)\n");
+    }
+
+    if (*(ps+2) == '<')  /* this is our "direction flag" */
+      net = 1;
+    else
+      net = 0;
+
+    tei = 65;  /* we can't get a tei, so fake it */
+    isAVMB1 = 1;
+
+    ps[0] = 'h'; ps[1] = 'e'; ps[2] = 'x';  /* rewrite for the others */
+  } /* AVMB1 */
+
   else { /* Old Teles Driver */
 
     /* Tei wird gelesen und bleibt bis zum Ende des naechsten hex: stehen.
@@ -3525,12 +3650,10 @@ static void processctrl(int card, char *s)
     } /* if */
 #endif
 
-#ifdef SL
-    if (version == VERSION_1TR6) {
+    if (bilingual && version == VERSION_1TR6) {
       print_msg(PRT_DEBUG_BUGS, " DEBUG> %s: OOPS! 1TR6 Frame? Ignored!\n", st + 4);
       goto endhex;
     } /* if */
-#endif
 
     creflen = strtol(ps += 3, NIL, 16);
 
@@ -3541,8 +3664,11 @@ static void processctrl(int card, char *s)
 
     type = strtol(ps += 3, NIL, 16);
 
+    if (!isAVMB1)
+      dialin = (tei == BROADCAST); /* dialin (Broadcast), alle anderen haben schon eine Tei! */
+    else
+      dialin = (cref & 0x80);  /* first (SETUP) tells us who initiates the connection */
 
-    dialin = (tei == BROADCAST); /* dialin (Broadcast), alle anderen haben schon eine Tei! */
     /* dialin = (cref & 0x7f) < 64; */
 
     cref = (net) ? cref : cref ^ 0x80; /* cref immer aus Sicht des Amts */
@@ -3616,6 +3742,8 @@ static void processctrl(int card, char *s)
       if ((call[5].cref != cref) || (call[5].tei != tei)) {
         /* bei C_PROC/S_ACK ist cref _immer_ > 128 */
         /* keiner da, also leeren */
+        if (isAVMB1 && (call[chan].state == SETUP))  /* direction already set for AVMB1 */
+          dialin = call[chan].dialin;
         clearchan(chan, 1);
         call[chan].dialin = dialin;
         call[chan].tei = tei;

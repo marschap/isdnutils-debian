@@ -59,10 +59,11 @@ RANLIB = @RANLIB@
 VERSION = @VERSION@
 
 AUTOMAKE_OPTIONS=foreign no-dependencies
-MAINTAINERCLEANFILES= Makefile.in 
+bin_PROGRAMS=isdnconf
+man_MANS=isdnconf.8
+MAINTAINERCLEANFILES=Makefile.in 
 INCLUDES=-I../tools -I../../lib
 DEFINES=-DBINDIR=${bindir} -DSBINDIR=${sbindir} -DI4LCONFDIR=@I4LCONFDIR@
-bin_PROGRAMS=isdnconf
 isdnconf_SOURCES=isdnconf.c isdnconf.h 
 isdnconf_LDADD=-L`pwd`/../../lib -lisdn @ALINK@ -L../tools -ltools 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -81,6 +82,9 @@ isdnconf_LDFLAGS =
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+MANS = isdnconf.8
+
+NROFF = nroff
 DIST_COMMON =  Makefile.am Makefile.in
 
 
@@ -144,6 +148,21 @@ maintainer-clean-compile:
 isdnconf: $(isdnconf_OBJECTS) $(isdnconf_DEPENDENCIES)
 	@rm -f isdnconf
 	$(LINK) $(isdnconf_LDFLAGS) $(isdnconf_OBJECTS) $(isdnconf_LDADD) $(LIBS)
+install-man: $(MANS)
+	$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(mandir)/man8
+	@sect=8;				\
+	inst=`echo "isdnconf" | sed '$(transform)'`.8; \
+	if test -f $(srcdir)/isdnconf.8; then file=$(srcdir)/isdnconf.8; \
+	else file=isdnconf.8; fi; \
+	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
+	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
+
+uninstall-man:
+	$(NORMAL_UNINSTALL)
+	inst=`echo "isdnconf" | sed '$(transform)'`.8; \
+	rm -f $(mandir)/man8/$$inst
+
 
 tags: TAGS
 
@@ -184,20 +203,20 @@ installcheck:
 install-exec: install-binPROGRAMS
 	@$(NORMAL_INSTALL)
 
-install-data: 
+install-data: install-man
 	@$(NORMAL_INSTALL)
 
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-binPROGRAMS
+uninstall: uninstall-binPROGRAMS uninstall-man
 
-all: Makefile $(PROGRAMS)
+all: Makefile $(PROGRAMS) $(MANS)
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(bindir)
+	$(mkinstalldirs)  $(bindir) $(mandir)/man8
 
 
 mostlyclean-generic:
@@ -233,11 +252,12 @@ maintainer-clean:  maintainer-clean-binPROGRAMS maintainer-clean-compile \
 .PHONY: default mostlyclean-binPROGRAMS distclean-binPROGRAMS \
 clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
 install-binPROGRAMS mostlyclean-compile distclean-compile clean-compile \
-maintainer-clean-compile tags mostlyclean-tags distclean-tags \
-clean-tags maintainer-clean-tags distdir info dvi installcheck \
-install-exec install-data install uninstall all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+maintainer-clean-compile install-man uninstall-man tags \
+mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
+distdir info dvi installcheck install-exec install-data install \
+uninstall all installdirs mostlyclean-generic distclean-generic \
+clean-generic maintainer-clean-generic clean mostlyclean distclean \
+maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

@@ -58,19 +58,20 @@ AUTOMAKE_OPTIONS=foreign no-dependencies
 sbin_PROGRAMS=isdnctrl
 man_MANS=isdnctrl.8
 MAINTAINERCLEANFILES=install-sh missing mkinstalldirs aclocal.m4 \
-	configure Makefile.in 
+	configure Makefile.in config.h.in stamp-h.in
 DISTCLEANFILES=isdnctrl.8
+isdnctrl_SOURCES=isdnctrl.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES = 
 PROGRAMS =  $(sbin_PROGRAMS)
 
 
-DEFS = @DEFS@ -I. -I$(srcdir) 
+DEFS = @DEFS@ -I. -I$(srcdir) -I.
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-isdnctrl_SOURCES = isdnctrl.c
 isdnctrl_OBJECTS =  isdnctrl.o
 isdnctrl_LDADD = $(LDADD)
 isdnctrl_LDFLAGS = 
@@ -80,16 +81,16 @@ LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 MANS = isdnctrl.8
 
 NROFF = nroff
-DIST_COMMON =  Makefile.am Makefile.in aclocal.m4 configure configure.in \
-install-sh missing mkinstalldirs
+DIST_COMMON =  Makefile.am Makefile.in acconfig.h aclocal.m4 config.h.in \
+configure configure.in install-sh missing mkinstalldirs stamp-h.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-SOURCES = isdnctrl.c
-OBJECTS = isdnctrl.o
+SOURCES = $(isdnctrl_SOURCES)
+OBJECTS = $(isdnctrl_OBJECTS)
 
 default: all
 
@@ -109,6 +110,26 @@ config.status: $(srcdir)/configure
 	$(SHELL) ./config.status --recheck
 $(srcdir)/configure: $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
 	cd $(srcdir) && $(AUTOCONF)
+
+config.h: stamp-h
+stamp-h: $(srcdir)/config.h.in $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES= CONFIG_HEADERS=config.h \
+	     $(SHELL) ./config.status
+	@echo timestamp > stamp-h
+$(srcdir)/config.h.in: $(srcdir)/stamp-h.in
+$(srcdir)/stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL_M4) acconfig.h
+	cd $(top_srcdir) && $(AUTOHEADER)
+	@echo timestamp > $(srcdir)/stamp-h.in
+
+mostlyclean-hdr:
+
+clean-hdr:
+
+distclean-hdr:
+	rm -f config.h
+
+maintainer-clean-hdr:
 
 mostlyclean-sbinPROGRAMS:
 
@@ -172,11 +193,11 @@ tags: TAGS
 ID: $(HEADERS) $(SOURCES)
 	here=`pwd` && cd $(srcdir) && mkid -f$$here/ID $(SOURCES) $(HEADERS)
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
+TAGS:  $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES)
 	tags=; \
 	here=`pwd`; \
-	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS)
+	test -z "$(ETAGS_ARGS)config.h.in$(SOURCES)$(HEADERS)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags config.h.in $(SOURCES) $(HEADERS) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -245,7 +266,7 @@ install: install-exec install-data all
 
 uninstall: uninstall-sbinPROGRAMS uninstall-man
 
-all: Makefile $(PROGRAMS) $(MANS)
+all: Makefile $(PROGRAMS) $(MANS) config.h
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
@@ -267,24 +288,26 @@ distclean-generic:
 maintainer-clean-generic:
 	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean:  mostlyclean-sbinPROGRAMS mostlyclean-compile \
-		mostlyclean-tags mostlyclean-generic
+mostlyclean:  mostlyclean-hdr mostlyclean-sbinPROGRAMS \
+		mostlyclean-compile mostlyclean-tags \
+		mostlyclean-generic
 
-clean:  clean-sbinPROGRAMS clean-compile clean-tags clean-generic \
-		mostlyclean
+clean:  clean-hdr clean-sbinPROGRAMS clean-compile clean-tags \
+		clean-generic mostlyclean
 
-distclean:  distclean-sbinPROGRAMS distclean-compile distclean-tags \
-		distclean-generic clean
+distclean:  distclean-hdr distclean-sbinPROGRAMS distclean-compile \
+		distclean-tags distclean-generic clean
 	rm -f config.status
 
-maintainer-clean:  maintainer-clean-sbinPROGRAMS \
+maintainer-clean:  maintainer-clean-hdr maintainer-clean-sbinPROGRAMS \
 		maintainer-clean-compile maintainer-clean-tags \
 		maintainer-clean-generic distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 	rm -f config.status
 
-.PHONY: default mostlyclean-sbinPROGRAMS distclean-sbinPROGRAMS \
+.PHONY: default mostlyclean-hdr distclean-hdr clean-hdr \
+maintainer-clean-hdr mostlyclean-sbinPROGRAMS distclean-sbinPROGRAMS \
 clean-sbinPROGRAMS maintainer-clean-sbinPROGRAMS uninstall-sbinPROGRAMS \
 install-sbinPROGRAMS mostlyclean-compile distclean-compile \
 clean-compile maintainer-clean-compile install-man uninstall-man tags \

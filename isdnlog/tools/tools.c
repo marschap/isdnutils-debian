@@ -19,6 +19,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: tools.c,v $
+ * Revision 1.11  1998/05/06 14:43:27  paul
+ * Assumption about country codes always being 2 digits long fixed for the
+ * USA case (caused strncpy to be called with length -1; ouch).
+ *
  * Revision 1.8  1997/05/11 22:41:43  luethje
  * README completed
  * changed the E-mail address for the switch -V
@@ -402,6 +406,7 @@ char *vnum(int chan, int who)
   auto     char  *ptr;
   auto	   int    ll;
   auto	   int 	  prefix = strlen(countryprefix);
+  auto	   int 	  cc_len = 2;   /* country code length defaults to 2 */
 
 
   if (++retnum == MAXRET)
@@ -436,12 +441,15 @@ char *vnum(int chan, int who)
     got++;
   } /* if */
 
-  /* Die folgenden Zeilen basieren nur auf eine Annahme, das ein Laendercode
-     aus zwei Ziffern besteht!!!!!!!                                        */
-
   if (l > 1) {
-    strncpy(call[chan].areacode[who], call[chan].num[who], 2 + prefix);
-    strncpy(call[chan].vorwahl[who], call[chan].num[who] + 2 + prefix, l - 2 - prefix);
+    if (call[chan].num[who][prefix] == '1')
+      cc_len = 1; /* USA is only country with country code length 1 */
+    /*
+     * there should be code for country codes > 2 in length,
+     * but that at least doesn't cause a possible strncpy(x, y, -1) call!
+     */
+    strncpy(call[chan].areacode[who], call[chan].num[who], cc_len + prefix);
+    strncpy(call[chan].vorwahl[who], call[chan].num[who] + cc_len + prefix, l - cc_len - prefix);
     strcpy(call[chan].rufnummer[who], call[chan].num[who] + l);
   } /* if */
 

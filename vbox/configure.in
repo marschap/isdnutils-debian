@@ -1,3 +1,6 @@
+PACKAGE=vbox
+VERSION=2.0.0BETA4
+AC_ARG_PROGRAM
 AC_INIT(src/vboxgetty.h)
 AM_CONFIG_HEADER(src/config.h)
 AM_INIT_AUTOMAKE(vbox,'2.0.0BETA4')
@@ -17,6 +20,7 @@ AC_C_CONST
 AC_C_INLINE
 
 AC_CHECK_FUNCS(vsnprintf)
+AC_CHECK_FUNCS(resizeterm)
 
 AC_ARG_WITH(include,\
         [  --with-include=DIR              add include (for kernel headers)],

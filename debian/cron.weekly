@@ -1,15 +1,23 @@
 #! /bin/sh
 #
-# cron script to rotate the vbox logfiles.
+# DFSG cron script to rotate the ISDN logfiles.
+# Currently only the vboxgetty logfiles are done.
+
+# if no vboxgettys configured, stop asap
+
+[ -f /etc/isdn/vboxgetty.conf ] || exit 0
 
 cd /var/log/isdn
 for LOG in vboxgetty-ttyI[0-9].log 
 do
         if [ -f $LOG ]; then
-		savelog $LOG >/dev/null
+		savelog -p -c 4 $LOG >/dev/null
 	fi
 done
 
-killall vboxgetty 
+# kill current vboxgettys so that they start logging to new logfiles
+# (init takes care of restarting them, as they are listed in /etc/inittab)
+
+start-stop-daemon --stop --quiet  --exec /usr/sbin/vboxgetty
 
 exit 0

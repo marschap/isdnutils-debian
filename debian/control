@@ -3,13 +3,12 @@ Section: net
 Priority: extra
 Maintainer: Paul Slootman <paul@debian.org>
 Standards-Version: 2.3.0.1
-Distribution: bo-unstable
 
 Package: isdnutils
 Architecture: any
-Depends: ${shlibs:Depends}, makedev (>>1.6-10), suidmanager, netbase (>= 2.14), sox
-Suggests: ppp, tcpdump (>= 3.3.1a2-1)
-Replaces: vbox
+Depends: ${shlibs:Depends}, makedev (>>1.6-10), suidmanager, netbase (>= 2.14), sox, psmisc
+Suggests: ppp, tcpdump (>= 3.3.1a2-1), mgetty
+Replaces: vbox, isdnlog, ipppd
 Conflicts: vbox, isdnlog, ipppd, xisdnutils
 Description: isdn utilities
  This package includes everything you need to run ISDN: interface

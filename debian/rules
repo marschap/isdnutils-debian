@@ -2,15 +2,19 @@
 # Made with the aid of debmake, by Christoph Lameter,
 # based on the sample debian/rules file for GNU hello by Ian Jackson.
 
+SHELL = /bin/bash
+
 package=isdnutils
 
 build:
 	$(checkdir)
 	test -e ../linux || ln -s /usr/src/linux ..
-	sed -e "s#KERNELDIR#`cd ../; pwd`/linux#" < debian/dot.config > .config
+	test -f ../dot.config && cp ../dot.config .config || \
+	 sed -e "s#KERNELDIR#`cd ../; pwd`/linux#" < debian/dot.config > .config
 	(cd vbox/examples ; uudecode < beep.msg.example.uu)
 	chmod +x configure
 	./configure -a -m
+	chmod -f a+x */missing
 	$(MAKE) CFLAGS="-O2 -Wall -g"
 	touch build
 
@@ -29,6 +33,7 @@ clean:
 	# -rm -f isdnlog/isdnlog/messages.c isdnlog/isdnrep/cheap.c
 	# -rm -f loop/Makefile.in vbox/.Config.in vbox/examples/beep.msg.example
 	# -rm -f xisdnload/Imakefile xmonisdn/Imakefile
+	-rm -rf include
 
 binary-indep:	checkroot build
 	$(checkdir)
@@ -90,13 +95,18 @@ binary-arch:	checkroot build
 	for A in debian/device.DEVICE debian/ipppd.DEVICE \
 		debian/callerid.conf debian/isdn.conf debian/isdnlog.DEVICE \
 		debian/vboxd.conf debian/vboxgetty.conf debian/vbox.conf \
+		debian/ip-down.d debian/ip-up.d \
 		debian/standard.tcl ; do \
-	cp $$A debian/tmp/usr/doc/isdnutils/examples/default; \
+	    cp $$A debian/tmp/usr/doc/isdnutils/examples/default/; \
 	done
+	cp debian/grepconfig.pl debian/tmp/usr/doc/isdnutils/examples/
 	cd debian/tmp/usr/doc/isdnutils/examples ; cp vbox/*msg default/
-	cp debian/ioptions debian/tmp/etc/ppp
+	cp debian/ioptions debian/tmp/etc/ppp/
 	cp debian/isdnconfig debian/tmp/usr/sbin/
 	chmod +x debian/tmp/usr/sbin/isdnconfig
+	cp debian/netup debian/netdown debian/tmp/etc/isdn/
+	chmod +x debian/tmp/etc/isdn/netup debian/tmp/etc/isdn/netdown
+	cp debian/isdnconfig.8 debian/tmp/usr/man/man8/
 
 	# move x11 applications to a different place
 	mv debian/tmp/usr/bin/xmonisdn debian/tmp/usr/X11R6/bin
@@ -106,9 +116,12 @@ binary-arch:	checkroot build
 	mv debian/tmp/usr/man/man1/xmonisdn.1 \
 		debian/tmp/usr/X11R6/man/man1/xmonisdn.1x
 
-	# the rest. all documentation is already installed.
+	# cater for non-standard manpage extension in orig source
+	cp iprofd/iprofd.man debian/tmp/usr/man/man8/iprofd.8
+
+	# the rest; all documentation is already installed.
 	debstd -m README 
-	gunzip debian/tmp/usr/doc/isdnutils/examples/default/*gz
+	# gunzip debian/tmp/usr/doc/isdnutils/examples/default/*gz
 	dpkg-gencontrol -pisdnutils
 	chown -R root.root debian/tmp
 	chmod -R go=rX debian/tmp

@@ -1,5 +1,5 @@
 /*
-** $Id: vbox.c,v 1.5 1997/05/10 10:58:50 michael Exp $
+** $Id: vbox.c,v 1.8 1998/04/28 08:34:50 paul Exp $
 **
 ** Copyright (C) 1996, 1997 Michael 'Ghandi' Herold
 */
@@ -65,33 +65,33 @@ static int   forcepass  = FALSE;
 static struct statusled statusleds[] =
 {
 	{  1, CTRL_NAME_STOP     , 0, "" },
-   {  5, CTRL_NAME_REJECT   , 0, "" },
+	{  5, CTRL_NAME_REJECT   , 0, "" },
 	{  7, CTRL_NAME_ANSWERNOW, 0, "" },
 	{  9, CTRL_NAME_ANSWERALL, 0, "" },
 	{ 11, CTRL_NAME_AUDIO    , 0, "" },
-   { -1, NULL               , 0, "" }
+	{ -1, NULL               , 0, "" }
 };
 
 static struct colortable colortable[] =
 {
-	{ NULL             ,  0, 0           , 0           , A_NORMAL, A_REVERSE        },
-	{ "C_BACKGROUND"   ,  1, COLOR_WHITE , COLOR_BLACK , A_NORMAL, A_NORMAL         },
-	{ "C_STATUSBAR"    ,  2, COLOR_WHITE , COLOR_BLUE  , A_NORMAL, A_REVERSE        },
-	{ "C_STATUSBAR_HL" ,  3, COLOR_YELLOW, COLOR_BLUE  , A_BOLD  , A_REVERSE|A_BOLD },
-   { "C_POWERLED_ON"  ,  4, COLOR_GREEN , COLOR_BLUE  , A_NORMAL, A_REVERSE|A_BOLD },
-	{ "C_POWERLED_OFF" ,  5, COLOR_RED   , COLOR_BLUE  , A_NORMAL, A_REVERSE        },
-	{ "C_STATUSLED_ON" ,  6, COLOR_YELLOW, COLOR_BLUE  , A_BOLD  , A_REVERSE|A_BOLD },
-	{ "C_STATUSLED_OFF",  7, COLOR_BLACK , COLOR_BLUE  , A_NORMAL, A_REVERSE        },
-   { "C_LIST"         ,  8, COLOR_WHITE , COLOR_BLACK , A_NORMAL, A_NORMAL         },
-	{ "C_LIST_SELECTED",  9, COLOR_WHITE , COLOR_RED   , A_NORMAL, A_REVERSE        },
-	{ "C_INFOTEXT"     , 10, COLOR_GREEN , COLOR_BLACK , A_NORMAL, A_NORMAL         },
-	{ "C_HELP"         , 11, COLOR_WHITE , COLOR_BLUE  , A_NORMAL, A_REVERSE        },
-   { "C_HELP_BORDER"  , 12, COLOR_YELLOW, COLOR_BLUE  , A_BOLD  , A_REVERSE|A_BOLD },
-	{ "C_STATUS"       , 13, COLOR_WHITE , COLOR_RED   , A_NORMAL, A_REVERSE        },
-	{ "C_STATUS_BORDER", 14, COLOR_YELLOW, COLOR_RED   , A_BOLD  , A_REVERSE|A_BOLD },
+	{ NULL             ,  0, 0           , 0          , A_NORMAL, A_REVERSE        },
+	{ "C_BACKGROUND"   ,  1, COLOR_WHITE , COLOR_BLACK, A_NORMAL, A_NORMAL         },
+	{ "C_STATUSBAR"    ,  2, COLOR_WHITE , COLOR_BLUE , A_NORMAL, A_REVERSE        },
+	{ "C_STATUSBAR_HL" ,  3, COLOR_YELLOW, COLOR_BLUE , A_BOLD  , A_REVERSE|A_BOLD },
+   { "C_POWERLED_ON"  ,  4, COLOR_GREEN , COLOR_BLUE , A_NORMAL, A_REVERSE|A_BOLD },
+	{ "C_POWERLED_OFF" ,  5, COLOR_RED   , COLOR_BLUE , A_NORMAL, A_REVERSE        },
+	{ "C_STATUSLED_ON" ,  6, COLOR_YELLOW, COLOR_BLUE , A_BOLD  , A_REVERSE|A_BOLD },
+	{ "C_STATUSLED_OFF",  7, COLOR_BLACK , COLOR_BLUE , A_NORMAL, A_REVERSE        },
+   { "C_LIST"         ,  8, COLOR_WHITE , COLOR_BLACK, A_NORMAL, A_NORMAL         },
+	{ "C_LIST_SELECTED",  9, COLOR_WHITE , COLOR_RED  , A_NORMAL, A_REVERSE        },
+	{ "C_INFOTEXT"     , 10, COLOR_GREEN , COLOR_BLACK, A_NORMAL, A_NORMAL         },
+	{ "C_HELP"         , 11, COLOR_WHITE , COLOR_BLUE , A_NORMAL, A_REVERSE        },
+   { "C_HELP_BORDER"  , 12, COLOR_YELLOW, COLOR_BLUE , A_BOLD  , A_REVERSE|A_BOLD },
+	{ "C_STATUS"       , 13, COLOR_WHITE , COLOR_RED  , A_NORMAL, A_REVERSE        },
+	{ "C_STATUS_BORDER", 14, COLOR_YELLOW, COLOR_RED  , A_BOLD  , A_REVERSE|A_BOLD },
 	{ "C_INFO"         , 15, COLOR_WHITE , COLOR_YELLOW, A_NORMAL, A_REVERSE        },
    { "C_INFO_BORDER"  , 16, COLOR_YELLOW, COLOR_YELLOW, A_BOLD  , A_REVERSE|A_BOLD },
-   { NULL             , -1, 0           , 0           , 0       , 0                }
+   { NULL             , -1, 0           , 0          , 0       , 0                }
 };
 
 static char *colornames[] =
@@ -160,7 +160,7 @@ static chtype color(int);
 /** The magic main...                                                    **/
 /**************************************************************************/
 
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	struct servent *vboxdserv;
 	int             dimension;
@@ -346,6 +346,7 @@ void main(int argc, char **argv)
 	vboxd_disconnect();
 
 	if (messagesmp) free(messagesmp);
+	return 0;
 }
 
 /**************************************************************************/

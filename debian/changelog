@@ -1,4 +1,96 @@
-isdnutils (1:2.1.beta1-15bo17) experimental; urgency=low
+isdnutils (1:2.1.beta1-23) frozen unstable; urgency=medium
+
+  * fixed buffer overrun in isdnlog which caused it to crash. fixes:#23460
+  * use start-stop-daemon in cron.weekly script instead of killall; fixes:#23346
+  * fixed isdn_audio manpage  fixes:#22784
+  * Also to frozen, as the current hamm version is prone to a number of
+    buffer overruns etc.!
+
+ -- Paul Slootman <paul@debian.org>  Tue,  2 Jun 1998 13:51:37 +0200
+
+isdnutils (1:2.1.beta1-22) unstable; urgency=low
+
+  * integrated some changes from CVS version, which allowed the compilation
+    on Alpha.
+  * added "SHELL = /bin/bash" to debian/rules
+
+ -- Paul Slootman <paul@debian.org>  Wed, 27 May 1998 20:24:00 +0200
+
+isdnutils (1:2.1.beta1-21) unstable; urgency=low
+
+  * isdnlog bugfix for international calls to USA (countrycode 1 digit long)
+  * isdnrep now also pays attention to the "cityweekend=y" option.
+  * "cityweekend" option documented in the isdnlog manpage.
+  * isdnlog "outfile" may now begin with "+" to indicate that isdnlog must
+    append data to an existing file instead of truncating it when opening it
+  * (source change only) building with ms-chap enabled now works
+  * added /etc/isdn/net{up,down} to conffiles
+  * now suggest mgetty; mgetty is used in example inittab entry for X.75 login
+  * changed device.* file to make configuration thereof easier (hopefully)
+  * fixed ipfwadm examples (in device.* and /etc/ppp/ip-*.d/isdnutils) so that
+    there is a better chance that they will work (at least better than first)
+  * /etc/ppp/ip-down.d/isdnutils now sets the default route to the interface
+    instead of deleting it. The latter is safer (no unexpected dialout
+    sessions) but generated complaints, as that was not expected.
+  * isdnctrl manpage is better (synced with upstream version)
+
+ -- Paul Slootman <paul@debian.org>  Tue, 19 May 1998 10:03:07 +0200
+
+isdnutils (1:2.1.beta1-20) unstable; urgency=low
+
+  * ipppd pidfile now has correct name (/dev/ is now stripped off).
+  * Fixed copyright speling misteak (thanks, Lintian).
+  * The following changes were in -19 but somehow didn't get into the changelog:
+    - Fixed ipppd messages about "bad file descriptor" when ip-up or
+      ip-down doesn't exist (from upstream CVS version).
+    - Added isdnlog and ipppd to the "Replaces" field so that an automatic
+      upgrade with dselect is possible. fixes: #17018
+    - Added IP dynamic address hack to device.DEVICE script if kernel version
+      is greater than 2.0.30 (i.e. if /proc/sys/net/ipv4/ip_dynaddr exists).
+
+ -- Paul Slootman <paul@debian.org>  Mon,  9 Mar 1998 10:07:35 +0100
+
+isdnutils (1:2.1.beta1-19) unstable; urgency=low
+
+  * sources brought into sync with CVS development version where possible.
+  * isdnlog patched to prevent crashes under certain conditions with 1TR6
+    protocol.
+  * isdnlog patched to prevent crashes under certain buffer conditions (it was
+    assumed that BUFSIZ == 1024, and glibc has BUFSIZ == 8192)
+  * /usr/doc/isdnutils/examples/default/* remain compressed (else md5sums is
+    not in sync, and lintian complains). Isdnconfig was changed to handle this.
+  * init.d script referred to Readme.debian and CONFIG, which were actually
+    called README.debian and CONFIG.gz.
+  * isdn.conf now has correct CODELIB= and AREALIB= entries. Also fixed
+    unescaped $ signs in START definitions.
+  * reworked the CONFIG file a bit.
+  * cron.weekly script is a bit more robust.
+  * Example ip-up.d and ip-down.d scripts are now only installed if ipppd is
+    selected during isdnconfig; the scripts have some more examples in them.
+
+ -- Paul Slootman <paul@debian.org>  Thu,  5 Mar 1998 10:14:36 +0100
+
+isdnutils (1:2.1.beta1-18) unstable; urgency=low
+
+  * replaces vbox, isdnlog, ipppd instead of only vbox. fixes: Bug#17018
+  * preliminary patches to compile on Alpha
+  * ipppd fixed to stop "bad fd" etc. messages when ip-up and/or ip-down
+    don't exist
+  * VERSION=... and AC_ARG_PROGRAM=... added to vbox/configure.in
+  * added -ldl to vboxgetty libs
+  * example config file now has skeleton entry for "IP dynamic hack"
+  * example ip-up.d and ip-down.d scripts are now created under /etc/ppp/
+  * if ../dot.config exists, use that instead of supplied debian/dot.config
+  * chmod +x the "*/missing" files in debian/rules. fixes: Bug#17714
+  * use tcl8.0
+  * now (partial) manpages for imontty, isdnconf*, vbox*, iprofd, pcbitctrl
+  * init.d script handles restart and force-reload (handled identically)
+  * avmb1/configure.in changed, upstream maintainer notified. fixes: Bug#17689
+  * uses tcl8.0 instead of tcl4.2
+
+ -- Paul Slootman <paul@debian.org>  Thu, 12 Feb 1998 19:38:12 +0100
+
+isdnutils (1:2.1.beta1-17) unstable; urgency=low
 
   * new maintainer
   * changed Standards-version to 2.3.0.1

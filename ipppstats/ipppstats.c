@@ -37,12 +37,11 @@
  */
 
 #if 0
-static char rcsid[] = "$Id: ipppstats.c,v 1.2 1997/05/19 10:18:12 hipp Exp $";
+static char rcsid[] = "$Id: ipppstats.c,v 1.5 1998/04/28 08:34:15 paul Exp $";
 #endif
 
 #include <ctype.h>
 #include <errno.h>
-/* #include <nlist.h> */
 #include <stdio.h>
 #include <signal.h>
 #include <fcntl.h>
@@ -55,15 +54,21 @@ static char rcsid[] = "$Id: ipppstats.c,v 1.2 1997/05/19 10:18:12 hipp Exp $";
 #include <sys/ioctl.h>
 
 #if defined __GLIBC__ && __GLIBC__ >= 2
-# include <linux/types.h>
-# include <linux/if.h>
+# include </usr/include/net/ppp_defs.h>
+# include </usr/include/net/if.h>
 #else
 # include <linux/ppp_defs.h>
 # include <linux/if.h>
 #endif
-#include <linux/if_ppp.h>
+
+#include <sys/socket.h>
 
 #ifndef STREAMS
+# if defined __GLIBC__ && __GLIBC__ >= 2
+#  include </usr/include/net/if_ppp.h>
+# else
+#  include <linux/if_ppp.h>		/* BSD, Linux, NeXT, etc. */
+# endif
 #else				/* SunOS 4, AIX 4, OSF/1, etc. */
 #define PPP_STATS	1	/* should be defined iff it is in ppp_if.c */
 #include <sys/stream.h>
@@ -83,7 +88,7 @@ void intpr(void);
 void get_ppp_stats(struct ppp_stats *curp);
 void get_ppp_cstats(struct ppp_comp_stats *csp);
 
-void main(int argc,char **argv)
+int main(int argc,char **argv)
 {
     --argc; ++argv;
     while (argc > 0) {
@@ -132,7 +137,7 @@ void main(int argc,char **argv)
     }
 
     intpr();
-    exit(0);
+    return(0);
 }
 
 void usage(void)

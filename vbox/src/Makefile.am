@@ -14,7 +14,7 @@ vboxgetty_SOURCES=vboxgetty.c vboxgetty.h init.c init.h log.c log.h \
 		perms.c perms.h lock.c lock.h streamio.c modem.c modem.h \
 		script.c script.h voice.c voice.h lists.c lists.h \
 		rcvbox.c rcvbox.h rcgetty.c rcgetty.h
-vboxgetty_LDADD=-lvbox -L. @TCLLIB@
+vboxgetty_LDADD=-lvbox -L. @TCLLIB@ -ldl
 
 vbox_SOURCES=vbox.c streamio.c streamio.h
 vbox_LDADD=-lvbox -L. @NCLIB@

@@ -8,9 +8,15 @@ AC_ARG_WITH(include,\
         [ CPPFLAGS=" $CPPFLAGS -I$withval" ] )
 
 AC_ARG_ENABLE(mschap,\
-	[  --with-mschap		enable mschap support ], \
-	[ AC_DEFINE(USE_MSCHAP) LIBS="$LIBS -ldes" \
-	  SP="md4.c md4.h chap_ms.h chap_ms.c" ] )
+	[  --enable-mschap		enable mschap support ], \
+	[case "${enableval}" in
+	       yes) mschap=true
+		    AC_DEFINE(USE_MSCHAP) LIBS="$LIBS -ldes"
+		    ;;
+	       no)  mschap=false ;;
+	       *) AC_MSG_ERROR(bad value ${enableval} for --enable-mschap) ;;
+     	 esac],
+	[mschap=false])
 
 dnl Checks for programs.
 AC_PROG_INSTALL

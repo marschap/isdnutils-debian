@@ -1,5 +1,5 @@
 /*
-** $Id: script.c,v 1.8 1997/05/10 10:58:48 michael Exp $
+** $Id: script.c,v 1.10 1998/04/28 08:34:47 paul Exp $
 **
 ** Copyright (C) 1996, 1997 Michael 'Ghandi' Herold
 */
@@ -77,8 +77,8 @@ static int make_tcl_variable(Tcl_Interp *, char *, char *);
 
 int script_run(char *script)
 {
-	Tcl_Interp *interpreter;
-	int		   result;
+	Tcl_Interp	*interpreter;
+	int		result;
 	int         rcdelete;
 
 	log(L_DEBUG, "Initializing tcl script \"%s\"...\n", script);
@@ -98,20 +98,20 @@ int script_run(char *script)
 					log(L_DEBUG, "Answering call...\n");
 
 					if (modem_command("ATA", "VCON|CONNECT") > 0)
-					{
+				{
 						log(L_INFO, "Running tcl script \"%s\"...\n", script);
 
-						if (Tcl_EvalFile(interpreter, script) != TCL_OK)
-						{
-							log(L_ERROR, "In \"%s\": %s (line %d).\n", script, interpreter->result, interpreter->errorLine);
-						}
-						else
-						{
-							log(L_DEBUG, "Back from tcl script...\n");
-
-							result = TRUE;
-						}
+					if (Tcl_EvalFile(interpreter, script) != TCL_OK)
+					{
+						log(L_ERROR, "In \"%s\": %s (line %d).\n", script, interpreter->result, interpreter->errorLine);
 					}
+					else
+					{
+						log(L_DEBUG, "Back from tcl script...\n");
+
+						result = TRUE;
+					}
+				}
 					else log(L_FATAL, "Can't answer call!\n");
 				}
 				else log(L_ERROR, "In \"%s\": %s (line %d).\n", script, interpreter->result, interpreter->errorLine);
@@ -259,7 +259,7 @@ int vbox_message_info(ClientData cd, Tcl_Interp *ip, int argc, char *argv[])
 				switch (field)
 				{
 					case 1:
-						printstring(ip->result, "%ld", ntohl(header.time));
+						printstring(ip->result, "%ld", (long)ntohl(header.time));
 						break;
 
 					case 2:

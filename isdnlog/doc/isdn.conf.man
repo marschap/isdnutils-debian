@@ -47,7 +47,7 @@ Default is arealib. Optional.
 Full path to the arealib data file. Default is /etc/isdn/areacodes.
 
 .TP
-.B AVONLIB
+.B AVON
 Full path to the avon data file. Default is to use arealib, so you must
 set this, if you want to use avon (e.g. /etc/isdn/avon).
 

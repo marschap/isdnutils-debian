@@ -1,4 +1,4 @@
-/* $Id: isdnctrl.c,v 1.2 1997/03/10 09:51:24 fritz Exp $
+/* $Id: isdnctrl.c,v 1.12 1997/10/26 23:12:20 fritz Exp $
  * ISDN driver for Linux. (Control-Utility)
  *
  * Copyright 1994,95 by Fritz Elfert (fritz@wuemaus.franken.de)
@@ -21,6 +21,38 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: isdnctrl.c,v $
+ * Revision 1.12  1997/10/26 23:12:20  fritz
+ * Get rid of including ../.config in Makefile
+ * Now all configuration is done in configure.
+ *
+ * Revision 1.11  1997/09/26 09:07:18  fritz
+ * Check for missing triggercps in configuration.
+ *
+ * Revision 1.10  1997/09/11 19:03:32  fritz
+ * Bugfix: Tried to get Version-Info on wrong device.
+ *
+ * Revision 1.9  1997/08/21 14:47:00  fritz
+ * Added Version-Checking of NET_DV.
+ *
+ * Revision 1.8  1997/07/30 20:09:24  luethje
+ * the call "isdnctrl pppbind ipppX" will be bound the interface to X
+ *
+ * Revision 1.7  1997/07/23 20:39:15  luethje
+ * added the option "force" for the commands delif and reset
+ *
+ * Revision 1.6  1997/07/22 22:36:10  luethje
+ * isdnrep:  Use "&nbsp;" for blanks
+ * isdnctrl: Add the option "reset"
+ *
+ * Revision 1.5  1997/07/20 16:36:26  calle
+ * isdnctrl trigger was not working.
+ *
+ * Revision 1.4  1997/06/24 23:35:26  luethje
+ * isdnctrl can use a config file
+ *
+ * Revision 1.3  1997/06/22 11:58:21  fritz
+ * Added ability to adjust slave triggerlevel.
+ *
  * Revision 1.2  1997/03/10 09:51:24  fritz
  * Bugfix: mapping was broken.
  *
@@ -78,9 +110,8 @@
  *
  */
 
-#undef  ISDN_DEBUG_MODEM_SENDOPT
-
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <fcntl.h>
@@ -90,59 +121,39 @@
 #include <linux/isdn.h>
 #include <linux/isdnif.h>
 
-char *l2protostr[] = {
-        "x75i", "x75ui", "x75bui", "hdlc", "\0"
-};
+#include "config.h"
+#define _ISDNCTRL_C_
+#include "isdnctrl.h"
 
-int l2protoval[] = {
-        ISDN_PROTO_L2_X75I, ISDN_PROTO_L2_X75UI,
-        ISDN_PROTO_L2_X75BUI, ISDN_PROTO_L2_HDLC, -1
-};
+#ifdef I4L_CTRL_CONF
+#	include "../lib/libisdn.h"
+#	include "ctrlconf.h"
+#endif /* I4L_CTRL_CONF */
 
-char *l3protostr[] = {
-        "trans", "\0"
-};
+#define CMD_IFCONFIG "ifconfig"
+#define CMD_OPT_IFCONFIG "down"
 
-int l3protoval[] = {
-        ISDN_PROTO_L3_TRANS, -1
-};
-
-char *pencapstr[] = {
-        "ethernet", "rawip", "ip", "cisco-h", "syncppp",
-        "uihdlc", "\0"
-};
-
-int pencapval[] = {
-        ISDN_NET_ENCAP_ETHER, ISDN_NET_ENCAP_RAWIP,
-        ISDN_NET_ENCAP_IPTYP, ISDN_NET_ENCAP_CISCOHDLC,
-        ISDN_NET_ENCAP_SYNCPPP, ISDN_NET_ENCAP_UIHDLC, -1
-};
-
-char *num2callb[] = {
-        "off", "in", "out"
-};
-
-char *cmd;
 char nextlistif[10];
+
+int exec_args(int fd, int argc, char **argv);
 
 void usage(void)
 {
+        fprintf(stderr, "%s version %s\n", cmd, VERSION);
         fprintf(stderr, "usage: %s <command> <options>\n", cmd);
-#if 0
         fprintf(stderr, "\n");
         fprintf(stderr, "where <command> is one of the following:\n");
         fprintf(stderr, "\n");
         fprintf(stderr, "    addif [name]               add net-interface\n");
-        fprintf(stderr, "    delif name                 remove net-interface\n");
+        fprintf(stderr, "    delif name [force]         remove net-interface\n");
+        fprintf(stderr, "    reset [force]              remove all net-interfaces\n");
         fprintf(stderr, "    addphone name in|out num   add phone-number to interface\n");
         fprintf(stderr, "    delphone name in|out num   remove phone-number from interface\n");
         fprintf(stderr, "    eaz name [eaz|msn]         get/set eaz for interface\n");
         fprintf(stderr, "    huptimeout name [seconds]  get/set hangup-timeout for interface\n");
         fprintf(stderr, "    ihup name [on|off]         get/set incoming-hangup for interface\n");
         fprintf(stderr, "    chargehup name [on|off]    get/set charge-hangup for interface\n");
-#ifdef NEWKERNEL
         fprintf(stderr, "    chargeint name [seconds]   get/set charge-interval if not given by telco\n");
-#endif
         fprintf(stderr, "    secure name [on|off]       get/set secure-feature for interface\n");
         fprintf(stderr, "    callback name [in|outon|off]\n");
         fprintf(stderr, "                               get/set active callback-feature for interface\n");
@@ -162,17 +173,22 @@ void usage(void)
         fprintf(stderr, "    mapping drvId [MSN,MSN...] set MSN<->EAZ-Mapping\n");
         fprintf(stderr, "    addslave name slavename    add slave-interface\n");
         fprintf(stderr, "    sdelay mastername delay    set slave-activation delay\n");
+        fprintf(stderr, "    trigger mastername cps     set slave trigger level\n");
         fprintf(stderr, "    dial name                  force dialing of interface\n");
         fprintf(stderr, "    system on|off              switch isdn-system on or off\n");
         fprintf(stderr, "    addlink name               MPPP, increase number of links\n");
         fprintf(stderr, "    removelink name            MPPP, decrease number of links\n");
         fprintf(stderr, "    pppbind name [devicenum]   PPP, bind interface to ippp-device (exclusive)\n");
         fprintf(stderr, "    pppunbind name             PPP, remove ippp-device binding\n");
-#endif
+#ifdef I4L_CTRL_CONF
+        fprintf(stderr, "    writeconf [file]           write the settings to file\n");
+        fprintf(stderr, "    readconf [file]            read the settings from file\n");
+#endif /* I4L_CTRL_CONF */
+
         exit(-2);
 }
 
-static int key2num(char *key, char **keytable, int *numtable)
+int key2num(char *key, char **keytable, int *numtable)
 {
         int i = -1;
         while (strlen(keytable[++i]))
@@ -181,8 +197,48 @@ static int key2num(char *key, char **keytable, int *numtable)
         return -1;
 }
 
-static char *
- num2key(int num, char **keytable, int *numtable)
+int reset_interfaces(int fd, char *option)
+{
+	FILE *iflst;
+	char *p;
+	char s[255];
+	char name[255];
+	char *argv[4] = {cmds[DELIF].cmd, name, option, NULL};
+	isdn_net_ioctl_cfg cfg;
+
+
+	if (option != NULL && strcmp(option, "force"))
+	{
+		usage();
+		return -1;
+	}
+
+	if ((iflst = fopen(FILE_PROC, "r")) == NULL) {
+		perror(FILE_PROC);
+		return -1;
+	}
+
+	while (!feof(iflst)) {
+		fgets(s, sizeof(s), iflst);
+		if ((p = strchr(s, ':'))) {
+			*p = 0;
+
+			sscanf(s, "%s", name);
+			strcpy(cfg.name, name);
+
+		  if (ioctl(fd, IIOCNETGCF, &cfg) < 0)
+	      continue;
+
+			if (exec_args(fd, 2 + (option?1:0), argv) == -2)
+				return -1;
+		}
+	}
+
+	fclose(iflst);
+	return 0;
+}
+
+char * num2key(int num, char **keytable, int *numtable)
 {
         int i = -1;
         while (numtable[++i] >= 0)
@@ -242,9 +298,9 @@ static void listif(int isdnctrl, char *name, int errexit)
         printf("\nCurrent setup of interface '%s':\n\n", cfg.name);
         printf("EAZ/MSN:                %s\n", cfg.eaz);
         printf("Phone number(s):\n");
-        printf("  Outgoing:	            %s\n", ph.n);
-        printf("  Incoming:	            %s\n", nn);
-        printf("Secure:        	        %s\n", cfg.secure ? "on" : "off");
+        printf("  Outgoing:             %s\n", ph.n);
+        printf("  Incoming:             %s\n", nn);
+        printf("Secure:                 %s\n", cfg.secure ? "on" : "off");
         printf("Callback:               %s\n", num2callb[cfg.callback]);
         if (cfg.callback == 2)
                 printf("Hangup after Dial       %s\n", cfg.cbdelay ? "on" : "off");
@@ -256,780 +312,853 @@ static void listif(int isdnctrl, char *name, int errexit)
         printf("Incoming-Hangup:        %s\n", cfg.ihup ? "on" : "off");
         printf("ChargeHangup:           %s\n", cfg.chargehup ? "on" : "off");
         printf("Charge-Units:           %d\n", cfg.charge);
-        printf("Charge-Interval:        %d\n", cfg.chargeint);
+		if (data_version < 2)
+        	printf("Charge-Interval:        n.a.\n");
+		else
+        	printf("Charge-Interval:        %d\n", cfg.chargeint);
         printf("Layer-2-Protocol:       %s\n", num2key(cfg.l2_proto, l2protostr, l2protoval));
         printf("Layer-3-Protocol:       %s\n", num2key(cfg.l3_proto, l3protostr, l3protoval));
         printf("Encapsulation:          %s\n", num2key(cfg.p_encap, pencapstr, pencapval));
         printf("Slave Interface:        %s\n", strlen(cfg.slave) ? cfg.slave : "None");
         printf("Slave delay:            %d\n", cfg.slavedelay);
+		if (data_version < 3)
+        	printf("Slave trigger:          n.a.\n");
+#if HAVE_TRIGGERCPS
+		else
+        	printf("Slave trigger:          %d cps\n", cfg.triggercps);
+#endif
         printf("Master Interface:       %s\n", strlen(cfg.master) ? cfg.master : "None");
         printf("Pre-Bound to:           ");
         listbind(cfg.drvid, cfg.exclusive);
+        printf("PPP-Bound to:           ");
+        if (cfg.pppbind >= 0)
+        	printf("%d\n", cfg.pppbind);
+        else
+        	printf("Nothing\n");
+
         if (cfg.slave && strlen(cfg.slave))
                 strcpy(nextlistif, cfg.slave);
         else
                 nextlistif[0] = '\0';
 }
 
-static void get_setup(int isdnctrl, char *name)
-{
-        isdn_net_ioctl_cfg cfg;
-        char buffer[0x1000];
-        char *p;
-        FILE *f;
-
-        if (ioctl(isdnctrl, IIOCGETSET, &buffer) < 0) {
-                perror("ioctl GET_SETUP");
-                exit(-1);
-        }
-		if (strcmp(name,"-"))
-        	f = fopen(name, "w");
-		else
-			f = stdout;
-        if (!f) {
-                perror(name);
-                exit(-1);
-        }
-        p = buffer;
-		fprintf(f,"[isdnctrl]\n");
-        while (strlen(p)) {
-                if (strlen(cfg.master)) {
-					fprintf(f, "  netslave=\"%s\"\n", p);
-					fprintf(f, "    master=\"%s\"\n", p);
-				} else
-                	fprintf(f, "  netif=\"%s\"\n", p);
-                p += 10;
-                memcpy((char *) &cfg, p, sizeof(cfg));
-                fprintf(f, "    eazmsn=\"%s\"\n", cfg.eaz);
-                fprintf(f, "    secure=%d\n", cfg.secure);
-                fprintf(f, "    callback=%d\n", cfg.callback);
-                fprintf(f, "    huptimeout=%d\n", cfg.onhtime);
-                fprintf(f, "    ihup=%d\n", cfg.ihup);
-                fprintf(f, "    chargehup=%d\n", cfg.chargehup);
-                fprintf(f, "    l2prot=%d\n", cfg.l2_proto);
-                fprintf(f, "    l3prot=%d\n", cfg.l3_proto);
-                fprintf(f, "    encap=%d\n", cfg.p_encap);
-                fprintf(f, "    chargeint=%d\n", cfg.chargeint);
-                fprintf(f, "    slavedelay=%d\n", cfg.slavedelay);
-                fprintf(f, "    exclusive=%d\n", cfg.exclusive);
-                fprintf(f, "    binddev=\"%s\"\n", cfg.drvid);
-                p += sizeof(cfg);
-                fprintf(f, "    outphones=\"%s\"\n", p);
-                p += (strlen(p) + 1);
-                fprintf(f, "    inphones=\"%s\"\n", p);
-                p += (strlen(p) + 1);
-        }
-		if (f != stdout)
-        	fclose(f);
-}
-
-enum {
-        ADDIF, ADDSLAVE, DELIF, DIAL,
-        BIND, UNBIND, PPPBIND, PPPUNBIND,
-        BUSREJECT, MAPPING, SYSTEM, HANGUP,
-        ADDPHONE, DELPHONE, LIST, EAZ,
-        VERBOSE, GETCONF, HUPTIMEOUT, CBDELAY,
-        CHARGEINT, DIALMAX, SDELAY, CHARGEHUP,
-        CBHUP, IHUP, SECURE, CALLBACK,
-        L2_PROT, L3_PROT, ADDLINK, REMOVELINK,
-        ENCAP
-};
-
-typedef struct {
-        char *cmd;
-        char *argno;
-} cmd_struct;
-
-static cmd_struct cmds[] =
-{
-        {"addif", "0"},
-        {"addslave", "1"},
-        {"delif", "0"},
-        {"dial", "0"},
-        {"bind", "12"},
-        {"unbind", "0"},
-        {"pppbind", "1"},
-        {"pppunbind", "0"},
-        {"busreject", "1"},
-        {"mapping", "01"},
-        {"system", "0"},
-        {"hangup", "0"},
-        {"addphone", "2"},
-        {"delphone", "2"},
-        {"list", "0"},
-        {"eaz", "01"},
-        {"verbose", "0"},
-        {"getconf", "0"},
-        {"huptimeout", "01"},
-        {"cbdelay", "01"},
-        {"chargeint", "01"},
-        {"dialmax", "01"},
-        {"sdelay", "01"},
-        {"chargehup", "01"},
-        {"cbhup", "01"},
-        {"ihup", "01"},
-        {"secure", "01"},
-        {"callback", "01"},
-        {"l2_prot", "01"},
-        {"l3_prot", "01"},
-        {"addlink", "0"},
-        {"removelink", "0"},
-        {"encap", "01"},
-        {NULL,}
-};
-
 int findcmd(char *str)
 {
-        int i;
+	int i;
 
-        for (i = 0; cmds[i].cmd; i++)
-                if (!strcmp(cmds[i].cmd, str))
-                        return i;
-        return -1;
+	if (str != NULL)
+		for (i = 0; cmds[i].cmd; i++)
+			if (!strcmp(cmds[i].cmd, str))
+				return i;
+
+	return -1;
 }
 
-void main(int argc, char **argv)
+int exec_args(int fd, int argc, char **argv)
 {
-        int fd;
-        int i,
-         n,
-         args,
-         cmdptr;
-        int result;
-        FILE *iflst;
-        char *p;
-        char s[255];
-        isdn_net_ioctl_phone phone;
-        isdn_net_ioctl_cfg cfg;
-        isdn_ioctl_struct iocts;
-        unsigned long j;
-        char nstring[255];
-        char *id;
-        char *arg1;
-        char *arg2;
+	int i,
+	 n,
+	 args;
+	int result;
+	FILE *iflst;
+	char *p;
+	char s[255], dummy[255];
+	isdn_net_ioctl_phone phone;
+	isdn_net_ioctl_cfg cfg;
+	isdn_ioctl_struct iocts;
+	unsigned long j;
+	char nstring[255];
+#ifdef I4L_CTRL_CONF
+	char conffile[PATH_MAX];
+#endif /* I4L_CTRL_CONF */
+	char *id;
+	char *arg1;
+	char *arg2;
 
-        cmd = argv[0];
-        if (argc < 3) {
-                usage();
-                return;
-        }
-        fd = open("/dev/isdnctrl", O_RDWR);
-        if (fd < 0) {
-                perror("/dev/isdnctrl");
-                exit(-1);
-        }
-        id = argv[2];
-        i = findcmd(argv[1]);
-        for (cmdptr = 2; cmdptr < argc;) {
-                if (i < 0) {    /* Unknown command */
-                        fprintf(stderr, "The given command \"%s\" is unknown.\n\n", argv[cmdptr]);
-                        usage();
-                        return;
-                }
-                if (i != GETCONF) {
-                        if (strlen(id) > 8) {
-                                fprintf(stderr, "Interface name must not exceed 8 characters!\n");
-                                close(fd);
-                                return;
-                        }
-                }
-                args = 0;
-                for (n = 0; cmds[i].argno[n]; n++) {
-                        args = cmds[i].argno[n] - '0';
-                        if (!n && (args + cmdptr > argc - 1)) {
-                                fprintf(stderr, "Too few arguments given for %s\n", cmds[i].cmd);
-                                usage();
-                                return;
-                        }
-                        if (n && ((cmdptr + args > argc - 1) || findcmd(argv[cmdptr + args]) >= 0)) {
-                                args = cmds[i].argno[n - 1] - '0';
-                                break;
-                        }
-                }
-                arg1 = args ? argv[cmdptr + 1] : "";
-                arg2 = (args > 1) ? argv[cmdptr + 2] : "";
-                switch (i) {
-                case ADDIF:
-                        strcpy(s, id);
-                        if ((result = ioctl(fd, IIOCNETAIF, s)) < 0) {
-                                perror("addif");
-                                exit(-1);
-                        }
-                        printf("%s added\n", s);
-                        break;
 
-                case ADDSLAVE:
-                        if (strlen(arg1) > 8) {
-                                fprintf(stderr, "slavename must not exceed 8 characters\n");
-                                exit(-1);
-                        }
-                        sprintf(s, "%s,%s", id, arg1);
-                        if ((result = ioctl(fd, IIOCNETASL, s)) < 0) {
-                                perror("addslave");
-                                exit(-1);
-                        }
-                        printf("%s added as slave to %s\n", s, id);
-                        break;
+	for (; *argv != NULL; argv++, argc--) {
+		if ((i = findcmd(argv[0])) < 0) {    /* Unknown command */
+			fprintf(stderr, "The given command \"%s\" is unknown.\n\n", argv[0]);
+			usage();
+			return -1;
+		}
 
-                case DELIF:
-                        if ((result = ioctl(fd, IIOCNETDIF, id)) < 0) {
+		args = cmds[i].argno[0] - '0';
+		id = argv[1];
+
+		if (args > argc - 1) {
+			fprintf(stderr, "Too few arguments given for \"%s\".\n\n", argv[0]);
+			usage();
+			return -1;
+		}
+
+#ifdef I4L_CTRL_CONF
+		if (id != NULL && i != RESET && i != WRITECONF && i != READCONF) {
+#else
+		if (id != NULL && i != RESET) {
+#endif /* I4L_CTRL_CONF */
+			if (strlen(id) > 8) {
+				fprintf(stderr, "Interface name must not exceed 8 characters!\n");
+				close(fd);
+				return -1;
+			}
+		}
+
+		for (n = 1; cmds[i].argno[n]; n++) {
+			args = cmds[i].argno[n] - '0';
+			if (((args > argc - 1) || findcmd(argv[args]) >= 0)) {
+				args = cmds[i].argno[n - 1] - '0';
+				break;
+			}
+		}
+
+		arg1 = (args > 1) ? argv[2] : "";
+		arg2 = (args > 2) ? argv[3] : "";
+		argc -= args;
+		argv += args;
+
+		switch (i) {
+			case ADDIF:
+			        strcpy(s, args?id:"");
+			        if ((result = ioctl(fd, IIOCNETAIF, s)) < 0) {
+			        	perror("addif");
+			        	return -1;
+			        }
+			        printf("%s added\n", s);
+			        break;
+
+			case ADDSLAVE:
+			        if (strlen(arg1) > 8) {
+			        	fprintf(stderr, "slavename must not exceed 8 characters\n");
+			        	return -1;
+			        }
+			        sprintf(s, "%s,%s", id, arg1);
+			        if ((result = ioctl(fd, IIOCNETASL, s)) < 0) {
+			        	perror("addslave");
+			        	return -1;
+			        }
+			        printf("%s added as slave to %s\n", s, id);
+			        break;
+
+			case DELIF:
+			        if (args == 2)
+			        	if (!strcmp(arg1, "force"))
+			        	{
+			        		char command[255];
+			        		sprintf(command,"%s %s %s",CMD_IFCONFIG, id, CMD_OPT_IFCONFIG);
+
+			        		if (system(command))
+			        			return -2;
+			        	}
+			        	else
+			        		usage();
+
+			        if ((result = ioctl(fd, IIOCNETDIF, id)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        printf("%s deleted\n", id);
+			        break;
+
+			case DIAL:
+			        if ((result = ioctl(fd, IIOCNETDIL, id)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        printf("Dialing of %s triggered\n", id);
+			        break;
+
+			case BIND:
+			        if (args == 3)
+			        	if (strncmp(arg2, "excl", 4))
+			        		usage();
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (args > 1)
+			        {
+			        	sscanf(arg1, "%s", cfg.drvid);
+			        	cfg.exclusive = (args == 3);
+			        	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        		sprintf(s, "%s or %s", id, arg2);
+			        		perror(s);
+			        		return -1;
+			        	}
+			        }
+			        printf("%s bound to ", id);
+			        listbind(cfg.drvid, cfg.exclusive);
+			        break;
+
+			case UNBIND:
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (!strlen(cfg.drvid)) {
+			        	printf("%s was not bound to anything\n", id);
+			        	return -1;
+			        }
+			        cfg.drvid[0] = '\0';
+			        cfg.exclusive = -1;
+			        if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        printf("%s unbound successfully\n", id);
+			        break;
+
+			case PPPBIND:
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
                                 perror(id);
-                                exit(-1);
-                        }
-                        printf("%s deleted\n", id);
-                        break;
+                                return -1;
+			        }
+			        if ((args == 2 && sscanf(arg1, "%d%s", &cfg.pppbind,dummy) == 1) ||
+			            (args == 1 && sscanf(id, "ippp%d%s", &cfg.pppbind,dummy) == 1)) {
+			       	 	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        		sprintf(s, "%s or %s", id, arg1);
+			        		perror(s);
+			        		return -1;
+              	}
+             	} else {
+             		if (args == 1)
+			       			fprintf(stderr,"Unknown interface `%s', use ipppX\n", id);
+			       		else
+			       			fprintf(stderr,"Unknown argument `%s'\n", arg1);
+			       		return -1;
+             	}
 
-                case DIAL:
-                        if ((result = ioctl(fd, IIOCNETDIL, id)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        printf("Dialing of %s triggered\n", id);
-                        break;
+			        printf("%s bound to ", id);
+			        if (cfg.pppbind >= 0)
+			        	printf("%d\n", cfg.pppbind);
+			        else
+			        	printf("nothing\n");
+			        break;
 
-                case BIND:
-                        if (args == 2)
-                                if (strncmp(arg2, "excl", 4))
-                                        usage();
-                        strcpy(cfg.name, id);
-                        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        sscanf(argv[3], "%s", cfg.drvid);
-                        cfg.exclusive = (args == 2);
-                        if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                sprintf(s, "%s or %s", id, arg2);
-                                perror(s);
-                                exit(-1);
-                        }
-                        printf("%s bound to ", id);
-                        listbind(cfg.drvid, cfg.exclusive);
-                        break;
+			case PPPUNBIND:
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (cfg.pppbind < 0) {
+			        	printf("%s was not bound to anything\n", id);
+			        	return -1;
+			        }
+			        cfg.pppbind = -1;
+			        if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        printf("%s unbound successfully\n", id);
+			        break;
 
-                case UNBIND:
-                        strcpy(cfg.name, id);
-                        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (!strlen(cfg.drvid)) {
-                                printf("%s was not bound to anything\n", id);
-                                exit(0);
-                        }
-                        cfg.drvid[0] = '\0';
-                        cfg.exclusive = -1;
-                        if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        printf("%s unbound successfully\n", id);
-                        break;
+			case BUSREJECT:
+			        strcpy(iocts.drvid, id);
+			        if (strcmp(arg1, "on") && strcmp(arg1, "off")) {
+			        	fprintf(stderr, "Bus-Reject must be 'on' or 'off'\n");
+			        	return -1;
+			        }
+			        iocts.arg = strcmp(arg1, "off");
+			        if ((result = ioctl(fd, IIOCSETBRJ, &iocts)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        break;
 
-                case PPPBIND:
-                        strcpy(cfg.name, id);
-                        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        sscanf(arg1, "%d", &cfg.pppbind);
-                        if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                sprintf(s, "%s or %s", id, arg1);
-                                perror(s);
-                                exit(-1);
-                        }
-                        printf("%s bound to %s", id, arg1);
-                        break;
+			case MAPPING:
+			        strcpy(iocts.drvid, id);
+			        if (args == 1) {
+			        	iocts.arg = (unsigned long) &nstring;
+			        	if ((result = ioctl(fd, IIOCGETMAP, &iocts)) < 0) {
+			        		perror(id);
+			        		return -1;
+			        	}
+			        	printf("MSN/EAZ-mapping for %s:\n%s\n", id, nstring);
+			        } else {
+			        	char buf[400];
+			        	strncpy(buf, arg1, sizeof(buf) - 1);
+			        	iocts.arg = (unsigned long) buf;
+			        	if ((result = ioctl(fd, IIOCSETMAP, &iocts)) < 0) {
+			        		perror(id);
+			        		return -1;
+			        	}
+			        }
+			        break;
 
-                case PPPUNBIND:
-                        strcpy(cfg.name, id);
-                        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (cfg.pppbind < 0) {
-                                printf("%s was not bound to anything\n", id);
-                                exit(0);
-                        }
-                        cfg.pppbind = -1;
-                        if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        printf("%s unbound successfully\n", id);
-                        break;
+			case SYSTEM:
+			        if (strcmp(id, "on") && strcmp(id, "off")) {
+			        	fprintf(stderr, "System-Mode must be 'on' or 'off'\n");
+			        	return -1;
+			        }
+			        j = strcmp(id, "on");
+			        if ((result = ioctl(fd, IIOCSETGST, j)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        break;
 
-                case BUSREJECT:
-                        strcpy(iocts.drvid, id);
-                        if (strcmp(arg1, "on") && strcmp(arg1, "off")) {
-                                fprintf(stderr, "Bus-Reject must be 'on' or 'off'\n");
-                                exit(-1);
-                        }
-                        iocts.arg = strcmp(arg1, "off");
-                        if ((result = ioctl(fd, IIOCSETBRJ, &iocts)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        break;
+			case HANGUP:
+			        if ((result = ioctl(fd, IIOCNETHUP, id)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (result)
+			        	printf("%s not connected\n", id);
+			        else
+			        	printf("%s hung up\n", id);
+			        break;
 
-                case MAPPING:
-                        strcpy(iocts.drvid, id);
-                        if (!args) {
-                                iocts.arg = (unsigned long) &nstring;
-                                if ((result = ioctl(fd, IIOCGETMAP, &iocts)) < 0) {
-                                        perror(id);
-                                        exit(-1);
-                                }
-                                printf("MSN/EAZ-mapping for %s:\n%s\n", id, nstring);
-                        } else {
-                                char buf[400];
-                                strncpy(buf, arg1, sizeof(buf) - 1);
-                                iocts.arg = (unsigned long) buf;
-                                if ((result = ioctl(fd, IIOCSETMAP, &iocts)) < 0) {
-                                        perror(id);
-                                        exit(-1);
-                                }
-                        }
-                        break;
+			case ADDPHONE:
+			        if (strcmp(arg1, "in") && strcmp(arg1, "out")) {
+			        	fprintf(stderr, "Direction must be \"in\" or \"out\"\n");
+			        	return -1;
+			        }
+			        phone.outgoing = strcmp(arg1, "out") ? 0 : 1;
+			        if (strlen(arg2) > 20) {
+			        	fprintf(stderr, "phone-number must not exceed 20 characters\n");
+			        	return -1;
+			        }
+			        strcpy(phone.name, id);
+			        strcpy(phone.phone, arg2);
+			        if ((result = ioctl(fd, IIOCNETANM, &phone)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        break;
 
-                case SYSTEM:
-                        if (strcmp(id, "on") && strcmp(id, "off")) {
-                                fprintf(stderr, "System-Mode must be 'on' or 'off'\n");
-                                exit(-1);
-                        }
-                        j = strcmp(id, "on");
-                        if ((result = ioctl(fd, IIOCSETGST, j)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        break;
+			case DELPHONE:
+			        if (strcmp(arg1, "in") && strcmp(arg1, "out")) {
+			        	fprintf(stderr, "Direction must be \"in\" or \"out\"\n");
+			        	return -1;
+			        }
+			        phone.outgoing = strcmp(arg1, "out") ? 0 : 1;
+			        if (strlen(arg2) > 20) {
+			        	fprintf(stderr, "phone-number must not exceed 20 characters\n");
+			        	return -1;
+			        }
+			        strcpy(phone.name, id);
+			        strcpy(phone.phone, arg2);
+			        if ((result = ioctl(fd, IIOCNETDNM, &phone)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        break;
 
-                case HANGUP:
-                        if ((result = ioctl(fd, IIOCNETHUP, id)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (result)
-                                printf("%s not connected\n", id);
-                        else
-                                printf("%s hung up\n", id);
-                        break;
+			case LIST:
+			        if (!strcmp(id, "all")) {
+			        	char name[10];
+			        	if ((iflst = fopen(FILE_PROC, "r")) == NULL) {
+			        		perror(FILE_PROC);
+			        		return -1;
+			        	}
+			        	while (!feof(iflst)) {
+			        		fgets(s, sizeof(s), iflst);
+			        		if ((p = strchr(s, ':'))) {
+			        			*p = 0;
+			        			sscanf(s, "%s", name);
+			        			listif(fd, name, 0);
+			        			while (strlen(nextlistif))
+			        				listif(fd, nextlistif, 0);
+			        		}
+			        	}
+			        	fclose(iflst);
+			        } else
+			        	listif(fd, id, 1);
+			        break;
 
-                case ADDPHONE:
-                        if (strcmp(arg1, "in") && strcmp(arg1, "out")) {
-                                fprintf(stderr, "Direction must be \"in\" or \"out\"\n");
-                                exit(-1);
-                        }
-                        phone.outgoing = strcmp(arg1, "out") ? 0 : 1;
-                        if (strlen(arg2) > 20) {
-                                fprintf(stderr, "phone-number must not exceed 20 characters\n");
-                                exit(-1);
-                        }
-                        strcpy(phone.name, id);
-                        strcpy(phone.phone, arg2);
-                        if ((result = ioctl(fd, IIOCNETANM, &phone)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        break;
+			case EAZ:
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (args == 2) {
+			        	i = -1;
+			        	strncpy(cfg.eaz, arg1, sizeof(cfg.eaz) - 1);
+			        	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        		perror(id);
+			        		return -1;
+			        	}
+			        }
+			        printf("EAZ/MSN for %s is %s\n", cfg.name, cfg.eaz);
+			        break;
 
-                case DELPHONE:
-                        if (strcmp(arg1, "in") && strcmp(arg1, "out")) {
-                                fprintf(stderr, "Direction must be \"in\" or \"out\"\n");
-                                exit(-1);
-                        }
-                        phone.outgoing = strcmp(arg1, "out") ? 0 : 1;
-                        if (strlen(arg2) > 20) {
-                                fprintf(stderr, "phone-number must not exceed 20 characters\n");
-                                exit(-1);
-                        }
-                        strcpy(phone.name, id);
-                        strcpy(phone.phone, arg2);
-                        if ((result = ioctl(fd, IIOCNETDNM, &phone)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        break;
+			case VERBOSE:
+			        i = -1;
+			        sscanf(id, "%d", &i);
+			        if (i < 0) {
+			        	fprintf(stderr, "Verbose-level must be >= 0\n");
+			        	return -1;
+			        }
+			        if ((result = ioctl(fd, IIOCSETVER, i)) < 0) {
+			        	perror("IIOCSETVER");
+			        	return -1;
+			        }
+			        printf("Verbose-level set to %d.\n", i);
+			        break;
 
-                case LIST:
-                        if (!strcmp(id, "all")) {
-                                char name[10];
-                                if ((iflst = fopen("/proc/net/dev", "r")) == NULL) {
-                                        perror("/proc/net/dev");
-                                        exit(-1);
-                                }
-                                while (!feof(iflst)) {
-                                        fgets(s, sizeof(s), iflst);
-                                        if ((p = strchr(s, ':'))) {
-                                                *p = 0;
-                                                sscanf(s, "%s", name);
-                                                listif(fd, name, 0);
-                                                while (strlen(nextlistif))
-                                                        listif(fd, nextlistif, 0);
-                                        }
-                                }
-                                fclose(iflst);
-                        } else
-                                listif(fd, id, 1);
-                        break;
+			case HUPTIMEOUT:
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (args == 2) {
+			        	i = -1;
+			        	sscanf(arg1, "%d", &i);
+			        	if (i < 0) {
+			        		fprintf(stderr, "Hangup-Timeout must be >= 0\n");
+			        		return -1;
+			        	}
+			        	cfg.onhtime = i;
+			        	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        		perror(id);
+			        		return -1;
+			        	}
+			        }
+			        printf("Hangup-Timeout for %s is %d sec.\n", cfg.name, cfg.onhtime);
+			        break;
 
-                case EAZ:
-                        strcpy(cfg.name, id);
-                        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (args) {
-                                i = -1;
-                                strncpy(cfg.eaz, arg1, sizeof(cfg.eaz) - 1);
-                                if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                        perror(id);
-                                        exit(-1);
-                                }
-                        }
-                        printf("EAZ/MSN for %s is %s\n", cfg.name, cfg.eaz);
-                        break;
+			case CBDELAY:
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (args == 2) {
+			        	i = -1;
+			        	sscanf(arg1, "%d", &i);
+			        	if (i < 0) {
+			        		fprintf(stderr, "Callback delay must be >= 0\n");
+			        		return -1;
+			        	}
+			        	cfg.cbdelay = i * 5;
+			        	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        		perror(id);
+			        		return -1;
+			        	}
+			        }
+			        printf("Callback delay for %s is %d sec.\n", cfg.name, cfg.cbdelay / 5);
+			        break;
 
-                case VERBOSE:
-                        i = -1;
-                        sscanf(id, "%d", &i);
-                        if (i < 0) {
-                                fprintf(stderr, "Verbose-level must be >= 0\n");
-                                exit(-1);
-                        }
-                        if ((result = ioctl(fd, IIOCSETVER, i)) < 0) {
-                                perror("IIOCSETVER");
-                                exit(-1);
-                        }
-                        printf("Verbose-level set to %d.\n", i);
-                        break;
+			case CHARGEINT:
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (args == 2) {
+			        	i = -1;
+			        	sscanf(arg1, "%d", &i);
+			        	if (i < 0) {
+			        		fprintf(stderr, "Charge interval must be >= 0\n");
+			        		return -1;
+			        	}
+			        	cfg.chargeint = i;
+			        	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        		perror(id);
+			        		return -1;
+			        	}
+			        }
+					if (data_version < 2)
+						printf("Option 'chargeint' IGNORED!\n");
+					else
+			        	printf("Charge Interval for %s is %d sec.\n", cfg.name, cfg.chargeint);
+			        break;
 
-                case GETCONF:
-                        get_setup(fd, id);
-                        printf("Configuration written to %s.\n", id);
-                        break;
+			case DIALMAX:
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (args == 2) {
+			        	i = -1;
+			        	sscanf(arg1, "%d", &i);
+			        	if (i < 1) {
+			        		fprintf(stderr, "Dialmax must be > 0\n");
+			        		return -1;
+			        	}
+			        	cfg.dialmax = i;
+			        	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        		perror(id);
+			        		return -1;
+			        	}
+			        }
+			        printf("Dialmax for %s is %d times.\n", cfg.name, cfg.dialmax);
+			        break;
 
-                case HUPTIMEOUT:
-                        strcpy(cfg.name, id);
-                        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (args) {
-                                i = -1;
-                                sscanf(arg1, "%d", &i);
-                                if (i < 0) {
-                                        fprintf(stderr, "Hangup-Timeout must be >= 0\n");
-                                        exit(-1);
-                                }
-                                cfg.onhtime = i;
-                                if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                        perror(id);
-                                        exit(-1);
-                                }
-                        }
-                        printf("Hangup-Timeout for %s is %d sec.\n", cfg.name, cfg.onhtime);
-                        break;
+			case SDELAY:
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (args == 2) {
+			        	i = -1;
+			        	sscanf(arg1, "%d", &i);
+			        	if (i < 1) {
+			        		fprintf(stderr, "Slave-activation delay must be >= 1\n");
+			        		return -1;
+			        	}
+			        	cfg.slavedelay = i;
+			        	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        		perror(id);
+			        		return -1;
+			        	}
+			        }
+			        printf("Slave-activation delay for %s is %d sec.\n", cfg.name,
+			               cfg.slavedelay);
+			        break;
 
-                case CBDELAY:
-                        strcpy(cfg.name, id);
-                        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (args) {
-                                i = -1;
-                                sscanf(arg1, "%d", &i);
-                                if (i < 0) {
-                                        fprintf(stderr, "Callback delay must be >= 0\n");
-                                        exit(-1);
-                                }
-                                cfg.cbdelay = i * 5;
-                                if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                        perror(id);
-                                        exit(-1);
-                                }
-                        }
-                        printf("Callback delay for %s is %d sec.\n", cfg.name, cfg.cbdelay / 5);
-                        break;
+			case TRIGGER:
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+			        	perror(id);
+			        	exit(-1);
+			        }
+			        if (args == 2) {
+			        	i = -1;
+			        	sscanf(arg1, "%d", &i);
+			        	if (i < 0) {
+			        		fprintf(stderr, "Slave triggerlevel must be >= 0 (%s)\n", arg1);
+			        		exit(-1);
+			        	}
+#if HAVE_TRIGGERCPS
+			        	cfg.triggercps = i;
+			        	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        		perror(id);
+			        		exit(-1);
+			        	}
+#endif
+			        }
+					if (data_version < 3)
+						printf("Option 'trigger' IGNORED!\n");
+#if HAVE_TRIGGERCPS
+					else
+			        	printf("Slave triggerlevel for %s is %d cps.\n",
+								cfg.name, cfg.triggercps);
+#endif
+			        break;
 
-                case CHARGEINT:
-                        strcpy(cfg.name, id);
-                        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (args) {
-                                i = -1;
-                                sscanf(arg1, "%d", &i);
-                                if (i < 0) {
-                                        fprintf(stderr, "Charge interval must be >= 0\n");
-                                        exit(-1);
-                                }
-                                cfg.chargeint = i;
-                                if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                        perror(id);
-                                        exit(-1);
-                                }
-                        }
-                        printf("Charge Interval for %s is %d sec.\n", cfg.name, cfg.chargeint);
-                        break;
+			case CHARGEHUP:
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (args == 2) {
+			        	i = -1;
+			        	if (strcmp(arg1, "on") && strcmp(arg1, "off")) {
+			        		fprintf(stderr, "Charge-Hangup must be 'on' or 'off'\n");
+			        		return -1;
+			        	}
+			        	cfg.chargehup = strcmp(arg1, "off");
+			        	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        		perror(id);
+			        		return -1;
+			        	}
+			        }
+			        printf("Charge-Hangup for %s is %s\n", cfg.name, cfg.chargehup ? "on" : "off");
+			        break;
 
-                case DIALMAX:
-                        strcpy(cfg.name, id);
-                        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (args) {
-                                i = -1;
-                                sscanf(arg1, "%d", &i);
-                                if (i < 1) {
-                                        fprintf(stderr, "Dialmax must be > 0\n");
-                                        exit(-1);
-                                }
-                                cfg.dialmax = i;
-                                if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                        perror(id);
-                                        exit(-1);
-                                }
-                        }
-                        printf("Dialmax for %s is %d times.\n", cfg.name, cfg.dialmax);
-                        break;
+			case CBHUP:
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (args == 2) {
+			        	i = -1;
+			        	if (strcmp(arg1, "on") && strcmp(arg1, "off")) {
+			        		fprintf(stderr, "Callback-Hangup must be 'on' or 'off'\n");
+			        		return -1;
+			        	}
+			        	cfg.cbhup = strcmp(arg1, "off");
+			        	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        		perror(id);
+			        		return -1;
+			        	}
+			        }
+			        printf("Reject before Callback for %s is %s\n", cfg.name, cfg.cbhup ? "on" : "off");
+			        break;
 
-                case SDELAY:
-                        strcpy(cfg.name, id);
-                        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (args) {
-                                i = -1;
-                                sscanf(arg1, "%d", &i);
-                                if (i < 1) {
-                                        fprintf(stderr, "Slave-activation delay must be >= 1\n");
-                                        exit(-1);
-                                }
-                                cfg.slavedelay = i;
-                                if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                        perror(id);
-                                        exit(-1);
-                                }
-                        }
-                        printf("Slave-activation delay for %s is %d sec.\n", cfg.name,
-                               cfg.slavedelay);
-                        break;
+			case IHUP:
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (args == 2) {
+			        	i = -1;
+			        	if (strcmp(arg1, "on") && strcmp(arg1, "off")) {
+			        		fprintf(stderr, "Incoming-Hangup must be 'on' or 'off'\n");
+			        		return -1;
+			        	}
+			        	cfg.ihup = strcmp(arg1, "off");
+			        	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        		perror(id);
+			        		return -1;
+			        	}
+			        }
+			        printf("Incoming-Hangup for %s is %s\n", cfg.name, cfg.ihup ? "on" : "off");
+			        break;
 
-                case CHARGEHUP:
-                        strcpy(cfg.name, id);
-                        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (args) {
-                                i = -1;
-                                if (strcmp(arg1, "on") && strcmp(arg1, "off")) {
-                                        fprintf(stderr, "Charge-Hangup must be 'on' or 'off'\n");
-                                        exit(-1);
-                                }
-                                cfg.chargehup = strcmp(arg1, "off");
-                                if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                        perror(id);
-                                        exit(-1);
-                                }
-                        }
-                        printf("Charge-Hangup for %s is %s\n", cfg.name, cfg.chargehup ? "on" : "off");
-                        break;
+			case SECURE:
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (args == 2) {
+			        	i = -1;
+			        	if (strcmp(arg1, "on") && strcmp(arg1, "off")) {
+			        		fprintf(stderr, "Secure-parameter must be 'on' or 'off'\n");
+			        		return -1;
+			        	}
+			        	cfg.secure = strcmp(arg1, "off");
+			        	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        		perror(id);
+			        		return -1;
+			        	}
+			        }
+			        printf("Security for %s is %s\n", cfg.name, cfg.secure ? "on" : "off");
+			        break;
 
-                case CBHUP:
-                        strcpy(cfg.name, id);
-                        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (args) {
-                                i = -1;
-                                if (strcmp(arg1, "on") && strcmp(arg1, "off")) {
-                                        fprintf(stderr, "Callback-Hangup must be 'on' or 'off'\n");
-                                        exit(-1);
-                                }
-                                cfg.cbhup = strcmp(arg1, "off");
-                                if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                        perror(id);
-                                        exit(-1);
-                                }
-                        }
-                        printf("Reject before Callback for %s is %s\n", cfg.name, cfg.cbhup ? "on" : "off");
-                        break;
+			case CALLBACK:
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (args == 2) {
+			        	i = -1;
+			        	if (strcmp(arg1, "on") && strcmp(arg1, "off") &&
+                    strcmp(arg1, "in") && strcmp(arg1, "out")) {
+			        		fprintf(stderr, "Callback-parameter must be 'on', 'in', 'out' or 'off'\n");
+			        		return -1;
+			        	}
+			        	cfg.callback = strcmp(arg1, "off") ? 1 : 0;
+			        	if (!strcmp(arg1, "out"))
+			        		cfg.callback = 2;
+			        	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        		perror(id);
+			        		return -1;
+			        	}
+			        }
+			        printf("Callback for %s is %s\n", cfg.name, num2callb[cfg.callback]);
+			        break;
 
-                case IHUP:
-                        strcpy(cfg.name, id);
-                        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (args) {
-                                i = -1;
-                                if (strcmp(arg1, "on") && strcmp(arg1, "off")) {
-                                        fprintf(stderr, "Incoming-Hangup must be 'on' or 'off'\n");
-                                        exit(-1);
-                                }
-                                cfg.ihup = strcmp(arg1, "off");
-                                if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                        perror(id);
-                                        exit(-1);
-                                }
-                        }
-                        printf("Incoming-Hangup for %s is %s\n", cfg.name, cfg.ihup ? "on" : "off");
-                        break;
+			case L2_PROT:
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (args == 2) {
+			        	i = key2num(arg1, l2protostr, l2protoval);
+			        	if (i < 0) {
+			        		fprintf(stderr, "Layer-2-Protocol must be one of the following:\n");
+			        		i = 0;
+			        		while (strlen(l2protostr[i]))
+			        			fprintf(stderr, "\t\"%s\"\n", l2protostr[i++]);
+			        		return -1;
+			        	}
+			        	cfg.l2_proto = i;
+			        	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        		perror(id);
+			        		return -1;
+			        	}
+			        }
+			        printf("Layer-2-Protocol for %s is %s\n", cfg.name,
+			          num2key(cfg.l2_proto, l2protostr, l2protoval));
+			        break;
 
-                case SECURE:
-                        strcpy(cfg.name, id);
-                        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (args) {
-                                i = -1;
-                                if (strcmp(arg1, "on") && strcmp(arg1, "off")) {
-                                        fprintf(stderr, "Secure-parameter must be 'on' or 'off'\n");
-                                        exit(-1);
-                                }
-                                cfg.secure = strcmp(arg1, "off");
-                                if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                        perror(id);
-                                        exit(-1);
-                                }
-                        }
-                        printf("Security for %s is %s\n", cfg.name, cfg.secure ? "on" : "off");
-                        break;
+			case L3_PROT:
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (args == 2) {
+			        	i = key2num(arg1, l3protostr, l3protoval);
+			        	if (i < 0) {
+			        		fprintf(stderr, "Layer-3-Protocol must be one of the following:\n");
+			        		i = 0;
+			        		while (strlen(l3protostr[i]))
+			        			fprintf(stderr, "\t\"%s\"\n", l3protostr[i++]);
+			        		return -1;
+			        	}
+			        	cfg.l3_proto = i;
+			        	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        		perror(id);
+			        		return -1;
+			        	}
+			        }
+			        printf("Layer-3-Protocol for %s is %s\n", cfg.name,
+			          num2key(cfg.l3_proto, l3protostr, l3protoval));
+			        break;
 
-                case CALLBACK:
-                        strcpy(cfg.name, id);
-                        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (args) {
-                                i = -1;
-                                if (strcmp(arg1, "on") && strcmp(arg1, "off") &&
-                                    strcmp(arg1, "in") && strcmp(arg1, "out")) {
-                                        fprintf(stderr, "Callback-parameter must be 'on', 'in', 'out' or 'off'\n");
-                                        exit(-1);
-                                }
-                                cfg.callback = strcmp(arg1, "off") ? 1 : 0;
-                                if (!strcmp(arg1, "out"))
-                                        cfg.callback = 2;
-                                if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                        perror(id);
-                                        exit(-1);
-                                }
-                        }
-                        printf("Callback for %s is %s\n", cfg.name, num2callb[cfg.callback]);
-                        break;
+			case ADDLINK:
+			        if ((result = ioctl(fd, IIOCNETALN, id)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (result)
+			        	printf("Can't increase the number of links. Error %d\n",-result);
+			        else
+			        	printf("Ok, added a new link. (dialing)\n");
+			        break;
 
-                case L2_PROT:
-                        strcpy(cfg.name, id);
-                        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (args) {
-                                i = key2num(arg1, l2protostr, l2protoval);
-                                if (i < 0) {
-                                        fprintf(stderr, "Layer-2-Protocol must be one of the following:\n");
-                                        i = 0;
-                                        while (strlen(l2protostr[i]))
-                                                fprintf(stderr, "\t\"%s\"\n", l2protostr[i++]);
-                                        exit(-1);
-                                }
-                                cfg.l2_proto = i;
-                                if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                        perror(id);
-                                        exit(-1);
-                                }
-                        }
-                        printf("Layer-2-Protocol for %s is %s\n", cfg.name,
-                          num2key(cfg.l2_proto, l2protostr, l2protoval));
-                        break;
+			case REMOVELINK:
+			        if ((result = ioctl(fd, IIOCNETDLN, id)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (result)
+			        	printf("Can't decrease number of links: %d\n", result);
+			        else
+			        	printf("Ok, removed a link. (hangup)\n");
+			        break;
 
-                case L3_PROT:
-                        strcpy(cfg.name, id);
-                        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (args) {
-                                i = key2num(arg1, l3protostr, l3protoval);
-                                if (i < 0) {
-                                        fprintf(stderr, "Layer-3-Protocol must be one of the following:\n");
-                                        i = 0;
-                                        while (strlen(l3protostr[i]))
-                                                fprintf(stderr, "\t\"%s\"\n", l3protostr[i++]);
-                                        exit(-1);
-                                }
-                                cfg.l3_proto = i;
-                                if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                        perror(id);
-                                        exit(-1);
-                                }
-                        }
-                        printf("Layer-3-Protocol for %s is %s\n", cfg.name,
-                          num2key(cfg.l3_proto, l3protostr, l3protoval));
-                        break;
+			case ENCAP:
+			        strcpy(cfg.name, id);
+			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        if (args == 2) {
+			        	i = key2num(arg1, pencapstr, pencapval);
+			        	if (i < 0) {
+			        		fprintf(stderr, "Encapsulation must be one of the following:\n");
+			        		i = 0;
+			        		while (strlen(pencapstr[i]))
+			        			fprintf(stderr, "\t\"%s\"\n", pencapstr[i++]);
+			        		return -1;
+			        	}
+			        	cfg.p_encap = i;
+			        	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
+			        		perror(id);
+			        		return -1;
+			        	}
+			        }
+			        printf("Encapsulation for %s is %s\n", cfg.name,
+			             num2key(cfg.p_encap, pencapstr, pencapval));
+			        break;
 
-                case ADDLINK:
-                        if ((result = ioctl(fd, IIOCNETALN, id)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (result)
-                                printf("Can't increase number of links: %d\n", result);
-                        else
-                                printf("Ok, added a new link. (dialing)\n");
-                        break;
+			case RESET:
+			        reset_interfaces(fd, args?id:NULL);
+			        break;
+#ifdef I4L_CTRL_CONF
+			case WRITECONF:
+			        if (args == 0) {
+			          sprintf(conffile, "%s%c%s", confdir(), C_SLASH, CONFFILE);
+			          id = conffile;
+			        }
 
-                case REMOVELINK:
-                        if ((result = ioctl(fd, IIOCNETDLN, id)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (result)
-                                printf("Can't decrease number of links: %d\n", result);
-                        else
-                                printf("Ok, removed a link. (hangup)\n");
-                        break;
+			        if (writeconfig(fd, id))
+			        	return -1;
 
-                case ENCAP:
-                        strcpy(cfg.name, id);
-                        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                exit(-1);
-                        }
-                        if (args) {
-                                i = key2num(arg1, pencapstr, pencapval);
-                                if (i < 0) {
-                                        fprintf(stderr, "Encapsulation must be one of the following:\n");
-                                        i = 0;
-                                        while (strlen(pencapstr[i]))
-                                                fprintf(stderr, "\t\"%s\"\n", pencapstr[i++]);
-                                        exit(-1);
-                                }
-                                cfg.p_encap = i;
-                                if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                        perror(id);
-                                        exit(-1);
-                                }
-                        }
-                        printf("Encapsulation for %s is %s\n", cfg.name,
-                             num2key(cfg.p_encap, pencapstr, pencapval));
-                        break;
-                }
-                cmdptr += args + 1;
-                if (cmdptr < argc) {
-						printf("args=%d nextcmd %s\n",args, argv[cmdptr]);
-                        i = findcmd(argv[cmdptr]);
-				}
-        }
-        close(fd);
+			        printf("ISDN Configuration written to %s.\n", id);
+			        break;
+
+			case READCONF:
+			        if (args == 0) {
+			          sprintf(conffile, "%s%c%s", confdir(), C_SLASH, CONFFILE);
+			          id = conffile;
+			        }
+
+			        if (readconfig(fd, id))
+			        	return -1;
+
+			        printf("ISDN Configuration read from %s.\n", id);
+			        break;
+#endif /* I4L_CTRL_CONF */
+		}
+
+#if DEBUG
+		if (argc > 1) {
+			printf("args=%d nextcmd %s\n",args, argv[1]);
+		}
+#endif /* DEBUG */
+	}
+
+	return 0;
+}
+
+void check_version() {
+	int fd;
+
+	fd = open("/dev/isdninfo", O_RDWR);
+	if (fd < 0) {
+		perror("/dev/isdninfo");
+		exit(-1);
+	}
+	data_version = ioctl(fd, IIOCGETDVR, 0);
+	if (data_version < 0) {
+		fprintf(stderr, "Could not get version of kernel ioctl structs!\n");
+		fprintf(stderr, "Make sure, you are using the correct version.\n");
+		fprintf(stderr, "(Try recompiling isdnctrl).\n");
+		exit(-1);
+	}
+	close(fd);
+	data_version = (data_version >> 8) & 0xff;
+	if (data_version != NET_DV) {
+		fprintf(stderr, "Version of kernel ioctl structs (%d) does NOT match\n",
+			data_version);
+		fprintf(stderr, "version of isdnctrl (%d)!\n", NET_DV);
+		if (data_version < 1) {
+			fprintf(stderr, "Kernel-Version too old, terminating.\n");
+			fprintf(stderr, "UPDATE YOUR KERNEL.\n");
+			exit(-1);
+		}
+		if (data_version > NET_DV) {
+			fprintf(stderr, "Kernel-Version newer than isdnctrl-Version, terminating.\n");
+			fprintf(stderr, "GET A NEW VERSION OF isdn4k-utils.\n");
+			exit(-1);
+		}
+		if ((NET_DV == 3) || (data_version == 3)) {
+			fprintf(stderr, "Version 3 is an interim NOT compatible to others, terminating\n");
+			fprintf(stderr, "RECOMPILE isdnctrl!\n");
+			exit(-1);
+		}
+		if (data_version < 3)
+			fprintf(stderr, "- Option 'trigger' disabled.\n");
+		if (data_version < 2)
+			fprintf(stderr, "- Option 'chargeint' disabled.\n");
+		fprintf(stderr, "Make sure, you are using the correct version.\n");
+		fprintf(stderr, "Recompiling of isdnctrl is STRONGLY RECOMMENDED.\n");
+	}
+}
+
+int main(int argc, char **argv)
+{
+	int fd;
+	int rc;
+
+	if ((cmd = strrchr(argv[0], '/')) != NULL)
+		*cmd++ = '\0';
+	else
+		cmd = argv[0];
+
+	if (argc == 1) {
+		usage();
+		exit(-1);
+	}
+	check_version();
+
+	fd = open("/dev/isdnctrl", O_RDWR);
+	if (fd < 0) {
+		perror("/dev/isdnctrl");
+		exit(-1);
+	}
+
+
+	rc = exec_args(fd,argc-1,argv+1);
+	close(fd);
+	return rc;
 }

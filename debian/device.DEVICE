@@ -4,157 +4,236 @@
 echo "Warning! $0 not configured yet! Aborting..."; exit 1
 # REMOVE the above line once configuration is complete ########################
 
+
+# Instructions: read the comments for each command, and if necessary, edit
+# the command (e.g. replace EAZ with your real EAZ or MSN).
+# If the command is commented out, remove the leading '#' to enable it if
+# the command is needed.
+#
+# After you have configured this file, remove the "Warning!" line above to
+# enable this file.
+
+
 # Get the device name
 set -e ; device=`basename $0`; device=${device#*.}
-#
+
+# set some important values
+# Use 10.0.0.1 for LOCALIP and 10.0.0.2 for REMOTEIP if you have
+# dynamic IP addresses; with static address fill in the real values!
+
+LOCALIP=10.0.0.1	# XXX_
+REMOTEIP=10.0.0.2	# XXX_
+
+# Phone numbers (without the leading zero)
+LOCALMSN=123456 	# XXX_
+REMOTEMSN=654321	# XXX_
+
+# Encapsulation (default is syncppp for ipppX devices, rawip for isdnX devices)
+# Change the next four lines if you need some other value.
+if expr ${device} : ippp > /dev/null
+then	ENCAP=syncppp
+else	ENCAP=rawip
+fi
+
 # Configuration (start)
-#
+
 case "$1" in
 start)
 
-# First you need to create the interface
-isdnctrl addif ${device}
+	# If running kernel 2.0.31 or higher, enable the IP dynamic hack
+	# (if needed). See linux/Documentation/ip_dynaddr.txt .
+	# You may also need to use the ip-up and ip-down scripts in
+	# /usr/doc/isdnutils/examples to get the routing correct. Those
+	# scripts should be put in /etc/ppp, but beware of overwriting any
+	# existing scripts belonging to the "ppp" package!
+	#[ -f /proc/sys/net/ipv4/ip_dynaddr ] && echo 1 > /proc/sys/net/ipv4/ip_dynaddr
+	
+	# First you need to create the interface
+	isdnctrl addif ${device}
 
-#	eaz name num
-# Set the EAZ (German 1TR6 protocol) or MSN (Euro-ISDN E-DSS1) for
-# interface "name" to "num". For an EAZ this is only one digit, for a
-# MSN "num" is the whole MSN.
-isdnctrl eaz ${device} EAZ
+	#	eaz name num
+	# Set the EAZ (German 1TR6 protocol) or MSN (Euro-ISDN E-DSS1) for
+	# interface "name" to "num". For an EAZ this is only one digit, for a
+	# MSN "num" is the whole MSN.
+	# In the Netherlands this includes the areacode, but not the leading 0.
+	# (other countries?)
+	isdnctrl eaz ${device} $LOCALMSN
 
-#	addphone name out num
-# Set the phone number(s) of the remote site for the IP-interface
-# "name". More than one number can be set by calling isdnctrl addphone
-# repeatedly. If more than one number is set these will be tried one
-# after another. When using an german SPV-type connection, with a
-# ICN-card, the number has to be preceeded by a capital S.   
-isdnctrl addphone ${device} out NUM
+	#	addphone name out num
+	# Set the phone number(s) of the remote site for the IP-interface
+	# "name". More than one number can be set by calling isdnctrl addphone
+	# repeatedly. If more than one number is set these will be tried one
+	# after another. When using an german SPV-type connection, with a
+	# ICN-card, the number has to be preceeded by a capital S.   
+	# This is the "normal" number.
+	isdnctrl addphone ${device} out 0$REMOTEMSN
 
-#	addphone name in num
-# Set the phone number(s) that the IP-interface "name" is supposed to
-# accept for incoming calls. If no num­ ber is given incoming calls are
-# disabled. More than one number can be set by calling isdnctrl addphone
-# repeatedly. Also wildcards can be used (see below). 
-isdnctrl addphone ${device} in NUM
+	#	addphone name in num
+	# Set the phone number(s) that the IP-interface "name" is supposed to
+	# accept for incoming calls. If no num­ ber is given incoming calls are
+	# disabled. More than one number can be set by calling isdnctrl addphone
+	# repeatedly. Also wildcards can be used (see below). 
+	# In the Netherlands (and elsewhere?),
+	# this is with areacode but without leading 0
+	# isdnctrl addphone ${device} in $REMOTEMSN
 
-#	secure name on|off
-# Turns on or off the security feature for interface "name". If set to
-# on, incoming calls will only be accepted if the calling number has
-# been added to the access list with isdnctrl addphone name in. 
-isdnctrl secure ${device} on
+	#	secure name on|off
+	# Turns on or off the security feature for interface "name". If set to
+	# on, incoming calls will only be accepted if the calling number has
+	# been added to the access list with isdnctrl addphone name in. 
+	isdnctrl secure ${device} on
 
-#	huptimeout name seconds
-# Set the hangup timeout for interface "name" to "seconds". If there
-# is inactivity (i.e. no traffic on the interface) for the given time
-# the driver automatically shuts down the connection. 
-#isdnctrl huptimeout ${device} NUM
+	#	huptimeout name seconds
+	# Set the hangup timeout for interface "name" to "seconds". If there
+	# is inactivity (i.e. no traffic on the interface) for the given time
+	# the driver automatically shuts down the connection. 
+	# Default is 60 seconds
+	isdnctrl huptimeout ${device} 60
 
-# 	dialmax name num
-# Set the number of dial atempts for interface "name" to "num". If
-# dialing, each phonenumber is tried this many times before giving up.
-#isdnctrl dialmax ${device} NUM
+	# 	dialmax name num
+	# Set the number of dial atempts for interface "name" to "num". If
+	# dialing, each phonenumber is tried this many times before giving up.
+	#isdnctrl dialmax ${device} NUM
 
-#	ihup name on|off
-# Turn on or off the hangup timeout for incoming calls on interface name.
-#isdnctrl ihup ${device} on
+	#	ihup name on|off
+	# Turn on or off the hangup timeout for incoming calls on interface name
+	#isdnctrl ihup ${device} on
 
-#	 encap name encapname
-# Set the encapsulation mode for interface "name". Possible modes for
-# encapname are: rawip ip cisco_h ethernet syncppp uihdlc 
-# (most people use rawip, ipppd or cisco_h)
-isdnctrl encap ${device} ENCAP
+	#	 encap name encapname
+	# Set the encapsulation mode for interface "name". Possible modes for
+	# encapname are: rawip ip cisco_h ethernet syncppp uihdlc 
+	# (most people use rawip, syncppp or cisco_h; syncppp is normal for
+	# ISP's, rawip is normal for semi-fixed linux-linux connections)
+	isdnctrl encap ${device} $ENCAP
 
-#	l2_prot name protocol
-# Set the layer-2 protocol for interface "name". Possible values for
-# "protocol" are x75i, x75ui, x75bui and hdlc 
-isdnctrl l2_prot ${device} hdlc
+	#	l2_prot name protocol
+	# Set the layer-2 protocol for interface "name". Possible values for
+	# "protocol" are x75i, x75ui, x75bui and hdlc 
+	# (most people use hdlc)
+	isdnctrl l2_prot ${device} hdlc
 
-#	l3_prot name protocol
-# Set the layer-3 protocol for interface "name". At the moment only
-# trans is supported.  If protocol is omitted the current setting is
-# printed.   
-isdnctrl l3_prot ${device} trans
+	#	l3_prot name protocol
+	# Set the layer-3 protocol for interface "name". At the moment only
+	# trans is supported.  If protocol is omitted the current setting is
+	# printed.   
+	isdnctrl l3_prot ${device} trans
 
-#	verbose num
-# Set verbosity level to <num>. 
-# (2 shows the first package of every connection, that is very useful.)
-# WARNING: this is a global parameter, that affacts all isdn devices !
-isdnctrl verbose 2
+	#	verbose num
+	# Set verbosity level to <num>. 
+	# (2 shows the first package of every connection, that is very useful.)
+	# WARNING: this is a global parameter, that affects all isdn devices!
+	isdnctrl verbose 2
 
-# CHARGEHUP FUNCTION
+	# CHARGEHUP FUNCTION
 
-#	chargehup name on|off
-# Turn on or off hangup before next charge info for interface name. This
-# can only be used if the ISDN provider transmits charge info during and
-# after the connection. If set to on, the driver will close the
-# connection just before the next charge info will  be received if the
-# interface is inactive. 
-#isdnctrl chargehup ${device} on
+	#	chargehup name on|off
+	# Turn on or off hangup before next charge info for interface name. This
+	# can only be used if the ISDN provider transmits charge info during and
+	# after the connection. If set to on, the driver will close the
+	# connection just before the next charge info will  be received if the
+	# interface is inactive. 
+	#isdnctrl chargehup ${device} on
 
-#	chargeint name seconds
-# When "seconds" are given, the charge interval for the given interface
-# is set. This may be of use on ISDN lines with no chargeinfo or no
-# online chargeinfo. The connection will only be closed 2 seconds before
-# the end of the next charge interval and only, if huptime out seconds
-# of inactivity have been reached. If ihup is on, also incomming
-# connections are closed by this mechanism.
-#isdnctrl chargeint ${device} NUM
+	#	chargeint name seconds
+	# When "seconds" are given, the charge interval for the given interface
+	# is set. This may be of use on ISDN lines with no chargeinfo or no
+	# online chargeinfo. The connection will only be closed 2 seconds before
+	# the end of the next charge interval and only, if huptime out seconds
+	# of inactivity have been reached. If ihup is on, also incomming
+	# connections are closed by this mechanism.
+	#isdnctrl chargeint ${device} NUM
 
-# CALLBACK FUNCTION
+	# CALLBACK FUNCTION
 
-#	callback name off|in|out
-# Selects callback mode for interface "name". If call­ back mode is in,
-# then after getting an incoming call, a callback is triggered. If
-# callback mode is out , then this system does the initial call, then
-# waiting for callback of the remote machine. 
-#isdnctrl callbask ${device} MODE
+	#	callback name off|in|out
+	# Selects callback mode for interface "name". If call­back mode is in,
+	# then after getting an incoming call, a callback is triggered. If
+	# callback mode is out, then this system does the initial call, then
+	# waiting for callback of the remote machine. 
+	#isdnctrl callback ${device} MODE
 
-#	cbdelay name seconds
-# Set the callback delay for interface "name" to "seconds". If callback
-# mode for this interface is in, dialing is delayed the given time. If
-# the callback mode is out , after dialing out and waiting the given
-# time, a hangup is issued to free the line for the incoming callback
-# from the remote machine. This hangup-after-dial is disabled by setting
-# cbdelay  to 0.  
-#isdnctrl cbdelay ${device} SECONDS
+	#	cbdelay name seconds
+	# Set the callback delay for interface "name" to "seconds". If callback
+	# mode for this interface is in, dialing is delayed the given time. If
+	# the callback mode is out, after dialing out and waiting the given
+	# time, a hangup is issued to free the line for the incoming callback
+	# from the remote machine. This hangup-after-dial is disabled by setting
+	# cbdelay to 0.  
+	#isdnctrl cbdelay ${device} SECONDS
 
-#	cbhup name on|off
-# Turns on or off Hangup (Reject) for interface "name" before starting
-# Callback. 
-#isdnctrl cbhup ${device} MODE
+	#	cbhup name on|off
+	# Turns on or off Hangup (Reject) for interface "name" before starting
+	# Callback. 
+	#isdnctrl cbhup ${device} MODE
 
-#	OTHER OPTIONS
+	#	OTHER OPTIONS
 
-# There are other options not used by most people.  You can insert these
-# options here. 
+	# There are other options not used by most people.  You can insert these
+	# options here. 
 
-# See also : isdnctrl(8), isdnctrl help text
-# pppbind is not yet documented in that manpage :-(
+	# See also : isdnctrl(8), isdnctrl help text
 
-#	 NETWORK SETUP
+	# pppbind is needed when using one ipppd per ippp interface
+	# (like Debian does)
+	if bindnum=`expr $device : 'ippp\(.\)'`
+	then
+		isdnctrl pppbind ${device} `expr "$device" : 'ippp\(.\)'`
+	fi
 
-# Network device setup as usual. 
-# See also : ifconfig(8) route(8) or any book about unix networking.
+	#	 NETWORK SETUP
 
-ifconfig ${device} YOURIP pointopoint REMOTEIP metric 1
-route add -host REMOTEIP
-route add default ${device}                     
+	# Network device setup as usual. 
+	# See also : ifconfig(8) route(8) or any book about unix networking.
 
-#	Delete the interface
-;;
+	ifconfig ${device} up
+	ifconfig ${device} $LOCALIP pointopoint $REMOTEIP
+	route add -host $REMOTEIP
+	# setting default route here is only useful if this is your only
+	# outside connection...
+	route add default ${device}                     
+	# firewall rules
+	# Note that the default rule should be to deny all incoming connections!
+	# That's done with the line below:
+	#	ipfwadm -I -p deny
+	# After that you need to allow incoming connections on eth0 and lo:
+	#	ipfwadm -I -a accept -W lo -S 127.0.0.0/8
+	#	ipfwadm -I -a accept -W eth0 -S 192.168.0.0/16
+	# Of course, change 192.168.0.0 to fit your ethernet network number...
+	# The ipfwadm commands above should be done only once, e.g. in
+	# /etc/init.d/netbase in the function spoof_protect.
+	#
+	# The firewall rules below will only work here if using static IP
+	# addresses!!!  For dynamic addresses the rules should be added in
+	# /etc/ppp/ip-up.d/isdnutils and deleted in /etc/ppp/ip-down.d/isdnutils
+	# 
+	# Next two lines enable inbound packets to non-service ports
+	# except for smtp and ident (for mail and identification of
+	# connections, a Good Thing).
+	#	ipfwadm -I -a accept -W ${device} -P tcp  -D $LOCALIP smtp ident 1024:65535
+	#	ipfwadm -I -a accept -W ${device} -P udp  -D $LOCALIP 1024:65535
+	#	ipfwadm -I -a accept -W ${device} -P icmp -D $LOCALIP
+	# masquerading rules, for transparently connecting local net to internet
+	#	ETH_IP=`hostname -i | tr -d ' '`
+	#	ipfwadm -F -a accept -m -P tcp -S $ETH_IP/24
+	#	ipfwadm -F -a accept -m -P udp -S $ETH_IP/24
+	;;
+
+# Delete the interface
 stop)
-# Commands to undo the network stuff
-route del REMOTEIP
-route del default
-ifconfig $device down
-isdnctrl delif $device
+	# Commands to undo the network stuff
+	# Undo any ipfwadm commands done above! Change the -a to -d, put below.
+	route del $REMOTEIP	2> /dev/null || true
+	# only delete default route if set above!
+	route del default	2> /dev/null || true
+	ifconfig $device down	2> /dev/null || true
+	isdnctrl delif $device	2> /dev/null || true
+	;;
 
 # the rest is generic, don't touch
-;;
   *)
-    echo "Usage: $0 {start|stop}"
-    exit 1
-    ;;
+	echo "Usage: $0 {start|stop}"
+	exit 1
+	;;
 esac
 
 exit 0
- 

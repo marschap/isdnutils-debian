@@ -1,4 +1,4 @@
-/* $Id: isdnconf.c,v 1.11 1997/05/25 19:41:13 luethje Exp $
+/* $Id: isdnconf.c,v 1.13 1997/06/24 23:35:33 luethje Exp $
  *
  * ISDN accounting for isdn4linux. (Utilities)
  *
@@ -20,6 +20,14 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: isdnconf.c,v $
+ * Revision 1.13  1997/06/24 23:35:33  luethje
+ * isdnctrl can use a config file
+ *
+ * Revision 1.12  1997/06/22 23:03:34  luethje
+ * In subsection FLAGS it will be checked if the section name FLAG is korrect
+ * isdnlog recognize calls abroad
+ * bugfix for program starts
+ *
  * Revision 1.11  1997/05/25 19:41:13  luethje
  * isdnlog:  close all files and open again after kill -HUP
  * isdnrep:  support vbox version 2.0
@@ -282,7 +290,7 @@ static int IsVariable(char *string)
     if (SetEnv(&Environment,s1,s2) == 0)
       return 1;
 
-    _print_msg( "%s: WARNING: Error in file \"%s\" line %d: Can not set variable (%s)!\n", Myname, OLDCONFFILE, ln, strerror(errno));
+    _print_msg( "%s: WARNING: Error in file \"%s\" line %d: Can't set variable (%s)!\n", Myname, OLDCONFFILE, ln, strerror(errno));
   }
 
   return 0;
@@ -396,7 +404,7 @@ static section* writeinfoargs(section *SPtr, info_args *infoarg)
 	strcpy(s, CONF_SEC_FLAG);
 	if ((Ptr = Set_Section(&SPtr,s,C_OVERWRITE | C_WARN | C_NOT_UNIQUE)) == NULL)
 	{
-		_print_msg("Can not set section `%s'!\n",CONF_SEC_FLAG);
+		_print_msg("Can't set section `%s'!\n",CONF_SEC_FLAG);
 		free_section(SPtr);
 		return NULL;
 	}
@@ -405,7 +413,7 @@ static section* writeinfoargs(section *SPtr, info_args *infoarg)
 	strcpy(s, CONF_ENT_FLAGS);
 	if (Set_Entry(Ptr,NULL,s,writeflags(infoarg->flag),C_OVERWRITE | C_WARN) == NULL)
 	{
-		_print_msg("Can not set entry `%s'!\n",CONF_ENT_FLAGS);
+		_print_msg("Can't set entry `%s'!\n",CONF_ENT_FLAGS);
 		free_section(SPtr);
 		return NULL;
 	}
@@ -413,7 +421,7 @@ static section* writeinfoargs(section *SPtr, info_args *infoarg)
 	strcpy(s, CONF_ENT_PROG);
 	if (Set_Entry(Ptr,NULL,s,infoarg->infoarg,C_OVERWRITE | C_WARN) == NULL)
 	{
-		_print_msg("Can not set entry `%s'!\n",CONF_ENT_PROG);
+		_print_msg("Can't set entry `%s'!\n",CONF_ENT_PROG);
 		free_section(SPtr);
 		return NULL;
 	}
@@ -423,7 +431,7 @@ static section* writeinfoargs(section *SPtr, info_args *infoarg)
 		strcpy(s, CONF_ENT_USER);
 		if (Set_Entry(Ptr,NULL,s,infoarg->user,C_OVERWRITE | C_WARN) == NULL)
 		{
-			_print_msg("Can not set entry `%s'!\n",CONF_ENT_USER);
+			_print_msg("Can't set entry `%s'!\n",CONF_ENT_USER);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -434,7 +442,7 @@ static section* writeinfoargs(section *SPtr, info_args *infoarg)
 		strcpy(s, CONF_ENT_GROUP);
 		if (Set_Entry(Ptr,NULL,s,infoarg->group,C_OVERWRITE | C_WARN) == NULL)
 		{
-		_print_msg("Can not set entry `%s'!\n",CONF_ENT_GROUP);
+		_print_msg("Can't set entry `%s'!\n",CONF_ENT_GROUP);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -446,7 +454,7 @@ static section* writeinfoargs(section *SPtr, info_args *infoarg)
 		strcpy(s, CONF_ENT_INTVAL);
 		if (Set_Entry(Ptr,NULL,s,s1,C_OVERWRITE | C_WARN) == NULL)
 		{
-			_print_msg("Can not set entry `%s'!\n",CONF_ENT_INTVAL);
+			_print_msg("Can't set entry `%s'!\n",CONF_ENT_INTVAL);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -457,7 +465,7 @@ static section* writeinfoargs(section *SPtr, info_args *infoarg)
 		strcpy(s, CONF_ENT_TIME);
 		if (Set_Entry(Ptr,NULL,s,infoarg->time,C_OVERWRITE | C_WARN) == NULL)
 		{
-			_print_msg("Can not set entry `%s'!\n",CONF_ENT_TIME);
+			_print_msg("Can't set entry `%s'!\n",CONF_ENT_TIME);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -479,7 +487,7 @@ static section* writevariables(section *SPtr)
 	strcpy(s, CONF_SEC_VAR);
 	if ((Ptr = Set_Section(&SPtr,s,C_OVERWRITE | C_WARN)) == NULL)
 	{
-		_print_msg("Can not set section `%s'!\n",CONF_SEC_VAR);
+		_print_msg("Can't set section `%s'!\n",CONF_SEC_VAR);
 		free_section(SPtr);
 		return NULL;
 	}
@@ -489,7 +497,7 @@ static section* writevariables(section *SPtr)
 		{
 			if (Set_Entry(Ptr,NULL,name,value,C_OVERWRITE | C_WARN) == NULL)
 			{
-				_print_msg("Can not set entry `%s'!\n",name);
+				_print_msg("Can't set entry `%s'!\n",name);
 				free_section(SPtr);
 				return NULL;
 			}
@@ -513,7 +521,7 @@ static section* writeglobal(section *SPtr)
 	strcpy(s, CONF_SEC_GLOBAL);
 	if ((Ptr = Set_Section(&SPtr,s,C_OVERWRITE | C_WARN)) == NULL)
 	{
-		_print_msg("Can not set section `%s'!\n",CONF_SEC_GLOBAL);
+		_print_msg("Can't set section `%s'!\n",CONF_SEC_GLOBAL);
 		free_section(SPtr);
 		return NULL;
 	}
@@ -523,7 +531,7 @@ static section* writeglobal(section *SPtr)
 		strcpy(s, CONF_ENT_COUNTRY);
 		if (Set_Entry(Ptr,NULL,s,mycountry,C_OVERWRITE | C_WARN) == NULL)
 		{
-			_print_msg("Can not set entry `%s'!\n",CONF_ENT_COUNTRY);
+			_print_msg("Can't set entry `%s'!\n",CONF_ENT_COUNTRY);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -534,7 +542,7 @@ static section* writeglobal(section *SPtr)
 		strcpy(s, CONF_ENT_AREA);
 		if (Set_Entry(Ptr,NULL,s,myarea,C_OVERWRITE | C_WARN) == NULL)
 		{
-			_print_msg("Can not set entry `%s'!\n",CONF_ENT_AREA);
+			_print_msg("Can't set entry `%s'!\n",CONF_ENT_AREA);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -543,7 +551,7 @@ static section* writeglobal(section *SPtr)
 	strcpy(s, CONF_SEC_ISDNLOG);
 	if ((Ptr = Set_Section(&SPtr,s,C_OVERWRITE | C_WARN)) == NULL)
 	{
-		_print_msg("Can not set section `%s'!\n",CONF_SEC_ISDNLOG);
+		_print_msg("Can't set section `%s'!\n",CONF_SEC_ISDNLOG);
 		free_section(SPtr);
 		return NULL;
 	}
@@ -553,7 +561,7 @@ static section* writeglobal(section *SPtr)
 		strcpy(s, CONF_ENT_RELOAD);
 		if (Set_Entry(Ptr,NULL,s,reloadcmd,C_OVERWRITE | C_WARN) == NULL)
 		{
-			_print_msg("Can not set entry `%s'!\n",CONF_ENT_RELOAD);
+			_print_msg("Can't set entry `%s'!\n",CONF_ENT_RELOAD);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -564,7 +572,7 @@ static section* writeglobal(section *SPtr)
 		strcpy(s, CONF_ENT_STOP);
 		if (Set_Entry(Ptr,NULL,s,stopcmd,C_OVERWRITE | C_WARN) == NULL)
 		{
-			_print_msg("Can not set entry `%s'!\n",CONF_ENT_STOP);
+			_print_msg("Can't set entry `%s'!\n",CONF_ENT_STOP);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -575,7 +583,18 @@ static section* writeglobal(section *SPtr)
 		strcpy(s, CONF_ENT_REBOOT);
 		if (Set_Entry(Ptr,NULL,s,rebootcmd,C_OVERWRITE | C_WARN) == NULL)
 		{
-			_print_msg("Can not set entry `%s'!\n",CONF_ENT_REBOOT);
+			_print_msg("Can't set entry `%s'!\n",CONF_ENT_REBOOT);
+			free_section(SPtr);
+			return NULL;
+		}
+	}
+
+	if (CityWeekend != 0)
+	{
+		strcpy(s, CONF_ENT_CW);
+		if (Set_Entry(Ptr,NULL,s,"yes",C_OVERWRITE | C_WARN) == NULL)
+		{
+			_print_msg("Can't set entry `%s'!\n",CONF_ENT_CW);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -587,7 +606,7 @@ static section* writeglobal(section *SPtr)
 		sprintf(s1, "%.2f",chargemax);
 		if (Set_Entry(Ptr,NULL,s,s1,C_OVERWRITE | C_WARN) == NULL)
 		{
-			_print_msg("Can not set entry `%s'!\n",CONF_ENT_CHARGE);
+			_print_msg("Can't set entry `%s'!\n",CONF_ENT_CHARGE);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -599,7 +618,7 @@ static section* writeglobal(section *SPtr)
 		sprintf(s1, "%.10g,%d",connectmax,connectmaxmode);
 		if (Set_Entry(Ptr,NULL,s,s1,C_OVERWRITE | C_WARN) == NULL)
 		{
-			_print_msg("Can not set entry `%s'!\n",CONF_ENT_CONNECT);
+			_print_msg("Can't set entry `%s'!\n",CONF_ENT_CONNECT);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -611,7 +630,7 @@ static section* writeglobal(section *SPtr)
 		sprintf(s1, "%.10g,%d",bytemax,bytemaxmode);
 		if (Set_Entry(Ptr,NULL,s,s1,C_OVERWRITE | C_WARN) == NULL)
 		{
-			_print_msg("Can not set entry `%s'!\n",CONF_ENT_BYTE);
+			_print_msg("Can't set entry `%s'!\n",CONF_ENT_BYTE);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -623,7 +642,7 @@ static section* writeglobal(section *SPtr)
 		sprintf(s1, "%.2f,%s",currency_factor,currency);
 		if (Set_Entry(Ptr,NULL,s,s1,C_OVERWRITE | C_WARN) == NULL)
 		{
-			_print_msg("Can not set entry `%s'!\n",CONF_ENT_CURR);
+			_print_msg("Can't set entry `%s'!\n",CONF_ENT_CURR);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -634,7 +653,7 @@ static section* writeglobal(section *SPtr)
 		strcpy(s, CONF_ENT_ILABEL);
 		if (Set_Entry(Ptr,NULL,s,IlabelPtr,C_OVERWRITE | C_WARN) == NULL)
 		{
-			_print_msg("Can not set entry `%s'!\n",CONF_ENT_ILABEL);
+			_print_msg("Can't set entry `%s'!\n",CONF_ENT_ILABEL);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -645,7 +664,7 @@ static section* writeglobal(section *SPtr)
 		strcpy(s, CONF_ENT_OLABEL);
 		if (Set_Entry(Ptr,NULL,s,OlabelPtr,C_OVERWRITE | C_WARN) == NULL)
 		{
-			_print_msg("Can not set entry `%s'!\n",CONF_ENT_OLABEL);
+			_print_msg("Can't set entry `%s'!\n",CONF_ENT_OLABEL);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -659,7 +678,7 @@ static section* writeglobal(section *SPtr)
 		{
 			if ((SubPtr = writeinfoargs(SubPtr,start_procs.infoargs[IIndex])) == NULL)
 			{
-				_print_msg("Can not set entry `%s'!\n",CONF_SEC_START);
+				_print_msg("Can't set entry `%s'!\n",CONF_SEC_START);
 				free_section(SPtr);
 				return NULL;
 			}
@@ -671,7 +690,7 @@ static section* writeglobal(section *SPtr)
 
 		if (Set_SubSection(Ptr,s,SubPtr,C_OVERWRITE | C_WARN) == NULL)
 		{
-			_print_msg("Can not set entry `%s'!\n",CONF_SEC_START);
+			_print_msg("Can't set entry `%s'!\n",CONF_SEC_START);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -698,7 +717,7 @@ static section* writeentry(section *SPtr, int Index)
 
 	if ((Ptr = Set_Section(&SPtr,s,C_OVERWRITE | C_WARN | C_NOT_UNIQUE)) == NULL)
 	{
-		_print_msg("Can not set section `%s'!\n",CONF_SEC_NUM);
+		_print_msg("Can't set section `%s'!\n",CONF_SEC_NUM);
 		free_section(SPtr);
 		return NULL;
 	}
@@ -706,7 +725,7 @@ static section* writeentry(section *SPtr, int Index)
 	strcpy(s, CONF_ENT_NUM);
 	if (Set_Entry(Ptr,NULL,s,known[Index]->num,C_OVERWRITE | C_WARN) == NULL)
 	{
-		_print_msg("Can not set entry `%s'!\n",CONF_ENT_NUM);
+		_print_msg("Can't set entry `%s'!\n",CONF_ENT_NUM);
 		free_section(SPtr);
 		return NULL;
 	}
@@ -717,7 +736,7 @@ static section* writeentry(section *SPtr, int Index)
 		sprintf(s1,"%d",known[Index]->si);
 		if (Set_Entry(Ptr,NULL,s,s1,C_OVERWRITE | C_WARN) == NULL)
 		{
-			_print_msg("Can not set entry `%s'!\n",CONF_ENT_SI);
+			_print_msg("Can't set entry `%s'!\n",CONF_ENT_SI);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -726,7 +745,7 @@ static section* writeentry(section *SPtr, int Index)
 	strcpy(s, CONF_ENT_ALIAS);
 	if (Set_Entry(Ptr,NULL,s,known[Index]->who,C_OVERWRITE | C_WARN) == NULL)
 	{
-		_print_msg("Can not set entry `%s'!\n",CONF_ENT_ALIAS);
+		_print_msg("Can't set entry `%s'!\n",CONF_ENT_ALIAS);
 		free_section(SPtr);
 		return NULL;
 	}
@@ -736,7 +755,7 @@ static section* writeentry(section *SPtr, int Index)
 		strcpy(s, CONF_ENT_INTFAC);
 		if (Set_Entry(Ptr,NULL,s,known[Index]->interface,C_OVERWRITE | C_WARN) == NULL)
 		{
-			_print_msg("Can not set entry `%s'!\n",CONF_ENT_INTFAC);
+			_print_msg("Can't set entry `%s'!\n",CONF_ENT_INTFAC);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -746,7 +765,7 @@ static section* writeentry(section *SPtr, int Index)
 	sprintf(s1,"%d",known[Index]->zone);
 	if (Set_Entry(Ptr,NULL,s,s1,C_OVERWRITE | C_WARN) == NULL)
 	{
-		_print_msg("Can not set entry `%s'!\n",CONF_ENT_ZONE);
+		_print_msg("Can't set entry `%s'!\n",CONF_ENT_ZONE);
 		free_section(SPtr);
 		return NULL;
 	}
@@ -759,7 +778,7 @@ static section* writeentry(section *SPtr, int Index)
 		{
 			if ((SubPtr = writeinfoargs(SubPtr,known[Index]->infoargs[IIndex])) == NULL)
 			{
-				_print_msg("Can not set entry `%s'!\n",CONF_SEC_START);
+				_print_msg("Can't set entry `%s'!\n",CONF_SEC_START);
 				free_section(SPtr);
 				return NULL;
 			}
@@ -771,7 +790,7 @@ static section* writeentry(section *SPtr, int Index)
 
 		if (Set_SubSection(Ptr,s,SubPtr,C_OVERWRITE | C_WARN) == NULL)
 		{
-			_print_msg("Can not set entry `%s'!\n",CONF_SEC_START);
+			_print_msg("Can't set entry `%s'!\n",CONF_SEC_START);
 			free_section(SPtr);
 			return NULL;
 		}
@@ -857,7 +876,7 @@ static int readconfigfile(char *_myname)
 						return writeconfig(_myname);
 					else
 					{
-						_print_msg("Can not read file %s!\n",file2);
+						_print_msg("Can't read file %s!\n",file2);
 						return -1;
 					}
 				}
@@ -869,7 +888,7 @@ static int readconfigfile(char *_myname)
 		}
 		else
 		{
-			_print_msg("Can not read file %s!\n",file1);
+			_print_msg("Can't read file %s!\n",file1);
 			return -1;
 		}
 	}
@@ -881,13 +900,13 @@ static int readconfigfile(char *_myname)
 				return writeconfig(_myname);
 			else
 			{
-				_print_msg("Can not read file %s!\n",file2);
+				_print_msg("Can't read file %s!\n",file2);
 				return -1;
 			}
 		}
 		else
 		{
-			_print_msg("Can not read file %s!\n",file2);
+			_print_msg("Can't read file %s!\n",file2);
 			return -1;
 		}
 	}
@@ -915,12 +934,12 @@ static int _readconfig(char *_myname)
   auto int      i;
   int  cur_msn = 0;
 
-
   Myname         = _myname;
   mymsns         = 0;
   mycountry      = "";
   myarea         = "";
   currency       = NULL;
+  CityWeekend    = 0;
   chargemax      = 0.0;
   connectmax     = 0;
   connectmaxmode = 0;
@@ -1026,8 +1045,10 @@ static int Set_Globals(section *SPtr)
 	{
 		while (sPtr != NULL)
 		{
-			free(sPtr[0]);
-			free(sPtr[1]);
+			if (sPtr[0])
+				free(sPtr[0]);
+			if (sPtr[1])
+				free(sPtr[1]);
 			free(sPtr);
 
 			sPtr++;
@@ -1062,6 +1083,9 @@ static int Set_Globals(section *SPtr)
 
 		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_LOGFILE)) != NULL)
 			logfile = CEPtr->value;
+
+		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_CW)) != NULL)
+			CityWeekend = toupper(*(CEPtr->value)) == 'Y'?1:0;
 
 		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_CHARGE)) != NULL)
 			chargemax = strtod(CEPtr->value,NULL);
@@ -1112,25 +1136,25 @@ static int Set_Globals(section *SPtr)
 	  	{
 	  		if ((lineformats = (char ***) realloc(lineformats,sizeof(char**)*(cnt+2))) == NULL)
 	  		{
-					_print_msg("%s: ERROR: Can not allocate memory!\n", Myname);
+					_print_msg("%s: ERROR: Can't allocate memory!\n", Myname);
 					return 0;
 				}
 
 	  		if ((lineformats[cnt] = (char **) calloc(2,sizeof(char*))) == NULL)
 	  		{
-					_print_msg("%s: ERROR: Can not allocate memory!\n", Myname);
+					_print_msg("%s: ERROR: Can't allocate memory!\n", Myname);
 					return 0;
 				}
 
 	  		if ((lineformats[cnt][0] = strdup(CEPtr->name+strlen(CONF_ENT_REPFMT))) == NULL)
 	  		{
-					_print_msg("%s: ERROR: Can not allocate memory!\n", Myname);
+					_print_msg("%s: ERROR: Can't allocate memory!\n", Myname);
 					return 0;
 				}
 
 	  		if ((lineformats[cnt][1] = strdup(Get_FmtStr(CEPtr->value,CEPtr->name))) == NULL)
 	  		{
-					_print_msg("%s: ERROR: Can not allocate memory!\n", Myname);
+					_print_msg("%s: ERROR: Can't allocate memory!\n", Myname);
 					return 0;
 				}
 				
@@ -1180,6 +1204,9 @@ static info_args** Set_Flags(section *SPtr, int *Flags)
 
 	RetCode = Set_Flags(SPtr->next,Flags);
 
+	if (strcmp(SPtr->name,CONF_SEC_FLAG))
+		return RetCode;
+
 	RetCode = realloc(RetCode, sizeof(info_args*) * (NumArgs+2));
 	RetCode[NumArgs] = (info_args*) calloc(1, sizeof(info_args));
 
@@ -1223,8 +1250,10 @@ static info_args** Set_Flags(section *SPtr, int *Flags)
 		{
  		  RetCode[NumArgs]->time = EPtr->value;
 		}
+/*
 		else
    		_print_msg("Error: Invalid variable `%s'!\n",EPtr->name);
+*/
 
 		EPtr = EPtr->next;
 	}
@@ -1350,7 +1379,7 @@ static int Set_Numbers(section *SPtr, char *Section, int msn)
 		}
 		else
 		{
-			_print_msg("%s: ERROR: Can not allocate memory!\n", Myname);
+			_print_msg("%s: ERROR: Can't allocate memory!\n", Myname);
 			return -1;
 		}
 	}

@@ -1,0 +1,25 @@
+/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+
+/* Define as the return type of signal handlers (int or void).  */
+#undef RETSIGTYPE
+
+/* Define if you have the ANSI C header files.  */
+#undef STDC_HEADERS
+
+/* Package name - never used, but required for autoheader */
+#undef PACKAGE
+
+/* Package version - same as I4LVERSION */
+#undef VERSION
+
+/* Define if you have the <linux/isdn.h> header file.  */
+#undef HAVE_LINUX_ISDN_H
+
+/* Define if you have the <linux/isdnif.h> header file.  */
+#undef HAVE_LINUX_ISDNIF_H
+
+/* Define if you have the <sys/ioctl.h> header file.  */
+#undef HAVE_SYS_IOCTL_H
+
+/* Define if you have the <unistd.h> header file.  */
+#undef HAVE_UNISTD_H

@@ -1,13 +1,16 @@
 isdnutils for DEBIAN
 --------------------
 
+ - new configuration : read CONFIG and use isdnconfig .
+   If isdnlog / isdnrep complains about CHARGEMAX not being set, while you
+   most definitely define it in /etc/isdn/isdn.conf, change it to some large
+   value; 0 or even 0.00 causes the message.
+
  - tcltk script isdnmon was not included (obsoleted by isdnlog and isdnbutton).
 
  - isdn callout devices (/dev/cui*) are not created, they are obsolete
    and only left for compatibility. if you need them, run 
    "makedev isdn-cu".
-
- - new configuration : read CONFIG and use isdnconfig .
 
  - please use the hisax device driver (kernel >= 2.0.30) and not the 
    old, buggy and outdated teles device driver. Only use kernels 
@@ -23,7 +26,6 @@ isdnutils for DEBIAN
 	isdnlog         20011/udp                       # isdn logging system
 	vboxd           20012/tcp                       # voice box system
 	vboxd           20012/udp                       # voice box system
-
 
  - thanks a lot to Alexander Koch <efraim@argh.org> and Heiko
    Schlittermann <heiko@lotte.sax.de> for testing and comments.
@@ -46,7 +48,7 @@ about ipppd
 about isdnlog
 =============
 
- - isdnlog is compiled for german isdn protocoll / charge int. If you
+ - isdnlog is compiled for german isdn protocol / charge int. If you
    need swiss or netherland charge informations you will need to compile
    isdnutils yourself. If it doesn't work : write an email and i will
    compile it for you.
@@ -98,4 +100,4 @@ about vbox
 Originally:
     Andreas Jellinghaus <aj@debian.org>  Tue, 10 Jun 1997 08:39:06 +0200
 Now taken over by:
-    Paul Slootman <paul@wurtel.demon.nl> Wed Dec  3 15:05:20 CET 1997
+    Paul Slootman <paul@debian.org>  Wed Dec  3 15:05:20 CET 1997

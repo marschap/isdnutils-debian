@@ -34,7 +34,9 @@ from the X Consortium.
  *
  */
 
+#include <unistd.h>
 #include <stdio.h>
+#include <sys/ioctl.h>
 #include <sys/fcntl.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -206,12 +208,10 @@ XtPointer call_data;	/* pointer to (double) return value */
   int get_iobytes;
   char buf[4096];
   char s[120];
-  struct timeval tv_now, tv;
+  struct timeval tv_now;
   long bytes_delta;
-  fd_set fds;
   int secs_delta;
   Arg args[1];
-  int res;
 
   gettimeofday(&tv_now, NULL);
   secs_delta = (tv_now.tv_sec + tv_now.tv_usec / 1000000) -
@@ -295,7 +295,7 @@ XtPointer call_data;	/* pointer to (double) return value */
 
 
 
-void main(argc, argv)
+int main(argc, argv)
     int argc;
     char **argv;
 {
@@ -303,7 +303,7 @@ void main(argc, argv)
     Widget toplevel, load, pane, load_parent;
     Arg args[1];
     Pixmap icon_pixmap = None;
-    char *label, host[256];
+    char *label;
     XrmValue namein, pixelout;
 
 
@@ -388,6 +388,8 @@ void main(argc, argv)
 			    &wm_delete_window, 1);
 
     XtAppMainLoop(app_con);
+
+    return 0;
 }
 
 static void quit (w, event, params, num_params)

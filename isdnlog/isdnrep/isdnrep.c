@@ -1,4 +1,4 @@
-/* $Id: isdnrep.c,v 1.27 1997/05/25 19:41:06 luethje Exp $
+/* $Id: isdnrep.c,v 1.32 1998/02/13 07:01:49 calle Exp $
  *
  * ISDN accounting for isdn4linux. (Report-module)
  *
@@ -20,6 +20,26 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: isdnrep.c,v $
+ * Revision 1.32  1998/02/13 07:01:49  calle
+ * small fix inside ISDN_NL.
+ *
+ * Revision 1.31  1997/09/07 00:43:22  luethje
+ * create new error messages for isdnrep
+ *
+ * Revision 1.30  1997/07/22 22:36:17  luethje
+ * isdnrep:  Use "&nbsp;" for blanks
+ * isdnctrl: Add the option "reset"
+ *
+ * Revision 1.29  1997/06/15 23:49:45  luethje
+ * Some new variables for the isdnlog
+ * isdnlog starts programs noe with the file system rights
+ * bugfixes
+ *
+ * Revision 1.28  1997/05/28 21:23:03  luethje
+ * isdnlog option -b is working again ;-)
+ * isdnlog has new \$x variables
+ * README completed
+ *
  * Revision 1.27  1997/05/25 19:41:06  luethje
  * isdnlog:  close all files and open again after kill -HUP
  * isdnrep:  support vbox version 2.0
@@ -199,6 +219,7 @@
 
 #define _REP_FUNC_C_
 
+#include <sys/param.h>
 #include <dirent.h>
 #include <search.h>
 #include <linux/limits.h>
@@ -251,6 +272,10 @@
 
 /*****************************************************************************/
 
+#define STR_FAX "Fax: "
+
+/*****************************************************************************/
+
 #define F_1ST_LINE      1
 #define F_BODY_HEADER   2
 #define F_BODY_HEADERL  4
@@ -284,6 +309,13 @@
 #define H_LINK_DAY     "<A HREF=\"%s?%s\">%s</A> "
 
 #define H_EMPTY        "&nbsp;"
+
+#define H_APP_ZYXEL2 "application/x-zyxel2"
+#define H_APP_ZYXEL3 "application/x-zyxel3"
+#define H_APP_ZYXEL4 "application/x-zyxel4"
+#define H_APP_ULAW   "application/x-ulaw"
+#define H_APP_TEXT   "text/plain"
+#define H_APP_FAX3   "application/x-faxg3"
 
 /*****************************************************************************/
 
@@ -381,6 +413,7 @@ static char nomemory[]   = "Out of memory!\n";
 static char htmlconv[][2][10] = {
 	{">", "&gt;"},
 	{"<", "&lt;"},
+	{" ", H_EMPTY},
 	{"" , ""},
 };
 
@@ -422,7 +455,7 @@ int send_html_request(char *myname, char *option)
 			if (vboxcommand1)
 				command = vboxcommand1;
 			else
-				filetype = "application/x-zyxel4";
+				filetype = H_APP_ZYXEL4;
 		}
 		else
 		if (option[1] == '2')
@@ -435,15 +468,15 @@ int send_html_request(char *myname, char *option)
 
 				switch(compression)
 				{
-					case 2 : filetype = "application/x-zyxel2";
+					case 2 : filetype = H_APP_ZYXEL2;
 					         break;
-					case 3 : filetype = "application/x-zyxel3";
+					case 3 : filetype = H_APP_ZYXEL3;
 					         break;
-					case 4 : filetype = "application/x-zyxel4";
+					case 4 : filetype = H_APP_ZYXEL4;
 					         break;
-					case 6 : filetype = "application/x-ulaw";
+					case 6 : filetype = H_APP_ULAW;
 					         break;
-					default: print_msg(PRT_NORMAL, "Content-Type: text/plain\n\n");
+					default: print_msg(PRT_NORMAL, "Content-Type: %s\n\n",H_APP_TEXT);
 				           print_msg(PRT_NORMAL, "%s: unsupported compression type of vbox file :`%d'\n",myname,compression);
 				           return -1;
 					         break;
@@ -452,7 +485,7 @@ int send_html_request(char *myname, char *option)
 		}
 		else
 		{
-			print_msg(PRT_NORMAL, "Content-Type: text/plain\n\n");
+			print_msg(PRT_NORMAL, "Content-Type: %s\n\n",H_APP_TEXT);
 			print_msg(PRT_NORMAL, "%s: unsupported version of vbox `%c'\n",myname,option[0]);
 			return -1;
 		}
@@ -467,18 +500,18 @@ int send_html_request(char *myname, char *option)
 			if (mgettycommand)
 				command = mgettycommand;
 			else
-				filetype = "application/x-faxg3";
+				filetype = H_APP_FAX3;
 		}
 		else
 		{
-			print_msg(PRT_NORMAL, "Content-Type: text/plain\n\n");
+			print_msg(PRT_NORMAL, "Content-Type: %s\n\n",H_APP_TEXT);
 			print_msg(PRT_NORMAL, "%s:unsupported version of fax `%c%c'\n",myname,option[0]);
 			return -1;
 		}
 	}
 	else
 	{
-		print_msg(PRT_NORMAL, "Content-Type: text/plain\n\n");
+		print_msg(PRT_NORMAL, "Content-Type: %s\n\n",H_APP_TEXT);
 		print_msg(PRT_NORMAL, "%s:invalid option string `%c%c'\n",myname,option[0],option[1]);
 		return -1;
 	}
@@ -830,7 +863,7 @@ static int print_bottom(double unit, char *start, char *stop)
 		          'x', S_UNKNOWN,
 		          known[knowns-1]->usage[DIALOUT], double2clock(known[knowns-1]->dur[DIALOUT]),
 #ifdef ISDN_NL
-		          print_currency(known[knowns-1]->eh * unit + known[knowns-1]->usage * 0.0825,0));
+		          print_currency(known[knowns-1]->eh * unit + known[knowns-1]->usage[DIALOUT] * 0.0825,0));
 #else
 		          print_currency(known[knowns-1]->eh * unit, 0));
 #endif
@@ -1308,6 +1341,9 @@ static int append_string(char **string, prt_fmt *fmt_ptr, char* value)
 			           break;
 		}
 			
+		if (!strncmp(STR_FAX,value,strlen(STR_FAX)))
+			htmlfmt = H_LEFT;
+
 		if ((tmpfmt = (char*) alloca(sizeof(char)*(strlen(htmlfmt)+strlen(tmpfmt2)+1))) == NULL)
 		{
 			print_msg(PRT_ERR, nomemory);
@@ -2010,9 +2046,9 @@ static int set_caller_infos(one_call *cur_call, char *string, time_t from)
 			          break;
 			case  2 : strcpy(cur_call->num[1], Kill_Blanks(array[i]));
 			          break;
-			case  3 : cur_call->duration = (double)atoi(array[i]);
+			case  3 : cur_call->duration = strtod(array[i],NULL);
 			          break;
-			case  4 : cur_call->duration = atoi(array[i]) / 100.0;
+			case  4 : cur_call->duration = strtod(array[i],NULL)/HZ;
 			          break;
 			case  5 : /*cur_call->t = atol(array[i]);*/
 			          break;
@@ -2146,10 +2182,13 @@ static time_t get_month(char *String, int TimeStatus)
       TimeStruct->tm_mday = Args[0];
       Cnt++;
     case 2:
-      if (Args[Cnt+1] > 99)
+      if (Args[Cnt+1] >= 1900)
         TimeStruct->tm_year = ((Args[Cnt+1] / 100) - 19) * 100 + (Args[Cnt+1]%100);
       else
-        TimeStruct->tm_year = Args[Cnt+1];
+	if (Args[Cnt+1] < 70)
+          TimeStruct->tm_year = Args[Cnt+1] + 100;
+        else
+          TimeStruct->tm_year = Args[Cnt+1];
     case 1:
       TimeStruct->tm_mon = Args[Cnt];
       break;
@@ -2215,10 +2254,13 @@ static time_t get_time(char *String, int TimeStatus)
           &(TimeStruct->tm_hour),
           &(TimeStruct->tm_min),
           &Year		) 		> 4)
-        if (Year > 99)
+        if (Year >= 1900)
           TimeStruct->tm_year = ((Year / 100) - 19) * 100 + (Year%100);
         else
-          TimeStruct->tm_year = Year;
+	  if (Year < 70)
+            TimeStruct->tm_year = Year + 100;
+	  else
+            TimeStruct->tm_year = Year;
 
       TimeStruct->tm_mon--;
       break;
@@ -2587,6 +2629,11 @@ static int set_dir_entries(char *directory, int (*set_fct)(const char *, const c
 
 			closedir(dptr);
 		}
+		else
+		{
+			print_msg(PRT_ERR,"Can not open directory `%s': %s!\n", directory, strerror(errno));
+			return -1;
+		}
 	}
 
 	return 0;
@@ -2608,7 +2655,10 @@ static int set_vbox_entry(const char *path, const char *file)
 	sprintf(string,"%s%c%s",path,C_SLASH,file);
 
 	if ((fp = fopen(string,"r")) == NULL)
+	{
+		print_msg(PRT_ERR,"Can not open file `%s': %s!\n", string, strerror(errno));
 		return -1;
+	}
 
 	fread(&ptr,sizeof(vaheader_t),1,fp);
 	fclose(fp);
@@ -2691,7 +2741,10 @@ static int set_mgetty_entry(const char *path, const char *file)
 	sprintf(string,"%s%c%s",path,C_SLASH,file);
 
 	if (access(string,R_OK))
+	{
+		print_msg(PRT_ERR,"Can not open file `%s': %s!\n", string, strerror(errno));
 		return -1;
+	}
 
 	if ((lptr = (file_list*) calloc(1,sizeof(file_list))) == NULL)
 	{
@@ -2874,7 +2927,7 @@ static char *append_fax(char **string, char *file, char type, int version)
 	sprintf(help,H_LINK,_myname,type,version,nam2html(file),help2);
 
 	if (*string == NULL)
-		*string = strdup("Fax: ");
+		*string = strdup(STR_FAX);
 
 	if ((*string = (char*) realloc(*string,sizeof(char)*(strlen(*string)+strlen(help)+2))) == NULL)
 	{
@@ -3041,6 +3094,14 @@ static char *create_vbox_file(char *file, int *compression)
 		}
 
 		close(fdout);
+
+		if (len < 0)
+		{
+			print_msg(PRT_ERR,"Can not read from file `%s': %s!\n",file, strerror(errno));
+			close(fdin);
+			unlink(fileout);
+			return NULL;
+		}
 	}
 	
 	close(fdin);

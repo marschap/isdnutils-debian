@@ -56,11 +56,12 @@ PACKAGE = @PACKAGE@
 VERSION = @VERSION@
 
 AUTOMAKE_OPTIONS=foreign no-dependencies
+sbin_PROGRAMS=pcbitctrl
+man_MANS=pcbitctrl.8
+noinst_DIST=README.pt 
 MAINTAINERCLEANFILES=install-sh missing mkinstalldirs aclocal.m4 \
 	configure Makefile.in 
-noinst_DIST=README.pt 
 pcbitctrl_SOURCES=pcbitctl.c convhexbin.c
-sbin_PROGRAMS=pcbitctrl
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
@@ -77,6 +78,9 @@ pcbitctrl_LDFLAGS =
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+MANS = pcbitctrl.8
+
+NROFF = nroff
 DIST_COMMON =  Makefile.am Makefile.in aclocal.m4 configure configure.in \
 install-sh missing mkinstalldirs
 
@@ -148,6 +152,21 @@ maintainer-clean-compile:
 pcbitctrl: $(pcbitctrl_OBJECTS) $(pcbitctrl_DEPENDENCIES)
 	@rm -f pcbitctrl
 	$(LINK) $(pcbitctrl_LDFLAGS) $(pcbitctrl_OBJECTS) $(pcbitctrl_LDADD) $(LIBS)
+install-man: $(MANS)
+	$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(mandir)/man8
+	@sect=8;				\
+	inst=`echo "pcbitctrl" | sed '$(transform)'`.8; \
+	if test -f $(srcdir)/pcbitctrl.8; then file=$(srcdir)/pcbitctrl.8; \
+	else file=pcbitctrl.8; fi; \
+	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
+	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
+
+uninstall-man:
+	$(NORMAL_UNINSTALL)
+	inst=`echo "pcbitctrl" | sed '$(transform)'`.8; \
+	rm -f $(mandir)/man8/$$inst
+
 
 tags: TAGS
 
@@ -219,20 +238,20 @@ installcheck:
 install-exec: install-sbinPROGRAMS
 	@$(NORMAL_INSTALL)
 
-install-data: 
+install-data: install-man
 	@$(NORMAL_INSTALL)
 
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-sbinPROGRAMS
+uninstall: uninstall-sbinPROGRAMS uninstall-man
 
-all: Makefile $(PROGRAMS)
+all: Makefile $(PROGRAMS) $(MANS)
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(sbindir)
+	$(mkinstalldirs)  $(sbindir) $(mandir)/man8
 
 
 mostlyclean-generic:
@@ -269,11 +288,12 @@ maintainer-clean:  maintainer-clean-sbinPROGRAMS \
 .PHONY: default mostlyclean-sbinPROGRAMS distclean-sbinPROGRAMS \
 clean-sbinPROGRAMS maintainer-clean-sbinPROGRAMS uninstall-sbinPROGRAMS \
 install-sbinPROGRAMS mostlyclean-compile distclean-compile \
-clean-compile maintainer-clean-compile tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info dvi \
-installcheck install-exec install-data install uninstall all \
-installdirs mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+clean-compile maintainer-clean-compile install-man uninstall-man tags \
+mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
+distdir info dvi installcheck install-exec install-data install \
+uninstall all installdirs mostlyclean-generic distclean-generic \
+clean-generic maintainer-clean-generic clean mostlyclean distclean \
+maintainer-clean
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -I@KERNEL@/drivers/isdn/pcbit -c $< -o $@   

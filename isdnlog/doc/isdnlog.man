@@ -209,6 +209,9 @@ Log to stderr.
 .B \-OX	outfile="path"
 Log to file X instead of stderr. Isdnlog will close this device when it
 gets a signal -SIGHUP (-1). Only valid with -m option.
+.br
+If the name starts with a "+", new data will be appended to the existing file.
+Default behaviour is to truncate the file when isdnlog opens it.
 
 .TP
 .B \-C X	console="path"
@@ -284,6 +287,18 @@ isdnctrl, but this would have the same effect).
 You should run isdnlog with -t1 or better with -t2, so isdnlog sets the
 local time in sync with telephone switching office.
 
+.TP
+.B \-F cityweekend=y
+Deutsche Telekom offer an option where on weekends and national holidays,
+you are charged one unit every four minutes, instead of the normal rate
+of one unit every 2.5 minutes from 5:00 - 21:00. Isdnlog must be informed
+of this option when the chargehup option is used, or it will hangup at
+completely the wrong time. As the charge info delivered is
+.B not
+modified, only the final bill you get is lower, isdnlog also needs to
+override the charge info if it is delivered.
+
+
 .SH "START MODULE"
 
 isdnlog can react on any event and start programs. This feature is
@@ -353,11 +368,11 @@ log=15          # maximum debug mode
 flush=no        # flush logfile after every write
 pipe=no         # pipe log messages to stderr
 daemon=yes      # run isdnlog as daemon
-stdout=0x3fff   # stderr logging level
-outfile=/var/log/isdn/log               # log to file
+stdout=0x3ff7   # stderr logging level
+outfile=+/var/log/isdn/log               # log to file
 #console=       # log to a console
 monitor=yes     # emulate output for  imon/imontty/...
-syslog=0x3fff   # syslog logging level
+syslog=0x1fff7  # syslog logging level
 #xisdn=0x07ff   # x11 output level
 #calls=         # store call information for x11 client
 #xlog=          # store messages for x11 client

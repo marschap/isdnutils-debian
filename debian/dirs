@@ -1,4 +1,6 @@
 etc/ppp
+etc/ppp/ip-up.d
+etc/ppp/ip-down.d
 etc/isdn
 usr/bin
 usr/sbin

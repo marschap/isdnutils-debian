@@ -636,12 +636,10 @@ int add_Cur_Info(int channel, char *String)
 	else
 	if (channel >= Cur_Info_Size)
 	{
-		if ((Ptr = (char**) calloc(channel + 1,sizeof(char*))) == NULL)
+		Ptr = realloc(Cur_Info, (channel + 1) * sizeof(char*));
+		if (Ptr == NULL)
 			return NO_MEMORY;
-
-		memcpy(Ptr,Cur_Info,Cur_Info_Size*sizeof(char*));
 		Cur_Info_Size = channel + 1;
-		free(Cur_Info);
 		Cur_Info = Ptr;
 	}
 
@@ -691,7 +689,7 @@ int change_channel(int old_chan, int new_chan)
 	print_msg(PRT_DEBUG_CS,"Will change channel from %d to %d\n",old_chan,new_chan);
 
 	if (old_chan < 0 || old_chan >= Cur_Info_Size ||
-	    new_chan < 0 || Cur_Info[old_chan] == NULL  )
+	    new_chan < 0 || Cur_Info == NULL || Cur_Info[old_chan] == NULL  )
 		return -1;
 
 	if (old_chan == new_chan)

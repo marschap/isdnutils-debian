@@ -12,7 +12,7 @@
 /* Define if your <sys/time.h> declares struct tm.  */
 #undef TM_IN_SYS_TIME
 
-/* Package name - never user, but required for autoheader */
+/* Package name - never used, but required for autoheader */
 #undef PACKAGE
 
 /* Package version - same as I4LVERSION */
