@@ -49,12 +49,12 @@ AC_DEFUN(GND_PACKAGE_TCL,
       if (test "${gnd_use_tcl_lib}" = "")
       then
          gnd_1st_tcl_lib_test="tcl8.0"
-         gnd_2nd_tcl_lib_test="tcl8.2"
+         gnd_2nd_tcl_lib_test="tcl7.6"
          gnd_3rd_tcl_lib_test="tcl"
       else
          gnd_1st_tcl_lib_test="${gnd_use_tcl_lib}"
          gnd_2nd_tcl_lib_test="tcl8.0"
-         gnd_3rd_tcl_lib_test="tcl8.2"
+         gnd_3rd_tcl_lib_test="tcl7.6"
       fi
 
       AC_CHECK_LIB(m,
@@ -103,7 +103,15 @@ AC_DEFUN(GND_PACKAGE_TCL,
 
                HAVE_TCL_INCL="y"
                LINK_TCL_INCL="${gnd_tcl_inc_dir}"
-      else
+            fi
+         else
+            AC_MSG_CHECKING("for tcl header in /usr/include/tcl8.3/tcl.h")
+            if (test -e "/usr/include/tcl8.3/tcl.h")
+            then
+               AC_MSG_RESULT("yes")
+               HAVE_TCL_INCL="y"
+               LINK_TCL_INCL="-I/usr/include/tcl8.3"
+            else
                AC_MSG_RESULT("no")
             fi
          fi

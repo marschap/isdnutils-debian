@@ -1,0 +1,53 @@
+isdnutils for Debian
+--------------------
+
+This is a completely new packaging of the ISDN utilities collection.
+isdnutils has now also been split up into different packages:
+
+- isdnutils
+  Compatibility package for people upgrading from the previous version.
+  It depends on most of the split-off packages so that functionality
+  isn't lost when upgrading.
+  When in doubt, install this, and the rest will be installed as well :-)
+
+- isdnutils-base
+  The base part, containing direct kernel support, e.g. isdnctrl
+
+- ipppd
+  Needed for connecting via syncPPP to e.g. an ISP
+
+- pppdcapiplugin
+  If you have a CAPI-capable ISDN card, you can use this with the "normal"
+  PPP daemon to make a connection over ISDN instead of using ipppd.
+
+- isdnlog
+  For logging ISDN connections, and optionally triggering actions upon events
+
+- isdnlog-data
+  Areacode, zone and cost info for isdnlog
+
+- isdnutils-xtools
+  programs that use X, such as xisdnload
+
+- isdnvbox
+  answering machine.  This is a dummy package that depends on the server
+  and the client packages, so that both are installed when this package
+  is selected.
+
+- isdnvboxserver
+  server part of the answering machine. This is the part that records the
+  incoming calls.
+
+- isdnvboxclient
+  client part of the asnwering machine. This is the part that plays back
+  the recorded messages. Note that this package can also be installed on
+  another system in the network!
+
+- isdnactivecards
+  utilities and firmware for active cards. Not needed by most people.
+
+- isdneurofile
+  Transfer files using "eurofile" protocol. Somewhat experimental
+
+ -- Paul Slootman <paul@debian.org>, Wed, 23 Aug 2000 14:04:08 +0200
+    updated 8 Nov 2001

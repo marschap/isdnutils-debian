@@ -1,4 +1,4 @@
-/* $Id: isdnctrl.h,v 1.14 1999/06/07 19:25:42 paul Exp $
+/* $Id: isdnctrl.h,v 1.20 2002/02/07 10:44:12 paul Exp $
  * ISDN driver for Linux. (Control-Utility)
  *
  * Copyright 1994,95 by Fritz Elfert (fritz@isdn4linux.de)
@@ -21,6 +21,20 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: isdnctrl.h,v $
+ * Revision 1.20  2002/02/07 10:44:12  paul
+ * Added cisco_h and cisco_hk as aliases for cisco-h and cisco-hk
+ * because the manpage used to have this wrong.
+ *
+ * Revision 1.19  2001/05/23 14:59:23  kai
+ * removed traces of TIMRU. I hope it's been dead for a long enough time now.
+ *
+ * Revision 1.18  2001/05/23 14:48:23  kai
+ * make isdnctrl independent of the version of installed kernel headers,
+ * we have our own copy now.
+ *
+ * Revision 1.17  1999/11/20 22:23:53  detabc
+ * added netinterface abc-secure-counter reset (clear) support.
+ *
  * Revision 1.16  1999/11/02 20:41:21  keil
  * make phonenumber ioctl compatible for ctrlconf too
  *
@@ -28,7 +42,7 @@
  * Changed my mail-address.
  *
  * Revision 1.14  1999/06/07 19:25:42  paul
- * 'status' command added
+ * isdnctrl.man.in
  *
  * Revision 1.13  1999/03/15 15:53:06  cpetig
  * added v110 and modem to the level2 encapsulations
@@ -96,6 +110,9 @@
  *
  */
 
+#include "isdn.h"
+#include "isdnif.h"
+
 /*****************************************************************************/
 
 #define FILE_PROC "/proc/net/dev"
@@ -113,15 +130,12 @@ enum {
         L2_PROT, L3_PROT, ADDLINK, REMOVELINK,
         ENCAP, TRIGGER, RESET,
         DIALTIMEOUT, DIALWAIT, DIALMODE,
-#ifdef I4L_CTRL_TIMRU
-        ADDRULE, INSRULE, DELRULE, SHOWRULES,
-        FLUSHRULES, FLUSHALLRULES, DEFAULT,
-		BUDGET, SHOWBUDGETS,
-		SAVEBUDGETS, RESTOREBUDGETS,
-#endif
 #ifdef I4L_CTRL_CONF
         WRITECONF, READCONF,
 #endif /* I4L_CTRL_CONF */
+#ifdef I4L_DWABC_UDPINFO
+		ABCCLEAR,
+#endif
 	STATUS,
 		IFDEFAULTS
 };
@@ -175,23 +189,13 @@ cmd_struct cmds[] =
         {"dialtimeout", "12"},
         {"dialwait", "12"},
         {"dialmode", "12"},
-#ifdef I4L_CTRL_TIMRU
-        {"addrule", "12"},
-        {"insrule", "1"},
-        {"delrule", "1"},
-        {"showrules", "1"},
-        {"flushrules", "1"},
-        {"flushallrules", "1"},
-        {"default", "1"},
-        {"budget", "1"},
-        {"showbudgets", "1"},
-        {"savebudgets", "1"},
-        {"restorebudgets", "1"},
-#endif
 #ifdef I4L_CTRL_CONF
         {"writeconf", "01"},
         {"readconf", "01"},
 #endif /* I4L_CTRL_CONF */
+#ifdef I4L_DWABC_UDPINFO
+		{"abcclear","1"},
+#endif
         {"status", "1"},
         {"ifdefaults", "01"},
         {NULL,}
@@ -199,30 +203,18 @@ cmd_struct cmds[] =
 
 char *l2protostr[] = {
 	"x75i", "x75ui", "x75bui", "hdlc", 
-#ifdef ISDN_PROTO_L2_X25DTE
 	"x25dte", "x25dce",
-#endif
-#ifdef ISDN_PROTO_L2_V11096
 	"v110_9600", "v110_19200", "v110_38400",
-#endif
-#ifdef ISDN_PROTO_L2_MODEM
 	"modem",
-#endif
 	"\0"
 };
 
 int l2protoval[] = {
         ISDN_PROTO_L2_X75I, ISDN_PROTO_L2_X75UI,
         ISDN_PROTO_L2_X75BUI, ISDN_PROTO_L2_HDLC,
-#ifdef ISDN_PROTO_L2_X25DTE
 	ISDN_PROTO_L2_X25DTE, ISDN_PROTO_L2_X25DCE,
-#endif
-#ifdef ISDN_PROTO_L2_V11096
 	ISDN_PROTO_L2_V11096, ISDN_PROTO_L2_V11019, ISDN_PROTO_L2_V11038,
-#endif
-#ifdef ISDN_PROTO_L2_MODEM
 	ISDN_PROTO_L2_MODEM,
-#endif
 	-1
 };
 
@@ -239,14 +231,12 @@ char *pencapstr[] = {
 	"rawip",
 	"ip",
 	"cisco-h",
+	"cisco_h",
 	"syncppp",
 	"uihdlc",
-#if HAVE_CISCOKEEPALIVE
 	"cisco-hk",
-#endif
-#ifdef ISDN_NET_ENCAP_X25IFACE
+	"cisco_hk",
 	"x25iface",
-#endif
 	"\0"
 };
 
@@ -255,14 +245,12 @@ int pencapval[] = {
 	ISDN_NET_ENCAP_RAWIP,
 	ISDN_NET_ENCAP_IPTYP,
 	ISDN_NET_ENCAP_CISCOHDLC,
+	ISDN_NET_ENCAP_CISCOHDLC,
 	ISDN_NET_ENCAP_SYNCPPP,
 	ISDN_NET_ENCAP_UIHDLC,
-#if HAVE_CISCOKEEPALIVE
 	ISDN_NET_ENCAP_CISCOHDLCK,
-#endif
-#ifdef ISDN_NET_ENCAP_X25IFACE  
+	ISDN_NET_ENCAP_CISCOHDLCK,
 	ISDN_NET_ENCAP_X25IFACE,
-#endif
 	-1
 };
 
@@ -297,24 +285,19 @@ _EXTERN char * defs_basic(char *id);
 _EXTERN int MSNLEN_COMPATIBILITY;
 
 /*
- * do_phonenumber handle back/forward compatibility between
- * version 5 and version 6 of isdn_net_ioctl_phone
+ * set_isdn_net_ioctl_phone handles back/forward compatibility between
+ * version 4, 5 and 6 of isdn_net_ioctl_phone
  *
  */
  
-typedef struct {
-  char name[10];
-  char phone[20];
-  int  outgoing;
-} isdn_net_ioctl_phone_old;
+typedef union {
+		isdn_net_ioctl_phone_6 phone_6;
+		isdn_net_ioctl_phone_5 phone_5;
+} isdn_net_ioctl_phone;
 
-typedef struct {
-  char name[10];
-  char phone[32];
-  int  outgoing;
-} isdn_net_ioctl_phone_new;
+extern int set_isdn_net_ioctl_phone(isdn_net_ioctl_phone *ph, char *name, 
+				    char *phone, int outflag);
 
-_EXTERN int do_phonenumber(void *p, char *number, int outflag);
 
 #undef _EXTERN
 

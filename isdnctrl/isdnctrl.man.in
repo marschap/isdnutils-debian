@@ -1,6 +1,6 @@
-.\" $Id: isdnctrl.man.in,v 1.19 2000/01/27 15:07:31 paul Exp $
+.\" $Id: isdnctrl.man.in,v 1.22 2002/02/07 10:43:24 paul Exp $
 .\"
-.\" CHECKIN $Date: 2000/01/27 15:07:31 $
+.\" CHECKIN $Date: 2002/02/07 10:43:24 $
 .\"
 .\" Process this file with
 .\" groff -man -Tascii isdnctrl.8 for ASCII output, or
@@ -322,7 +322,7 @@ raw ip encapsulation (default)
 .br
 IP + typefield encapsulation
 .LP
-.B cisco_h
+.B cisco-h
 .br
 Special mode for communicating with a Cisco in HDLC-mode with
 Cisco-keepalive switched off.
@@ -342,7 +342,7 @@ Synchronous PPP over
 .br
 raw ip with additional ui-header
 .LP
-.B cisco_hk
+.B cisco-hk
 .br
 Special mode for communicating with a Cisco in HDLC-mode with
 Cisco-keepalive switched on.
@@ -437,7 +437,7 @@ The
 identifies a specific S0-Port. The channels of a port start
 counting with zero. If 
 .B exclusive
-is given, other interfaces cannot use that interface anymore.
+is given, other interfaces cannot use that channel anymore.
 Otherwise, the channel may be used by other interfaces.
 .TP
 .BI unbind " name"
@@ -561,7 +561,6 @@ Force dialing of interface
 .BI mapping " driverId MSN0" [, MSN1 [, MSN2 "]] ... [," MSN9 ]
 Installs a mapping-table for MSN<->EAZ-mapping. See README for details.
 @MANINC_CONF@ @MAN8DIR@/.isdnctrl_conf.8
-@MANINC_TIMRU@ @MAN8DIR@/.isdnctrl_timru.8
 .SH WILDCARDS
 When using
 .BI "isdnctrl addphone " name " in " num

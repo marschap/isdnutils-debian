@@ -1,0 +1,7 @@
+isdnlog-data contains the data files that isdnlog uses to find city
+names, calculate the cost of a call, etc.
+
+Newer versions are available more often than the sources of the
+isdnutils suite are released, at some time the data files will
+be distributed separately, so that updates can be done sooner.
+How this is going to work is not quite clear yet.

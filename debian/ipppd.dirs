@@ -1,0 +1,6 @@
+etc/ppp/ip-down.d
+etc/ppp/ip-up.d
+usr/sbin
+usr/share/doc/ipppd
+usr/share/isdn/default
+usr/share/man/man8

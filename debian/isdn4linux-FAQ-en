@@ -1,0 +1,12 @@
+Document: isdn4linux-FAQ-en
+Title: isdn4linux FAQ in english
+Author: many
+Abstract: The FAQ for isdn4linux in general (english language).
+Section: Apps/Net
+
+Format: HTML
+Index: /usr/share/doc/isdnutils-doc/FAQ/i4lfaq.html
+Files: /usr/share/doc/isdnutils-doc/FAQ/i4lfaq*.html
+
+Format: text
+Files: /usr/share/doc/isdnutils-doc/FAQ/i4lfaq-en.txt.gz

@@ -1,0 +1,5 @@
+/etc/isdn/xisdnload-netup
+/etc/isdn/xisdnload-netdown
+/etc/isdn/xmonisdn-netup
+/etc/isdn/xmonisdn-netdown
+/etc/X11/app-defaults/XISDNLoad

@@ -1,0 +1,25 @@
+.\" $Id: $
+.\"
+.\" CHECKIN $Date: $
+.\"
+.TH capiinit 8
+.SH NAME
+capiinit \- start or stop CAPI-capable ISDN cards
+.SH SYNOPSIS
+capiinit start | stop
+.SH DESCRIPTION
+.B capiinit
+will replace avmcapictrl in the future.
+
+If
+called as "capiinit start" it will load all modules, add all cards
+configured in "/etc/isdn/capi.conf" and load the firmware to all active
+cards.
+
+When called as "capiinit stop", it will deinit all cards and
+remove all modules.
+
+There is a sample config in /etc/isdn/capi.conf .
+
+.SH AUTHOR
+manpage written from C source by Paul Slootman <paul@debian.org>.

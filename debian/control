@@ -1,18 +1,203 @@
 Source: isdnutils
-Section: net
+Section: utils
 Priority: extra
 Maintainer: Paul Slootman <paul@debian.org>
-Standards-Version: 3.0.1
+Standards-Version: 3.5.5
+Build-Depends: debhelper(>=2.1),bzip2,libncurses-dev,xlibs-dev,tcl8.3-dev,linuxdoc-tools(>=0.9.20),groff,libtool,xutils,kernel-source-2.4[alpha arm i386 ia64 m68k mips mipsel powerpc sparc],libxaw-dev,libreadline-dev,gcc-3.0[powerpc]
 
 Package: isdnutils
-Architecture: alpha i386 powerpc sparc
-Depends: ${shlibs:Depends}, makedev (>= 2.3.1-24)
-Recommends: suidmanager, doc-base
-Suggests: mgetty, sox, ppp, isdnbutton, blinkd
-Replaces: vbox, isdnlog, ipppd, xisdnutils
-Description: ISDN utilities
- This package includes all the utilities to get an ISDN system up and
- running.
+Priority: optional
+Architecture: alpha arm i386 ia64 m68k mips mipsel powerpc sparc
+Depends: isdnutils-base, ipppd, isdnlog, isdnutils-xtools, isdnvboxserver, isdnvboxclient
+Suggests: isdnutils-doc, isdneurofile, pppdcapiplugin, isdnactivecards
+Conflicts: ipppd(<<1:3.1pre1b-23)
+Description: Most important ISDN-related packages and utilities.
+ Note that for an external ISDN adapter, you do NOT need this package or any of
+ the related ones. This is only for use with an internal ISDN adapter.
+ Choosing this package will select the most frequently used components.
  .
- This package works best with a 2.0.36 kernel (or higher); in fact, preferably
- 2.2.14 or higher.
+ The current version of isdnutils is split up into component packages, to make
+ it easier to fine-tune what is installed; hardly anyone needs everything.
+ However, it's not possible to automatically select what is needed 
+ This is a transitional package to ease upgrading, and choosing this selects
+ the most important new packages. After upgrading, this package can be safely
+ removed.
+ .
+ The component packages selected by this are:
+  isdnutils-base   basic set of ISDN utilities.
+  ipppd            for networking over ISDN with syncPPP.
+  isdnlog          for logging ISDN calls (and much more).
+  isdnutils-xtools for X ISDN apps (currently only xisdnload and xmonisdn)
+  isdnvboxserver   ISDN answering machine, things needed on the server system.
+  isdnvboxclient   ISDN answering machine, client side (vbox).
+ .
+ Not selected (although dselect will suggest some) are:
+  isdnutils-doc    for extensive documentation (basic docs are of course
+                   included with each package).
+  isdneurofile     file transfer over ISDN with the special eurofile protocol.
+  pppdcapiplugin   a plugin for the normal ppp daemon that uses CAPI to
+                   communicate over ISDN.
+  isdnactivecards  firmware for mostly active ISDN cards, and other related
+                   tools.
+  libcapi20        library package needed by CAPI applications (will be
+                   selected automatically when needed).
+
+Package: isdnutils-base
+Priority: optional
+Architecture: alpha arm i386 ia64 m68k mips mipsel powerpc sparc
+Depends: debconf, makedev(>=2.3.1-58), ${shlibs:Depends}
+Suggests: ipppd, isdnlog, isdnutils-doc, isdnutils-xtools, isdnvboxserver, isdnvboxclient
+Replaces: isdnutils(<<1:3.1pre1b-23)
+Description: ISDN utilities, the basic (minimal) set
+ These utilities are the basic set of ISDN utilities that you need when you
+ have an ISDN card installed. For complete functionality comparable to the
+ old isdnutils package, you also need the following packages:
+ .
+  ipppd            for networking over ISDN with syncPPP
+  isdnlog          for logging ISDN calls (and much more)
+  isdnutils-xtools for X ISDN apps (currently only xisdnload and xmonisdn)
+  isdnutils-doc    for extensive documentation (basic docs are of course
+                   included with each package)
+  isdnvboxserver   ISDN answering machine, things needed on a server system
+  isdnvboxclient   ISDN answering machine, client side (vbox)
+
+Package: isdnutils-xtools
+Architecture: alpha arm i386 ia64 m68k mips mipsel powerpc sparc
+Section: x11
+Depends: isdnutils-base(>=1:3.1pre1b-23), ${shlibs:Depends}
+Replaces: isdnutils(<<1:3.1pre1b-0)
+Description: ISDN utilities that use X
+ These are the graphical utilities for ISDN, xmonisdn and xisdnload.
+ They provide, each in their own way, a visual indication of the status of
+ the ISDN lines, so that it is directly obvious when there is a connection,
+ for example.
+ .
+ This has been separated out of the main isdnutils package so that if you
+ don't run X but do need ISDN, you don't have to include the X libraries
+ unnecessarily.
+
+Package: ipppd
+Architecture: alpha arm i386 ia64 m68k mips mipsel powerpc sparc
+Section: net
+Depends: isdnutils-base(>=1:3.1pre1b-23), debconf, ppp, ${shlibs:Depends}
+Suggests: dnrd
+Replaces: isdnutils(<<1:3.1pre1b-0)
+Description: PPP daemon for syncPPP over ISDN
+ If you want to connect to the internet over ISDN with an internal ISDN card,
+ you will need this.
+ .
+ Also needed for allowing dialins from Windows PCs over ISDN.
+
+Package: isdnlog
+Architecture: alpha arm i386 ia64 m68k mips mipsel powerpc sparc
+Depends: isdnutils-base(>=1:3.1pre1b-23), isdnlog-data, debconf, ${shlibs:Depends}
+Depends: isdnlog-data(>=1:3.1pre1b-29), debconf
+Replaces: isdnutils(<<1:3.1pre1b-0)
+Description: ISDN connection logger
+ isdnlog logs all ISDN connections, and can calculate the cost of calls. If
+ sufficient data is available, it can even recommend which alternate carrier
+ would have been cheaper for a given call. For countries where calls are charged
+ per discrete unit, it can disconnect the line just before the next unit starts.
+
+Package: isdnlog-data
+Architecture: all
+Recommends: isdnlog(>=1:3.1pre1b-29)
+Description: data for isdnlog users
+ All data related to call pricing, area codes, etc. in various countries.
+
+Package: isdnutils-doc
+Architecture: all
+Section: doc
+Conflicts: isdnutils(<<1:3.1pre1b-1)
+Suggests: isdnutils-base(>=1:3.1pre1b-23)
+Description: Extensive documentation for isdnutils
+ This includes the FAQ and other miscellaneous documentation.
+
+Package: isdnvbox
+Architecture: alpha arm i386 ia64 m68k mips mipsel powerpc sparc
+Conflicts: isdnutils(<<1:3.1pre1b-1)
+Depends: isdnvboxclient, isdnvboxserver
+Recommends: sox
+Description: ISDN answering machine, client and server
+ Let your debian system be your answering machine! Messages can be accessed
+ remotely, automatically emailed, etc.
+ .
+ This package is a helper to install both the client (with which you listen to
+ the messages) and the server (with which the messages are recorded) parts of
+ the software.
+
+Package: isdnvboxclient
+Architecture: any
+Conflicts: isdnutils(<<1:3.1pre1b-1),isdnvbox(<<1:3.1pre1b-2)
+Depends: ${shlibs:Depends}, sox | nas-bin | alsautils
+Suggests: isdnvboxserver
+Replaces: isdnutils(<<1:3.1pre1b-0)
+Description: ISDN answering machine, client
+ Let your debian system be your answering machine! Messages can be accessed
+ remotely, automatically emailed, etc.
+ .
+ This is the client part of the software, with which you can listen to the
+ messages. Those messages are recorded on a system with the server part of
+ the software (isdnvboxserver); that system may be elsewhere, as long as
+ it can be connected to via a network.
+
+Package: isdnvboxserver
+Architecture: alpha arm i386 ia64 m68k mips mipsel powerpc sparc
+Conflicts: isdnutils(<<1:3.1pre1b-1),isdnvbox(<<1:3.1pre1b-2)
+Depends: isdnutils-base(>=1:3.1pre1b-23), debconf(>= 0.5), ${shlibs:Depends}
+Suggests: isdnvboxclient
+Replaces: isdnutils(<<1:3.1pre1b-0)
+Description: ISDN answering machine, server
+ Let your debian system be your answering machine! Messages can be accessed
+ remotely, automatically emailed, etc.
+ .
+ This is the server part of the software. This is what needs to be installed
+ on the system with the ISDN card. To actually listen to the recorded messages
+ you need the client package (isdnvboxclient) somewhere, not necessarily on
+ the same system.
+
+Package: libcapi20
+Architecture: alpha arm i386 ia64 m68k mips mipsel powerpc sparc
+Section: libs
+Depends: isdnutils-base(>=1:3.1pre1b-23), ${shlibs:Depends}
+Replaces: isdnutils(<<1:3.1pre1b-0)
+Description: libraries for CAPI support
+ If you have an ISDN card with which CAPI works, you may be able to use
+ applications that use CAPI, e.g. a fax system. At this point, AVM cards can
+ work with CAPI, as well as some active cards. For the AVM passive cards you
+ need to visit the www.AVM.de website.
+ .
+ If you need this package, it will be installed automatically via dependencies,
+ no need to select it yourself.
+
+Package: isdnactivecards
+Architecture: alpha arm i386 ia64 m68k mips mipsel powerpc sparc
+Depends: isdnutils-base(>=1:3.1pre1b-23), ${shlibs:Depends}
+Replaces: isdnutils(<<1:3.1pre1b-0)
+Description: support for active ISDN cards and CAPI
+ If you have an active ISDN card, you will need things like firmware and the
+ means to load that firmware into that card. This is contained in this
+ package. Also CAPI stuff is contained in this package (currently only
+ certain active cards support CAPI).
+ .
+ See /usr/share/doc/isdnactivecards/* for more information.
+
+Package: pppdcapiplugin
+Architecture: alpha arm i386 ia64 m68k mips mipsel powerpc sparc
+Depends: ppp(>=2.3.11), libcapi20, ${shlibs:Depends}
+Section: net
+Description: plugin for pppd to communicate with CAPI-capable ISDN cards
+ Some ISDN cards (notably the AVM passive cards, when a module from the AVM
+ website is loaded) can be used by CAPI utilities.
+ This is a plugin for the regular PPP daemon to use CAPI on such cards.
+ .
+ See /usr/share/doc/pppdcapiplugin/* for some (rudimentary) info.
+
+Package: isdneurofile
+Architecture: alpha arm i386 ia64 m68k mips mipsel powerpc sparc
+Section: comm
+Depends: isdnutils-base(>=1:3.1pre1b-23), ${shlibs:Depends}
+Description: ISDN eurofile transfer tool
+ If you want to send / receive files over an ISDN line with the eurofile
+ system, you need this package. Not used much outside of Germany I
+ believe (and not much there either).

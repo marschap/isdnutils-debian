@@ -25,15 +25,14 @@
  * OR MODIFICATIONS.
  */
 
-char ccp_rcsid[] = "$Id: ccp.c,v 1.11 1999/06/21 13:28:42 hipp Exp $";
+char ccp_rcsid[] = "$Id: ccp.c,v 1.15 2000/11/12 16:06:42 kai Exp $";
 
 #include <string.h>
 #include <syslog.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
-#if 0
-#include </usr/include/net/ppp_defs.h>
-#endif
+/* dummy decl for struct referenced but not defined in linux/ppp-comp.h */
+struct compstat;
 #include <linux/ppp-comp.h>
 
 #include "fsm.h"
@@ -42,7 +41,11 @@ char ccp_rcsid[] = "$Id: ccp.c,v 1.11 1999/06/21 13:28:42 hipp Exp $";
 
 #include "compressions.h"
 
+#if 0
+#include <linux/isdn_lzscomp.h>
+#else
 #include "../ipppcomp/isdn_lzscomp.h"
+#endif
 
 /*
  * Protocol entry points from main code.
@@ -212,6 +215,7 @@ static void ccp_init(int unit)
 int ccp_getunit(int linkunit,int protocol)
 {
   int i;
+  char proto[64];
 
   if(protocol != PPP_CCP && protocol != PPP_LINK_CCP)
     return -1;
@@ -224,7 +228,12 @@ int ccp_getunit(int linkunit,int protocol)
       ccp_fsm[i].id = 0;
       ccp_fsm[i].unit = linkunit;
       ccp_fsm[i].protocol = protocol;
-      syslog(LOG_NOTICE,"CCP: got ccp-unit %d for link %d (protocol: %#x)",i,linkunit,protocol);
+      switch (protocol) {
+      case 0x80FD: strcpy(proto, "Compression Control Protocol"); break;
+      case 0x80FB: strcpy(proto, "Link Compression Control Protocol"); break;
+      default: sprintf(proto, "protocol: %#x", protocol);
+      }
+      syslog(LOG_NOTICE,"CCP: got ccp-unit %d for link %d (%s)",i,linkunit,proto);
       return i;
     }
   }

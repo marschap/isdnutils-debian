@@ -1,2 +1,0 @@
-x11 Apps/Net xmonisdn none "x11 isdn monitor" /usr/X11R6/bin/xmonisdn
-x11 Apps/Net xisdnload none "x11 isdn load" /usr/X11R6/bin/xisdnload

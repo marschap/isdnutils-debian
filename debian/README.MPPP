@@ -1,6 +1,50 @@
 MPPP - Multi Point to Point Protocol (channel bundling)
 ====================================
 
+Debian's ISDN config system now has support for MPPP. It is still experimental!
+It's pretty simple:
+
+    You have an existing ippp3 interface with which you dial into your ISP.
+    Now your ISP offers MPPP, and naturally you want to use all that extra
+    bandwidth! This is what you do:
+
+    - create a new config file /etc/isdn/device.ippp3+4
+      This tells the config system that ippp3 is the master,
+      and ippp4 is a slave device for ippp3.
+    
+    That's basically it :-)  However, isdn4linux does not support adding
+    channels dynamically (the "trigger" and "sdelay" commands in isdnctrl
+    are for rawIP channel bundling, not syncPPP). So, when you want to use
+    MPPP:
+
+    - ensure that the master device is connected at the moment
+    - add the second channel with "isdnctrl addlink ippp2" (where ippp2 is
+      your master device)
+    - to hangup the second channel, use "isdnctrl removelink ippp2"
+
+    Alternatively, look at ibod to manage adding / removing channels
+    (see below for an URL).
+
+    It should theoretically be possible to have more than one slave channel
+    (not tested however).
+
+
+    IMPORTANT:
+      Be sure to create the /etc/isdn/device.ippp3+4 file from the example
+      supplied with THIS version of the debian isdnutils package (or later),
+      to be found in /usr/share/doc/isdnutils/examples/default/device.DEVICE.gz
+      Only this version contains the support for this setup.  Also be sure
+      to configure the slave device with the same basic settings as the master
+      (phone numbers, encapsulation etc.) If the master config file is based
+      on this version, then it should be enough to simply copy the master
+      config file to the device.ipppX+Y file.
+
+
+This is still experimental, let me know any good or bad news:
+<isdnutils@packages.debian.org>
+
+######################################################################
+
 Here's a simple collection of information on the subject of MPPP.
 
 
@@ -92,7 +136,7 @@ Add to device.ippp0 before the "NETWORK SETUP" section:
         if [ ! -z "$REMOTEMSN" ]
         then
                 for MSN in $REMOTEMSN; do
-                        isdnctrl addphone $SLAVE out 0$REMOTEMSN
+                        isdnctrl addphone $SLAVE out $LEADINGZERO$REMOTEMSN
                 done
         fi
         isdnctrl eaz $SLAVE $LOCALMSN

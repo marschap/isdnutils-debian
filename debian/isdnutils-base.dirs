@@ -1,0 +1,11 @@
+etc/init.d
+etc/isdn
+usr/bin
+usr/lib/menu
+usr/sbin
+usr/share/doc/isdnutils-base/examples
+usr/share/isdn
+usr/share/isdn/default
+usr/share/man/man1
+usr/share/man/man4
+usr/share/man/man8

@@ -17,7 +17,7 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-char options_rcsid[] = "$Id: options.c,v 1.14 1999/06/21 13:28:50 hipp Exp $";
+char options_rcsid[] = "$Id: options.c,v 1.20 2000/12/07 12:46:49 paul Exp $";
 
 #include <stdio.h>
 #include <errno.h>
@@ -105,7 +105,7 @@ extern int called_radius_init ;
 extern int auth_order ;
 
 #endif
-int	lcp_echo_interval = 0; 	/* Interval between LCP echo-requests */
+int	lcp_echo_interval = 0;	/* Interval between LCP echo-requests */
 int	lcp_echo_fails = 0;	/* Tolerance to unanswered echo-requests */
 char our_name[MAXNAMELEN];	/* Our name for authentication purposes */
 char remote_name[MAXNAMELEN]; /* Peer's name for authentication */
@@ -114,6 +114,7 @@ int	disable_defaultip = 0;	/* Don't use hostname for default IP adrs */
 char *ipparam = NULL;	/* Extra parameter for ip up/down scripts */
 int	cryptpap;		/* Passwords in pap-secrets are encrypted */
 int useifip=0;		/* try to get IP addresses from interface */
+int deldefaultroute=0;  /* delete default route, if it exists */
 int usefirstip=0;
 int useifmtu=0;		/* get MTU value from network device */
 
@@ -162,7 +163,15 @@ static int noip __P((int));
 static int nomagicnumber __P((int));
 static int setmru __P((int,char **));
 static int setmtu __P((int,char **));
-static int setcbcp __P((int,char **));
+static int setcallbackdelay __P((int,char **));
+static int setcallbackcbcp __P((int));
+static int setcallbacknocbcp __P((int));
+static int setcallbackrfc __P((int));
+static int setcallbacknorfc __P((int));
+static int setcallbackcbcpfirst __P((int));
+static int setcallbackcbcplast __P((int));
+static int setcallbacktype __P((int,char **));
+static int setcallback __P((int,char **));
 static int setifmtu __P((int));
 static int nomru __P((int));
 static int nopcomp __P((int));
@@ -247,6 +256,7 @@ static int setwinsaddr __P((int,char **));
 static int setgetwinsaddr __P((int,char **));
 static int resetipxproto __P((int));
 static int setuseifip __P((int));
+static int setdeldefaultroute __P((int));
 static int setusefirstip __P((int));
 static int setmp __P((int));
 static int setpwlog __P((int));
@@ -271,7 +281,7 @@ static int number_option __P((char *, u_int32_t *, int));
 static int int_option __P((char *, int *));
 static int readable __P((int));
 static int setforcedriver(int dummy);
- 
+
 #ifdef RADIUS
 char *make_username_realm ( char * );
 int __P (radius_init ( void ));
@@ -293,6 +303,7 @@ static struct cmd {
     {"-detach", 0, setnodetach}, /* don't fork */
 	{"noip", 0, noip},         /* Disable IP and IPCP */
 	{"-ip", 0, noip},          /* Disable IP and IPCP */
+	{"-ip-protocol", 0, noip},          /* Disable IP and IPCP */
 	{"nomagic", 0, nomagicnumber}, /* Disable magic number negotiation */
     {"-mn", 0, nomagicnumber},	/* Disable magic number negotiation */
 	{"default-mru", 0, nomru}, /* Disable MRU negotiation */
@@ -337,7 +348,17 @@ static struct cmd {
     {"domain", 1, setdomain},	/* Add given domain name to hostname*/
     {"mru", 1, setmru},		/* Set MRU value for negotiation */
     {"mtu", 1, setmtu},		/* Set our MTU */
-    {"callback", 1, setcbcp},  /* Ask for callback */
+    {"callback", 1, setcallback},  /* Ask for callback */
+    {"callback-delay", 1, setcallbackdelay},  /* Callback delay for CBCP */
+    {"callback-cbcp", 0, setcallbackcbcp},  /* Enable CBCP callback negotiation */
+    {"callback-rfc1570", 0, setcallbackrfc},  /* Enable RCFC 1570 style callback negotiation */
+    {"-callback-cbcp", 0, setcallbacknocbcp},  /* Disable CBCP callbacks */
+    {"-callback-rfc1570", 0, setcallbacknorfc},  /* Disable RCFC 1570 style callbacks */
+    {"no-callback-cbcp", 0, setcallbacknocbcp},  /* Disable CBCP callbacks */
+    {"no-callback-rfc1570", 0, setcallbacknorfc},  /* Disable RCFC 1570 style callbacks */
+    {"callback-type", 1, setcallbacktype},  /* Callback type for RFC 1570 style callbacks */
+    {"callback-cbcp-preferred", 0, setcallbackcbcpfirst},  /* Prefer CBCP callback negotiation */
+    {"callback-rfc1570-preferred", 0, setcallbackcbcplast},  /* Prefer RFC 1570 callback negotiation */
     {"useifmtu", 0, setifmtu},  /* get MTU value from attached network device */
     {"netmask", 1, setnetmask},	/* set netmask */
     {"passive", 0, setpassive},	/* Set passive mode */
@@ -401,16 +422,18 @@ static struct cmd {
     {"idle", 1, setidle},              /* idle time limit (seconds) */
 #ifdef RADIUS
     {"session-limit", 1, setsessionlimit}, /* seconds for disconnect sessions */
-#endif    
+#endif
     {"holdoff", 1, setholdoff},                /* set holdoff time (seconds) */
     {"ms-dns", 1, setdnsaddr},         /* DNS address for the peer's use */
     {"ms-wins", 1, setwinsaddr},         /* WINS address for the peer's use */
     {"ms-get-dns", 0, setgetdnsaddr},  /* DNS address for the my use */
+    {"usepeerdns", 0, setgetdnsaddr},      /* for compatibility with async pppd */
     {"ms-get-wins", 0, setgetwinsaddr},    /* Nameserver for SMB over TCP/IP for me */
     {"noipx",  0, resetipxproto},      /* Disable IPXCP (and IPX) */
     {"-ipx",   0, resetipxproto},      /* Disable IPXCP (and IPX) */
 
     {"useifip",0,setuseifip},            /* call setifip() for IP addrs */
+    {"deldefaultroute",0, setdeldefaultroute}, /* call setdeldefaultroute for defaultroute */
     {"usefirstip",0,setusefirstip}, /* use first IP from auth file for remote */
     {"+mp",0,setmp},
     {"+pwlog",0,setpwlog},
@@ -497,7 +520,7 @@ int parse_args(int argc,char **argv)
 			return 0;
 		}
 		current_option = arg;
- 	    if (!(*cmdp->cmd_func)(slot,argv))
+	    if (!(*cmdp->cmd_func)(slot,argv))
 			return 0;
 	    argc -= cmdp->num_args;
 	    argv += cmdp->num_args;
@@ -512,7 +535,7 @@ int parse_args(int argc,char **argv)
                 return 0;
               numdev++;
             }
-	    else if ( 
+	    else if (
 #ifdef INCLUDE_OBSOLETE_FEATURES
 (ret = setspeed(slot,arg)) == 0 &&
 #endif
@@ -552,7 +575,7 @@ void make_options_global(int slot)
       ccp_fsm[i] = ccp_fsm[slot];
       chap[i] = chap[slot];
       upap[i] = upap[slot];
-	  cbcp[i] = cbcp[slot];
+      cbcp[i] = cbcp[slot];
 
       memcpy(xmit_accm[i],xmit_accm[slot],sizeof(xmit_accm[0]));
     }
@@ -648,7 +671,7 @@ int options_from_file(char *filename,int must_exist,int check_prot , int slot)
 	    /*
 	     * Maybe a tty name, speed or IP address?
 	     */
-            
+
 	    if((ret = setdevname(cmd,numdev)))
             {
               if(ret < 0)
@@ -694,12 +717,12 @@ int options_for_tty()
       dev = strrchr(lns[i].devnam, '/');
       if (dev == NULL) {
         syslog(LOG_NOTICE,"oops: strange device name %s",lns[i].devnam);
-  	continue;
+	continue;
       }
       ++dev;
       path = malloc(strlen(_PATH_TTYOPT) + strlen(dev) + 1);
       if (path == NULL)
-  	novm("tty init file name");
+	novm("tty init file name");
       strcpy(path, _PATH_TTYOPT);
       strcat(path, dev);
 
@@ -1208,30 +1231,101 @@ static int setmtu(int slot,char **argv)
     return (1);
 }
 
-static int setcbcp(int slot,char **argv)
+static int setcallbackdelay(int slot,char **argv)
 {
-	char *a;
-	int val;
+  int delay;
+  if(!int_option(*argv, &delay))
+    return 0;
+  if (delay > 255) {
+    option_error("callback delay of %d is too large", delay);
+    return 0;
+  }
+  lcp_wantoptions[slot].cbopt.delay = delay;
+  return 1;
+}
 
-    lcp_wantoptions[slot].neg_cbcp = 1;
+static int setcallbackcbcp(int slot)
+{
+  lcp_wantoptions[slot].cbopt.neg_cbcp = 1;
+  cbcp_protent.enabled_flag = 1;
+  return 1;
+}
+
+static int setcallbacknocbcp(int slot)
+{
+  lcp_wantoptions[slot].cbopt.neg_cbcp = 0;
+  cbcp_protent.enabled_flag = 0;
+  return 1;
+}
+
+static int setcallbackrfc(int slot)
+{
+  lcp_wantoptions[slot].cbopt.neg_rfc = 1;
+  return 1;
+}
+
+static int setcallbacknorfc(int slot)
+{
+  lcp_wantoptions[slot].cbopt.neg_rfc = 0;
+  return 1;
+}
+
+static int setcallbackcbcpfirst(int slot)
+{
+  lcp_wantoptions[slot].cbopt.rfc_preferred = 0;
+  return 1;
+}
+
+static int setcallbackcbcplast(int slot)
+{
+  lcp_wantoptions[slot].cbopt.rfc_preferred = 1;
+  return 1;
+}
+
+static int setcallbacktype(int slot,char **argv)
+{
+  int type;
+  if(!int_option(*argv, &type))
+    return 0;
+  switch (type) {
+  case CB_AUTH:
+    lcp_wantoptions[slot].cbopt.mlen = 0;
+    lcp_wantoptions[slot].cbopt.message = 0;
+    break;
+  case CB_DIALSTRING:
+  case CB_LOCATIONID:
+  case CB_PHONENO:
+  case CB_NAME:
+    break;
+  default:
+    option_error("unkown callback type: %d", type);
+    return 0;
+  }
+  lcp_wantoptions[slot].cbopt.type = type;
+  return 1;
+}
+
+static int setcallback(int slot,char **argv)
+{
+  lcp_wantoptions[slot].neg_callback = 1;
+  if (lcp_wantoptions[slot].cbopt.type != CB_AUTH) {
+    lcp_wantoptions[slot].cbopt.message = strdup(*argv);
+    if (lcp_wantoptions[slot].cbopt.message != 0) {
+      lcp_wantoptions[slot].cbopt.mlen =
+	strlen(lcp_wantoptions[slot].cbopt.message);
+      if (!lcp_wantoptions[slot].cbopt.mlen)
+	lcp_wantoptions[slot].cbopt.message = 0;
+    } else {
+      lcp_wantoptions[slot].cbopt.mlen = 0;
+    }
+  } else {
+      lcp_wantoptions[slot].cbopt.mlen = 0;
+      lcp_wantoptions[slot].cbopt.message = 0;
+  }
+
+  if (lcp_wantoptions[slot].cbopt.neg_cbcp)
     cbcp_protent.enabled_flag = 1;
-/* change this: CBCP slot != LCP slot !!*/
-	if( (a = strchr(*argv,',')) ) {
-		lcp_wantoptions[slot].cbcp.message = strdup(a+1);
-		lcp_wantoptions[slot].cbcp.mlen = strlen(a+1);
-	}
-	else {
-		lcp_wantoptions[slot].cbcp.message = "";
-		lcp_wantoptions[slot].cbcp.mlen = 0;
-	}
-	val = atoi(*argv);
-	if(val & ~0xff) {
-		fprintf(stderr,"illegal callback option %d\n",val);
-		lcp_wantoptions[slot].cbcp.type = 0;
-		return 0;
-	}
-	lcp_wantoptions[slot].cbcp.type = val & 0xff;
-	return 1;
+  return 1;
 }
 
 
@@ -1312,6 +1406,12 @@ static int setusefirstip(int slot)
 static int setuseifip(int slot)
 {
   useifip = 1;
+  return 1;
+}
+
+static int setdeldefaultroute(int slot)
+{
+  deldefaultroute = 1;
   return 1;
 }
 
@@ -1422,7 +1522,7 @@ static int setvjslots(int slot,char **argv)
 }
 
 /*
- * setdomain - Set domain name to append to hostname 
+ * setdomain - Set domain name to append to hostname
  */
 static int setdomain(int slot,char **argv)
 {
@@ -1444,7 +1544,7 @@ static int setdevname(char *cp,int nd)
     struct stat statbuf;
     char *ttyname();
     char dev[MAXPATHLEN];
-  
+
     if (strncmp("/dev/", cp, 5) != 0) {
 	strcpy(dev, "/dev/");
 	strncat(dev, cp, MAXPATHLEN - 5);
@@ -1461,10 +1561,10 @@ static int setdevname(char *cp,int nd)
 	syslog(LOG_ERR, cp);
 	return -1;
     }
-  
+
     (void) strncpy(lns[nd].devnam, cp, MAXPATHLEN);
     lns[nd].devnam[MAXPATHLEN-1] = 0;
-  
+
     return 1;
 }
 
@@ -1477,10 +1577,10 @@ static int setipaddr(int slot,char *arg)
     char *colon;
     u_int32_t local, remote;
     ipcp_options *wo = &ipcp_wantoptions[slot];
-  
+
     local = 0 ;
     remote = 0 ;
-  
+
     /*
      * IP address pair separated by ":".
      */
@@ -1491,7 +1591,7 @@ static int setipaddr(int slot,char *arg)
     if(strlen(arg) == 1)
       fprintf(stderr,"OK .. getting address from interface\n");
 #endif
-  
+
     /*
      * If colon first character, then no local addr.
      */
@@ -1522,7 +1622,7 @@ static int setipaddr(int slot,char *arg)
 	}
 	*colon = ':';
     }
-  
+
     /*
      * If colon last character, then no remote addr.
      */
@@ -1606,7 +1706,7 @@ void setipdefault(void)
        */
       wo->accept_local = 1;	/* don't insist on this default value */
       if ((hp = gethostbyname(hostname)) == NULL)
- 	return;
+	return;
       local = *(u_int32_t *)hp->h_addr;
       if (local != 0 && !bad_ip_adrs(local))
 	wo->ouraddr = local;
@@ -1899,7 +1999,7 @@ static int setdoradius(slot)
 		{
 			syslog(LOG_WARNING, "can't init radiusclient in %s", func);
 			die (1) ;
-		} 
+		}
 		else
 		{
 			called_radius_init = 1 ;
@@ -1916,11 +2016,11 @@ static int setdoradacct(slot)
 	useradacct = 1;
 	if(!called_radius_init)
 	{
-		if ( (radius_init() < 0))  
+		if ( (radius_init() < 0))
 		{
 			syslog(LOG_WARNING, "can't init radiusclient in %s", func);
 			die (1) ;
-		} 
+		}
 		else
 		{
 			called_radius_init = 1 ;
@@ -2217,13 +2317,13 @@ static int setidle (int slot,char **argv)
     return int_option(*argv, &idle_time_limit);
 #ifdef RADIUS
     default_idle_time_limit = idle_time_limit ;
-#endif    
+#endif
 }
 
-#ifdef RADIUS 
+#ifdef RADIUS
 static int setsessionlimit (slot, argv)
-	int 	slot ;
-	char 	**argv;
+	int	slot ;
+	char	**argv;
 {
 	return int_option(*argv, &session_time_limit);
 	default_session_time_limit = session_time_limit ;
@@ -2335,7 +2435,7 @@ static int setipxrouter (int slot,char **argv)
 	val = strtok(arg,",");
 	while(val) {
 		ipxcp_wantoptions[slot].router[num] = strtol(val,&endp,10);
-		if(*endp) 
+		if(*endp)
 			return 0;
 		num++;
 		if(num == 32)
@@ -2404,7 +2504,7 @@ static int setipxcpfails (int slot,char **argv)
 static int setipxnetwork(int slot,char **argv)
 {
     ipxcp_wantoptions[slot].neg_nn = 1;
-    return int_option(*argv, &ipxcp_wantoptions[slot].our_network); 
+    return int_option(*argv, &ipxcp_wantoptions[slot].our_network);
 }
 
 static int setipxanet(int slot)
@@ -2436,7 +2536,7 @@ static u_char *setipxnodevalue(u_char *src,u_char *dst)
     for (;;) {
         if (!isxdigit (*src))
 	    break;
-	
+
 	for (indx = 0; indx < 5; ++indx) {
 	    dst[indx] <<= 4;
 	    dst[indx] |= (dst[indx + 1] >> 4) & 0x0F;
@@ -2468,28 +2568,24 @@ static int setipxnode(int slot, char **argv)
         return 1;
     }
 
-    fprintf(stderr, "%s: invalid argument for ipx-node option\n",
-	    progname);
+    fprintf(stderr, "%s: invalid argument for ipx-node option\n", progname);
     return 0;
 }
 
 static int setipxproto(int slot)
 {
-	ipxcp_protent.enabled_flag = 1;
+    ipxcp_protent.enabled_flag = 1;
     return 1;
 }
 
 static int resetipxproto(int slot)
 {
-	ipxcp_protent.enabled_flag = 1;
+    ipxcp_protent.enabled_flag = 0;
     return 1;
 }
 
 static int setforcedriver(int dummy)
 {
-  force_driver = 1;
-  return 1;
+    force_driver = 1;
+    return 1;
 }
-
-
-

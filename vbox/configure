@@ -1547,7 +1547,7 @@ else
 int main() {
 
 /* Ultrix mips cc rejects this.  */
-typedef int charset[2]; const charset x = {0,0};
+typedef int charset[2]; const charset x;
 /* SunOS 4.1.1 cc rejects this.  */
 char const *const *ccp;
 char **p;
@@ -1622,7 +1622,7 @@ for ac_kw in inline __inline__ __inline; do
 #include "confdefs.h"
 
 int main() {
-} int $ac_kw foo() {
+} $ac_kw foo() {
 ; return 0; }
 EOF
 if { (eval echo configure:1629: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
@@ -2017,12 +2017,12 @@ fi
       if (test "${gnd_use_tcl_lib}" = "")
       then
          gnd_1st_tcl_lib_test="tcl8.0"
-         gnd_2nd_tcl_lib_test="tcl8.2"
+         gnd_2nd_tcl_lib_test="tcl7.6"
          gnd_3rd_tcl_lib_test="tcl"
       else
          gnd_1st_tcl_lib_test="${gnd_use_tcl_lib}"
          gnd_2nd_tcl_lib_test="tcl8.0"
-         gnd_3rd_tcl_lib_test="tcl8.2"
+         gnd_3rd_tcl_lib_test="tcl7.6"
       fi
 
       echo $ac_n "checking for cos in -lm""... $ac_c" 1>&6
@@ -2280,7 +2280,16 @@ echo "configure:2276: checking "for tcl header in ${gnd_use_tcl_dir}/include"" >
 
                HAVE_TCL_INCL="y"
                LINK_TCL_INCL="${gnd_tcl_inc_dir}"
-      else
+            fi
+         else
+            echo $ac_n "checking "for tcl header in /usr/include/tcl8.3/tcl.h"""... $ac_c" 1>&6
+echo "configure:2287: checking "for tcl header in /usr/include/tcl8.3/tcl.h"" >&5
+            if (test -e "/usr/include/tcl8.3/tcl.h")
+            then
+               echo "$ac_t"""yes"" 1>&6
+               HAVE_TCL_INCL="y"
+               LINK_TCL_INCL="-I/usr/include/tcl8.3"
+            else
                echo "$ac_t"""no"" 1>&6
             fi
          fi
@@ -2312,7 +2321,7 @@ echo "configure:2276: checking "for tcl header in ${gnd_use_tcl_dir}/include"" >
 
          
 echo $ac_n "checking where the messages are stored""... $ac_c" 1>&6
-echo "configure:2316: checking where the messages are stored" >&5
+echo "configure:2325: checking where the messages are stored" >&5
 
 VBOX_SPOOLDIR="`eval echo ${VBOX_SPOOLDIR:-"/var/spool/vbox"}`"
 
@@ -2334,7 +2343,7 @@ EOF
 
          
 echo $ac_n "checking where the logs are stored""... $ac_c" 1>&6
-echo "configure:2338: checking where the logs are stored" >&5
+echo "configure:2347: checking where the logs are stored" >&5
 
 VBOX_LOGDIR="`eval echo ${VBOX_LOGDIR:-"/var/log/vbox"}`"
 
@@ -2356,7 +2365,7 @@ EOF
 
          
 echo $ac_n "checking where the pids are stored""... $ac_c" 1>&6
-echo "configure:2360: checking where the pids are stored" >&5
+echo "configure:2369: checking where the pids are stored" >&5
 
 VBOX_PIDDIR="`eval echo ${VBOX_PIDDIR:-"/var/run"}`"
 
@@ -2378,7 +2387,7 @@ EOF
 
          
 echo $ac_n "checking where the locks are made""... $ac_c" 1>&6
-echo "configure:2382: checking where the locks are made" >&5
+echo "configure:2391: checking where the locks are made" >&5
 
 VBOX_LCKDIR="`eval echo ${VBOX_LOCKDIR:-"/var/lock"}`"
 
@@ -2400,7 +2409,7 @@ EOF
 
          
 echo $ac_n "checking where the isdn configuration is stored""... $ac_c" 1>&6
-echo "configure:2404: checking where the isdn configuration is stored" >&5
+echo "configure:2413: checking where the isdn configuration is stored" >&5
 
 ISDN_GLOBAL_CONFIG="`eval echo ${CONFIG_I4lCONFDIR:-"/etc/isdn"}`"
 

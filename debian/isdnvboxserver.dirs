@@ -1,0 +1,9 @@
+etc/isdn
+usr/sbin
+usr/share/isdn/default
+usr/share/isdnvboxserver/default
+usr/share/doc/isdnvboxserver/examples
+usr/share/man/man5
+usr/share/man/man8
+var/log/vbox
+var/spool/vbox

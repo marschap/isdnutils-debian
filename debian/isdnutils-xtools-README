@@ -1,0 +1,8 @@
+These are the graphical utilities for ISDN, xmonisdn and xisdnload.
+They provide, each in their own way, a visual indication of the status of
+the ISDN lines, so that it is directly obvious when there is a connection,
+for example.
+
+This has been separated out of the main isdnutils package so that if you
+don't run X but do need ISDN, you don't have to include the X libraries
+unnecessarily.

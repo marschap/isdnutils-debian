@@ -1,0 +1,236 @@
+Template: isdnvboxserver/msn
+Type: string
+Default: quit
+Default-ca: deixa'l
+Description: What number should vbox answer?
+ Vbox must know what number to listen to. Depending on your country's ISDN
+ system, this may or may not include the areacode. It is usually without
+ the leading 0.
+ .
+ Enter `quit' (or leave it blank) if you want to configure by hand, not via
+ debconf. Also enter `quit' if you already have an existing (working) vbox
+ configuration from the time when this was still part of isdnutils (unless
+ you want to create a new configuration).
+Description-ca: Amb quin número voleu que respongui vbox?
+ Vbox hauria de saber el número amb el que escolta.  Depenent del sistema
+ ISDN del vostre país (n. del T. en Espanya és RDSI), aquest pot o no es
+ pot incloure en el areacode.  Aquest camp normalment es deixa en 0.
+ .
+ Entreu `deixa'l' (o deixeu-lo en blanc) si desitgeu configurar-lo
+ manualment, no amb el debconf.  També entreu `quit' si ja teniu una
+ configuració (funcional) del vbox de quan això formava part de isdnutils
+ (a menys de que volgueu crear una nova configuració).
+
+Template: isdnvboxserver/doityourself
+Type: note
+Description: You've chosen not to use debconf for isdnvboxserver
+ If you change your mind, run "dpkg-reconfigure isdnvboxserver". To
+ finalize isdnvboxserver, you need to ensure that vboxgetty is running from
+ inittab, and that vboxd will run out of inetd.
+Description-ca: Heu escollit no usar debconf per a isdnvboxserver
+ Si canvieu de pensament, executeu "dpkg-reconfigure isdnvboxserver".  Per
+ a fer els últims retocs a isdnvboxserver, necessitareu estar segurs de que
+ vboxgetty està sent executat des del inittab i que el vboxd s'executa des
+ de inetd.
+
+Template: isdnvboxserver/rings
+Type: string
+Default: 4
+Description: After how many rings should vbox pick up the line?
+ One ring is about 5 seconds. You can fine-tune the number of rings for
+ certain phonenumbers manually, e.g. any salesmen you know the number of
+ (or calls without caller-ID) can be dumped into the answering machine
+ after one ring.  See `man vbox.conf' for more info.
+Description-ca: Després de quants timbres el vbox ha d'agafar la trucada?
+ Un timbre solen ser uns 5 segons.  També podeu ajustar el nombre de
+ timbres per a certs números de telèfon manualment, p.e. si sabeu el número
+ de qualsevol venedor (o trucades amb el seu caller-ID) podeu redigirir-la
+ cap al contestador automàtic després del primer timbre.  Per a més
+ informació mireu `man vbox.conf'.
+
+Template: isdnvboxserver/attachmsg
+Type: select
+Choices: yes, no
+Choices-ca: si, no
+Default: yes
+Description: Should the message be attached to the email?
+ When a message is recorded, an email notification is sent. If that email
+ should contain the message as an attachment, choose "yes" here. Note: the
+ attachment can be large!
+Description-ca: El missatge hauria de ser adjuntat al correu?
+ Quan es registra un missatge també s'envia una notificació per correu.  Si
+ aquest correu ha de contindre el missatge adjunt respongueu "si" aquí.
+ Noteu: que l'adjunt pot ser molt gran!
+
+Template: isdnvboxserver/daemonuser
+Type: string
+Default: vboxdaemonuser
+Default-ca: usuarivboxd
+Description: As what user should the answering machine run?
+ vboxd runs with the privileges of a normal (non-root) user. This is
+ typically your non-root login name. This user must be a member of the
+ `dialout' group.
+Description-ca: Amb quin usuari hauria d'executar-se el contestador automàtic?
+ vboxd s'executarà amb privilegis d'un usuari normal (no root).  Aquest
+ normalment serà el vostre usuari d'accés no root.  Aquest usuari haurà
+ d'estar dins el grup `dialout'.
+
+Template: isdnvboxserver/nosuchuser
+Type: text
+Description: The user ${Daemonuser} doesn't exist on the system.
+ Enter a valid user name here that's known to the system.
+Description-ca: L'usuari ${Daemonuser} no existeix en el sistema.
+ Entreu un nom d'usuari vàlid aquí que reconegui el sistema.
+
+Template: isdnvboxserver/user
+Type: string
+Description: What username may connect to the vbox server?
+ To listen to messages using vbox (from the isdnvboxclient package), you
+ need a username and password. Enter the username here. This does not have
+ to be a user on the system itself.
+Description-ca: Quin és el nom de l'usuari que podrà connectar-se al servidor vbox?
+ Per a llistar els missatges usant vbox (des del paquet isdnvboxclient),
+ necessitareu un nom d'usuari i contrasenya.  Entreu el nom d'usuari aquí.
+ Aquest no te perquè ser un usuari en el mateix sistema.
+
+Template: isdnvboxserver/password
+Type: password
+Description: Enter the password for ${User} here.
+ Please don't use ':' in it! The way it is stored cannot handle this.
+Description-ca: Entreu aquí la contrasenya pel usuari ${User}.
+ Si us plau no useu ':' en la contrasenya!  Per la manera en que es desada
+ llabors no podria usar-la.
+
+Template: isdnvboxserver/spoolrename
+Type: note
+Description: spool directory renamed
+ The spool directory `${OLDSPOOL}' has been renamed to `${NEWSPOOL}' for
+ consistency's sake. This should have no other consequences.
+Description-ca: S'ha reanomenat el directori spool
+ S'ha reanomenat el directori spool `${OLDSPOOL}' a `${NEWSPOOL}' per a la
+ seva coherència.  Això no hauria de tindre d'altres conseqüències.
+
+Template: isdnvboxserver/dup3spool
+Type: note
+Description: two obsolete spool directories detected
+ The directories `${OLDSPOOL1}' and `${OLDSPOOL2}' (which aren't used
+ anymore in the standard configuration), and the new spool directory
+ `${NEWSPOOL}' all exist. The old directories will no longer be used;
+ please manually move any messages from there to the new directory (if
+ any), and delete the old directories.
+Description-ca: S'han detectat dos directoris spool obsolets
+ Els directoris `${OLDSPOOL1}' i `${OLDSPOOL2}' (els quals no seran usats
+ en la configuració estàndard) i el nou directori spool `${NEWSPOOL}', tots
+ existeixen.  Els antics directoris ja no seran usats; si us plau moveu
+ qualsevol missatge que estigui allí al nou directori (si qualsevol) i
+ esborreu els antics directoris.
+
+Template: isdnvboxserver/dupspool
+Type: note
+Description: two spool directories detected
+ The old spool directory `${OLDSPOOL}' and the new spool directory
+ `${NEWSPOOL}' both exist. The old directory will no longer be used; please
+ manually move any messages from there to the new directory (if any), and
+ delete the old directory.
+Description-ca: S'han detectat dos directoris spool
+ L'antic directori spool `${OLDSPOOL}' i el nou directori spool
+ `${NEWSPOOL}', tots dos.  L'antic directori ja no serà usat; si us plau
+ moveu qualsevol missatge que estigui allí al nou directori (si qualsevol)
+ i esborreu l'antic directori.
+
+Template: isdnvboxserver/spoolcreate
+Type: note
+Description: spool directory created
+ The spool directory `${NEWSPOOL}' has been created, which is necessary for
+ proper working of vbox.
+Description-ca: S'ha creat el directori spool
+ El directori spool `${NEWSPOOL}' ha estat creat, ja que aquest és
+ necessari per al correcte funcionament de vbox.
+
+Template: isdnvboxserver/vboxmoved
+Type: note
+Description: vbox config file moved
+ The configuration file `${OLD}' has been moved to `${DIR}/.vbox.conf'.
+ See `man vbox.conf' for information on changing this file.
+Description-ca: El fitxer de configuració de vbox ha estat mogut
+ El fitxer de configuració `${OLD}' ha estat mogut a `${DIR}/.vbox.conf'.
+ Mireu `man vbox.conf' per a informació de com canviar aquest fitxer.
+
+Template: isdnvboxserver/vboxcreate
+Type: note
+Description: vbox config file created
+ The configuration file `${DIR}/.vbox.conf' has been created. See `man
+ vbox.conf' for information on changing this file.
+Description-ca: S'ha creat el fitxer de configuració de vbox
+ S'ha creat el fitxer de configuració `${DIR}/.vbox.conf'.  Mireu
+ `man vbox.conf' per a informació de com canviar aquest fitxer.
+
+Template: isdnvboxserver/vboxnodir
+Type: note
+Description: No home directory!
+ The home directory `${DIR}' for user `${USER}' doesn't exist. This means
+ that the file `${DIR}/.vbox.conf' cannot be created.
+Description-ca: No hi ha un directori home!
+ El directori home `${DIR}' per a l'usuari `${USER}' no existeix.  Això
+ vol dir que el fitxer `${DIR}/.vbox.conf' no pot ser creat.
+
+Template: isdnvboxserver/vboxnouser
+Type: note
+Description: User doesn't exist!
+ The user `${USER}' doesn't exist on the system!
+ Please rerun the configuration with `dpkg-reconfigure isdnvboxserver'
+ to enter another username, or after creating the user.
+Description-ca: L'usuari no existeix!
+ L'usuari `${USER}' no existeix en el sistema!
+ Si us plau torneu a executar la configuració amb
+ `dpkg-reconfigure isdnvboxserver' per a entrar un altre nom d'usuari o
+ creeu aquest usuari després.
+
+Template: isdnvboxserver/doinit
+Type: select
+Choices: yes, no
+Choices-ca: si, no
+Default: yes
+Description: Should vboxgetty be enabled?
+ vboxgetty is in /etc/inittab, but not yet enabled. Answering `yes' here
+ will enable it once this package is fully configured. Choose `no' if you
+ want to tweak it manually.
+Description-ca: Voleu habilitar vboxgetty?
+ vboxgetty està en /etc/inittab, però no està habilitat.  Respongueu `si'
+ aquí per a fer-ho una vegada estigui aquest paquet completament
+ configurat.  Escolliu `no' si preferiu fer-ho manualment.
+
+Template: isdnvboxserver/adduserdone
+Type: note
+Description: user `vbox' created
+ A user `vbox' was created, in group `dialout'. This is used as the ID that
+ the vbox daemons run under.
+Description-ca: S'ha creat el usuari `vbox'
+ S'ha creat un usuari `vbox' en el grup `dialout'.  Això és usat com el ID
+ (identificador) pels dimonis vbox que s'estan executant.
+
+Template: isdnvboxserver/adduserfailed
+Type: note
+Description: Failed to create user `vbox'
+ For optimal operation of vbox, a user `vbox' should be created, in group
+ `dialout'. However, creating that user failed with the following error(s):
+ .
+ ${MSG}
+ .
+ Please remedy this problem by hand, and then rerun the configuration with
+ `dpkg-reconfigure isdnvboxserver'.
+Description-ca: Falla al crear l'usuari `vbox'
+ Per al òptim funcionament de vbox, heu de crear un usuari `vbox' en el
+ grup `dialout'.  Però la creació d'aquest usuari ha fallat amb el(s)
+ següent(s) error(s):
+ .
+ ${MSG}
+ .
+ Si us plau solventeu l'error manualment i torneu a executar la
+ configuració amb `dpkg-reconfigure isdnvboxserver'.
+
+Template: isdnvboxserver/dummy
+Type: note
+Description: isdnvboxserver is being configured.
+ Note to translators: no need to translate this, not shown to users.
+Description-ca:

@@ -1,0 +1,24 @@
+#! /bin/sh
+# postrm script for isdnutils
+
+set -e
+
+case "$1" in
+       purge|remove)
+	 # It's a dirty trick but someone's got to do it
+         [ -e /usr/share/doc/isdnutils ] || \
+            ln -sf isdnutils-base /usr/share/doc/isdnutils || true
+         ;;
+
+       upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+         ;;
+
+    *)
+         echo "postrm called with unknown argument \`$1'" >&2
+         exit 0
+	 ;;
+esac
+
+#DEBHELPER#
+
+exit 0

@@ -1,0 +1,22 @@
+#! /bin/sh
+# postrm script for isdneurofile
+
+set -e
+
+case "$1" in
+       purge)
+	 update-rc.d isdneurofile remove >/dev/null
+         ;;
+
+       remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+         ;;
+
+    *)
+         echo "postrm called with unknown argument \`$1'" >&2
+         exit 0
+	 ;;
+esac
+
+#DEBHELPER#
+
+exit 0

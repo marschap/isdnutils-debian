@@ -1,7 +1,0 @@
-# Change the lines below for your local setup and uncomment them.
-# Use "init q" to reread inittab.
-# look at the vboxgetty / mgetty manpage for more information (mgetty isn't
-# standard!)
-#
-#I0:2345:respawn:/usr/sbin/vboxgetty -d /dev/ttyI0
-#I1:2345:respawn:/sbin/mgetty -D -m '"" ATZ OK AT&Eyourmsnhere OK AT&B512 OK' -s 38400 ttyI1

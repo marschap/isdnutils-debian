@@ -108,18 +108,43 @@ if test "$CONFIG_ISDN_LOG_NL" = "y" ; then
 	NATION_MACRO="ISDN_NL"
 	AC_DEFINE(ISDN_NL)
 fi
+if test "$CONFIG_ISDN_LOG_LU" = "y" ; then
+	NATION="lu"
+	NATION_MACRO="ISDN_LU"
+	AC_DEFINE(ISDN_LU)
+fi
+if test "$CONFIG_ISDN_LOG_XX" = "y" ; then
+	NATION=$CONFIG_ISDN_LOG_CC
+	NATION_MACRO="ISDN_XX"
+	AC_DEFINE(ISDN_XX)
+fi
 
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_PROG_AWK
+AC_PATH_PROG(SED,sed)
 AC_PROG_MAKE_SET
+AC_PATH_PROGS(BZIP2, bzip2, /usr/bin/bzip2, $PATH:/bin:/usr/bin:/usr/local/bin)
 
 dnl Checks for libraries.
-AC_CHECK_LIB(dbm, dbm_open, DBMLIB=-ldbm; AC_DEFINE(HAVE_LIBDBM),
-	AC_CHECK_LIB(gdbm, gdbm_open, DBMLIB=-lgdbm; AC_DEFINE(HAVE_LIBGDBM),
+if test -e tools/cdb/i4l_cdb.c  ; then
+    AC_DEFINE(USE_CDB)
+    CDBEXTRALIBS="tools/cdb/i4l_cdb.a"
+    DBEXT=".cdb"
+    RDBEXT=".cdb"
+    AC_MSG_RESULT(Using 'cdb' as database)
+else
+AC_CHECK_LIB(gdbm, gdbm_open, DBMLIB=-lgdbm; AC_DEFINE(HAVE_LIBGDBM),
+	AC_CHECK_LIB(dbm, dbm_open, DBMLIB=-ldbm; AC_DEFINE(HAVE_LIBDBM),
 		AC_CHECK_LIB(db, dbm_open, DBMLIB=-ldb; AC_DEFINE(HAVE_LIBDB))))
+fi
+AC_DEFINE_UNQUOTED(RDBEXT,"$RDBEXT")
+
+dnl log database support
 AC_CHECK_POSTGRES
 AC_CHECK_MYSQLDB
+AC_CHECK_ORACLE
 
 dnl TODO: replace main by a funcion within libdbmalloc
 #AC_CHECK_LIB(dbmalloc, main)
@@ -148,6 +173,9 @@ AC_ARG_WITH(oldconfdir,
 AC_ARG_WITH(oldconf,
 	[  --with-oldconf=NAME     Set old config file name [isdnlog.conf]],
 	OLDCONFFILE=$withval; AC_DEFINE_UNQUOTED(OLDCONFFILE,"$withval"))
+AC_ARG_WITH(datadir,
+        [  --with-datadir=DIR      Set data directory [/usr/lib/isdn]],
+        datadir=$withval; AC_DEFINE_UNQUOTED(DATADIR,"$withval"))
 AC_ARG_WITH(sport,
 	[  --with-sport=INT        Set server port [20011]],
 	SERV_PORT=$withval; AC_DEFINE_UNQUOTED(SERV_PORT,$withval))
@@ -159,7 +187,7 @@ AC_TYPE_SIZE_T
 AC_HEADER_TIME
 AC_STRUCT_TM
 
-AC_FIND_KERNEL
+dnl AC_FIND_KERNEL
 
 dnl Checks for C library functions.
 AC_PROG_GCC_TRADITIONAL
@@ -218,10 +246,10 @@ AC_SUBST(NATION)
 AC_SUBST(NATION_MACRO)
 AC_SUBST(CONFIG_KERNELDIR)
 AC_SUBST(I4LVERSION)
-AC_SUBST(REBOOTCMD)
-AC_SUBST(STOPCMD)
-AC_SUBST(RELOADCMD)
 AC_SUBST(DATADIR)
+AC_SUBST(RELOADCMD)
+AC_SUBST(STOPCMD)
+AC_SUBST(REBOOTCMD)
 AC_SUBST(MANDATE_CALLERID)
 AC_SUBST(MANDATE_ISDN_CONF)
 AC_SUBST(MANDATE_ISDNFORMAT)
@@ -230,4 +258,5 @@ AC_SUBST(MANDATE_ISDNLOG8)
 AC_SUBST(MANDATE_ISDNLOG_USERS)
 AC_SUBST(MANDATE_ISDNREP)
 AC_SUBST(MANDATE_ISDNCONF)
+AC_SUBST(CDBEXTRALIBS)
 AC_OUTPUT(Makefile isdnlog/callerid.conf.5 isdnlog/isdn.conf.5 isdnlog/isdnformat.5 isdnlog/isdnlog.5 isdnlog/isdnlog.8 isdnlog/isdnlog.users.5 isdnrep/isdnrep.1 isdnconf/isdnconf.1)

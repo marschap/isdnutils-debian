@@ -25,7 +25,7 @@
  * PATCHLEVEL 9
  */
 
-char main_rcsid[] = "$Id: main.c,v 1.16 1999/06/21 13:28:49 hipp Exp $";
+char main_rcsid[] = "$Id: main.c,v 1.20 2002/01/31 19:49:07 paul Exp $";
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -43,7 +43,7 @@ char main_rcsid[] = "$Id: main.c,v 1.16 1999/06/21 13:28:49 hipp Exp $";
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <sys/time.h>
+#include <time.h>
 #include <sys/resource.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
@@ -70,7 +70,7 @@ char main_rcsid[] = "$Id: main.c,v 1.16 1999/06/21 13:28:49 hipp Exp $";
  * /etc/ppp/ioptions exists.
  */
 #ifndef	REQ_SYSOPTIONS
-#define REQ_SYSOPTIONS	0
+#define REQ_SYSOPTIONS	1
 #endif
 
 /* interface vars */
@@ -139,15 +139,14 @@ struct protent *protocols[] = {
 
 int main(int argc,char **argv)
 {
-	int i,j;
+	int             i,j;
 	struct sigaction sa;
-#if 0
-	struct cmd *cmdp;
-#endif
-	FILE *pidfile;
-	struct timeval timo;
-	sigset_t mask;
-	struct protent *protp;
+	FILE            *pidfile;
+	struct timeval  timo;
+	sigset_t        mask;
+	struct protent  *protp;
+	char            *devnam;
+	int             ppp_ok;
 
 	if(argc > 1 && !strcmp(argv[1],"-version")) {
 #ifndef RADIUS	  
@@ -164,6 +163,11 @@ int main(int argc,char **argv)
 #endif
 		exit(1);
 	}
+
+	/*
+	 * Initialize magic number package.
+	 */
+	magic_init();
 
 	for(i=0;i<NUM_PPP;i++) {
 		lns[i].openfails = 0;
@@ -217,12 +221,25 @@ int main(int argc,char **argv)
     /*
      * copy protocol options for unit 0 to all option fields
      */
-	make_options_global(0);
+    make_options_global(0);
 
-	if (!ppp_available()) {
-		fprintf(stderr, no_ppp_msg);
-		exit(1);
-	}
+    /* Check each device to find one that supports PPP */
+    /* The first one might not, if it's a slave device... */
+    ppp_ok = 0;
+    for (i = 0; i < NUM_PPP && lns[i].devnam; i++) {
+        if ((devnam = strrchr(lns[i].devnam, '/')))
+            devnam++;
+        else
+            devnam = lns[i].devnam;
+        if (ppp_available(devnam)) {
+            ppp_ok = 1;
+            break;
+        }
+    }
+    if (!ppp_ok) {
+        fprintf(stderr, no_ppp_msg);
+        exit(1);
+    }
 
     remove_sys_options();
     check_auth_options();
@@ -239,17 +256,13 @@ int main(int argc,char **argv)
       sprintf(devstr,"Found %d device%s: ",numdev, numdev==1?"":"s");
       for(i=0;i<numdev;i++)
       {
-        strcat(devstr,lns[i].devnam);
+        /* strcat(devstr,lns[i].devnam); */
+        strcat(devstr,lns[i].ifname);
         if (i < numdev - 1)
           strcat(devstr,", ");
       }
       syslog(LOG_NOTICE,devstr);
     }
-
-    /*
-     * Initialize magic number package.
-     */
-    magic_init();
 
     /*
      * Detach ourselves from the terminal, if required,

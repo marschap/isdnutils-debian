@@ -1,0 +1,15 @@
+The current isdnutils package is a transitional package to ease upgrading
+from the debian 2.2 (potato) version of isdnutils.
+
+As isdnutils is now split up into component packages, the transitional
+package depends on the most frequently used parts so that selecting the
+transitional package will automatically also select those components.
+
+Once they have been installed, this isdnutils package can safely be removed.
+
+That will have to be done if you want to remove one or more of the components
+(e.g. because you have no need for it).
+
+
+You can find the documentation you probably expect here,
+in /usr/share/doc/isdnutils-base and /usr/share/doc/isdnutils-doc .

@@ -1,0 +1,4 @@
+etc/init.d/eftd.sh
+etc/isdn/eft.conf
+usr/bin/eftp
+usr/sbin/eftd

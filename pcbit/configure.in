@@ -19,12 +19,9 @@ AC_CHECK_HEADERS(fcntl.h sys/ioctl.h unistd.h)
 
 dnl Find current kernel source
 AC_FIND_KERNEL
-OLD_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I$CONFIG_KERNELDIR/include $CPPFLAGS"
-AC_CHECK_HEADERS(linux/isdn.h,,
+AC_CHECK_FILE($CONFIG_KERNELDIR/include/linux/isdn.h,,
 	AC_MSG_ERROR("$CONFIG_KERNELDIR/include/linux/isdn.h missing. Kernel installed?")
 )
-CPPFLAGS="$OLD_CPPFLAGS"
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 

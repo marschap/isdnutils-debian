@@ -1,0 +1,8 @@
+etc/init.d
+etc/isdn
+usr/bin
+usr/sbin
+usr/share/doc/isdneurofile/scripts
+usr/share/man/man1
+usr/share/man/man5
+usr/share/man/man8

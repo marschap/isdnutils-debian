@@ -1,8 +1,9 @@
-/* $Id: isdnconf.c,v 1.12 1998/09/22 20:59:08 luethje Exp $
+/* $Id: isdnconf.c,v 1.40 1999/10/25 18:33:15 akool Exp $
  *
  * ISDN accounting for isdn4linux. (Report-module)
  *
- * Copyright 1996, 1997 by Stefan Luethje (luethje@sl-gw.lake.de)
+ * Copyright 1996, 1999 by Stefan Luethje (luethje@sl-gw.lake.de)
+ *                     and Andreas Kool (akool@isdn4linux.de)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +20,225 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: isdnconf.c,v $
+ * Revision 1.40  1999/10/25 18:33:15  akool
+ * isdnlog-3.57
+ *   WARNING: Experimental version!
+ *   	   Please use isdnlog-3.56 for production systems!
+ *
+ * Revision 1.39  1999/10/22 19:57:59  akool
+ * isdnlog-3.56 (for Karsten)
+ *
+ * Revision 1.38  1999/09/26 10:55:20  akool
+ * isdnlog-3.55
+ *   - Patch from Oliver Lauer <Oliver.Lauer@coburg.baynet.de>
+ *     added hup3 to option file
+ *   - changed country-de.dat to ISO 3166 Countrycode / Airportcode
+ *
+ * Revision 1.37  1999/08/20 19:28:05  akool
+ * isdnlog-3.45
+ *  - removed about 1 Mb of (now unused) data files
+ *  - replaced areacodes and "vorwahl.dat" support by zone databases
+ *  - fixed "Sonderrufnummern"
+ *  - rate-de.dat :: V:1.10-Germany [20-Aug-1999 21:23:27]
+ *
+ * Revision 1.36  1999/07/03 10:24:02  akool
+ * fixed Makefile
+ *
+ * Revision 1.35  1999/06/28 19:15:53  akool
+ * isdnlog Version 3.38
+ *   - new utility "isdnrate" started
+ *
+ * Revision 1.34  1999/06/22 19:40:37  akool
+ * zone-1.1 fixes
+ *
+ * Revision 1.33  1999/06/16 19:12:21  akool
+ * isdnlog Version 3.34
+ *   fixed some memory faults
+ *
+ * Revision 1.32  1999/06/15 20:03:46  akool
+ * isdnlog Version 3.33
+ *   - big step in using the new zone files
+ *   - *This*is*not*a*production*ready*isdnlog*!!
+ *   - Maybe the last release before the I4L meeting in Nuernberg
+ *
+ * Revision 1.31  1999/06/13 14:07:28  akool
+ * isdnlog Version 3.32
+ *
+ *  - new option "-U1" (or "ignoreCOLP=1") to ignore CLIP/COLP Frames
+ *  - TEI management decoded
+ *
+ * Revision 1.30  1999/06/09 19:58:12  akool
+ * isdnlog Version 3.31
+ *  - Release 0.91 of zone-Database (aka "Verzonungstabelle")
+ *  - "rate-de.dat" V:1.02-Germany [09-Jun-1999 21:45:26]
+ *
+ * Revision 1.29  1999/06/03 18:50:10  akool
+ * isdnlog Version 3.30
+ *  - rate-de.dat V:1.02-Germany [03-Jun-1999 19:49:22]
+ *  - small fixes
+ *
+ * Revision 1.28  1999/06/01 19:33:27  akool
+ * rate-de.dat V:1.02-Germany [01-Jun-1999 20:52:32]
+ *
+ * Revision 1.27  1999/05/22 10:18:18  akool
+ * isdnlog Version 3.29
+ *
+ *  - processing of "sonderrufnummern" much more faster
+ *  - detection for sonderrufnummern of other provider's implemented
+ *    (like 01929:FreeNet)
+ *  - Patch from Oliver Lauer <Oliver.Lauer@coburg.baynet.de>
+ *  - Patch from Markus Schoepflin <schoepflin@ginit.de>
+ *  - easter computing corrected
+ *  - rate-de.dat 1.02-Germany [22-May-1999 11:37:33] (from rate-CVS)
+ *  - countries-de.dat 1.02-Germany [22-May-1999 11:37:47] (from rate-CVS)
+ *  - new option "-B" added (see README)
+ *    (using "isdnlog -B16 ..." isdnlog now works in the Netherlands!)
+ *
+ * Revision 1.26  1999/05/13 11:39:09  akool
+ * isdnlog Version 3.28
+ *
+ *  - "-u" Option corrected
+ *  - "ausland.dat" removed
+ *  - "countries-de.dat" fully integrated
+ *      you should add the entry
+ *      "COUNTRYFILE = /usr/lib/isdn/countries-de.dat"
+ *      into section "[ISDNLOG]" of your config file!
+ *  - rate-de.dat V:1.02-Germany [13-May-1999 12:26:24]
+ *  - countries-de.dat V:1.02-Germany [13-May-1999 12:26:26]
+ *
+ * Revision 1.25  1999/05/09 18:24:10  akool
+ * isdnlog Version 3.25
+ *
+ *  - README: isdnconf: new features explained
+ *  - rate-de.dat: many new rates from the I4L-Tarifdatenbank-Crew
+ *  - added the ability to directly enter a country-name into "rate-xx.dat"
+ *
+ * Revision 1.24  1999/05/04 19:32:23  akool
+ * isdnlog Version 3.24
+ *
+ *  - fully removed "sondernummern.c"
+ *  - removed "gcc -Wall" warnings in ASN.1 Parser
+ *  - many new entries for "rate-de.dat"
+ *  - better "isdnconf" utility
+ *
+ * Revision 1.23  1999/04/30 19:07:46  akool
+ * isdnlog Version 3.23
+ *
+ *  - changed LCR probing duration from 181 seconds to 153 seconds
+ *  - "rate-de.dat" filled with May, 1. rates
+ *
+ * Revision 1.22  1999/04/19 19:24:02  akool
+ * isdnlog Version 3.18
+ *
+ * - countries-at.dat added
+ * - spelling corrections in "countries-de.dat" and "countries-us.dat"
+ * - LCR-function of isdnconf now accepts a duration (isdnconf -c .,duration)
+ * - "rate-at.dat" and "rate-de.dat" extended/fixed
+ * - holiday.c and rate.c fixed (many thanks to reinelt@eunet.at)
+ *
+ * Revision 1.21  1999/04/17 14:10:56  akool
+ * isdnlog Version 3.17
+ *
+ * - LCR functions of "isdnconf" fixed
+ * - HINT's fixed
+ * - rate-de.dat: replaced "1-5" with "W" and "6-7" with "E"
+ *
+ * Revision 1.20  1999/04/15 19:14:29  akool
+ * isdnlog Version 3.15
+ *
+ * - reenable the least-cost-router functions of "isdnconf"
+ *   try "isdnconf -c <areacode>" or even "isdnconf -c ."
+ * - README: "rate-xx.dat" documented
+ * - small fixes in processor.c and rate.c
+ * - "rate-de.dat" optimized
+ * - splitted countries.dat into countries-de.dat and countries-us.dat
+ *
+ * Revision 1.19  1999/04/14 13:16:18  akool
+ * isdnlog Version 3.14
+ *
+ * - "make install" now install's "rate-xx.dat", "rate.conf" and "ausland.dat"
+ * - "holiday-xx.dat" Version 1.1
+ * - many rate fixes (Thanks again to Michael Reinelt <reinelt@eunet.at>)
+ *
+ * Revision 1.18  1999/04/10 16:35:14  akool
+ * isdnlog Version 3.13
+ *
+ * WARNING: This is pre-ALPHA-dont-ever-use-Code!
+ * 	 "tarif.dat" (aka "rate-xx.dat"): the next generation!
+ *
+ * You have to do the following to test this version:
+ *   cp /usr/src/isdn4k-utils/isdnlog/holiday-de.dat /etc/isdn
+ *   cp /usr/src/isdn4k-utils/isdnlog/rate-de.dat /usr/lib/isdn
+ *   cp /usr/src/isdn4k-utils/isdnlog/samples/rate.conf.de /etc/isdn/rate.conf
+ *
+ * After that, add the following entries to your "/etc/isdn/isdn.conf" or
+ * "/etc/isdn/callerid.conf" file:
+ *
+ * [ISDNLOG]
+ * SPECIALNUMBERS = /usr/lib/isdn/sonderrufnummern.dat
+ * HOLIDAYS       = /usr/lib/isdn/holiday-de.dat
+ * RATEFILE       = /usr/lib/isdn/rate-de.dat
+ * RATECONF       = /etc/isdn/rate.conf
+ *
+ * Please replace any "de" with your country code ("at", "ch", "nl")
+ *
+ * Good luck (Andreas Kool and Michael Reinelt)
+ *
+ * Revision 1.17  1999/04/03 12:46:54  akool
+ * - isdnlog Version 3.12
+ * - "%B" tag in ILABEL/OLABEL corrected
+ * - isdnlog now register's incoming calls when there are no free B-channels
+ *   (idea from sergio@webmedia.es)
+ * - better "samples/rate.conf.de" (suppress provider without true call-by-call)
+ * - "tarif.dat" V:1.17 [03-Apr-99]
+ * - Added EWE-Tel rates from Reiner Klaproth <rk1@msjohan.dd.sn.schule.de>
+ * - isdnconf can now be used to generate a Least-cost-router table
+ *   (try "isdnconf -c .")
+ * - isdnlog now simulate a RELEASE COMPLETE if nothing happpens after a SETUP
+ * - CHARGEMAX Patches from Oliver Lauer <Oliver.Lauer@coburg.baynet.de>
+ *
+ * Revision 1.16  1999/03/24 19:37:38  akool
+ * - isdnlog Version 3.10
+ * - moved "sondernnummern.c" from isdnlog/ to tools/
+ * - "holiday.c" and "rate.c" integrated
+ * - NetCologne rates from Oliver Flimm <flimm@ph-cip.uni-koeln.de>
+ * - corrected UUnet and T-Online rates
+ *
+ * Revision 1.15  1999/03/20 14:32:56  akool
+ * - isdnlog Version 3.08
+ * - more tesion)) Tarife from Michael Graw <Michael.Graw@bartlmae.de>
+ * - use "bunzip -f" from Franz Elsner <Elsner@zrz.TU-Berlin.DE>
+ * - show another "cheapest" hint if provider is overloaded ("OVERLOAD")
+ * - "make install" now makes the required entry
+ *     [GLOBAL]
+ *     AREADIFF = /usr/lib/isdn/vorwahl.dat
+ * - README: Syntax description of the new "rate-at.dat"
+ * - better integration of "sondernummern.c" from mario.joussen@post.rwth-aachen.de
+ * - server.c: buffer overrun fix from Michael.Weber@Post.RWTH-Aachen.DE (Michael Weber)
+ *
+ * Revision 1.14  1999/03/15 21:27:48  akool
+ * - isdnlog Version 3.06
+ * - README: explain some terms about LCR, corrected "-c" Option of "isdnconf"
+ * - isdnconf: added a small LCR-feature - simply try "isdnconf -c 069"
+ * - isdnlog: dont change CHARGEINT, if rate is't known!
+ * - sonderrufnummern 1.02 [15-Mar-99] :: added WorldCom
+ * - tarif.dat 1.09 [15-Mar-99] :: added WorldCom
+ * - isdnlog now correctly handles the new "Ortstarif-Zugang" of UUnet
+ *
+ * Revision 1.13  1999/03/07 18:18:42  akool
+ * - new 01805 tarif of DTAG
+ * - new March 1999 tarife
+ * - added new provider "01051 Telecom"
+ * - fixed a buffer overrun from Michael Weber <Michael.Weber@Post.RWTH-Aachen.DE>
+ * - fixed a bug using "sondernnummern.c"
+ * - fixed chargeint change over the time
+ * - "make install" now install's "sonderrufnummern.dat", "tarif.dat",
+ *   "vorwahl.dat" and "tarif.conf"! Many thanks to
+ *   Mario Joussen <mario.joussen@post.rwth-aachen.de>
+ * - Euracom Frames would now be ignored
+ * - fixed warnings in "sondernnummern.c"
+ * - "10plus" messages no longer send to syslog
+ *
  * Revision 1.12  1998/09/22 20:59:08  luethje
  * isdnrep:  -fixed wrong provider report
  *           -fixed wrong html output for provider report
@@ -57,9 +277,9 @@
  *
  */
 
-#include "isdnconf.h"
+#define _ISDN_CONF_C_
 
-/*****************************************************************************/
+#include "isdnconf.h"
 
 int print_in_modules(const char *fmt, ...);
 int print_msg(int Level, const char *fmt, ...);
@@ -91,6 +311,13 @@ static char number[BUFSIZ] = "";
 static char alias[BUFSIZ] = "";
 static char conffile[BUFSIZ];
 static char callerfile[BUFSIZ];
+
+/*****************************************************************************/
+
+void info(int chan, int reason, int state, char *msg)
+{
+  /* DUMMY - dont needed here! */
+} /* info */
 
 /*****************************************************************************/
 
@@ -259,15 +486,21 @@ int find_data(char *_alias, char *_number, section *conf_dat)
 		print_msg(PRT_NORMAL,"%s:\t\t%s\n",make_word(CONF_ENT_ALIAS),_alias?_alias:S_UNKNOWN);
 		print_msg(PRT_NORMAL,"%s:\t\t%s\n",make_word(CONF_ENT_NUM),_number?_number:S_UNKNOWN);
 
+#if 0 /* DELETE_ME AK:18-Aug-99 */
 		if (_number != NULL && (ptr = get_areacode(_number,NULL,C_NO_ERROR)) != NULL)
 			print_msg(PRT_NORMAL,"Location:\t%s\n",ptr);
+#endif
 
 		if (!short_out)
 		{
 			ptr = (CEPtr = Get_Entry(conf_dat->entries,CONF_ENT_SI))?(CEPtr->value?CEPtr->value:"0"):"0";
 			print_msg(PRT_NORMAL,"%s:\t\t%s\n",CONF_ENT_SI,ptr);
 
+#if 0 /* DELETE_ME AK:18-Aug-99 */
 			area = area_diff_string(NULL,_number);
+#else
+			area = "";
+#endif
 			ptr = (char*)(const char*) (area[0] != '\0'?area:(CEPtr = Get_Entry(conf_dat->entries,CONF_ENT_ZONE))?(CEPtr->value?CEPtr->value:""):"");
 			print_msg(PRT_NORMAL,"%s:\t\t%s\n",make_word(CONF_ENT_ZONE),ptr);
 
@@ -286,7 +519,7 @@ int find_data(char *_alias, char *_number, section *conf_dat)
 
 				ptr = (CEPtr = Get_Entry(SPtr->entries,CONF_ENT_PROG))?(CEPtr->value?CEPtr->value:""):"";
 				print_msg(PRT_NORMAL,"%s:\t%s\n",make_word(CONF_ENT_PROG),ptr);
-	
+
 				ptr = (CEPtr = Get_Entry(SPtr->entries,CONF_ENT_USER))?(CEPtr->value?CEPtr->value:""):"";
 				print_msg(PRT_NORMAL,"%s:\t%s\n",make_word(CONF_ENT_USER),ptr);
 
@@ -333,24 +566,27 @@ int look_data(section **conf_dat)
 			_number = _alias = NULL;
 			_si[0] = '\0';
 
-			if ((CEPtr = Get_Entry((*conf_dat)->entries,CONF_ENT_NUM)) != NULL)
+			if ((CEPtr = Get_Entry((*conf_dat)->entries,CONF_ENT_NUM)) != NULL) {
 				if (del)
 					_number = strdup(Replace_Variable(CEPtr->value));
 				else
 					_number = strdup(CEPtr->value);
+			}		
 
-			if ((CEPtr = Get_Entry((*conf_dat)->entries,CONF_ENT_ALIAS)) != NULL)
+			if ((CEPtr = Get_Entry((*conf_dat)->entries,CONF_ENT_ALIAS)) != NULL) {
 				if (del)
 					_alias = strdup(Replace_Variable(CEPtr->value));
 				else
 					_alias = strdup(CEPtr->value);
+			}		
 
-			if ((CEPtr = Get_Entry((*conf_dat)->entries,CONF_ENT_SI)) != NULL &&
-			    CEPtr->value != NULL)
+			if ((CEPtr = Get_Entry((*conf_dat)->entries,CONF_ENT_SI)) != NULL && 
+			    CEPtr->value != NULL) {
 				if (del)
 					sprintf(_si,"%ld",strtol(Replace_Variable(CEPtr->value), NIL, 0));
 				else
 					sprintf(_si,"%ld",strtol(CEPtr->value, NIL, 0));
+			}		
 
 			if (and)
 				Ret = 1;
@@ -486,13 +722,15 @@ int print_in_modules(const char *fmt, ...)
 
 /*****************************************************************************/
 
+
 int main(int argc, char *argv[], char *envp[])
 {
-	int c;
+	int c, len = 0;
 	int Cnt = 0;
 	section *conf_dat = NULL;
 	char *myname = basename(argv[0]);
 	FILE *fp;
+	char *ptr = "";
 
 	static char usage[]   = "%s: usage: %s [ -%s ]\n";
 	static char options[] = "ADdn:a:t:f:c:wslimqgV1M:";
@@ -646,19 +884,7 @@ int main(int argc, char *argv[], char *envp[])
 
 	if (areacode[0] != '\0')
 	{
-		char *ptr;
-		int len;
-		
-		if ((ptr = get_areacode(areacode,&len,quiet?C_NO_ERROR|C_NO_WARN:0)) != NULL)
-		{
-			if (!isdnmon)
-			{
-				const char *area = area_diff_string(NULL,areacode);
-
-				print_msg(PRT_NORMAL,"%s%s%s\n",ptr,area[0] != '\0'?" / ":"", area[0] != '\0'?area:"");
-				exit(0);
-			}
-			
+                if (1) {
 			print_msg(PRT_NORMAL,"%s\t%d\t",ptr,len);
 		}
 		else
@@ -739,4 +965,3 @@ int main(int argc, char *argv[], char *envp[])
 
 	return 0;
 }
-

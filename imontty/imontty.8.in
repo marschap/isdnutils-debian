@@ -1,6 +1,6 @@
-.\" $Id: imontty.8.in,v 1.1 1998/12/28 16:36:04 paul Exp $
+.\" $Id: imontty.8.in,v 1.2 2000/03/13 16:32:07 paul Exp $
 .\"
-.\" CHECKIN $Date: 1998/12/28 16:36:04 $
+.\" CHECKIN $Date: 2000/03/13 16:32:07 $
 .\"
 .\" Process this file with
 .\" groff -man -Tascii imontty.8 for ASCII output, or

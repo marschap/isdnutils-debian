@@ -1,11 +1,11 @@
-# $Id: Makefile,v 1.31 1998/11/23 10:02:13 fritz Exp $
+# $Id: Makefile,v 1.49 2002/02/25 01:02:43 keil Exp $
 #
 # Toplevel Makefile for isdn4k-utils
 #
 
 .EXPORT_ALL_VARIABLES:
 
-export I4LVERSION = 3.0beta2
+export I4LVERSION = 3.1pre4
 
 all:	do-it-all
 
@@ -24,19 +24,21 @@ CONFIGURATION = config
 do-it-all:      config
 endif
 
+EXTRADIRS = isdnlog/tools/cdb isdnlog/tools/zone isdnlog/tools/dest
+
 SUBDIRS :=
-ifeq ($(CONFIG_LIB_AREACODE),y)
-	SUBDIRS := $(SUBDIRS) areacode
-endif
 ifeq ($(CONFIG_ISDNLOG),y)
-	SUBDIRS := $(SUBDIRS) areacode lib
+	SUBDIRS := $(SUBDIRS) lib $(EXTRADIRS) isdnlog
 else
 	ifeq ($(CONFIG_CTRL_CONF),y)
-		SUBDIRS := $(SUBDIRS) areacode lib
+		SUBDIRS := $(SUBDIRS) lib
 	endif
 endif
 ifeq ($(CONFIG_ISDNCTRL),y)
 	SUBDIRS := $(SUBDIRS) isdnctrl
+endif
+ifeq ($(CONFIG_DIVERTCTRL),y)
+	SUBDIRS := $(SUBDIRS) divertctrl
 endif
 ifeq ($(CONFIG_IPROFD),y)
 	SUBDIRS := $(SUBDIRS) iprofd
@@ -47,24 +49,20 @@ endif
 ifeq ($(CONFIG_PCBITCTL),y)
 	SUBDIRS := $(SUBDIRS) pcbit
 endif
-ifeq ($(CONFIG_TELESCTRL),y)
-	SUBDIRS := $(SUBDIRS) teles
-else
-	ifeq ($(CONFIG_HISAXCTRL),y)
-		SUBDIRS := $(SUBDIRS) teles
-	endif
+ifeq ($(CONFIG_HISAXCTRL),y)
+	SUBDIRS := $(SUBDIRS) hisax
 endif
 
 ifeq ($(CONFIG_RCAPID),y)
-	SUBDIRS := $(SUBDIRS) capi20
+	SUBDIRS := $(SUBDIRS) capi20 capiinfo
 else
 	ifeq ($(CONFIG_AVMCAPICTRL),y)
-		SUBDIRS := $(SUBDIRS) capi20
+		SUBDIRS := $(SUBDIRS) capi20 capiinfo
 	endif
 endif
 
 ifeq ($(CONFIG_AVMCAPICTRL),y)
-	SUBDIRS := $(SUBDIRS) avmb1
+	SUBDIRS := $(SUBDIRS) avmb1 capiinit
 endif
 ifeq ($(CONFIG_ACTCTRL),y)
 	SUBDIRS := $(SUBDIRS) act2000
@@ -72,17 +70,14 @@ endif
 ifeq ($(CONFIG_LOOPCTRL),y)
 	SUBDIRS := $(SUBDIRS) loop
 endif
-ifeq ($(CONFIG_DIEHLCTRL),y)
-	SUBDIRS := $(SUBDIRS) diehl
+ifeq ($(CONFIG_EICONCTRL),y)
+	SUBDIRS := $(SUBDIRS) eicon
 endif
 ifeq ($(CONFIG_IMON),y)
 	SUBDIRS := $(SUBDIRS) imon
 endif
 ifeq ($(CONFIG_IMONTTY),y)
 	SUBDIRS := $(SUBDIRS) imontty
-endif
-ifeq ($(CONFIG_ISDNLOG),y)
-	SUBDIRS := $(SUBDIRS) isdnlog
 endif
 ifeq ($(CONFIG_IPPPSTATS),y)
 	SUBDIRS := $(SUBDIRS) ipppstats
@@ -105,11 +100,17 @@ endif
 ifeq ($(CONFIG_CAPIFAX),y)
 	SUBDIRS := $(SUBDIRS) capifax
 endif
+ifeq ($(CONFIG_PPPDCAPIPLUGIN),y)
+	SUBDIRS := $(SUBDIRS) pppdcapiplugin
+endif
 ifeq ($(CONFIG_GENMAN),y)
 	SUBDIRS := $(SUBDIRS) doc
 endif
 ifeq ($(CONFIG_FAQ),y)
 	SUBDIRS := $(SUBDIRS) FAQ
+endif
+ifeq ($(CONFIG_EUROFILE),y)
+	SUBDIRS := $(SUBDIRS) eurofile
 endif
 ifneq ($(SUBDIRS),)
 	ifeq ($(filter lib,$(SUBDIRS)),)
@@ -123,19 +124,17 @@ subtargets: $(CONFIGURATION)
 rootperm:
 	@echo 'main(int argc,char**argv){unlink(argv[0]);return(getuid()==0);}'>g
 	@if gcc -x c -o G g && rm -f g && ./G ; then \
-		echo -e "\n\n      Need root permission for (de)installation!\n\n"; \
+		/bin/echo -e "\n\n      Need root permission for (de)installation!\n\n"; \
 		exit 1; \
 	fi
 
 install: rootperm
 	set -e; for i in `echo $(SUBDIRS)`; do $(MAKE) -C $$i install; done
-	@if [ ! -d debian ]; then \
-	if [ -c $(DESTDIR)/dev/isdnctrl0 ] && ls -l $(DESTDIR)/dev/isdnctrl0 | egrep "[[:space:]]45,[[:space:]]+64[[:space:]]" > /dev/null; \
+	@if [ -c $(DESTDIR)/dev/isdnctrl0 ] && ls -l $(DESTDIR)/dev/isdnctrl0 | egrep "[[:space:]]45,[[:space:]]+64[[:space:]]" > /dev/null; \
 	then \
-		echo -e '(some) ISDN devices already exist, not creating them.\nUse scripts/makedev.sh manually if necessary.'; \
+		/bin/echo -e '(some) ISDN devices already exist, not creating them.\nUse scripts/makedev.sh manually if necessary.'; \
 	else \
 		sh scripts/makedev.sh $(DESTDIR) ; \
-	fi \
 	fi
 
 uninstall: rootperm
@@ -154,6 +153,9 @@ clean:
 	for i in `echo ${wildcard */Makefile}`; do \
 		$(MAKE) -i -C `dirname $$i` clean; \
 	done;
+	for i in `echo $(EXTRADIRS)`; do \
+		if [ -f $$i/Makefile ]; then $(MAKE) -i -C $$i clean; fi; \
+	done;
 	-rm -f *~ *.o
 
 distclean: clean
@@ -167,6 +169,9 @@ distclean: clean
 		if [ -f $$i ] ; then \
 			$(MAKE) -i -C `dirname $$i` distclean; \
 		fi ; \
+	done;
+	for i in `echo $(EXTRADIRS)`; do \
+		if [ -f $$i/Makefile ]; then $(MAKE) -i -C $$i distclean; fi; \
 	done;
 	-rm -f *~ .config .config.old scripts/autoconf.h .menuconfig \
 		Makefile.tmp .menuconfig.log scripts/defconfig.old
@@ -194,13 +199,13 @@ subconfig: scripts/autoconf.h
 	@echo Selected subdirs: $(SUBDIRS)
 	@set -e; for i in `echo $(SUBDIRS)`; do \
 		if [ -x $$i/configure ] ; then \
-			echo -e "\nRunning configure in $$i ...\n"; sleep 1; \
-			(cd $$i; ./configure || $(MAKE) -C ../ ERRDIR=$$i cfgerror); \
+			/bin/echo -e "\nRunning configure in $$i ...\n"; sleep 1; \
+			(cd $$i; ./configure --sbindir=$(CONFIG_SBINDIR) --bindir=$(CONFIG_BINDIR) --mandir=$(CONFIG_MANDIR) --datadir=$(CONFIG_DATADIR) || $(MAKE) -C ../ ERRDIR=$$i cfgerror); \
 		elif [ -f $$i/Makefile.in ] ; then \
-			echo -e "\nRunning make -f Makefile.in config in $$i ...\n"; sleep 1; \
+			/bin/echo -e "\nRunning make -f Makefile.in config in $$i ...\n"; sleep 1; \
 			$(MAKE) -C $$i -f Makefile.in config; \
 		elif [ -f $$i/Makefile ] ; then \
-			echo -e "\nRunning make config in $$i ...\n"; sleep 1; \
+			/bin/echo -e "\nRunning make config in $$i ...\n"; sleep 1; \
 			$(MAKE) -C $$i config; \
 		fi; \
 	done
@@ -228,12 +233,14 @@ mrproper: distclean
 archive: distclean
 	@(cd .. ;\
 	ln -nfs isdn4k-utils isdn4k-utils-$(I4LVERSION) ;\
+	mkdir -p distisdn ;\
 	tar cvhzf distisdn/isdn4k-utils-$(I4LVERSION).tar.gz isdn4k-utils-$(I4LVERSION) ;\
 	rm isdn4k-utils-$(I4LVERSION) )
 
 distarch: distclean
 	(cd .. ;\
 	ln -nfs isdn4k-utils isdn4k-utils-$(I4LVERSION) ;\
+	mkdir -p distisdn ;\
 	tar -cvhz -X isdn4k-utils/distexclude -f distisdn/isdn4k-utils-$(I4LVERSION).tar.gz \
 	isdn4k-utils-$(I4LVERSION) ;\
 	rm isdn4k-utils-$(I4LVERSION) )

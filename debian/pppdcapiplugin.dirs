@@ -1,0 +1,4 @@
+etc/ppp/peers/isdn
+usr/lib/pppd
+usr/share/doc/pppdcapiplugin/examples
+usr/share/man/man8

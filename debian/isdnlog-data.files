@@ -1,0 +1,5 @@
+usr/share/isdn/country.dat
+usr/share/isdn/rate-*.dat
+usr/share/isdn/holiday-*.dat
+usr/share/isdn/dest.cdb
+usr/share/isdn/zone-*-*.cdb

@@ -1,0 +1,111 @@
+#! /bin/sh
+# postinst script for ipppd
+
+set -e
+
+. /usr/share/debconf/confmodule
+
+# summary of how this script can be called:
+#        * <postinst> `configure' <most-recently-configured-version>
+#        * <old-postinst> `abort-upgrade' <new version>
+#        * <conflictor's-postinst> `abort-remove' `in-favour' <package>
+#          <new-version>
+#        * <deconfigured's-postinst> `abort-deconfigure' `in-favour'
+#          <failed-install-package> <version> `removing'
+#          <conflicting-package> <version>
+
+case "$1" in
+    configure)
+        set +e
+        db_get ipppd/makedev
+        rc=$?
+        set -e
+        allowmakedev=$RET
+        if [ $rc -eq 30 -o "$allowmakedev" = "yes" ]; then
+            cd /dev
+            echo "creating ISDN devices in /dev..."
+            /sbin/MAKEDEV isdn-tty isdn-io isdn-ippp
+            rm -f isdnctrl
+            ln -s isdnctrl0 isdnctrl
+        fi
+        forcerestart=false
+        RET=ippp0
+        db_get ipppd/whichif || true
+        case "x$RET" in
+            x|xnone|xmanual)
+                IPPPX=none
+                ;;
+            xippp[0-9]|xippp[1-5][0-9]|xippp6[0-3])
+                IPPPX=$RET
+                ;;
+            *)
+                IPPPX=ippp0
+                ;;
+        esac
+        if [ "$IPPPX" != none -a ! -s /etc/isdn/device.$IPPPX -a ! -s /etc/isdn/ipppd.$IPPPX ]; then
+            db_get ipppd/ispphone || true; ISPPHONE="$RET"
+            if [ "$ISPPHONE" != '' ]; then
+                db_get ipppd/eaz       || true; EAZ="$RET"
+                db_get ipppd/isplogin  || true; ISPLOGIN="$RET"
+                db_get ipppd/isppasswd || true; ISPPASSWD=$(echo "$RET" | sed 's,",\\&,g')
+                cp /usr/share/isdn/default/device.DEVICE /etc/isdn/device.$IPPPX
+                cp /usr/share/isdn/default/ipppd.DEVICE /etc/isdn/ipppd.$IPPPX
+                perl -i -pe '$_ = "" if /^# REMOVE the/; $_ = "" if /^echo "Warning!/; $_ = "" if /^LEADINGZERO=0/; s,^LOCALMSN=\d+,LOCALMSN='"'$EAZ'"',; s,^REMOTEMSN=\d+,REMOTEMSN='"'$ISPPHONE'"',; s, out \$LEADINGZERO\$MSN, out \$MSN,;' /etc/isdn/device.$IPPPX
+                perl -i -pe '$_ = "" if /^# REMOVE the/; $_ = "" if /^# Warning! not configured yet!/; s,^name X.,name '"$ISPLOGIN"',; s,^#ms-get-dns,ms-get-dns,;' /etc/isdn/ipppd.$IPPPX
+                perl -i -pe "s,^$ISPLOGIN\s,#\$&," /etc/ppp/pap-secrets /etc/ppp/chap-secrets
+                echo "# Added by automatic ipppd configuration" >> /etc/ppp/pap-secrets
+                echo "# Added by automatic ipppd configuration" >> /etc/ppp/chap-secrets
+                printf "$ISPLOGIN\t\"*\"\t\"$ISPPASSWD\"\n"     >> /etc/ppp/pap-secrets
+                printf "$ISPLOGIN\t\"*\"\t\"$ISPPASSWD\"\n"     >> /etc/ppp/chap-secrets
+                forcerestart=true
+            fi
+        fi
+
+	have_up=false
+	have_down=false
+	if [ -s /etc/ppp/ip-up.d/00-isdnutils ]; then have_up=true; fi
+	if [ -s /etc/ppp/ip-down.d/99-isdnutils ]; then have_down=true; fi
+	if $have_up || $have_down; then
+            set +e
+	    if ! $have_up; then # have only down
+		db_input high ipppd/oldipdown
+	    elif ! $have_down; then # have only up
+		db_input high ipppd/oldipup
+	    else # have both
+		db_input high ipppd/oldipupdown
+	    fi
+	    db_go
+            set -e
+	fi
+        if [ -s /etc/init.d/isdnutils ]; then
+            if $forcerestart; then
+                /etc/init.d/isdnutils restart
+            elif dpkg --compare-versions "$2" ">=" "1:3.1"; then # previous was new(er) vers.
+                /etc/init.d/isdnutils reload ipppd
+            else
+                /etc/init.d/isdnutils stop ipppd || true
+                /etc/init.d/isdnutils start ipppd
+            fi
+        else
+            set +e
+            db_input high ipppd/noisdnutilsinit
+            db_go
+            set -e
+        fi
+	;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 0
+    ;;
+esac
+
+db_stop # grrrr
+
+#DEBHELPER#
+
+exit 0

@@ -3,7 +3,7 @@
  * (c) 1995-97 Volker Götz
  * (c) 2000 Paul Slootman <paul@isdn4linux.de>
  *
- * $Id: imontty.c,v 1.3 1998/04/28 08:33:52 paul Exp $
+ * $Id: imontty.c,v 1.5 2000/06/29 17:38:26 akool Exp $
  */
 
 #include <stdlib.h>
@@ -180,10 +180,11 @@ int main(int argc, char **argv) {
 
     int i, lines;
 
-    if (!(isdninfo = fopen(PATH_ISDNINFO, "r"))) {
-	char tmp[200];
-        sprintf(tmp, "imontty: can't open `%.170s'", PATH_ISDNINFO);
-	perror(tmp);
+    isdninfo = fopen("/dev/isdn/isdninfo", "r");
+    if (!isdninfo)
+        isdninfo = fopen("/dev/isdninfo", "r");
+    if (!isdninfo) {
+	perror("imontty: can't open /dev/isdninfo");
         exit(1);
     }
 

@@ -1,8 +1,8 @@
-/* $Id: functions.c,v 1.16 1998/12/09 20:39:24 akool Exp $
+/* $Id: functions.c,v 1.33 2002/01/26 20:43:31 akool Exp $
  *
  * ISDN accounting for isdn4linux. (log-module)
  *
- * Copyright 1995, 1998 by Andreas Kool (akool@isdn4linux.de)
+ * Copyright 1995 .. 2000 by Andreas Kool (akool@isdn4linux.de)
  *                     and Stefan Luethje (luethje@sl-gw.lake.de)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -19,6 +19,160 @@
  * along with this program; if not, write to the Free Software
  *
  * $Log: functions.c,v $
+ * Revision 1.33  2002/01/26 20:43:31  akool
+ * isdnlog-4.56:
+ *  - dont set the Provider-field of the MySQL DB to "?*? ???" on incoming calls
+ *
+ *  - implemented
+ *      0190029 Telebillig        (17,5 Cent/minute to any cellphone)
+ * 		 0190031 Teledump
+ * 		 0190035 TeleDiscount
+ * 		 0190037 Fonfux            (1,5 Cent/minute german-call)
+ * 		 0190087 Phonecraft
+ *
+ *    you have to change:
+ *
+ *    1. "/etc/isdn/rate.conf" - add the following:
+ *
+ *      P:229=0		#E Telebillig
+ * 		 P:231=0		#E Teledump
+ * 		 P:235=0		#E TeleDiscount
+ * 		 P:237=0		#E Fonfux
+ * 		 P:287=0		#E Phonecraft
+ *
+ *    2. "/etc/isdn/isdn.conf" (or "/etc/isdn/callerid.conf"):
+ *
+ * 	     VBN = 010
+ *
+ * 	   to
+ *
+ * 	     VBN = 010:01900
+ *
+ * Revision 1.32  2001/08/18 12:04:08  paul
+ * Don't attempt to write to stderr if we're a daemon.
+ *
+ * Revision 1.31  2000/12/15 14:36:05  leo
+ * modilp, ilp - B-chan usage in /proc/isdnlog
+ * s. isdnlog/ilp/README for more information
+ *
+ * Revision 1.30  2000/06/20 17:09:59  akool
+ * isdnlog-4.29
+ *  - better ASN.1 display
+ *  - many new rates
+ *  - new Option "isdnlog -Q" dump's "/etc/isdn/isdn.conf" into a SQL database
+ *
+ * Revision 1.29  1999/12/31 13:30:01  akool
+ * isdnlog-4.00 (Millenium-Edition)
+ *  - Oracle support added by Jan Bolt (Jan.Bolt@t-online.de)
+ *
+ * Revision 1.28  1999/11/25 22:58:39  akool
+ * isdnlog-3.68
+ *  - new utility "isdnbill" added
+ *  - patch from Jochen Erwied (j.erwied@gmx.de)
+ *  - new rates
+ *  - small fixes
+ *
+ * Revision 1.27  1999/11/16 18:09:39  akool
+ * isdnlog-3.67
+ *   isdnlog-3.66 writes wrong provider number into it's logfile isdn.log
+ *   there is a patch and a repair program available at
+ *   http://www.toetsch.at/linux/i4l/i4l-3_66.htm
+ *
+ * Revision 1.26  1999/11/12 20:50:49  akool
+ * isdnlog-3.66
+ *   - Patch from Jochen Erwied <mack@joker.e.ruhr.de>
+ *       makes the "-O" and "-C" options usable at the same time
+ *
+ *   - Workaround from Karsten Keil <kkeil@suse.de>
+ *       segfault in ASN.1 parser
+ *
+ *   - isdnlog/tools/rate.c ... ignores "empty" providers
+ *   - isdnlog/tools/telnum.h ... fixed TN_MAX_PROVIDER_LEN
+ *
+ * Revision 1.25  1999/09/13 09:09:43  akool
+ * isdnlog-3.51
+ *   - changed getProvider() to not return NULL on unknown providers
+ *     many thanks to Matthias Eder <mateder@netway.at>
+ *   - corrected zone-processing when doing a internal -> world call
+ *
+ * Revision 1.24  1999/06/15 20:04:01  akool
+ * isdnlog Version 3.33
+ *   - big step in using the new zone files
+ *   - *This*is*not*a*production*ready*isdnlog*!!
+ *   - Maybe the last release before the I4L meeting in Nuernberg
+ *
+ * Revision 1.23  1999/06/03 18:50:27  akool
+ * isdnlog Version 3.30
+ *  - rate-de.dat V:1.02-Germany [03-Jun-1999 19:49:22]
+ *  - small fixes
+ *
+ * Revision 1.22  1999/04/19 19:24:35  akool
+ * isdnlog Version 3.18
+ *
+ * - countries-at.dat added
+ * - spelling corrections in "countries-de.dat" and "countries-us.dat"
+ * - LCR-function of isdnconf now accepts a duration (isdnconf -c .,duration)
+ * - "rate-at.dat" and "rate-de.dat" extended/fixed
+ * - holiday.c and rate.c fixed (many thanks to reinelt@eunet.at)
+ *
+ * Revision 1.21  1999/04/10 16:35:22  akool
+ * isdnlog Version 3.13
+ *
+ * WARNING: This is pre-ALPHA-dont-ever-use-Code!
+ * 	 "tarif.dat" (aka "rate-xx.dat"): the next generation!
+ *
+ * You have to do the following to test this version:
+ *   cp /usr/src/isdn4k-utils/isdnlog/holiday-de.dat /etc/isdn
+ *   cp /usr/src/isdn4k-utils/isdnlog/rate-de.dat /usr/lib/isdn
+ *   cp /usr/src/isdn4k-utils/isdnlog/samples/rate.conf.de /etc/isdn/rate.conf
+ *
+ * After that, add the following entries to your "/etc/isdn/isdn.conf" or
+ * "/etc/isdn/callerid.conf" file:
+ *
+ * [ISDNLOG]
+ * SPECIALNUMBERS = /usr/lib/isdn/sonderrufnummern.dat
+ * HOLIDAYS       = /usr/lib/isdn/holiday-de.dat
+ * RATEFILE       = /usr/lib/isdn/rate-de.dat
+ * RATECONF       = /etc/isdn/rate.conf
+ *
+ * Please replace any "de" with your country code ("at", "ch", "nl")
+ *
+ * Good luck (Andreas Kool and Michael Reinelt)
+ *
+ * Revision 1.20  1999/03/25 19:39:48  akool
+ * - isdnlog Version 3.11
+ * - make isdnlog compile with egcs 1.1.7 (Bug report from Christophe Zwecker <doc@zwecker.com>)
+ *
+ * Revision 1.19  1999/03/07 18:18:48  akool
+ * - new 01805 tarif of DTAG
+ * - new March 1999 tarife
+ * - added new provider "01051 Telecom"
+ * - fixed a buffer overrun from Michael Weber <Michael.Weber@Post.RWTH-Aachen.DE>
+ * - fixed a bug using "sondernnummern.c"
+ * - fixed chargeint change over the time
+ * - "make install" now install's "sonderrufnummern.dat", "tarif.dat",
+ *   "vorwahl.dat" and "tarif.conf"! Many thanks to
+ *   Mario Joussen <mario.joussen@post.rwth-aachen.de>
+ * - Euracom Frames would now be ignored
+ * - fixed warnings in "sondernnummern.c"
+ * - "10plus" messages no longer send to syslog
+ *
+ * Revision 1.18  1999/01/24 19:01:27  akool
+ *  - second version of the new chargeint database
+ *  - isdnrep reanimated
+ *
+ * Revision 1.17  1999/01/10 15:23:07  akool
+ *  - "message = 0" bug fixed (many thanks to
+ *    Sebastian Kanthak <sebastian.kanthak@muehlheim.de>)
+ *  - CITYWEEKEND via config-file possible
+ *  - fixes from Michael Reinelt <reinelt@eunet.at>
+ *  - fix a typo in the README from Sascha Ziemann <szi@aibon.ping.de>
+ *  - Charge for .at optimized by Michael Reinelt <reinelt@eunet.at>
+ *  - first alpha-Version of the new chargeinfo-Database
+ *    ATTENTION: This version requires the following manual steps:
+ *      cp /usr/src/isdn4k-utils/isdnlog/tarif.dat /usr/lib/isdn
+ *      cp /usr/src/isdn4k-utils/isdnlog/samples/tarif.conf /etc/isdn
+ *
  * Revision 1.16  1998/12/09 20:39:24  akool
  *  - new option "-0x:y" for leading zero stripping on internal S0-Bus
  *  - new option "-o" to suppress causes of other ISDN-Equipment
@@ -40,7 +194,7 @@
  *    (first dialed digit comes with SETUP-Frame)
  *
  * Revision 1.14  1998/09/09 12:49:31  paul
- * fixed crash when using mysql (call to Providername() was omitted)
+ * fixed crash when using mysql (call to Provider() was omitted)
  *
  * Revision 1.13  1998/06/21 11:52:43  akool
  * First step to let isdnlog generate his own AOCD messages
@@ -122,6 +276,9 @@
 #ifdef MYSQLDB
 #include "mysqldb.h"
 #endif
+#ifdef ORACLE
+#include "oracle.h"
+#endif
 
 /*****************************************************************************/
 
@@ -149,8 +306,9 @@ static void saveCharge()
 } /* saveCharge */
 
 /*****************************************************************************/
+extern void procinfo(int channel, CALL * cp, int state);
 
-void __Exit(char *File, int Line, int RetCode) /* WARNING: RetCode==-9 does _not_ call exit()! */
+void _Exit_isdnlog(char *File, int Line, int RetCode) /* WARNING: RetCode==-9 does _not_ call exit()! */
 {
 #ifdef Q931
   if (!q931dmp)
@@ -170,6 +328,7 @@ void __Exit(char *File, int Line, int RetCode) /* WARNING: RetCode==-9 does _not
       close(sockets[IN_PORT].descriptor);
   } /* if */
 
+  procinfo(1, NULL, -1);	/* close proc */
   closelog();
 
 	if (fout)
@@ -180,6 +339,9 @@ void __Exit(char *File, int Line, int RetCode) /* WARNING: RetCode==-9 does _not
 #endif
 #ifdef MYSQLDB
   mysql_dbClose();
+#endif
+#ifdef ORACLE
+  oracle_dbClose();
 #endif
 
   if (!replay) {
@@ -247,6 +409,9 @@ void logger(int chan)
 #ifdef MYSQLDB
   auto     mysql_DbStrIn mysql_db_set;
 #endif
+#ifdef ORACLE
+  auto     oracle_DbStrIn oracle_db_set;
+#endif
 
 
   strcpy(s, ctime(&call[chan].connect));
@@ -283,14 +448,27 @@ void logger(int chan)
 			print_msg(PRT_ERR, "Can not open file `%s': %s!\n", logfile, strerror(errno));
 		else
 		{
-			fprintf(flog, "%s|%-16s|%-16s|%5d|%10d|%10d|%5d|%c|%3d|%10ld|%10ld|%s|%d|%d|%g|%s|%g|%03d|\n",
+                        /* Tarif leider nicht bekannt. Daher besser auf
+                           "kostenlos", als auf "DM 1,00 geschenkt" stellen!
+                        */
+
+                        if (call[chan].pay == -1.00) {
+                          if (call[chan].aocpay > 0.0) /* besser als nix ... */
+                            call[chan].pay = call[chan].aocpay;
+                          else
+                            call[chan].pay = 0.0;
+                        } /* if */
+
+			fprintf(flog, "%s|%-16s|%-16s|%5d|%10d|%10d|%5d|%c|%3d|%10ld|%10ld|%s|%d|%d|%g|%s|%g|%3d|%3d|\n",
 			              s + 4, call[chan].num[CALLING], call[chan].num[CALLED],
 			              (int)(call[chan].disconnect - call[chan].connect),
 			              (int)call[chan].duration, (int)call[chan].connect,
 			              call[chan].aoce, call[chan].dialin ? 'I' : 'O',
 			              call[chan].cause, call[chan].ibytes, call[chan].obytes,
 			              LOG_VERSION, call[chan].si1, call[chan].si11,
-			              currency_factor, currency, call[chan].pay, call[chan].provider);
+			              currency_factor, currency, call[chan].pay,
+				      			prefix2pnum(call[chan].provider),
+			              call[chan].zone);
 
 			fclose(flog);
 		}
@@ -333,8 +511,34 @@ void logger(int chan)
   mysql_db_set.currency_factor = currency_factor;
   strcpy(mysql_db_set.currency, currency);
   mysql_db_set.pay = call[chan].pay;
-  strcpy(mysql_db_set.provider, Providername(call[chan].provider));
+  strcpy(mysql_db_set.provider, call[chan].dialin ? "" : getProvider(call[chan].provider));
   mysql_dbAdd(&mysql_db_set);
+#endif
+#ifdef ORACLE
+  oracle_db_set.connect = call[chan].connect;
+  strcpy(oracle_db_set.calling, call[chan].num[CALLING]);
+  strcpy(oracle_db_set.called, call[chan].num[CALLED]);
+  oracle_db_set.duration = (int)(call[chan].disconnect - call[chan].connect);
+  oracle_db_set.hduration = (int)call[chan].duration;
+  oracle_db_set.aoce = call[chan].aoce;
+  strcpy(oracle_db_set.dialin, call[chan].dialin ? "I" : "O");
+  oracle_db_set.cause = call[chan].cause;
+  oracle_db_set.ibytes = call[chan].ibytes;
+  oracle_db_set.obytes = call[chan].obytes;
+  strncpy(oracle_db_set.version, LOG_VERSION, sizeof(oracle_db_set.version));
+  oracle_db_set.version[sizeof(oracle_db_set.version)-1] = '\0';
+  oracle_db_set.si1 = call[chan].si1;
+  oracle_db_set.si11 = call[chan].si11;
+  oracle_db_set.currency_factor = currency_factor;
+  strncpy(oracle_db_set.currency, currency, sizeof(oracle_db_set.currency));
+  oracle_db_set.currency[sizeof(oracle_db_set.currency)-1] = '\0';
+  oracle_db_set.pay = call[chan].pay;
+  oracle_db_set.provider = prefix2pnum(call[chan].provider);
+  strncpy(oracle_db_set.provider_name, getProvider(call[chan].provider),
+  	sizeof(oracle_db_set.provider_name));
+  oracle_db_set.provider_name[sizeof(oracle_db_set.provider_name)-1] = '\0';
+  oracle_db_set.zone = call[chan].zone;
+  oracle_dbAdd(&oracle_db_set);
 #endif
 } /* logger */
 
@@ -379,17 +583,21 @@ int print_msg(int Level, const char *fmt, ...)
 
   if (Level & message)
   {
-    if (fcons == NULL) {
+    /* no console, no outfile -> log to stderr */
+    /* if a daemon, don't use stderr either! */
+    if (!fout && !fcons && !isdaemon) {
       fputs(width ? s : String, stderr);
       fflush(stderr);
     }
-    else 
-    if (!fout){
+
+    /* log to console */
+    if (fcons != NULL) {
       fputs(width ? s : String, fcons);
       fflush(fcons);
     } /* else */
 
-    if (fout)
+    /* log to file */
+    if (fout != NULL)
     {
       fputs(width ? s : String, fout);
       fflush(fout);
@@ -411,6 +619,96 @@ int print_msg(int Level, const char *fmt, ...)
 
 /*****************************************************************************/
 
+void info(int chan, int reason, int state, char *msg)
+{
+  register int  i;
+  auto   char   s[BUFSIZ], *left = "", *right = "\n";
+  static int    lstate = 0, lchan = -1;
+
+
+#if 0
+  if (!newline) {
+
+    if (state == STATE_BYTE) {
+      right = "";
+
+      if (lstate == STATE_BYTE)
+        left = "\r";
+      else
+        left = "";
+    }
+    else {
+      right = "\n";
+
+      if (lstate == STATE_BYTE)
+        left = "\n";
+      else
+        left = "";
+    } /* else */
+
+    if ((lchan != chan) && (lstate == STATE_BYTE))
+      left = "\r\n";
+
+    lstate = state;
+    lchan = chan;
+  } /* if */
+#else
+  if (!newline) {
+    left = "";
+    right = "\r";
+
+    if ((lchan != chan) || (lstate != state) || (state != STATE_BYTE))
+      left = "\n";
+
+    lstate = state;
+    lchan = chan;
+  }
+  else {
+    left = "";
+    right = "\n";
+  } /* else */
+#endif
+
+  if (allflags & PRT_DEBUG_GENERAL)
+    if (allflags & PRT_DEBUG_INFO)
+      print_msg(PRT_DEBUG_INFO, "%d INFO> ", chan);
+
+  (void)iprintf(s, chan, call[chan].dialin ? ilabel : olabel, left, msg, right);
+
+  print_msg(PRT_DEBUG_INFO, "%s", s);
+
+  print_msg(reason, "%s", s);
+
+  if (xinfo) {
+    if ((i = (sizeof(call[chan].msg) -1)) < strlen(msg)) /* clipping ... */
+      msg[i] = 0;
+
+    strcpy(call[chan].msg, msg);
+    call[chan].stat = state;
+
+    message_from_server(&(call[chan]), chan);
+
+    print_msg(PRT_DEBUG_CS, "SOCKET> %s: MSG_CALL_INFO chan=%d\n", st + 4, chan);
+  } /* if */
+} /* info */
+
+/*****************************************************************************/
+
+void showmsg(const char *fmt, ...)
+{
+  auto char    s[BUFSIZ], s1[BUFSIZ];
+  auto va_list ap;
+
+
+  va_start(ap, fmt);
+  (void)vsnprintf(s, BUFSIZ, fmt, ap);
+  va_end(ap);
+
+  (void)iprintf(s1, -1, mlabel, "", s, "");
+  print_msg(PRT_SHOWNUMBERS, "%s", s1);
+} /* showmsg */
+
+/*****************************************************************************/
 int ringer(int chan, int event)
 {
   register int i, j, c;
@@ -456,115 +754,4 @@ int ringer(int chan, int event)
 
   return ProcessStarted;
 } /* ringer */
-
-/*****************************************************************************/
-
-void initSondernummern()
-{
-  register char  *p1, *p2, *p3;
-  register int    tarif;
-  auto 	   FILE  *f = fopen("/usr/lib/isdn/sonderrufnummern.dat", "r");
-  auto	   char   s[BUFSIZ], msn[128], sinfo[256], linfo[256];
-  auto	   double grund1, grund2, takt1, takt2;
-
-
-  if (f != (FILE *)NULL) {
-    while ((p1 = fgets(s, BUFSIZ, f))) {
-      if (*p1 != '#') {
-        if ((p2 = strchr(p1, '|'))) {
-          *p2 = 0;
-
-          p3 = p2 - 1;
-          while (*p3 == ' ')
-            *p3-- = 0;
-
-          strcpy(msn, p1);
-          p1 = p2 + 1;
-          if ((p2 = strchr(p1, '|'))) {
-            *p2 = 0;
-
-            if (!strcmp(p1, "City"))
-              tarif = 1;
-            else if (!strcmp(p1, "free"))
-              tarif = 0;
-            else
-              tarif = -1;
-
-            p1 = p2 + 1;
-            if ((p2 = strchr(p1, '|'))) {
-              *p2 = 0;
-              grund1 = atof(p1);
-              p1 = p2 + 1;
-              if ((p2 = strchr(p1, '|'))) {
-                *p2 = 0;
-                grund2 = atof(p1);
-                p1 = p2 + 1;
-                if ((p2 = strchr(p1, '|'))) {
-                  *p2 = 0;
-                  takt1 = atof(p1);
-                  p1 = p2 + 1;
-                  if ((p2 = strchr(p1, '|'))) {
-                    *p2 = 0;
-              	    takt2 = atof(p1);
-              	    p1 = p2 + 1;
-              	    if ((p2 = strchr(p1, '|'))) {
-                      *p2 = 0;
-
-        	      p3 = p2 - 1;
-        	      while (*p3 == ' ')
-          	        *p3-- = 0;
-
-        	      while (*p1 == ' ')
-                        p1++;
-
-        	      strcpy(sinfo, p1);
-                      p1 = p2 + 1;
-                      if ((p2 = strchr(p1, '\n'))) {
-                        *p2 = 0;
-
-        	        p3 = p2 - 1;
-        	        while (*p3 == ' ')
-          	          *p3-- = 0;
-
-        	        while (*p1 == ' ')
-                          p1++;
-
-                        strcpy(linfo, p1);
-
-		        nSN++;
-                        SN = realloc(SN, sizeof(SonderNummern) * nSN);
-                        SN[nSN - 1].msn = strdup(msn);
-                        SN[nSN - 1].sinfo = strdup(sinfo);
-        	        SN[nSN - 1].tarif = tarif;
-                        SN[nSN - 1].grund1 = grund1;
-                        SN[nSN - 1].grund2 = grund2;
-                        SN[nSN - 1].takt1  = takt1;
-                        SN[nSN - 1].takt2  = takt2;
-                      } /* if */
-              	    } /* if */
-                  } /* if */
-                } /* if */
-              } /* if */
-            } /* if */
-          } /* if */
-        } /* if */
-      } /* if */
-    } /* while */
-
-    fclose(f);
-  } /* if */
-} /* initSondernummern */
-
-
-int is_sondernummer(char *num)
-{
-  register int i;
-
-
-  if ((strlen(num) >= interns0) && ((*num == '0') || (*num == '1')))
-    for (i = 0; i < nSN; i++)
-      if (!strncmp(num, SN[i].msn, strlen(SN[i].msn)))
-        return(i);
-
-  return(-1);
-} /* sondernummer */
+/* vim:set ts=2: */

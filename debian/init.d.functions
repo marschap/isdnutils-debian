@@ -16,13 +16,12 @@
 #
 # If you have an idea that something here could/should be done
 # differently, let me (isdnutils@packages.debian.org) know and
-# we'll try to work something out.
+# we can work something out.
 
 do_what="$1"
 
-if [ ! -d /etc/isdn ]
-then
-       echo "The /etc/isdn directory does not exist; this shouldn't be possible!"
+if [ ! -d /etc/isdn ]; then
+       echo "The /etc/isdn directory does not exist; this can't happen!"
        exit 1
 fi
 
@@ -45,7 +44,7 @@ listdevices() {
 
 # devices for which there is no config file (anymore)
 listextradevices() {
-    # can't count on "isdnctrl status all" yet, unfortunately...
+    # can't count on "isdnctrl status all" working yet, unfortunately...
 	DEVS=`/usr/sbin/isdnctrl list all | grep 'Current setup' | cut -f2 -d"'" | sort`
 }
 
@@ -60,14 +59,37 @@ list_unconfigured() {
     fi
 }
 
+findslaves() {
+    fs_device=$1
+    fs_base=${fs_device%%[0-9]*}			# ippp or isdn part
+    # magic to get it sorted numerically;
+    #  if there's a clean way of doing it easier, let me know!
+    fs_list=`echo device.${fs_device}+*`
+    if [ "$fs_list" = "device.${fs_device}+*" ]; then
+	return
+    fi
+    for fs_slavefile in $fs_list; do
+	echo ${fs_slavefile#*+}
+    done | sort -n | while read fs_slave; do echo $fs_base$fs_slave; done
+}
+
 # needs to be called at least once per init.d/isdnutils invocation...
 isdncards_unchecked=true
 
 check_isdncards() {
-    if $isdncards_unchecked
-    then
+    if $isdncards_unchecked; then
 	isdncards_unchecked=false
-	set -- `perl -ne 's/^idmap:\s+//; s/ -//g; s/(\S+) \1/\1/g; print; exit;' /dev/isdninfo 2>/dev/null`
+        if [ -e /dev/isdninfo ]; then ISDNINFO=/dev/isdninfo;
+        elif [ -e /dev/isdn/isdninfo ]; then ISDNINFO=/dev/isdn/isdninfo;
+        else echo " error:"
+             echo "    Neither /dev/isdninfo nor /dev/isdn/isdninfo exist!"
+            # apparently a devfs system...
+             echo "    Before you can use any ISDN facilities, ensure you have the proper kernel"
+             echo "    modules loaded. These will probably be 'isdn' and 'hisax'."
+             echo "    Read /usr/share/doc/isdnutils/README.HiSax.gz for more information."
+             exit 0
+        fi
+	set -- `perl -ne 's/^idmap:\s+//; s/ -//g; s/(\S+) \1/\1/g; print; exit;' $ISDNINFO 2>/dev/null`
 	if [ $# -eq 0 -a "$do_what" != stop ]; then
             echo " "
             echo " no ISDN cards configured! Please configure 'hisax' module with modconf"
@@ -86,24 +108,56 @@ check_isdncards() {
 start_isdnlog() {
     check_isdncards # side-effect: sets $isdncards
     what=' isdnlog'
-    set -- $isdncards
-    for optionfile in /etc/isdn/isdnlog.isdnctrl?; do
+    cardnum=0   # counts in channels, just like /dev/isdnctrlX
+    for optionfile in /etc/isdn/isdnlog.isdnctrl[02468]; do
         test -e $optionfile || continue;
+        if grep -s "$NOT_CONFIGED" $optionfile > /dev/null; then
+            not_configured="$not_configured$optionfile "
+            continue    # next patient please...
+        fi
         device=${optionfile#*.}
         device=${device%.*}
-	cardid=$1; shift
-        #old cardid=line`expr ${device#*l} / 2`
-        if grep -s "$NOT_CONFIGED" $optionfile > /dev/null
-        then
-	    not_configured="$not_configured$optionfile "
-	else
-	    if $isdn_verbose; then echo -n "$what"; what=''; fi
-	    # Enable debugging for this card (isdnlog requires "1 4",
-	    # for D-Channel Q.931, call control messages).
-	    hisaxctrl $cardid 1 4
-            start-stop-daemon --start --quiet --exec \
-                /usr/sbin/isdnlog -- -f$optionfile /dev/$device &
+        if   [ -e /dev/$device ];      then DEVISDNCTRL=/dev/$device;
+        elif [ -e /dev/isdn/$device ]; then DEVISDNCTRL=/dev/isdn/$device;
+        else
+            echo " error:"
+            echo "    Neither /dev/$device nor /dev/isdn/$device exist!"
+            continue
         fi
+        devicenum=${device#isdnctrl}
+        devicenum=$(($devicenum / 2))
+        set -- $isdncards
+        if [ $devicenum -gt 0 ]; then
+            shift $devicenum
+        fi
+	cardid=$1; shift
+        if [ -z "$cardid" ]; then
+            echo " error:"
+            echo "    There doesn't appear to be a $device device!"
+            continue
+        fi
+        if $isdn_verbose; then /bin/echo -e "$what\c"; what=''; fi
+        # Enable debugging for this card (isdnlog requires "1 4",
+        # for D-Channel Q.931, call control messages) unless it's
+        # clearly not a hisax card...
+        case "$cardid" in
+            capidrv-*)  ;;
+            ?*)	        hisaxctrl $cardid 1 4
+                        # the ?* doesn't match an empty string
+                        ;;
+        esac
+        # test for isdnctrl dualmode. With dualmode, one isdnlog listens to
+        # two cards, and both cards must have the D-channel tracing enabled.
+        if grep '^[ 	]*dual=' $optionfile >/dev/null 2>&1; then
+            cardid=$1; shift
+            case "$cardid" in
+                capidrv-*)  ;;
+                ?*)         hisaxctrl $cardid 1 4
+                            ;;
+            esac
+        fi
+        start-stop-daemon --start --pidfile=/var/run/isdnlog.$device.pid \
+            --quiet --exec /usr/sbin/isdnlog -- -D -f$optionfile $DEVISDNCTRL &
     done
 }
 
@@ -112,10 +166,11 @@ stop_isdnlog() {
     what=' isdnlog'
     for optionfile in /etc/isdn/isdnlog.isdnctrl?; do
         test -e $optionfile || continue;
-	if $isdn_verbose; then echo -n "$what"; what=''; fi
+	if $isdn_verbose; then /bin/echo -e "$what\c"; what=''; fi
         device=${optionfile#*.}
-        start-stop-daemon --stop --quiet \
-                --pidfile /var/run/isdnlog.$device.pid --exec /usr/sbin/isdnlog
+        start-stop-daemon --stop --quiet --oknodo \
+                --pidfile /var/run/isdnlog.$device.pid
+                # --exec /usr/sbin/isdnlog
     done
 }
 
@@ -124,18 +179,19 @@ reload_isdnlog() {
     what=' isdnlog'
     for optionfile in /etc/isdn/isdnlog.isdnctrl?; do
         test -e $optionfile || continue;
-	if $isdn_verbose; then echo -n "$what"; what=''; fi
+	if $isdn_verbose; then /bin/echo -e "$what\c"; what=''; fi
         device=${optionfile#*.}
         start-stop-daemon --stop --quiet --signal 1 \
-                --pidfile /var/run/isdnlog.$device.pid --exec /usr/sbin/isdnlog
+                --pidfile /var/run/isdnlog.$device.pid || return 1
+                # --exec /usr/sbin/isdnlog
     done
 }
 
 start_devices() {
     # the next part doesn't belong here, but there isn't really any choice...
     if [ "x$quiet_start" != 'x' ]; then	# user didn't replace old init.d script
-	echo -e "\n\tplease update your copy of /etc/init.d/isdnutils to\n\tinclude the 'isdn_verbose' setting instead of 'quiet_start'\n\t(see /etc/init.d/isdnutils.dpkg-new)."
-    	case "$quiet_start" in
+	/bin/echo -e "\n\tplease update your copy of /etc/init.d/isdnutils to\n\tinclude the 'isdn_verbose' setting instead of 'quiet_start'\n\t(see /etc/init.d/isdnutils.dpkg-new)."
+	case "$quiet_start" in
 		true)	isdn_verbose=false;;
 		*)	isdn_verbose=true;;
 	esac
@@ -144,6 +200,11 @@ start_devices() {
     what=' interfaces'
     olddir=`pwd`
     cd /etc/isdn
+    # check whether formware needs to be downloaded (done elsewhere)
+    if [ -s firmware.conf ]; then
+        /bin/echo -e 'firmware \c'
+        . ./firmware.conf       # I hate ash
+    fi
     listdevices
     if [ -z "$DEVS" -a ! -f /etc/isdn/noconfig ]; then
         echo "  There is apparently no configuration created yet."
@@ -153,26 +214,69 @@ start_devices() {
         echo "     /etc/isdn/noconfig"
         echo "  For more information, see /usr/share/doc/isdnutils/HOWTO.isdnutils.gz"
     fi
-    for devicefile in $DEVS ; do
-        test -e $devicefile || continue;
-        device=${devicefile#*.}
-        if grep -s "$NOT_CONFIGED" $devicefile > /dev/null
-        then
+    # start devices in order
+    # Device files of the form "device.ippp2+3" means that this (ippp3) is a
+    # slave device for ippp2. So when ippp2 is being started, look for any
+    # "device.ippp2+*" files and also start those (as slaves)
+    tempfile=`tempfile -p isdn.`
+    for devicefile in `echo $DEVS | sort`; do
+        test -f $devicefile || continue;
+        if grep -s "^[^#].*$NOT_CONFIGED" $devicefile > /dev/null; then
 	    not_configured="$not_configured$devicefile "
+	    continue
+	fi
+	if $isdn_verbose; then /bin/echo -e "$what\c"; what=''; fi
+	master=${devicefile#*.}			# part after .
+	slaves=`findslaves $master`
+	if [ -z "$slaves" ]; then
+	    extraopts=''
 	else
-            if test -f $devicefile; then
-		if $isdn_verbose; then echo -n "$what"; what=''; fi
-		if [ ! -c /dev/$device ]; then
-			cd /dev
-			echo -n " (creating /dev/$device)"
-			/sbin/MAKEDEV $device || true
-			cd /etc/isdn
-		fi
-		sh ${devicefile} start > /dev/null
+	    extraopts='master'
+	fi
+	for device in $master $slaves; do
+            # if the device doesn't exist in /dev nor in /dev/isdn,
+            # then this is (obviously?) not a devfs system, thus
+            # the device needs to be created.
+            if [ ! -c /dev/$device -a ! -c /dev/isdn/$device ]; then
+		cd /dev
+		/bin/echo -e " (creating /dev/$device)\c"
+		/sbin/MAKEDEV $device || true
+		cd /etc/isdn
 	    fi
-        fi
+	    if [ `expr "$extraopts" : 'slave'` -eq 5 ]; then
+		device=${master}+${device##????}
+		# slaves can't be added if the master interface
+		# is already up; so "down" it now.
+                # Problem is that any routes over this interface disappear when
+                # you do "down"... Hope this hack works...
+                netstat -rn | grep " $master$" | fgrep -v 255.255.255.255 |
+                    while read net bla mask bla; do
+                        echo "/sbin/route add -net $net netmask $mask dev $master"
+                    done > $tempfile
+		ifconfig $master down
+	    fi
+
+            # stop / remove device if it happens to exist
+            if grep -w $device /proc/net/dev >/dev/null 2>&1; then
+                sh /etc/isdn/device.$device stop >/dev/null 2>&1 ||
+                    /usr/sbin/isdnctrl delif $device >/dev/null 2>&1 || true
+            fi
+	    if sh /etc/isdn/device.$device start $extraopts > /dev/null; then
+                : # OK
+            else
+                echo " $device failed."
+            fi
+	    extraopts="slave $master"
+	done
+	if [ ! -z "$slaves" ]; then
+	    ifconfig $master up
+	fi
+	if [ -s $tempfile ]; then
+	    . $tempfile
+	fi
+	rm -f $tempfile
     done
-    cd $olddir
+    cd "$olddir"
 }
 
 stop_devices() {
@@ -181,28 +285,35 @@ stop_devices() {
     olddir=`pwd`
     cd /etc/isdn
     listdevices
-    for devicefile in $DEVS ; do
-        test -e $devicefile || continue;
-        # device=${devicefile#*.}
-        if test -f $devicefile; then
-	    if $isdn_verbose; then echo -n "$what"; what=''; fi
-	    sh ${devicefile} stop > /dev/null
-	fi
+    # stop the devices in reverse order to starting them
+    for devicefile in `echo $DEVS | sort -r` ; do
+        test -f $devicefile || continue;
+	if $isdn_verbose; then /bin/echo -e "$what\c"; what=''; fi
+        master=${devicefile#*.}
+	# not needed, removing master will automagically remove all slaves.
+	#  slaves=`findslaves $master`
+	#  slave=''
+	#  for device in $master $slaves; do
+	#      sh ${devicefile} stop $slave > /dev/null || true
+	#      slave="slave $master"
+	#  done
+	sh ${devicefile} stop > /dev/null || true
     done
     listextradevices
     if [ ! -z "$DEVS" ]; then
-        if $isdn_verbose; then echo -n "$what"; what=''; fi
-        echo -e "\nThere are ISDN devices for which there are no config files: $DEVS"
-        echo -n "These are now also being stopped..."
+        if $isdn_verbose; then /bin/echo -e "$what\c"; what=''; fi
+        /bin/echo -e "\nThese ISDN devices were not stopped by the config files"
+	echo    "(possible error in a file?): $DEVS"
+        /bin/echo -e "These are now also being stopped... "
         # There's no graceful way of doing this...
         for device in $DEVS; do
-            echo -n " $device"
-            /sbin/ifconfig $device down || true
-            /usr/sbin/isdnctrl delif $device || true
+            /bin/echo -e "$device \c"
+            /sbin/ifconfig $device down 2>/dev/null || true
+            /usr/sbin/isdnctrl delif $device >/dev/null 2>&1 || true
         done
         echo " done."
     fi
-    cd $olddir
+    cd "$olddir"
 }
 
 start_ipppd() {
@@ -213,18 +324,74 @@ start_ipppd() {
     listdaemons
     for optionfile in $DAEMONS; do
         test -e $optionfile || continue;
+        if grep -s "$NOT_CONFIGED" $optionfile > /dev/null; then
+	    not_configured="$not_configured$optionfile "
+	    continue
+	fi
+	if $isdn_verbose; then /bin/echo -e "$what\c"; what=''; fi
+	master=${optionfile#*.}
+	slaves=`findslaves $master |while read slave; do if [ -c /dev/isdn/$slave ]; then slave=isdn/$slave; fi; echo /dev/$slave; done`
+	extraops=''
+	if [ ! -z "$slaves" ]; then
+	    if ! grep -qw '^+mp' $optionfile; then
+		echo " warning: adding +mp option for $master!"
+		/bin/echo -e '	\c'
+		extraops='+mp'
+	    fi
+	fi
+        if [ -c /dev/isdn/$master ]; then master=isdn/$master; fi
+	start-stop-daemon --start --quiet \
+	    --pidfile /var/run/ipppd.$master.pid \
+	    --exec /usr/sbin/ipppd -- file $optionfile $extraops /dev/$master $slaves &
+    done
+    cd "$olddir"
+    # next part copied from ipppd.postinst
+    ipppd_have_up=false
+    ipppd_have_down=false
+    if [ -s /etc/ppp/ip-up.d/00-isdnutils ]; then ipppd_have_up=true; fi
+    if [ -s /etc/ppp/ip-down.d/99-isdnutils ]; then ipppd_have_down=true; fi
+    if $ipppd_have_up || $ipppd_have_down; then
+	echo ""
+        if ! $ipppd_have_up; then # have only down
+            echo "The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package still"
+            echo "exists. If you changed that file at some point, you may need to redo those"
+            echo "changes in the 99-ipppd file (which is the new name). After that, please"
+            echo "delete the old 99-isdnutils file."
+        elif ! $ipppd_have_down; then # have only up
+            echo "The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package still"
+            echo "exists. If you changed that file at some point, you may need to redo those"
+            echo "changes in the 00-ipppd file (which is the new name). After that, please"
+            echo "delete the old 00-isdnutils file."
+        else # have both
+            echo "The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils files"
+            echo "from the old isdnutils package still exist. If you changed those files at some"
+            echo "point, you may need to redo those changes in the 00-ipppd and 99-ipppd files"
+            echo "(which are the new names). After that, please delete the old 00-isdnutils"
+            echo "and 99-isdnutils files."
+        fi
+        sleep 5
+    fi
+}
+
+reload_ipppd() {
+    check_isdncards # side-effect: sets $isdncards
+    what=' ipppd'
+    olddir=`pwd`
+    cd /etc/isdn
+    listdaemons
+    for optionfile in $DAEMONS; do
+        test -e $optionfile || continue;
         device=${optionfile#*.}
-        if grep -s "$NOT_CONFIGED" $optionfile > /dev/null
-        then
+        if grep -s "$NOT_CONFIGED" $optionfile > /dev/null; then
 	    not_configured="$not_configured$optionfile "
 	else
-	    if $isdn_verbose; then echo -n "$what"; what=''; fi
-            start-stop-daemon --start --quiet \
-		--pidfile /var/run/ipppd.$device.pid \
-		--exec /usr/sbin/ipppd -- file $optionfile /dev/$device &
+	    if $isdn_verbose; then /bin/echo -e "$what\c"; what=''; fi
+	    start-stop-daemon --stop --quiet --signal 1 \
+                --pidfile /var/run/ipppd.$device.pid || return 1
+                # --exec /usr/sbin/ipppd
         fi
     done
-    cd $olddir
+    cd "$olddir"
 }
 
 stop_ipppd() {
@@ -235,22 +402,33 @@ stop_ipppd() {
     listdaemons
     for optionfile in $DAEMONS; do
         test -e $optionfile || continue;
-	if $isdn_verbose; then echo -n "$what"; what=''; fi
+	if $isdn_verbose; then /bin/echo -e "$what\c"; what=''; fi
         device=${optionfile#*.}
-        start-stop-daemon --stop --quiet \
-		--pidfile /var/run/ipppd.$device.pid \
-		--exec /usr/sbin/ipppd
+        start-stop-daemon --stop --quiet --oknodo \
+		--pidfile /var/run/ipppd.$device.pid
+		# --exec /usr/sbin/ipppd
     done
     # in case of removed config files, kill off any remaining ipppds...
-    killall ipppd 2>/dev/null && echo -e "\n\tunknown ipppd processes killed... \c"
-    cd $olddir
+    if [ -x /usr/bin/killall ]; then
+        killall ipppd 2>/dev/null && /bin/echo -e "\n\tunknown ipppd processes killed... \c" || true
+    else
+        killedit=false
+        for i in /var/run/ipppd.*.pid; do
+            killedit=true
+            kill `cat $i 2>/dev/null || true` 2>/dev/null || true
+        done
+        if $killedit; then
+            /bin/echo -e "\n\tunknown ipppd processes killed... \c"
+        fi
+    fi
+    cd "$olddir"
 }
 
 start_iprofd() {
     check_isdncards # side-effect: sets $isdncards
     what=' iprofd'
     if test -e /etc/isdn/iprofd.data ; then
-	if $isdn_verbose; then echo -n "$what"; what=''; fi
+	if $isdn_verbose; then /bin/echo -e "$what\c"; what=''; fi
 	start-stop-daemon --start --quiet \
 	    --exec /usr/sbin/iprofd -- /etc/isdn/iprofd.data &
     fi
@@ -260,7 +438,9 @@ stop_iprofd() {
     check_isdncards # side-effect: sets $isdncards
     what=' iprofd'
     if test -n "`pidof iprofd`"; then
-	if $isdn_verbose; then echo -n "$what"; what=''; fi
-	start-stop-daemon --stop --quiet --exec /usr/sbin/iprofd
+	if $isdn_verbose; then /bin/echo -e "$what\c"; what=''; fi
+	start-stop-daemon --stop --quiet --exec /usr/sbin/iprofd || true
     fi
 }
+
+# vim:set sw=4 si:

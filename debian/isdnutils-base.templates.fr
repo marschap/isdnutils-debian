@@ -1,0 +1,104 @@
+Template: isdnutils/no_ipppd_selected
+Type: note
+Description: ISDNUTILS is now split up
+ The old isdnutils package is now split up into smaller parts: isdnutils
+ ipppd isdnutils-xtools isdnutils-doc isdnvboxserver isdnvboxclient isdnlog
+ isdnlog-data libcapi20 isdnactivecards pppdcapiplugin isdneurofile
+ .
+ This allows you to better select what parts you want installed, almost no
+ one needs everything. Unfortunately there's no way of automatically
+ selecting those parts you need.
+ .
+ You have ipppX interfaces configured, but you have not selected  ipppd to
+ be installed. This can be dangerous (leaving you with no way of obtaining
+ ipppd), so aborting the installation of this new isdnutils.
+ .
+ If you really mean to not have ipppd, please remove the ipppd.* files from
+ /etc/isdn/, stop any ipppX interfaces, and reinstall isdnutils.
+ .
+ If you used dselect, please select (+) ipppd, and any of the other parts
+ you might need (e.g. isdnlog, isdnvbox, isdnutils-xtools), although those
+ should have been selected automatically. If you used apt-get, use 'apt-get
+ install isdnutils ipppd isdnlog ...'; you may need to run 'apt-get -f
+ install' first to configure any other packages that were unpacked but not
+ yet configured.
+Description-fr: ISDNUTILS a été fragmenté
+ L'ancien paquet isdnutils a été divisé en paquets plus petits : isdnutils
+ ipppd isdnutils-xtools isdnutils-doc isdnvboxserver isdnvboxclient isdnlog
+ isdnlog-data libcapi20 isdnactivecards pppdcapiplugin isdneurofile.
+ .
+ On peut ainsi mieux choisir ce que l'on veut : personne ou presque n'a
+ besoin de tout. Malheureusement, il n'y a pas de moyen automatique pour
+ choisir les paquets que l'on veut.
+ .
+ Vos interfaces ipppX sont configurées, mais vous n'avez pas choisi
+ d'installer ipppd. Cela peut être périlleux (vous laissant sans moyen pour
+ obtenir ipppd) et l'installation de ce paquet a été interrompue.
+ .
+ Si vraiment vous ne voulez pas de ipppd, veuillez supprimer les fichiers
+ ipppd.* de /etc/isdn/, arrêtez les interfaces ipppX et réinstallez
+ isdnutils.
+ .
+ Si vous avez utilisé dselect, veuillez choisir (+) ipppd et les autres
+ paquets dont vous avez besoin (p.ex. isdnlog, isdnvbox,
+ isdnutils-xtools) ; mais cela devrait avoir été fait automatiquement. Si
+ vous avez utilisé apt-get, faites « apt-get install isdnutils ipppd
+ isdnlog ... ». Il faudra peut-être exécuter d'abord « apt-get -f install »
+ pour configurer les paquets dépaquetés mais pas encore configurés.
+
+Template: isdnutils/firmware
+Type: select
+Choices: none, ISAR.BIN
+Choices-fr: aucun, ISAR.BIN
+Default: none
+Description: Does firmware need to be loaded?
+ Some ISDN cards can't function properly until firmware has been
+ downloaded. Notable example is the Sedlbauer SpeedFax+ PCI or Siemens
+ I-Surf, which need ISAR.BIN to be loaded. (I don't know of any others at
+ this time.) Choose "ISAR.BIN" if this is necessary. If you don't know what
+ I'm talking about, choose "none".
+Description-fr: Faut-il charger des microprogrammes (« firmware ) ?
+ Certaines cartes RNIS ne fonctionnent pas correctement tant qu'un micro-
+ programme n'est pas chargé en ROM. C'est par exemple le cas des Siemens
+ I-Surf ou des Sedlbauer SpeedFax+ PCI qui ont besoin de ISAR.BIN. (Je ne
+ connais pas d'autres cas). Choisissez « ISAR.BIN » si c'est nécessaire. Si
+ vous ne voyez pas de quoi je parle, choisissez « aucun ».
+
+Template: isdnutils/firmwarecards
+Type: string
+Description: Which ISDN card numbers have to be loaded with the firmware?
+ If you have more than one card, enter the number of the card(s) that have
+ to be loaded with the firmware, starting with 1, separated by commas. If
+ you have only one card, the obvious answer here is "1". If you have two
+ cards which both have to be loaded with firmware, enter "1,2".
+Description-fr: Quels numéros de cartes doit-on charger avec le microprogramme ?
+ Si vous avez plusieurs cartes, donnez les numéros des cartes qui devront
+ être chargées avec le microprogramme ; commencez par 1 et séparez-les par
+ des virgules. Si vous n'avez qu'une carte, la réponse évidente est « 1 ».
+ Si vous avez deux cartes qui toutes les deux ont besoin de
+ microprogrammes, inscrivez « 1,2 ».
+
+Template: isdnutils/makedev
+Type: select
+Choices: yes, no
+Choices-fr: oui, non
+Default: yes
+Description: May I create ISDN device entries?
+ Everybody should basically choose "yes" here.
+ .
+ Your system may be missing ISDN-specific entries in /dev . Before
+ isdnutils can be of any use to you, these entries must be made. Select
+ "no" if you don't want this, e.g. because you want to do it yourself by
+ hand. Note that the answer here is used for all ISDN-related packages that
+ may need to create devices. Debian policy demands that this question be
+ asked.
+Description-fr: Puis-je créer les entrées de type RNIS ?
+ Tout le monde doit dire « oui » ici !
+ .
+ Il se peut que votre système n'ait pas d'entrée de type RNIS (ISDN, en
+ anglais) dans /dev. Il faut créer ces entrées pour qu'isdnutils serve à
+ quelque chose. Choisissez « non » si vous ne voulez pas le faire,
+ c'est-à-dire si vous voulez le faire manuellement. Remarquez que votre
+ réponse sera utilisée pour tous les paquets relatifs à RNIS qui ont
+ besoin de créer des périphériques. La Charte Debian exige que cette
+ question soit posée.

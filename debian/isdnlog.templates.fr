@@ -1,0 +1,103 @@
+Template: isdnlog/intro
+Type: text
+Description: Entering isdnlog configuration
+ For correct isdnlog functioning, isdnlog needs to be configured with a
+ number of settings. These are some or all (depending on the level you have
+ configured debconf with) of:
+ .
+  - country          this is used for setting a number of defaults,
+                     e.g. what rate tables to use for calculating
+                     the cost of a call.
+ .
+  - country prefix   what is used to indicate an international number
+ .
+  - country code     the phone number for your country
+                     (e.g. 49 for Germany)
+ .
+  - areacode prefix  what is used to indicate an areacode,
+                     if applicable in your country. Usually a 0 .
+ .
+  - areacode         what your local areacode is (if applicable)
+ .
+ After installation, you will may have to edit /etc/isdn/isdnlog.isdnctrl0
+ before isdnlog can work properly, although that file is set up with
+ reasonable defaults for most cases.
+ .
+ If you previously had /etc/isdn/isdnlog.isdnctrl0, that will be preserved.
+Description-fr: Configuration de isdnlog
+ Pour que isdnlog fonctionne correctement, il a besoin de connaître un
+ certain nombre de paramètres (le nombre dépend du niveau de configuration
+ de debconf) :
+ .
+  - pays             Cela définit certains paramètres par défaut ;
+                     p.ex. les tables de conversion pour calculer
+                     le prix d'un appel.
+ .
+  - préfixe du pays  indique un numéro international
+ .
+  - code du pays     l'indicatif de votre pays
+                     (p.ex. 33 pour la France)
+ .
+  - préfixe de zone  indique un préfixe de zone, si nécessaire.
+                     Habituellement c'est 0.
+ .
+  - zone             votre indicatif de zone (si nécessaire).
+ .
+ Après l'installation, il vous faudra sans doute modifier le fichier
+ /etc/isdn/isdnlog.isdnctrl0 pour que isdnlog fonctionne correctement ; ce
+ fichier comporte des paramètres par défaut qui valent pour la plupart des
+ cas.
+ .
+ S'il existe déjà un fichier /etc/isdn/isdnlog.isdnctrl0, il sera conservé.
+
+Template: isdnlog/country
+Type: select
+Choices: AT, CH, DE, ES, FR, LU, NL, NO, other
+Choices-fr: AT, CH, DE, ES, FR, LU, NL, NO, autre
+Default: FR
+Description: What country is this system in?
+ This is used for setting a number of defaults, e.g. what rate tables to
+ use for calculating the cost of a call.
+Description-fr: Dans quel pays se trouve le système ?
+ Cela définit certains paramètres par défaut ; p.ex. les tables de
+ conversion pour calculer le prix d'un appel.
+
+Template: isdnlog/country_manual
+Type: string
+Description: Enter the ISO two-letter code for your country
+ This can't really be used for setting any defaults, but maybe some day...
+ .
+ Note that you will probably have to edit /etc/isdn/isdn.conf before
+ isdnlog will be able to work.
+Description-fr: Donnez les deux lettres correspondant au code ISO de votre pays
+ Cela ne sert pas vraiment, mais peut-être un jour...
+ .
+ Il vous faudra sans doute modifier /etc/isdn/isdn.conf avant que
+ isdnlog ne puisse fonctionner.
+
+Template: isdnlog/countryprefix
+Type: string
+Default: +
+Default-fr: +
+Description: What is used to indicate an international number?
+Description-fr: Quel est l'indicatif pour l'international ?
+
+Template: isdnlog/countrycode
+Type: string
+Default-fr: 33
+Description: What is the countrycode for your country?
+ e.g. ${default_countrycode} for ${default_country}
+Description-fr: Quel est l'indicatif de votre pays ?
+ p.ex. ${default_countrycode} pour ${default_country}
+
+Template: isdnlog/areaprefix
+Type: string
+Default: 0
+Default-fr: 0
+Description: What is used to indicate an areacode, if applicable?
+Description-fr: Quel est votre préfixe de zone, si nécessaire ?
+
+Template: isdnlog/areacode
+Type: string
+Description: What is your local areacode, if applicable?
+Description-fr: Quel est votre indicatif de zone locale, si nécessaire ?

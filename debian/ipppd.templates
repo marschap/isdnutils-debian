@@ -1,0 +1,151 @@
+Template: ipppd/makedev
+Type: select
+Choices: yes, no
+Default: yes
+Description: May I create ISDN device entries?
+ Everybody should basically choose "yes" here.
+ .
+ Your system may be missing ISDN-specific entries in /dev .
+ Before ipppd can be of any use to you, these entries must be made.
+ Select "no" if you don't want this, e.g. because you want to do it yourself
+ by hand. Note that the answer here is used for all ISDN-related packages that
+ may need to create devices. Debian policy demands that this question be asked.
+
+Template: ipppd/ispwontdoit
+Type: note
+Description: ISP dialup config exists already
+ The files device.${IPPP0} and ipppd.${IPPP0} already exist. Therefore the ipppd
+ configuration phase won't touch anything there, as it looks like it's
+ already been configured.
+ .
+ If it doesn't work yet, and you want to try the automatic configuration,
+ stop all ISDN processes (use "/etc/init.d/isdnutils stop"), remove the
+ files mentioned above, and rerun the configuration with
+ "dpkg-reconfigure ipppd".  After that, restart the ISDN processes:
+ "/etc/init.d/isdnutils start".
+
+Template: ipppd/whichif
+Type: string
+Default: ippp0
+Description: Which interface should be configured?
+ Which interface should debconf configure?
+ .
+ Most people will say "ippp0" here, as that is the default for a connection
+ to an ISP. The default gateway will be ippp0.
+ .
+ However, some people have special requirements, and they may choose another
+ interface that debconf will configure (e.g. because they don't want this
+ connection to be the default gateway).
+ .
+ Note that debconf will currently only configure at most one interface.
+ Enter "none" if you do not want debconf to configure anything for ipppd.
+
+Template: ipppd/wrongif
+Type: note
+Description: wrong interface name
+ You can only give names starting with "ippp" followed by a number between
+ 0 and 63.
+
+Template: ipppd/ispphone
+Type: string
+Default: manual
+Description: What is your ISP's phone number?
+ What number must be dialed for connecting to the internet?
+ .
+ This is the number complete with areacode, any necessary leading zeroes
+ etc. that may be needed to get an outside line.
+ .
+ It is possible to enter more than one number here if there are alternatives
+ available, simply enter the numbers with a space in between.
+ .
+ Leave this blank (or "manual") if you want to manually configure the
+ ISP connection.
+
+Template: ipppd/eaz
+Type: string
+Default: 0
+Description: What is your local MSN?
+ When making a call with ISDN, the MSN (phone number) that is originating the
+ call must be given in the call-setup message. While usually a wrong MSN will
+ be replaced by the main MSN for the ISDN line, especially on PABXes a wrong
+ MSN (often the extension number in this case) will cause the call-setup to
+ fail. So, it is best to enter the correct local MSN here.
+ .
+ This may also be necessary if you want the costs to be registered to one
+ particular MSN, in case you have more than one MSN and this is supported by
+ your telco.
+
+Template: ipppd/isplogin
+Type: string
+Description: What is the user name for logging into your ISP?
+ Most (all?) ISPs need a user name and password for authenticating you as a
+ valid user before allowing access. Enter the user name here. The password
+ will be asked for next.
+
+Template: ipppd/isppasswd
+Type: password
+Description: What is the password for logging into your ISP?
+ The password you give here will be entered into /etc/ppp/pap-secrets
+ and /etc/ppp/chap-secrets together with the username.
+
+Template: ipppd/isploginpapalreadythere
+Type: note
+Description: ISP user name already in pap-secrets
+ The user name you entered for logging into your ISP is already listed in
+ the /etc/ppp/pap-secrets file. That's not a problem; the existing entry
+ will be commented out, and a new entry with the data you just entered will
+ be inserted.
+
+Template: ipppd/isploginchapalreadythere
+Type: note
+Description: ISP user name already in chap-secrets
+ The user name you entered for logging into your ISP is already listed in
+ the /etc/ppp/chap-secrets file. That's not a problem; the existing entry
+ will be commented out, and a new entry with the data you just entered will
+ be inserted.
+
+Template: ipppd/isploginpapchapalreadythere
+Type: note
+Description: ISP user name already in chap-secrets and pap-secrets
+ The user name you entered for logging into your ISP is already listed in
+ the chap-secrets and pap-secrets files in /etc/ppp/. That's not a problem;
+ the existing entries will be commented out, and new entries with the data you
+ just entered will be inserted.
+
+Template: ipppd/oldipup
+Type: note
+Description: /etc/ppp/ip-up.d/00-isdnutils still exists
+ The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package still
+ exists. If you changed that file at some point, you may need to redo those
+ changes in the 00-ipppd file (which is the new name). After that, please
+ delete the old 00-isdnutils file.
+ .
+ Until it is deleted, it will still be used! This may cause conflicts.
+
+Template: ipppd/oldipdown
+Type: note
+Description: /etc/ppp/ip-down.d/99-isdnutils still exists
+ The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package still
+ exists. If you changed that file at some point, you may need to redo those
+ changes in the 99-ipppd file (which is the new name). After that, please
+ delete the old 99-isdnutils file.
+ .
+ Until it is deleted, it will still be used! This may cause conflicts.
+
+Template: ipppd/oldipupdown
+Type: note
+Description: old /etc/ppp/ip-up.d and ip-down.d scripts still exist
+ The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils files
+ from the old isdnutils package still exist. If you changed those files at some
+ point, you may need to redo those changes in the 00-ipppd and 99-ipppd files
+ (which are the new names). After that, please delete the old 00-isdnutils
+ and 99-isdnutils files.
+ .
+ Until they are deleted, they will still be used! This may cause conflicts.
+
+Template: ipppd/noisdnutilsinit
+Type: note
+Description: (re)start ipppd by hand
+ There is no /etc/init.d/isdnutils on your system;
+ hence you will have to stop and start any ipppd daemons by hand.
+

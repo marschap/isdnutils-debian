@@ -1,0 +1,157 @@
+#! /bin/sh
+# postinst script for isdnutils(-base)
+
+set -e
+
+. /usr/share/debconf/confmodule
+
+# summary of how this script can be called:
+#        * <postinst> `configure' <most-recently-configured-version>
+#        * <old-postinst> `abort-upgrade' <new version>
+#        * <conflictor's-postinst> `abort-remove' `in-favour' <package>
+#          <new-version>
+#        * <deconfigured's-postinst> `abort-deconfigure' `in-favour'
+#          <failed-install-package> <version> `removing'
+#          <conflicting-package> <version>
+# for details, see /usr/doc/packaging-manual/
+#
+# quoting from the policy:
+#     Any necessary prompting should almost always be confined to the
+#     post-installation script, and should be protected with a conditional
+#     so that unnecessary prompting doesn't happen if a package's
+#     installation fails and the `postinst' is called with `abort-upgrade',
+#     `abort-remove' or `abort-deconfigure'.
+
+case "$1" in
+    configure)
+        set +e
+        db_get isdnutils/makedev
+        rc=$?
+        set -e
+        allowmakedev=$RET
+        if [ $rc -eq 30 -o "$allowmakedev" = "yes" ]; then
+            cd /dev
+            echo "creating ISDN devices in /dev..."
+            /sbin/MAKEDEV isdn-tty isdn-io
+            rm -f isdnctrl
+            ln -s isdnctrl0 isdnctrl
+        fi
+        # firmware handling
+        db_get isdnutils/firmware || true
+        firmware=$RET
+        if [ "$firmware" = none ]; then
+            if [ -s /etc/isdn/firmware.conf ]; then
+                mv -f /etc/isdn/firmware.conf /etc/isdn/firmware.conf.old
+            fi
+        else
+            # remove bogus "none," from beginning of value (caused by bad
+            # debconf template before version -11)
+            firmware=${firmware##none,}
+            RET=''
+            db_get isdnutils/firmwarecards || true
+            firmwarecards=$RET
+            if [ -s /etc/isdn/firmware.conf ]; then
+                mv -f /etc/isdn/firmware.conf /etc/isdn/firmware.conf.old
+            fi
+            if [ ! -z "$firmwarecards" ]; then
+                echo "firmware=$firmware" > /etc/isdn/firmware.conf
+                cat << 'EOF' >> /etc/isdn/firmware.conf
+load_firmware() {
+    local i
+    local n
+    i=1
+    n=$#
+    if [ $n -lt $firmwarecardnum ]; then
+        echo "Error in firmware card number ($firmwarecardnum), only $n cards available."
+        return 1
+    fi
+    while [ $i -lt $# ]; do shift; done
+    /usr/sbin/hisaxctrl $1 9 /usr/share/isdn/$firmware
+}
+
+EOF
+                for i in `echo $firmwarecards | sed 's/,/ /g'`; do
+                    echo "firmwarecardnum=$i; load_firmware \$isdncards"
+                done >> /etc/isdn/firmware.conf
+            fi
+        fi # end of firmware handling
+	if ! grep -q '#-- isdnutils begin' /etc/inittab; then
+		cat >>/etc/inittab <<EOF
+#-- isdnutils begin
+# Change the line below for your local requirements and uncomment them.
+# Use "init q" to reread inittab.
+# look at the mgetty manpage for more information (mgetty isn't standard!)
+#
+#I0:2345:respawn:/sbin/mgetty -D -m '"" ATZ OK AT&Eyourmsnhere OK AT&B512 OK' -s 38400 ttyI0
+#-- isdnutils end
+EOF
+	fi
+	if [ "x$2" != "x" -a "x$2" != "x<unknown>" ]; then   # it was configured before
+	    if ! dpkg --compare-versions "$2" ">=" "1:3.1"; then # previous was old vers.
+		cat <<'EOF'
+
+Isdnutils is now split into different packages for convenience to
+those that don't need or want all the parts installed (e.g. vbox).
+
+For more information about isdnutils look at /usr/share/doc/isdnutils;
+in particular 'README.Debian' and 'HOWTO.isdnutils'.
+
+EOF
+	    	sleep 2
+		if grep -qs '^[0-9][a-z].*vboxgetty' /etc/inittab; then
+			tempfile=`tempfile -d /var/tmp -p isdn.`
+			cp /dev/null $tempfile 2>&1
+			dpkg -l isdnvboxserver >> $tempfile 2>&1
+			if grep -qs '^i.* isdnvboxserver ' $tempfile; then
+			  # ok, safe
+			  rm -f $tempfile
+			else
+			  cat <<'EOF'
+You have vboxgetty active in your /etc/inittab, but you don't have the
+`isdnvboxserver' package installed or selected. Please either install
+the package or remove the vboxgetty line from /etc/inittab.
+
+EOF
+			  sleep 2
+			fi
+		fi
+                # ignore errors from starting twice
+		/etc/init.d/isdnutils start 2>&1 | grep -v 'No such device' || true
+	    fi
+	else # not configured before
+		cat <<'EOF'
+
+	For more information about isdnutils look at /usr/share/doc/isdnutils;
+	in particular 'README.Debian' and 'HOWTO.isdnutils'.
+
+EOF
+		sleep 2
+	fi
+	;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+	;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 0
+    	;;
+esac
+
+db_stop # grrrr
+
+# NOT automatically added by dh_installinit (done by hand)
+update-rc.d isdnutils defaults >/dev/null
+if [ "$1" = "configure" ]; then
+	if [ -z "$2" -o "$2" = "<unknown>" ]; then
+		/etc/init.d/isdnutils start 2>&1 | grep -v 'No such device' || true
+	fi
+fi
+# End NOT automatically added section
+
+# dh_installdeb will replace this with shell code automatically
+# generated by other debhelper scripts.
+
+#DEBHELPER#
+
+exit 0

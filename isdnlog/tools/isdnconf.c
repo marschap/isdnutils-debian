@@ -1,8 +1,8 @@
-/* $Id: isdnconf.c,v 1.20 1998/11/24 20:53:03 akool Exp $
+/* $Id: isdnconf.c,v 1.33 2000/09/01 06:30:20 paul Exp $
  *
  * ISDN accounting for isdn4linux. (Utilities)
  *
- * Copyright 1995, 1998 by Andreas Kool (akool@isdn4linux.de)
+ * Copyright 1995 .. 2000 by Andreas Kool (akool@isdn4linux.de)
  *                     and Stefan Luethje (luethje@sl-gw.lake.de)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,122 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: isdnconf.c,v $
+ * Revision 1.33  2000/09/01 06:30:20  paul
+ * Now install country-de.dat as country.dat; renaming the source can be done by
+ * someone who is more experienced with CVS.
+ * Default value for country.dat changed in isdnconf.c; also default zonefile
+ * etc. changed from .gdbm to .cdb
+ *
+ * Revision 1.32  2000/02/20 19:03:08  akool
+ * isdnlog-4.12
+ *  - ABC_LCR enhanced
+ *  - country-de.dat more aliases
+ *  - new rates
+ *  - isdnlog/Makefile.in ... defined NATION
+ *  - isdnlog/isdnlog/processor.c ... msn patch for NL
+ *  - isdnlog/tools/isdnconf.c ... default config
+ *
+ * Revision 1.31  1999/12/31 13:57:19  akool
+ * isdnlog-4.00 (Millenium-Edition)
+ *  - Oracle support added by Jan Bolt (Jan.Bolt@t-online.de)
+ *  - resolved *any* warnings against rate-de.dat
+ *  - Many new rates
+ *  - CREDITS file added
+ *
+ * Revision 1.30  1999/10/25 18:30:03  akool
+ * isdnlog-3.57
+ *   WARNING: Experimental version!
+ *   	   Please use isdnlog-3.56 for production systems!
+ *
+ * Revision 1.29  1999/06/15 20:05:08  akool
+ * isdnlog Version 3.33
+ *   - big step in using the new zone files
+ *   - *This*is*not*a*production*ready*isdnlog*!!
+ *   - Maybe the last release before the I4L meeting in Nuernberg
+ *
+ * Revision 1.28  1999/05/13 11:39:47  akool
+ * isdnlog Version 3.28
+ *
+ *  - "-u" Option corrected
+ *  - "ausland.dat" removed
+ *  - "countries-de.dat" fully integrated
+ *      you should add the entry
+ *      "COUNTRYFILE = /usr/lib/isdn/countries-de.dat"
+ *      into section "[ISDNLOG]" of your config file!
+ *  - rate-de.dat V:1.02-Germany [13-May-1999 12:26:24]
+ *  - countries-de.dat V:1.02-Germany [13-May-1999 12:26:26]
+ *
+ * Revision 1.27  1999/05/04 19:33:37  akool
+ * isdnlog Version 3.24
+ *
+ *  - fully removed "sondernummern.c"
+ *  - removed "gcc -Wall" warnings in ASN.1 Parser
+ *  - many new entries for "rate-de.dat"
+ *  - better "isdnconf" utility
+ *
+ * Revision 1.26  1999/04/15 19:14:58  akool
+ * isdnlog Version 3.15
+ *
+ * - reenable the least-cost-router functions of "isdnconf"
+ *   try "isdnconf -c <areacode>" or even "isdnconf -c ."
+ * - README: "rate-xx.dat" documented
+ * - small fixes in processor.c and rate.c
+ * - "rate-de.dat" optimized
+ * - splitted countries.dat into countries-de.dat and countries-us.dat
+ *
+ * Revision 1.25  1999/04/10 16:36:36  akool
+ * isdnlog Version 3.13
+ *
+ * WARNING: This is pre-ALPHA-dont-ever-use-Code!
+ * 	 "tarif.dat" (aka "rate-xx.dat"): the next generation!
+ *
+ * You have to do the following to test this version:
+ *   cp /usr/src/isdn4k-utils/isdnlog/holiday-de.dat /etc/isdn
+ *   cp /usr/src/isdn4k-utils/isdnlog/rate-de.dat /usr/lib/isdn
+ *   cp /usr/src/isdn4k-utils/isdnlog/samples/rate.conf.de /etc/isdn/rate.conf
+ *
+ * After that, add the following entries to your "/etc/isdn/isdn.conf" or
+ * "/etc/isdn/callerid.conf" file:
+ *
+ * [ISDNLOG]
+ * SPECIALNUMBERS = /usr/lib/isdn/sonderrufnummern.dat
+ * HOLIDAYS       = /usr/lib/isdn/holiday-de.dat
+ * RATEFILE       = /usr/lib/isdn/rate-de.dat
+ * RATECONF       = /etc/isdn/rate.conf
+ *
+ * Please replace any "de" with your country code ("at", "ch", "nl")
+ *
+ * Good luck (Andreas Kool and Michael Reinelt)
+ *
+ * Revision 1.24  1999/03/24 19:38:57  akool
+ * - isdnlog Version 3.10
+ * - moved "sondernnummern.c" from isdnlog/ to tools/
+ * - "holiday.c" and "rate.c" integrated
+ * - NetCologne rates from Oliver Flimm <flimm@ph-cip.uni-koeln.de>
+ * - corrected UUnet and T-Online rates
+ *
+ * Revision 1.23  1999/03/15 21:28:44  akool
+ * - isdnlog Version 3.06
+ * - README: explain some terms about LCR, corrected "-c" Option of "isdnconf"
+ * - isdnconf: added a small LCR-feature - simply try "isdnconf -c 069"
+ * - isdnlog: dont change CHARGEINT, if rate is't known!
+ * - sonderrufnummern 1.02 [15-Mar-99] :: added WorldCom
+ * - tarif.dat 1.09 [15-Mar-99] :: added WorldCom
+ * - isdnlog now correctly handles the new "Ortstarif-Zugang" of UUnet
+ *
+ * Revision 1.22  1999/02/28 19:33:39  akool
+ * Fixed a typo in isdnconf.c from Andreas Jaeger <aj@arthur.rhein-neckar.de>
+ * CHARGEMAX fix from Oliver Lauer <Oliver.Lauer@coburg.baynet.de>
+ * isdnrep fix from reinhard.karcher@dpk.berlin.fido.de (Reinhard Karcher)
+ * "takt_at.c" fixes from Ulrich Leodolter <u.leodolter@xpoint.at>
+ * sondernummern.c from Mario Joussen <mario.joussen@post.rwth-aachen.de>
+ * Reenable usage of the ZONE entry from Schlottmann-Goedde@t-online.de
+ * Fixed a typo in callerid.conf.5
+ *
+ * Revision 1.21  1999/01/24 19:02:45  akool
+ *  - second version of the new chargeint database
+ *  - isdnrep reanimated
+ *
  * Revision 1.20  1998/11/24 20:53:03  akool
  *  - changed my email-adress
  *  - new Option "-R" to supply the preselected provider (-R24 -> Telepassport)
@@ -640,6 +756,7 @@ static section* writeglobal(section *SPtr)
 		}
 	}
 
+#if 0 /* Fixme: remove */
 	if (CityWeekend != 0)
 	{
 		strcpy(s, CONF_ENT_CW);
@@ -650,7 +767,7 @@ static section* writeglobal(section *SPtr)
 			return NULL;
 		}
 	}
-
+#endif
 	if (chargemax != 0)
 	{
 		strcpy(s, CONF_ENT_CHARGE);
@@ -854,36 +971,13 @@ static section* writeentry(section *SPtr, int Index)
 
 void setDefaults()
 {
-  if (currency == NULL) {
+  if (currency == NULL)
+    currency="EUR";
 
-#if defined(ISDN_NL)
-    currency = "NLG";
-#elif defined(ISDN_CH)
-    currency = "SFR";
-#elif defined(ISDN_AT)
-    currency = "ATS";
-#else
-    currency = "DM";
-#endif
-
-  } /* if */
-
-  if (currency_factor == 0.0) {
-
-#if defined(ISDN_NL)
-    currency_factor = 0.15;
-#elif defined(ISDN_CH)
-    currency_factor = 0.01;
-#elif defined(ISDN_AT)
-    currency_factor = 1.056;
-#else
-    currency_factor = 0.121;
-#endif
-
-  } /* if */
+  if (currency_factor == 0.0)
+    currency_factor = 0.062;
 
   currency_mode = AOC_UNITS;
-
 } /* setDefaults */
 
 /****************************************************************************/
@@ -996,7 +1090,9 @@ static int _readconfig(char *_myname)
   mycountry      = "";
   myarea         = "";
   currency       = NULL;
+#if 0 /* Fixme: remove */
   CityWeekend    = 0;
+#endif
   chargemax      = 0.0;
   connectmax     = 0;
   connectmaxmode = 0;
@@ -1010,6 +1106,13 @@ static int _readconfig(char *_myname)
   logfile        = LOGFILE;
   callfile       = NULL;
   callfmt        = NULL;
+  holifile       = CONFIG_DATADIR"/holiday-"NATION".dat";
+  countryfile	 = CONFIG_DATADIR"/country.dat";
+  rateconf       = CONFIG_I4LCONFDIR"/rate.conf";
+  ratefile       = CONFIG_DATADIR"/rate-"NATION".dat";
+  zonefile	 = CONFIG_DATADIR"/zone-"NATION"-%s.cdb";
+  destfile	 = CONFIG_DATADIR"/dest.cdb";
+  lcdfile        = NULL;
   start_procs.infoargs = NULL;
   start_procs.flags    = 0;
   conf_dat       = NULL;
@@ -1149,9 +1252,39 @@ static int Set_Globals(section *SPtr)
 		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_CALLFMT)) != NULL)
 			callfmt = CEPtr->value;
 
+		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_HOLIFILE)) != NULL)
+			holifile = CEPtr->value;
+
+		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_COUNTRYFILE)) != NULL)
+			countryfile = CEPtr->value;
+
+		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_ZONEFILE)) != NULL)
+			zonefile = CEPtr->value;
+
+		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_RATECONF)) != NULL)
+			rateconf = CEPtr->value;
+
+		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_RATEFILE)) != NULL)
+			ratefile = CEPtr->value;
+
+		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_DESTFILE)) != NULL)
+			destfile = CEPtr->value;
+
+		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_PRESELECT)) != NULL)
+			preselect = atoi(CEPtr->value);
+
+		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_VBN)) != NULL)
+			vbn = CEPtr->value;
+		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_VBNLEN)) != NULL)
+			vbnlen = CEPtr->value;
+
+		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_LCDFILE)) != NULL)
+			lcdfile = CEPtr->value;
+
+#if 0 /* Fixme: remove */
 		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_CW)) != NULL)
 			CityWeekend = toupper(*(CEPtr->value)) == 'Y'?1:0;
-
+#endif
 		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_CHARGE)) != NULL)
 			chargemax = strtod(CEPtr->value,NULL);
 
@@ -1164,7 +1297,7 @@ static int Set_Globals(section *SPtr)
 		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_BYTE)) != NULL)
 	  {
 	    if (sscanf(CEPtr->value,"%lg,%d", &bytemax, &bytemaxmode) != 2)
-	      _print_msg("%s: WARNING: Syntax error in `%s' in Line %d, ignored\n", Myname, CONF_ENT_CONNECT, ln);
+	      _print_msg("%s: WARNING: Syntax error in `%s' in Line %d, ignored\n", Myname, CONF_ENT_BYTE, ln);
 	  }
 
 		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_CURR)) != NULL)
@@ -1222,7 +1355,7 @@ static int Set_Globals(section *SPtr)
 					_print_msg("%s: ERROR: Can't allocate memory!\n", Myname);
 					return 0;
 				}
-				
+
 				lineformats[++cnt] = NULL;
 	  	}
 
@@ -1416,20 +1549,22 @@ static int Set_Numbers(section *SPtr, char *Section, int msn)
 
 			if ((CEPtr = Get_Entry(SPtr->entries,CONF_ENT_ZONE)) != NULL)
 				known[Index]->zone = atoi(CEPtr->value);
-			else
-			{
-				if (msn < 0)
-				{
-                                       if((known[Index]->zone=area_diff(NULL, num))<1)
-                                       {
-					_print_msg("%s: WARNING: There is no variable `%s' for number `%s'!\n", Myname, CONF_ENT_ZONE, num);
-					known[Index]->zone = 4;
-                                       }
+#if 0 /* FIXME - or REMOVEME */
+			else {
+			  if (msn < 0) {
+                            if ((known[Index]->zone = area_diff(NULL, num)) < 1) {
+                              if (is_sondernummer(num, DTAG)) /* Fixme: DTAG is specific to Germany */
+			        known[Index]->zone = SONDERNUMMER;
+                              else {
+			        _print_msg("%s: WARNING: There is no variable `%s' for number `%s' -- assuming GermanCall!\n", Myname, CONF_ENT_ZONE, num);
+			      	known[Index]->zone = GERMANCALL;
+                              } /* else */
+                            } /* if */
 				}
 				else
-					known[Index]->zone = 1;
+			    known[Index]->zone = CITYCALL; /* sich selbst anrufen kostet CityCall */
 			}
-
+#endif
 			if ((CEPtr = Get_Entry(SPtr->entries,CONF_ENT_INTFAC)) != NULL)
 				known[Index]->interface = CEPtr->value;
 			else
@@ -1577,7 +1712,6 @@ static int readoldconfig(char *myname)
   	      known[knowns]->dur[CALLING] = known[knowns]->dur[CALLED] = 0.0;
   	      known[knowns]->eh = 0;
   	      known[knowns]->usage[DIALOUT] = known[knowns]->usage[DIALIN] = 0;
-  	      known[knowns]->dm = 0.0;
 
       	      known[knowns]->day     = -1;
       	      known[knowns]->charge  = 0.0;

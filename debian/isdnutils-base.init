@@ -1,0 +1,108 @@
+#!/bin/sh
+#
+# You don't need to change this file!
+#
+# Please read /usr/share/doc/isdnutils/README.debian
+# and         /usr/share/doc/isdnutils/CONFIG.gz .
+#
+# This script stops/starts ALL ISDN stuff (including isdnlog, if installed).
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+DAEMON=/usr/sbin/isdnctrl
+NAME=isdnutils
+DESC='ISDN services'
+FLAGS="defaults"
+
+test -f $DAEMON || exit 0    # sanity check
+
+set -e
+
+# source the function definitions for stopping / starting the various parts
+
+. /etc/isdn/init.d.functions
+
+# isdn_verbose=true     # default is set by VERBOSE in /etc/default/rcS
+
+case "$1" in
+  start)
+    if [ ! -z "$2" ]; then
+    	echo -n "Starting $2:"
+	case "$2" in
+	    ipppd)	if [ -s /usr/sbin/ipppd   ]; then start_ipppd;   fi;;
+	    isdnlog)	if [ -s /usr/sbin/isdnlog ]; then start_isdnlog; fi;;
+	    *)		echo " unknown service to start: $1"; exit 1;;
+	esac
+	echo .
+	exit 0
+    fi
+    echo -n "Starting $DESC:"
+    start_devices
+    if [ -s /usr/sbin/ipppd   ]; then start_ipppd;   fi
+    if [ -x /usr/sbin/ipmasq  ]; then /usr/sbin/ipmasq; fi
+    start_iprofd
+    if [ -s /usr/sbin/isdnlog ]; then start_isdnlog; fi
+    ;;
+  stop)
+    if [ ! -z "$2" ]; then
+    	echo -n "Stopping $2:"
+	case "$2" in
+	    ipppd)	if [ -s /usr/sbin/ipppd   ]; then stop_ipppd;   fi;;
+	    isdnlog)	if [ -s /usr/sbin/isdnlog ]; then stop_isdnlog; fi;;
+	    *)		echo " unknown service to stop: $1"; exit 1;;
+	esac
+	echo .
+	exit 0
+    fi
+    echo -n "Stopping $DESC:"
+    stop_iprofd
+    if [ -s /usr/sbin/ipppd   ]; then stop_ipppd;   fi
+    stop_devices
+    if [ -x /usr/sbin/ipmasq  ]; then /usr/sbin/ipmasq; fi
+    if [ -s /usr/sbin/isdnlog ]; then stop_isdnlog; fi
+    ;;
+  reload)
+    if [ ! -z "$2" ]; then
+    	echo -n "Restarting $2:"
+        isdn_verbose=false
+	case "$2" in
+	    ipppd)
+                if [ -s /usr/sbin/ipppd   ]; then
+                    reload_ipppd || ( stop_ipppd; start_ipppd )
+                fi;;
+	    isdnlog)
+                if [ -s /usr/sbin/isdnlog ]; then
+                    reload_isdnlog || ( stop_isdnlog; start_isdnlog )
+                fi;;
+	    *)
+                echo " unknown service to stop: $1"; exit 1;;
+	esac
+	echo .
+	exit 0
+    fi
+    echo "Sorry, reload can only be done explicitly for ipppd and isdnlog."
+    echo 'Run "/etc/init.d/isdnutils reload ipppd" for example.'
+    exit 1
+    ;;
+  restart|force-reload)
+    # reload doesn't really work for some daemons...
+    echo -n "Restarting $DESC:"
+    isdn_verbose=false
+    stop_iprofd
+    if [ -s /usr/sbin/ipppd   ]; then stop_ipppd;   fi
+    if [ -s /usr/sbin/isdnlog ]; then stop_isdnlog; start_isdnlog; fi
+    stop_devices; start_devices
+    if [ -s /usr/sbin/ipppd   ]; then start_ipppd;   fi
+    if [ -x /usr/sbin/ipmasq  ]; then /usr/sbin/ipmasq; fi
+    start_iprofd
+    ;;
+  *)
+    echo "Usage: /etc/init.d/$NAME {start|stop|restart|force-reload|reload}"
+    exit 1
+    ;;
+esac
+
+echo .
+list_unconfigured
+
+exit 0
+# vim:set ts=8 sw=4:

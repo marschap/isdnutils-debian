@@ -1,6 +1,6 @@
-.\" $Id: isdn_audio.man.in,v 1.3 1998/12/02 16:53:27 paul Exp $
+.\" $Id: isdn_audio.man.in,v 1.5 1999/09/06 08:03:23 fritz Exp $
 .\"
-.\" CHECKIN $Date: 1998/12/02 16:53:27 $
+.\" CHECKIN $Date: 1999/09/06 08:03:23 $
 .\"
 .\" Process this file with
 .\" groff -man -Tascii isdn_audio.4 for ASCII output, or
@@ -103,11 +103,15 @@ Show current line.
 Start audio recording. See below for more information.
 .TP
 .BI AT+VSD= x , y
-No function, provided for compatibility only. Possible parameters:
+Set silence-detection parameters. 
 .RS
-.IR x " = 0 ... 31"
+Possible parameters:
 .br
-.IR y " = 0 ... 255"
+.IR x " = 0 ... 31  sensitivity threshold level."
+.br
+(default 0 , deactivated)
+.br
+.IR y " = 0 ... 255 range of interval in units of 0.1 second. (default 70)"
 .RE
 .TP
 .B AT+VSD=?
@@ -252,6 +256,6 @@ Touch-tone "C" received. Valid only in direction from emulator to application.
 .B D
 Touch-tone "D" received. Valid only in direction from emulator to application.
 .SH AUTHOR
-Fritz Elfert <fritz@wuemaus.franken.de>
+Fritz Elfert <fritz@isdn4linux.de>
 .SH SEE ALSO
 .BR ttyI (4).

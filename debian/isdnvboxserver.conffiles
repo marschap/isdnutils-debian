@@ -1,0 +1,3 @@
+/etc/isdn/vboxd.conf
+/etc/isdn/vboxgetty.conf
+/etc/cron.weekly/isdnvboxserver

@@ -1,0 +1,3 @@
+ipppd: postinst-uses-db-input
+ipppd: script-not-executable ./usr/share/isdn/default/auth-down
+ipppd: script-not-executable ./usr/share/isdn/default/auth-up

@@ -1,0 +1,150 @@
+Template: isdnvboxserver/msn
+Type: string
+Default: quit
+Description: What number should vbox answer?
+ Vbox must know what number to listen to. Depending on your country's ISDN
+ system, this may or may not include the areacode. It is usually without
+ the leading 0.
+ .
+ Enter `quit' (or leave it blank) if you want to configure by hand,
+ not via debconf. Also enter `quit' if you already have an existing
+ (working) vbox configuration from the time when this was still part
+ of isdnutils (unless you want to create a new configuration).
+
+Template: isdnvboxserver/doityourself
+Type: note
+Description: You've chosen not to use debconf for isdnvboxserver
+ If you change your mind, run "dpkg-reconfigure isdnvboxserver".
+ To finalize isdnvboxserver, you need to ensure that vboxgetty is running
+ from inittab, and that vboxd will run out of inetd.
+
+Template: isdnvboxserver/rings
+Type: string
+Default: 4
+Description: After how many rings should vbox pick up the line?
+ One ring is about 5 seconds. You can fine-tune the number of rings
+ for certain phonenumbers manually, e.g. any salesmen you know the
+ number of (or calls without caller-ID) can be dumped into the
+ answering machine after one ring.  See `man vbox.conf' for more info.
+
+Template: isdnvboxserver/attachmsg
+Type: select
+Choices: yes, no
+Default: yes
+Description: Should the message be attached to the email?
+ When a message is recorded, an email notification is sent.
+ If that email should contain the message as an attachment,
+ choose "yes" here. Note: the attachment can be large!
+
+Template: isdnvboxserver/daemonuser
+Type: string
+Default: vboxdaemonuser
+Description: As what user should the answering machine run?
+ vboxd runs with the privileges of a normal (non-root) user.
+ This is typically your non-root login name. This user must
+ be a member of the `dialout' group.
+
+Template: isdnvboxserver/nosuchuser
+Type: text
+Description: The user ${Daemonuser} doesn't exist on the system.
+ Enter a valid user name here that's known to the system.
+
+Template: isdnvboxserver/user
+Type: string
+Description: What username may connect to the vbox server?
+ To listen to messages using vbox (from the isdnvboxclient package),
+ you need a username and password. Enter the username here. This does
+ not have to be a user on the system itself.
+
+Template: isdnvboxserver/password
+Type: password
+Description: Enter the password for ${User} here.
+ Please don't use ':' in it! The way it is stored cannot handle this.
+
+Template: isdnvboxserver/spoolrename
+Type: note
+Description: spool directory renamed
+ The spool directory `${OLDSPOOL}' has been renamed to `${NEWSPOOL}' for
+ consistency's sake. This should have no other consequences.
+
+Template: isdnvboxserver/dup3spool
+Type: note
+Description: two obsolete spool directories detected
+ The directories `${OLDSPOOL1}' and `${OLDSPOOL2}'
+ (which aren't used anymore in the standard configuration), and the
+ new spool directory `${NEWSPOOL}' all exist. The old
+ directories will no longer be used; please manually move any messages from
+ there to the new directory (if any), and delete the old directories.
+
+Template: isdnvboxserver/dupspool
+Type: note
+Description: two spool directories detected
+ The old spool directory `${OLDSPOOL}' and the new spool
+ directory `${NEWSPOOL}' both exist. The old directory
+ will no longer be used; please manually move any messages from there to the
+ new directory (if any), and delete the old directory.
+
+Template: isdnvboxserver/spoolcreate
+Type: note
+Description: spool directory created
+ The spool directory `${NEWSPOOL}' has been created,
+ which is necessary for proper working of vbox.
+
+Template: isdnvboxserver/vboxmoved
+Type: note
+Description: vbox config file moved
+ The configuration file `${OLD}' has been moved to
+ `${DIR}/.vbox.conf'.  See `man vbox.conf' for information
+ on changing this file.
+
+Template: isdnvboxserver/vboxcreate
+Type: note
+Description: vbox config file created
+ The configuration file `${DIR}/.vbox.conf' has been created.
+ See `man vbox.conf' for information on changing this file.
+
+Template: isdnvboxserver/vboxnodir
+Type: note
+Description: No home directory!
+ The home directory `${DIR}' for user `${USER}' doesn't exist.
+ This means that the file `${DIR}/.vbox.conf' cannot be created.
+
+Template: isdnvboxserver/vboxnouser
+Type: note
+Description: User doesn't exist!
+ The user `${USER}' doesn't exist on the system!
+ Please rerun the configuration with `dpkg-reconfigure isdnvboxserver'
+ to enter another username, or after creating the user.
+
+Template: isdnvboxserver/doinit
+Type: select
+Choices: yes, no
+Default: yes
+Description: Should vboxgetty be enabled?
+ vboxgetty is in /etc/inittab, but not yet enabled.
+ Answering `yes' here will enable it once this package is fully configured.
+ Choose `no' if you want to tweak it manually.
+
+Template: isdnvboxserver/adduserdone
+Type: note
+Description: user `vbox' created
+ A user `vbox' was created, in group `dialout'. This is used as the ID
+ that the vbox daemons run under.
+
+Template: isdnvboxserver/adduserfailed
+Type: note
+Description: Failed to create user `vbox'
+ For optimal operation of vbox, a user `vbox' should be created,
+ in group `dialout'.
+ However, creating that user failed with the following error(s):
+ .
+ ${MSG}
+ .
+ Please remedy this problem by hand, and then rerun the configuration with
+ `dpkg-reconfigure isdnvboxserver'.
+
+Template: isdnvboxserver/dummy
+Type: note
+Description: isdnvboxserver is being configured.
+ Note to translators: no need to translate this, not shown to users.
+

@@ -1,31 +1,34 @@
-This package was debianized by Paul Slootman paul@debian.org on
-Tue, 17 Nov 1998 11:03:38 +0100.
+This package was debianized by Paul Slootman <paul@debian.org>
+in the period June 2000 - September 2000.
 
-It was downloaded from ftp.franken.de.
+The sources are from the CVS version of March 11th, 2002.
+
+Upstream Author(s): the i4l crew ( see http://www.isdn4linux.de/ )
 
 GPL Copyrights:
 
   For the complete GPL version 2 text, see /usr/share/common-licenses/GPL .
 
-
-All changes for debian are done by Christian Schwarz <schwarz@debian.org>,
-Andreas Jellinghaus <aj@debian.org>, Paul Slootman <paul@debian.org> or
-derived from the work of other debian developers and licensed under GPL.
+All changes for debian are done by Paul Slootman <paul@debian.org> or
+derived from the work of other debian developers and users and licensed
+under GPL.
 
 Specific copyrights etc. follow. If not listed, the component falls
 under the GPL.
 
 
 FAQ:
-    This FAQ is protected by the GNU General Public License (GPL) Version 2;
-    (C) 1996 Volker Götz, Bernhard Hailer, Matthias Heßler, Michael Hipp and
-    Rainer May.
+    GPL
+    (c) 1999 Matthias Hessler <hessler@isdn4linux.de>
     Distribution under the terms of the GPL is welcome. However,
     we offer NO GUARANTEES for the information herein.
 
+Mini-FAQ:
+    Corrections and suggestions welcome, please send them directly to me,
+    Erik Corry, <erik@arbat.com>.
 
 areacode:
-            (C) Copyright 1996,97 by Ullrich von Bassewitz
+            (C) Copyright 1996-98 by Ullrich von Bassewitz
                       <uz@musoftware.com>
 
     This software is provided 'as-is', without any express or implied
@@ -45,11 +48,12 @@ areacode:
     3. This notice may not be removed or altered from any source
        distribution.
 
-
-imontty:
-    GPL
-    (c) 1995-97 Volker Götz <volker@oops.franken.de>
-
+eurofile:
+    Source code in directories src and src/lib is subject to the
+    `GNU LIBRARY GENERAL PUBLIC LICENSE' [ LGPL ]
+    It is copyrighted by Henner Eisen.
+    Source code in directory src/authlib is subject to different licenses
+    (a BSD style license with advertisment clause).
 
 ipppd:
     ipppd, based on pppd 2.2.0g with a few changes from 2.3

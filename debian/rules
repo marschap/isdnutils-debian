@@ -1,128 +1,223 @@
 #!/usr/bin/make -f
-# Made with the aid of debmake, by Christoph Lameter,
-# based on the sample debian/rules file for GNU hello by Ian Jackson.
+# Sample debian/rules that uses debhelper. 
+# GNU copyright 1997 by Joey Hess.
 
-SHELL=/bin/bash
+# Uncomment this to turn on verbose mode. 
+# export DH_VERBOSE=1
 
-package=isdnutils
+# This is the debhelper compatability version to use.
+export DH_COMPAT=2
 
-cwd=$shell(pwd)
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
 
-build:
-	$(checkdir)
-	# we need a path to the kernel sources. Try /usr/local/src and /usr/src
-	# Link to parent dir so that local choice can be preserved.
-	[ ! -e ../linux ] && ( [ -e /usr/local/src/linux ] && ln -s /usr/local/src/linux .. || ln -s /usr/src/linux .. ) || true
+build: build-stamp
+build-stamp:
+	dh_testdir
+
+	# we need a path to the kernel sources.
+	# Link to top dir so that local choice can be preserved. That link must
+	# be made first thing, otherwise it will try to unpack
+	# /usr/src/kernel-source-2.4.*.tar.bz2 .
+	#  This used to be "parent dir", but that doesn't always work for
+	#  build daemons...
+	# This has moved to an external script, as large chunks of shell
+	# script in makefiles is an ugly solution.
+	sh debian/prepare-kernel-source $(DEB_HOST_ARCH)
+
+	cp debian/isdnactivecards.files.all     debian/isdnactivecards.files
+	cp debian/isdnactivecards.conffiles.all debian/isdnactivecards.conffiles
 	# we need a .config file. Try isdnutils.config in parent directory first
 	# so that local choice can be preserved.
-	test -f ../dot.config && cp ../dot.config .config || \
-	    sed -e "s#@KERNELDIR@#`cd ../; pwd`/linux#" \
-		< debian/dot.config > .config
-	# use perl script as uudecode isn't `required'
-	# Sigh, we don't know anymore where this script exists :-(
-	(cd vbox/examples; ls /usr/doc/perl*/examples/uudecode.gz /usr/share/doc/perl*/examples/uudecode.gz 2>/dev/null | head -1 | xargs zcat | perl - beep.msg.example.uu)
-	make subconfig
-	$(MAKE) CFLAGS="-O2 -Wall -g"
-	touch build
+	test -f ../isdnutils.config && cp ../isdnutils.config .config || \
+	    sed -e "s#@KERNELDIR@#`pwd`/linux#" \
+		< debian/dotconfig > .config
+	# build only isdnvboxclient on the "excluded" arches
+	if [ $(DEB_HOST_ARCH) = hurd -o $(DEB_HOST_ARCH) = hurd-i386 -o $(DEB_HOST_ARCH) = hppa -o $(DEB_HOST_ARCH) = s390 -o $(DEB_HOST_ARCH) = sh ]; then \
+	    sed -e "s#@KERNELDIR@#`pwd`/linux#" < debian/dotconfig.vboxclientonly > .config; \
+	fi
+	# ugh
+	touch eurofile/configure
+
+	# gcc 2.95 on powerpc doesn't compile our stuff - the compiler breaks
+	# with an internal error. So we use gcc-3.0
+	if [ $(DEB_HOST_ARCH) = powerpc ]; then \
+	  CC=gcc-3.0 $(MAKE) subconfig; \
+	else \
+	  $(MAKE) subconfig; \
+	fi
+	
+	$(MAKE)
+
+	# note the "NOT!" directly after the "if" below.
+	if ! [ $(DEB_HOST_ARCH) = hurd -o $(DEB_HOST_ARCH) = hurd-i386 -o $(DEB_HOST_ARCH) = hppa -o $(DEB_HOST_ARCH) = s390 -o $(DEB_HOST_ARCH) = sh ]; then \
+	    (cd isdnlog/tools/zone; $(MAKE) zonefiles); \
+	    (cd Mini-FAQ; make); \
+	fi
+
+	touch build-stamp
 
 clean:
-	$(checkdir)
-	-rm -f build
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp 
+
 	-$(MAKE) distclean
-	-rm -f vbox/examples/beep.msg.example
-	-rm -f `find . -name "*~"`
-	-rm -rf debian/tmp* `find debian/* -type d ! -name CVS` debian/files* core
-	-rm -f debian/*substvars debian/files debian/*.files
+	rm -f isdnlog/client/config.cache isdnlog/client/config.status
+	#-rm -f vbox/examples/beep.msg.example
+	#-rm -f `find . -name "*~"`
+	#-rm -rf debian/tmp* `find debian/* -type d ! -name CVS` debian/files* core
+	-rm -rf linux debian/linux debian/kernel-source-*
+	-rm -f  debian/isdnactivecards.files debian/isdnactivecards.conffiles
 
-binary-indep: checkroot build
-	$(checkdir)
-	# install -d debian/tmp-doc
-	# cd debian/tmp-doc && install -d `cat ../isdnutils-doc.dirs`
-	# cd FAQ      && $(MAKE) install DESTDIR=$(cwd)/debian/tmp-doc
-	# cd vbox/doc && $(MAKE) install DESTDIR=$(cwd)/debian/tmp-doc
-	# dpkg-gencontrol -isp -p$(package)-doc -Pdebian/tmp-doc
-	# cd debian/tmp-doc && md5sum `find * -type f ! -regex "DEBIAN/.*"` >DEBIAN/md5sums
-	# chown -R root.root debian/tmp-doc
-	# chmod -R go=rX debian/tmp-doc
-	# dpkg --build debian/tmp-doc ..
+	dh_clean
 
+install: DH_OPTIONS=
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+	# Install ALL dirs into tmp also. Unfortunately there's no easy way...
+	sort -u debian/*.dirs > debian/tmp.dirs
+	dh_installdirs -Pdebian/tmp -pisdnutils `cat debian/tmp.dirs`
+	rm debian/tmp.dirs
 
-binary-arch: checkroot build
-	$(checkdir)
-	-rm -rf debian/tmp `find debian/* -type d`
-	install -d debian/tmp
-	cd debian/tmp && install -d `cat ../dirs`
+	# Add here commands to install the package into debian/tmp
+	# (the files get moved out by dh_movefiles later)
 	$(MAKE) install DESTDIR=`pwd`/debian/tmp
-	# clean up misplaced files etc.
-	rm -f debian/tmp/etc/isdn/*.new debian/tmp/usr/share/man/man1/xmonisdn.1x
-	mv debian/tmp/usr/share/man/man1/xisdnload.1x debian/tmp/usr/X11R6/man/man1/
-	mv debian/tmp/usr/bin/x* debian/tmp/usr/X11R6/bin/
-	mv debian/tmp/usr/sbin/imon* debian/tmp/usr/bin/
-	mv debian/tmp/usr/share/isdn/areacodes debian/tmp/usr/share/isdn/areacode.dat
-	# move some extra stuff from upstream source into debian tree
-	cp areacode/areacode.doc debian/tmp/usr/share/doc/isdnutils/.
-	cd debian/tmp/usr/share/doc/isdnutils/vbox/; \
-	    mv vbox.txt vbox.de.txt ; \
-	    mv vbox.sgml vbox.de.sgml ; \
-	    sgml2html -c latin vbox.de.sgml
-	for A in vbox/examples/*example ; do \
-	    cp $$A debian/tmp/usr/share/doc/isdnutils/examples/vbox/`basename $$A .example`; \
-	done
-	cp ipppd/NOTES.IPPPD ipppd/README* \
-			    debian/tmp/usr/share/doc/isdnutils/ipppd/.
-	cp lib/README.Syntax.conffile \
-			    debian/tmp/usr/share/doc/isdnutils/lib/Syntax.conffile.de
-	cp isdnlog/BUGS	    debian/tmp/usr/share/doc/isdnutils/isdnlog/BUGS.de
-	cp isdnlog/FAQ	    debian/tmp/usr/share/doc/isdnutils/isdnlog/FAQ.de
-	cp isdnlog/README   debian/tmp/usr/share/doc/isdnutils/isdnlog/README.de
-	cp isdnlog/TODO	    debian/tmp/usr/share/doc/isdnutils/isdnlog/TODO.de
-	cp pcbit/README.pt  debian/tmp/usr/share/doc/isdnutils/README.pcbit.pt
-	cp xmonisdn/README  debian/tmp/usr/share/doc/isdnutils/README.xmonisdn
-	# extra stuff, not originating from the upstream source
-	install -m 0755 debian/isdnconfig	debian/tmp/usr/sbin/
-	install -m 0755 debian/xisdnload-netup	debian/tmp/etc/isdn/
-	install -m 0755 debian/xisdnload-netdown debian/tmp/etc/isdn/
-	install -m 0755 debian/xmonisdn-netup	debian/tmp/etc/isdn/
-	install -m 0755 debian/xmonisdn-netdown	debian/tmp/etc/isdn/
-	install -m 0644 debian/init.d.functions	debian/tmp/etc/isdn/
-	install -m 0444 debian/ioptions		debian/tmp/etc/ppp/
-	install -m 0755 debian/ip-down.d debian/tmp/etc/ppp/ip-down.d/99-isdnutils
-	install -m 0755 debian/ip-up.d	 debian/tmp/etc/ppp/ip-up.d/00-isdnutils
-	# install examples
-	for A in debian/device.DEVICE debian/ipppd.DEVICE \
-	        debian/callerid.conf debian/isdn.conf debian/isdnlog.DEVICE \
-		debian/vboxd.conf debian/vboxgetty.conf debian/vbox.conf \
-		debian/auth-down debian/auth-up \
-		debian/standard.tcl ; do \
-	    cp $$A debian/tmp/usr/share/doc/isdnutils/examples/default/; \
-	done
-	install -m 0755 debian/grepconfig.pl debian/tmp/usr/share/doc/isdnutils/examples/
-	cd debian/tmp/usr/share/doc/isdnutils/examples ; cp vbox/*msg default/
-	install -m 0644 debian/CONFIG	     debian/tmp/usr/share/doc/isdnutils/
-	ln -s CONFIG debian/tmp/usr/share/doc/isdnutils/HOWTO.isdnutils
-	install -m 0644 debian/README.HiSax  debian/tmp/usr/share/doc/isdnutils/
-	install -m 0644 debian/README.MPPP   debian/tmp/usr/share/doc/isdnutils/
-	install -m 0444 debian/ioptions      debian/tmp/etc/ppp/
-	install -m 0644 debian/doc-base-isdn4linux-faq-de  debian/tmp/usr/share/doc-base/isdn4linux-faq-de
-	install -m 0644 debian/doc-base-isdn4linux-faq-eng debian/tmp/usr/share/doc-base/isdn4linux-faq-eng
-	# end of extra stuff
-	debstd README 
-	# dpkg-gencontrol -pisdnutils
-	dpkg-gencontrol -isp
-	chown -R root.root debian/tmp
-	chmod -R go=rX debian/tmp
-	dpkg --build debian/tmp ..
+	# note the "NOT!" directly after the "if" below.
+	if ! [ $(DEB_HOST_ARCH) = hurd -o $(DEB_HOST_ARCH) = hurd-i386 -o $(DEB_HOST_ARCH) = hppa -o $(DEB_HOST_ARCH) = s390 -o $(DEB_HOST_ARCH) = sh ]; then \
+	    chmod +x debian/finish-install-first.sh; \
+	    debian/finish-install-first.sh; \
+	    dh_movefiles -i; \
+	fi
+	# These apply to all arch'es:
+	mv debian/tmp/usr/share/man/man5/vbox_file.5 debian/tmp/usr/share/man/man5/vbox.5
+	install -m 0644 vbox/examples/vboxrc.example debian/isdnvboxclient/usr/share/doc/isdnvboxclient/examples/vboxrc
 
-define checkdir
-	test -f debian/rules
-endef
+	dh_movefiles -s
+
+	if ! [ $(DEB_HOST_ARCH) = hurd -o $(DEB_HOST_ARCH) = hurd-i386 -o $(DEB_HOST_ARCH) = hppa -o $(DEB_HOST_ARCH) = s390 -o $(DEB_HOST_ARCH) = sh ]; then \
+	    chmod +x debian/finish-install-last.sh; \
+	    debian/finish-install-last.sh; \
+	fi
+	# These apply to all arch'es:
+	# the binary is called vboxcnvt, not vboxconvert
+	mv debian/isdnvboxclient/usr/share/man/man1/vboxconvert.1 debian/isdnvboxclient/usr/share/man/man1/vboxcnvt.1
+
+# Build architecture-independent files here.
+# Pass -i to all debhelper commands in this target to reduce clutter.
+binary-indep: DH_OPTIONS=-i
+binary-indep: build install
+	dh_testdir
+	dh_testroot
+#	dh_installdebconf
+	dh_installdocs
+	dh_installexamples
+#	dh_installmenu
+#	dh_installemacsen
+#	dh_installpam
+#	dh_installinit
+#	dh_installcron
+#	dh_installinfo
+	dh_installchangelogs 
+	dh_link
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+#	dh_perl
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+# Build architecture-dependent files here.
+# Pass -a to all debhelper commands in this target to reduce clutter.
+binary-arch: DH_OPTIONS=-s
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installdebconf
+	dh_installdocs
+	if ! [ $(DEB_HOST_ARCH) = hurd -o $(DEB_HOST_ARCH) = hurd-i386 -o $(DEB_HOST_ARCH) = hppa -o $(DEB_HOST_ARCH) = s390 -o $(DEB_HOST_ARCH) = sh ]; then \
+	    install -m 0644 debian/README.MPPP debian/README.multiple-ipppd debian/ipppd/usr/share/doc/ipppd/; \
+	fi
+	dh_installexamples
+	dh_installmenu
+#	dh_installpam
+	# override the "global" DH_OPTIONS=-a setting for one command
+	if ! [ $(DEB_HOST_ARCH) = hurd -o $(DEB_HOST_ARCH) = hurd-i386 -o $(DEB_HOST_ARCH) = hppa -o $(DEB_HOST_ARCH) = s390 -o $(DEB_HOST_ARCH) = sh ]; then \
+	    env DH_OPTIONS='' dh_installinit --no-restart-on-upgrade --update-rcd-params='defaults 20 21' -pisdnactivecards; \
+	fi
+	# Ok, for two commands
+	# No, for one command after all. Do this one by hand.
+	# env DH_OPTIONS='' dh_installinit --no-restart-on-upgrade -pisdnutils-base
+	# the postinst stuff normally done by dh is now statically in there.
+	if ! [ $(DEB_HOST_ARCH) = hurd -o $(DEB_HOST_ARCH) = hurd-i386 -o $(DEB_HOST_ARCH) = hppa -o $(DEB_HOST_ARCH) = s390 -o $(DEB_HOST_ARCH) = sh ]; then \
+	    install -m 0755 debian/isdnutils-base.init debian/isdnutils-base/etc/init.d/isdnutils; \
+	fi
+	dh_installcron
+	if ! [ $(DEB_HOST_ARCH) = hurd -o $(DEB_HOST_ARCH) = hurd-i386 -o $(DEB_HOST_ARCH) = hppa -o $(DEB_HOST_ARCH) = s390 -o $(DEB_HOST_ARCH) = sh ]; then \
+	    ln -s ../man7/isdn_cause.7.gz   debian/isdnutils-base/usr/share/man/man1/isdncause.1.gz; \
+	fi
+	# lintian junk
+	# - duh, it's an example, why should it be executable
+	install -d debian/isdnutils-base/usr/share/lintian/overrides
+	install -m 644 debian/isdnutils-base.lintian-overrides debian/isdnutils-base/usr/share/lintian/overrides/isdnutils-base
+	# - the upstream source contains junk, how am I supposed to change that?!
+	install -d debian/isdnutils/usr/share/lintian/overrides
+	install -m 644 debian/isdnutils.lintian-overrides debian/isdnutils/usr/share/lintian/overrides/isdnutils
+	# - INSTALL is not a compilation guide, it's a real usage guide.
+	install -d debian/isdneurofile/usr/share/lintian/overrides
+	install -m 644 debian/isdneurofile.lintian-overrides debian/isdneurofile/usr/share/lintian/overrides/isdneurofile
+	# - again, examples scripts that shouldn't be executable
+	# - and I *do* want a different default depending on the language!
+	install -d debian/isdnlog/usr/share/lintian/overrides
+	install -m 644 debian/isdnlog.lintian-overrides debian/isdnlog/usr/share/lintian/overrides/isdnlog
+	# - these shared libraries are only used by a single binary that knows all about them
+	install -d debian/pppdcapiplugin/usr/share/lintian/overrides
+	install -m 644 debian/pppdcapiplugin.lintian-overrides debian/pppdcapiplugin/usr/share/lintian/overrides/pppdcapiplugin
+	# - there's no -dev package, so shut up about the shlib symlink
+	# - No, I don't call ldconfig in an unsafe manner
+	install -d debian/libcapi20/usr/share/lintian/overrides
+	install -m 644 debian/libcapi20.lintian-overrides debian/libcapi20/usr/share/lintian/overrides/libcapi20
+	# - not much chance of more processed with the name "vboxgetty", and start-stop-daemon won't work
+	# - db_input in postinst only in extreme situations
+	install -d debian/isdnvboxserver/usr/share/lintian/overrides
+	install -m 644 debian/isdnvboxserver.lintian-overrides debian/isdnvboxserver/usr/share/lintian/overrides/isdnvboxserver
+	# - yet again, examples scripts that shouldn't be executable
+	# - db_input in postinst only in extreme situations
+	install -d debian/ipppd/usr/share/lintian/overrides
+	install -m 644 debian/ipppd.lintian-overrides debian/ipppd/usr/share/lintian/overrides/ipppd
+
+	dh_installchangelogs 
+	dh_strip
+	dh_link
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+#	dh_makeshlibs
+#	dh_perl
+	dh_shlibdeps
+	dh_gencontrol
+##	# dont build isdnvboxclient on all architectures.
+##	for pkg in isdnutils isdnutils-xtools ipppd isdnlog isdnvbox isdnvboxserver libcapi20 isdnactivecards pppdcapiplugin isdneurofile; do \
+##	    dpkg-gencontrol -ldebian/changelog -isp -p$pkg -Tdebian/$pkg.substvars -Pdebian/$pkg; \
+##	done
+##	case $(DEB_HOST_ARCH) in \
+##	    hurd)	;; \
+##	    *)		dpkg-gencontrol -ldebian/changelog -isp -pisdnvboxclient -Tdebian/isdnvboxclient.substvars -Pdebian/isdnvboxclient; \
+##	esac
+##	chmod 644 debian/*/DEBIAN/control
+##	chown 0.0 debian/*/DEBIAN/control
+	dh_md5sums
+	dh_builddeb
+	# checking that nothing is left behind...
+	rm -f debian/tmp/etc/services # this should be ignored
+	@if [ $(DEB_HOST_ARCH) = hurd -o $(DEB_HOST_ARCH) = hurd-i386 -o $(DEB_HOST_ARCH) = hppa -o $(DEB_HOST_ARCH) = s390 -o $(DEB_HOST_ARCH) = sh ]; then \
+	    echo "Ignore any of the 'still existing files' listed below on this architecture."; \
+	fi
+	@if [ ! -z "`find debian/tmp ! -type d`" ]; then echo "The following files still exist in debian/tmp/:"; find debian/tmp ! -type d -ls; fi;
 
 binary: binary-indep binary-arch
-
-checkroot:
-	$(checkdir)
-	test root = "`whoami`"
-
-.PHONY: binary binary-arch binary-indep clean checkroot
-
-# vim:set ts=8 noexpandtab:
+.PHONY: build clean binary-indep binary-arch binary install

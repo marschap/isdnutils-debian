@@ -34,13 +34,14 @@ from the X Consortium.
  *
  */
 
+#include <sys/types.h>
+#include <sys/ioctl.h>
+#include <sys/fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
-#include <sys/ioctl.h>
-#include <sys/fcntl.h>
 #include <sys/time.h>
-#include <sys/types.h>
+#include <time.h>
 #include <linux/isdn.h>
 
 #include <X11/Intrinsic.h>
@@ -455,9 +456,7 @@ int main(argc, argv)
 
     t = time(NULL);
     tm = localtime(&t);
-    sprintf(now, "%4d/%02d/%02d %.2d:%.2d:%.2d",
-		 tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday,
-		 tm->tm_hour, tm->tm_min, tm->tm_sec);
+    sprintf(now, "%.2d:%.2d:%.2d", tm->tm_hour, tm->tm_min, tm->tm_sec);
     sprintf(history, "(%s) ", now);
 
     ProgramName = argv[0];

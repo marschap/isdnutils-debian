@@ -1,0 +1,61 @@
+Template: isdnutils/no_ipppd_selected
+Type: note
+Description-de: ISDNUTILS wurde aufgeteilt
+ Das alte ISDNUTILS-Paket wurde in mehrere kleinere Pakete aufgeteilt:
+ isdnutils ipppd isdnutils-xtools isdnutils-doc isdnvboxserver isdnvboxclient
+ isdnlog isdnlog-data libcapi20 isdnactivecards pppdcapiplugin isdneurofile
+ .
+ Diese Aufteilung erlaubt eine genauere Auswahl an Software, die installiert
+ werden soll, da nicht jeder den vollen Funktionsumfang benötigt. Sie müssen
+ allerdings selbst auswählen, was Sie benötigen.
+ .
+ Sie haben ipppX-Schnittstellen eingerichtet, es wurde aber ipppd nicht zur
+ Installation ausgewählt. Dies kann gefährlich sein; deshalb wird die
+ Installation von isdnutils jetzt abgebrochen.
+ .
+ Wenn Sie ipppd wirklich nicht benötigen, dann löschen Sie bitte die ipppd.*
+ Dateien im Verzeichnis /etc/isdn. Stoppen Sie danach die ipppX-
+ Schnittstellen und installieren Sie isdnutils neu.
+ .
+ Wenn Sie dselect verwenden, dann markieren (+) Sie ipppd und die anderen
+ von Ihnen benötigten Pakete (z.B. isdnlog, isdnvbox, isdnutils-xtools),
+ dies sollte aber auch automatisch geschehen. Wenn Sie apt-get verwenden,
+ dann starten Sie bitte 'apt-get -f install' um andere Pakete, die bereits
+ entpackt aber noch nicht installiert wurde, zu konfigurieren.
+
+Template: isdnutils/firmware
+Type: select
+Choices: none, ISAR.BIN
+Choices-de: keine, ISAR.BIN
+Default: none
+Description-de: Muss eine Firmware geladen werden?
+ Manche ISDN-Karten funktionieren erst, wenn eine Firmware auf die Karte
+ geladen wurde, wie z.B. die Sedlbauer SpeedFax+ PCI oder Siemens I-Surf.
+ Diese beiden Karten benötigen ISAR.BIN. (Andere Karten sind zur Zeit
+ nicht bekannt.) Wählen Sie "ISAR.BIN", wenn dies notwendig sein sollte.
+ Wenn Sie nicht wissen, worum es hier geht, dann wählen Sie "keine".
+
+Template: isdnutils/firmwarecards
+Type: string
+Description-de: Welche ISDN-Karten-Nummern müssen mit Firmware geladen werden?
+ Wenn Sie mehr als eine ISDN-Karte haben, dann geben Sie hier die Nummer(n)
+ der Karte(n), beginnend mit 1, getrennt mit Kommas, ein, für die eine
+ Firmware geladen werden muss. Wenn Sie nur eine Karte haben, dann geben
+ Sie hier "1" ein. Wenn Sie zwei Karten haben, für die eine Firmware geladen
+ werden muss, dann geben Sie hier "1,2" ein.
+
+Template: isdnutils/makedev
+Type: select
+Choices: yes, no
+Choices-de: ja, nein
+Default: yes
+Description-de: Sollen die ISDN-Geräte erstellt werden?
+ Sie sollten hier mit "ja" antworten.
+ .
+ Ihr System besitzt vielleicht nicht die ISDN-spezifischen Einträge im
+ Verzeichnis /dev. Bevor Sie isdnutils verwenden können, müssen diese
+ Einträge erstellt werden. Wählen Sie "no", wen Sie dies nicht wollen
+ oder wenn Sie die Einträge von Hand erstellen wollen. Diese Antwort
+ ist für alle ISDN-abhängigen Pakete von Bedeutung. Die Debian-Policy
+ schreibt vor, dann diese Frage gestellt wird.
+

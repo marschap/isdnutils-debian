@@ -1,0 +1,337 @@
+#!/bin/sh -e
+
+if [ "$1" != "configure" ]; then exit 0; fi
+
+# Source debconf library.
+. /usr/share/debconf/confmodule
+
+db_set isdnvboxserver/dummy donetwice # next time, do it again
+
+# Do this first, so we can shortcut the rest
+if ! egrep -q '#-- isdn(vboxserver|utils) begin' /etc/inittab; then
+    # I hate having to cater for history
+    if ! egrep -q vboxgetty /etc/inittab; then
+        db_get isdnvboxserver/doinit || true
+        if [ $RET = yes ]; then
+            cat >>/etc/inittab <<EOF
+#-- isdnvboxserver begin
+I6:2345:respawn:/usr/sbin/vboxgetty -d /dev/ttyI6
+#-- isdnvboxserver end
+EOF
+        else
+            cat >>/etc/inittab <<EOF
+#-- isdnvboxserver begin
+#I6:2345:respawn:/usr/sbin/vboxgetty -d /dev/ttyI6
+#-- isdnvboxserver end
+EOF
+        fi
+    fi
+else
+    # restart with possibly changed parameters
+    if killall -q vboxgetty 2>/dev/null; then
+        : # ok
+    else
+        for i in /var/run/vboxgetty-*.pid; do
+            kill `cat $i 2>/dev/null || true` 2>/dev/null || true # sheesh
+        done
+    fi
+fi
+# Doing this now isn't so bad, even though perhaps the config files
+# aren't correct yet, because it won't be started until needed anyway.
+# It's a different story for 'init q' though.
+    # the "|| true" is because update-inetd fails if xinetd is used?! Not my problem.
+update-inetd --add "vboxd	stream	tcp	nowait	root	/usr/sbin/tcpd	/usr/sbin/vboxd" || true
+
+db_get isdnvboxserver/msn || true
+VBOX_MSN=`echo "$RET" | tr -d ' '`; export VBOX_MSN
+if [ -z "$RET" -o `echo "$RET" | tr A-Z a-z` = quit ]; then # do it by hand
+    echo "Not touching any isdnvboxserver config files."
+    db_stop
+    exit 0
+fi
+
+# DONT ADD A USER!
+# if ! grep -q '^vbox:' /etc/passwd; then
+#     stderr="`adduser --system --home /var/spool/vbox --ingroup dialout --disabled-password --gecos 'vbox daemons' vbox 2>&1`"
+#     if [ $? -ne 0 ]; then
+#         db_subst isdnvboxserver/adduserfailed MSG "$stderr"
+#         db_input high isdnvboxserver/adduserfailed
+#     else
+#         db_input low isdnvboxserver/adduserdone
+#     fi
+#     db_go || true
+# fi
+VBOX_CONFFILE=
+if [ -s /etc/isdn/vboxgetty.conf ]; then
+    # only use ttyI6
+    eval `perl -- - /etc/isdn/vboxgetty.conf <<'EOF'
+        while (<>) { last if m,^port /dev/ttyI6,; }
+        while (<>) {
+            last if m,^port,;
+            if (/^\s+spooldir\s+(\S+)/) {
+                print "VBOX_SPOOL=$1\n";
+                exit 0;
+            }
+        }
+EOF
+    `
+fi
+if [ -s /etc/isdn/vboxd.conf ]; then
+    eval `perl -- - /etc/isdn/vboxd.conf <<'EOF'
+        while (<>) { last if m,^# Remove this comment if you don't want,; }
+        # next line is the one
+        if ($_ = <>) {
+            m,^A:[^:]+:[^:]+:([^:]+):([^:]+):([^:]+),;
+            print "VBOX_USERSPOOL=$3\n";
+            exit 0;
+        }
+EOF
+    `
+fi
+db_get isdnvboxserver/user || true
+VBOX_USER=`echo "$RET" | tr -d ' '`
+if [ ! -z "$VBOX_USER" ]; then
+    db_get isdnvboxserver/password || true
+    VBOX_PASSWORD=$(echo "$RET" | tr -d ' ')
+fi
+db_get isdnvboxserver/daemonuser || true
+VBOX_DUSER=`echo "$RET" | tr -d ' '`
+
+###################################
+# We have to clean up a big (potential) mess here.
+# There were different places where the spooldir could be:
+#
+# - /var/spool/vbox/${name of daemon user}
+# - /var/spool/vbox/${name of vboxd user}
+# - /var/spool/vbox/${something else?}
+#
+# I want to normalize this to just:
+#
+# - /var/spool/vbox/${name of ttyI device}
+#
+# which is more logical as multiple (vboxd) users can access the same
+# spool. Usually you'd want each vboxgetty process to write into its
+# own spool directory (if you want multiple MSNs into one spool, there's
+# a way of making one ttyI device listen to multiple MSNs and hence only
+# one vboxgetty)
+###################################
+
+if [ ! -z "$VBOX_SPOOL" ]; then
+    # there's a value already in vboxgetty.conf
+    # normalize it to the name of the device that is listened to (ttyI6)
+    VBOX_SPOOLold="$VBOX_SPOOL"
+    # VBOX_SPOOL=`echo $VBOX_SPOOL | sed "s,/[^/]*\$,/$VBOX_USER,"`
+    VBOX_SPOOL=/var/spool/vbox/ttyI6
+else
+    VBOX_SPOOLold=/vvaarr/ssppooooll/vvbbooxx/doesntexist
+    VBOX_SPOOL=/var/spool/vbox/ttyI6
+fi
+# VBOX_SPOOL now contains the ttyI version
+# remember the names but make a silly name if they're not defined
+# (I don't really like this solution but, hey, it works...)
+VVBOX_SPOOLold="$VBOX_SPOOLold"
+if [ -z "$VVBOX_SPOOLold" ]; then
+    VVBOX_SPOOLold=/vvaarr/ssppooooll/vvbbooxx/doesntexist_1
+fi
+VVBOX_USERSPOOL="$VBOX_USERSPOOL"
+if [ -z "$VVBOX_USERSPOOL" ]; then
+    VVBOX_USERSPOOL=/vvaarr/ssppooooll/vvbbooxx/doesntexist_2
+fi
+# Now check if the value in the vboxgetty.conf file is different:
+if [ "$VBOX_SPOOL" != "$VBOX_SPOOLold" ]; then
+    # it's different...
+    # Check if both dirs exist. If the new one doesn't, we can simply
+    # rename the old one if necessary.
+    if [ ! -d "$VBOX_SPOOL" ]; then
+        # new dir doesn't exist
+        if [ -d "$VBOX_SPOOLold" ]; then
+            # old one does. So rename
+            mv "$VBOX_SPOOLold" "$VBOX_SPOOL" || echo "mv 1 failed"
+            db_subst isdnvboxserver/spoolrename OLDSPOOL "$VBOX_SPOOLold"
+            db_subst isdnvboxserver/spoolrename NEWSPOOL "$VBOX_SPOOL"
+            db_fset isdnvboxserver/spoolrename seen false
+            db_input high isdnvboxserver/spoolrename || true
+            db_go
+            # forget it ever existed
+            VVBOX_SPOOLold=/vvaarr/ssppooooll/vvbbooxx/doesntexist_1
+        # else create new one.
+        # But we might have to rename another one, so don't just yet.
+        fi
+    fi
+    if [ ! -d "$VBOX_SPOOL" ]; then
+        # new dir STILL doesn't exist
+        if [ -d "$VBOX_USERSPOOL" ]; then
+            # old (vboxd user) one does. So rename
+            mv "$VBOX_USERSPOOL" "$VBOX_SPOOL" || echo "mv 2 failed"
+            db_subst isdnvboxserver/spoolrename OLDSPOOL "$VBOX_USERSPOOL"
+            db_subst isdnvboxserver/spoolrename NEWSPOOL "$VBOX_SPOOL"
+            db_fset isdnvboxserver/spoolrename seen false
+            db_input high isdnvboxserver/spoolrename || true
+            db_go
+            # forget it ever existed
+            VBOX_USERSPOOL=/vvaarr/ssppooooll/vvbbooxx/doesntexist_2
+        else
+            # now we're free to create the new one
+            mkdir -p "$VBOX_SPOOL"
+            db_subst isdnvboxserver/spoolcreate NEWSPOOL "$VBOX_SPOOL"
+            db_input low  isdnvboxserver/spoolcreate || true
+            db_go
+        fi
+    fi
+    # The new dir should exist now, one way or another
+    if [ ! -d "$VBOX_SPOOL" ]; then
+        echo "$VBOX_SPOOL doesn't exist here!!!!! PANIC"
+        exit 1
+    fi
+    if [ -d "$VBOX_SPOOLold" ]; then
+        # the old dir and the new dir both exist
+        if [ -d "$VBOX_USERSPOOL" ]; then
+            # they ALL exist!
+            # use the remembered values!
+            db_subst isdnvboxserver/dup3spool OLDSPOOL1 "$VVBOX_SPOOLold"
+            db_subst isdnvboxserver/dup3spool OLDSPOOL2 "$VVBOX_SPOOLold"
+            db_subst isdnvboxserver/dup3spool NEWSPOOL "$VBOX_SPOOL"
+            db_fset isdnvboxserver/dup3spool seen false
+            db_input high isdnvboxserver/dup3spool || true
+            db_go
+        else
+            db_subst isdnvboxserver/dupspool OLDSPOOL "$VVBOX_SPOOLold"
+            db_subst isdnvboxserver/dupspool NEWSPOOL "$VBOX_SPOOL"
+            db_fset isdnvboxserver/dupspool seen false
+            db_input high isdnvboxserver/dupspool || true
+            db_go
+        fi
+    else
+        # the old userspool dir may also exist!
+        if [ -d "$VVBOX_USERSPOOL" ]; then
+            db_subst isdnvboxserver/dupspool OLDSPOOL "$VVBOX_USERSPOOL"
+            db_subst isdnvboxserver/dupspool NEWSPOOL "$VBOX_SPOOL"
+            db_fset isdnvboxserver/dupspool seen false
+            db_input high isdnvboxserver/dupspool || true
+            db_go
+        fi
+    fi
+elif [ ! -d "$VBOX_SPOOL" ]; then
+    # on initial installation it won't exist, and "old" name == new name
+    # so create it here if necessary
+    mkdir -p "$VBOX_SPOOL"
+    db_subst isdnvboxserver/spoolcreate NEWSPOOL "$VBOX_SPOOL"
+    db_input low  isdnvboxserver/spoolcreate || true
+    db_go
+fi
+if chown -R "$VBOX_DUSER" "$VBOX_SPOOL"; then
+    : #OK
+else
+    echo "Somehow the user you entered is not valid after all."
+    echo "Run 'dpkg-reconfigure isdnvboxserver' to remedy the situation."
+    echo "Continuing on now anyway."
+    VBOX_DUSER=''
+fi
+
+# end of spooldir handling....
+###################################
+
+#XXX notused
+#XXXif [ -z "$VBOX_CONFFILE" ]; then
+#XXX    if [ -s $VBOX_SPOOL/vbox.conf ]; then
+#XXX        VBOX_CONFFILE=$VBOX_SPOOL/vbox.conf
+#XXX    fi
+#XXXfi
+
+if [ ! -z "$VBOX_DUSER" ]; then
+    VBOX_USERHOME=`grep "^$VBOX_DUSER:" /etc/passwd | cut -f6 -d:`
+    if [ ! -z "$VBOX_USERHOME" ]; then
+        if [ -d "$VBOX_SPOOL" ]; then
+            chown -R "$VBOX_DUSER" "$VBOX_SPOOL"
+        fi
+        if [ -d "$VBOX_USERHOME" ]; then
+            if [ ! -s "$VBOX_USERHOME/.vbox.conf" ]; then
+                if [ ! -z "$VBOX_CONFFILE" -a -s "$VBOX_CONFFILE" ]; then
+                    mv "$VBOX_CONFFILE" "$VBOX_USERHOME/.vbox.conf" || echo "mv 3 failed"
+                    db_subst isdnvboxserver/vboxmoved OLD $VBOX_CONFFILE
+                    db_subst isdnvboxserver/vboxmoved DIR $VBOX_USERHOME
+                    db_input high isdnvboxserver/vboxmoved || true
+                else
+                    cp /usr/share/isdn/default/vbox.conf $VBOX_USERHOME/.vbox.conf   
+                    db_subst isdnvboxserver/vboxcreate DIR $VBOX_USERHOME
+                    db_input high isdnvboxserver/vboxcreate || true
+                fi
+                chown $VBOX_DUSER $VBOX_USERHOME/.vbox.conf
+            fi
+        else
+            db_subst isdnvboxserver/vboxnodir DIR  $VBOX_USERHOME
+            db_subst isdnvboxserver/vboxnodir USER "$VBOX_DUSER"
+            db_fset isdnvboxserver/vboxnodir seen false
+            db_input high isdnvboxserver/vboxnodir || true
+        fi
+    else
+        db_subst isdnvboxserver/vboxnouser USER $VBOX_DUSER
+        db_input high isdnvboxserver/vboxnouser || true
+    fi
+    db_go || true
+    #if [ -s $VBOX_USERHOME/.vbox.conf ]; then
+    #	: # edit rings etc.
+    #fi
+    mv -f /etc/isdn/vboxgetty.conf /etc/isdn/vboxgetty.conf.bak || echo "mv 4 failed"
+    perl -- - > /etc/isdn/vboxgetty.conf <<EOF
+        open(STDIN, '/etc/isdn/vboxgetty.conf.bak');
+        while (<>) { print; last if m,^port /dev/ttyI6,; }
+        while (<>) {
+            if (m,^port,) {
+            print;
+            last;
+            }
+            s/^(\s+modeminit\s+.*&E)\s*\d*(.*)/\${1}$VBOX_MSN\${2}/;
+            s/^(\s+user\s+)\S+(.*)/\${1}$VBOX_DUSER\${2}/;
+            s,^(\s+spooldir\s+).*$,\${1}$VBOX_SPOOL,;
+            s,^(\s+vboxconfig\s+).*$,\${1}$VBOX_USERHOME/.vbox.conf,;
+            print;
+        }
+        print <>;
+EOF
+fi
+if [ ! -z "$VBOX_USER" ]; then
+# Lines in vboxd.conf:
+#   # Remove this comment if you don't want any configuration to happen.
+#   A:localhost:RW:username:*invalid*password*:/var/spool/vbox/username:incoming
+    if [ -s /etc/isdn/vboxd.conf ]; then
+        mv -f /etc/isdn/vboxd.conf /etc/isdn/vboxd.conf.bak || echo "mv 5 failed"
+        VBOX_PASSWORD_ESC=`echo "$VBOX_PASSWORD" | perl -pe 'print quotemeta'`
+        perl -- - > /etc/isdn/vboxd.conf <<EOF
+            \$user = <DATA>; chomp \$user;
+            \$password = <DATA>; chomp \$password;
+            \$spool = <DATA>; chomp \$spool;
+            # perhaps password is already crypted
+            unless (\$password =~ /^DES /) {
+                # yes, I know the salt should be random, no inspiration right now
+                \$password = 'DES ' . crypt(\$password, 'vv');
+            }
+            open(STDIN, '/etc/isdn/vboxd.conf.bak');
+            while (<>) { print; last if m,^# Remove this comment if you don't want,; }
+            if (\$_ = <>) {
+                    s{^(A:[^:]+:[^:]+):[^:]+:[^:]+:[^:]+}{\$1:\$user:\$password:\$spool};
+                    print;
+                    print <>;
+            }
+__DATA__
+$VBOX_USER
+$VBOX_PASSWORD
+$VBOX_SPOOL
+EOF
+        chmod 600 /etc/isdn/vboxd.conf
+        chown root /etc/isdn/vboxd.conf
+    fi
+fi
+
+# if inittab was changed up above, make init reread it
+/sbin/init q
+# vboxgetty might have new parameters, make sure they're used
+if [ -s /var/run/vboxgetty-ttyI6.pid ]; then
+    kill `cat vboxgetty-ttyI6.pid 2>/dev/null` >/dev/null 2>&1 || true
+fi
+
+db_stop
+
+#DEBHELPER#
+
+exit 0

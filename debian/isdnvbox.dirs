@@ -1,8 +1,0 @@
-etc/isdn
-usr/bin
-usr/sbin
-usr/share/doc/isdnvbox
-usr/share/doc/isdnvbox/examples
-usr/share/doc/isdnvbox/examples/default
-usr/share/doc/isdnvbox/examples/vbox
-var/spool/vbox

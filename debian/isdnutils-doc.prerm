@@ -1,0 +1,39 @@
+#! /bin/sh
+# prerm script for isdnutils-doc
+
+set -e
+
+# summary of how this script can be called:
+#        * <prerm> `remove'
+#        * <old-prerm> `upgrade' <new-version>
+#        * <new-prerm> `failed-upgrade' <old-version>
+#        * <conflictor's-prerm> `remove' `in-favour' <package> <new-version>
+#        * <deconfigured's-prerm> `deconfigure' `in-favour'
+#          <package-being-installed> <version> `removing'
+#          <conflicting-package> <version>
+# for details, see /usr/doc/packaging-manual/
+
+case "$1" in
+    remove)
+	# Grr
+	rm -f /usr/share/doc/isdnutils-doc/*FAQ/.dhelp
+        ;;
+    upgrade|deconfigure)
+#       install-info --quiet --remove /usr/info/isdnutils.info.gz
+	if [ -x /usr/sbin/install-docs ]; then
+	    install-docs -r isdn4linux-FAQ-de
+	    install-docs -r isdn4linux-FAQ-en
+	    install-docs -r isdn4linux-MiniFAQ
+	fi 
+        ;;
+    failed-upgrade)
+        ;;
+    *)
+        echo "prerm called with unknown argument \`$1'" >&2
+        exit 0
+    ;;
+esac
+
+#DEBHELPER#
+
+exit 0

@@ -73,24 +73,24 @@ nolzs			# LZS compression off (not yet supported fully)
 
 # IP NETWORKING
 
-#noip			# en/disable ip transfer
-#X:Y			# set local ip to X, remote ip to Y
-noipdefault		# don't use name for default ip addr
-#useifip		# use ip addresses form interface
-#usefirstip		# use first ip from auth file for remote
-netmask 255.255.255.255	# set netmask, 255.255.255.255 is for pointopoint
-#defaultroute 		# (dont) set default route 
-nohostroute		# dont set host route
-#noproxyarp		# (dont) set an proxy arp entry
-#mru X			# set maximum size of recive units to X
-#default-mru		# disable mru negotation
-mtu 1500		# set maximum size of transmit units to X (1500 is OK)
-#useifmtu		# use mtu from interface
-#ipparam X		# set ip parameters in script X
-#ms-dns X		# dns address for the peers use (dialin only)
-#ms-wins X		# wins address for the peers use (dialin only)
-#ms-get-dns		# accept peers suggestion of dns address (dialout)
-#set_userip 		# define valid ip addresses in /etc/ppp/useriptab
+#noip			# (do not) disable ip transfer
+#X:Y			# (do not) set local ip to X, remote ip to Y
+noipdefault		#  do not  use name for default ip addr
+#useifip		# (do)     use ip addresses from interface
+#usefirstip		# (do)     use first ip from auth file for remote
+netmask 255.255.255.255	#  do      set netmask, 255.255.255.255 for pointopoint
+#defaultroute 		# (do not) set default route 
+nohostroute		#  do not  set host route
+#proxyarp		# (do not) set an proxy arp entry
+#mru X			# (do not) set maximum size of receive units to X
+#default-mru		# (do not) enable mru negotation
+mtu 1500		#  do      set max size of transmit units (1500 is OK)
+#useifmtu		# (do not) use mtu from interface
+#ipparam X		# (do not) set ip parameters in script X
+#ms-dns X		# (do not) set dns addr for the peers use (dialin only)
+#ms-wins X		# (do not) wins address for the peers use (dialin only)
+#ms-get-dns		# (do not) accept peers suggestion of dns addr (dialout)
+#set_userip 		# (do not) define valid ip addrs in /etc/ppp/useriptab
 
 
 #ipcp-restart X		# Set timeout for IPCP 

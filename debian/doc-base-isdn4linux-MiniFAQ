@@ -1,0 +1,12 @@
+Document: isdn4linux-MiniFAQ
+Title: isdn4linux MiniFAQ in english and german
+Author: Erik Corry
+Abstract: The MiniFAQ for isdn4linux as posted every week in the mailing list
+Section: Apps/Net
+
+Format: HTML
+Index: /usr/share/doc/isdnutils-doc/Mini-FAQ/isdn-faq.html
+Files: /usr/share/doc/isdnutils-doc/Mini-FAQ/*.html
+
+Format: text
+Files: /usr/share/doc/isdnutils-doc/Mini-FAQ/isdn-faq.txt.gz

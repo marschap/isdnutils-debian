@@ -1,5 +1,5 @@
 #
-# $Id: config.in,v 1.25 1998/12/07 13:28:22 fritz Exp $
+# $Id: config.in,v 1.36 2000/06/20 10:16:16 keil Exp $
 #
 # The whole configuration stuff is borrowed from the kernel
 # configuration.
@@ -40,12 +40,12 @@ string 'Your area code' CONFIG_AREACODE
 string 'Default country prefix' CONFIG_COUNTRY_PREFIX
 string 'Default area prefix' CONFIG_AREA_PREFIX
 string 'Directory to install fixed data' CONFIG_DATADIR
-choice 'Database for area codes' \
-        "Areacode CONFIG_LIB_AREACODE \
-        Avon CONFIG_LIB_AVON"
-if [ "$CONFIG_LIB_AVON" = "y" ]; then
-	string 'Directory to install avon database' CONFIG_AVON_DATA
-fi
+#choice 'Database for area codes' \
+#        "Areacode CONFIG_LIB_AREACODE \
+#        Avon CONFIG_LIB_AVON"
+#if [ "$CONFIG_LIB_AVON" = "y" ]; then
+#	string 'Directory to install avon database' CONFIG_AVON_DATA
+#fi
 endmenu
 mainmenu_option nextcomment
 comment 'Runtime configuration tools'
@@ -54,22 +54,26 @@ if [ "$CONFIG_ISDNCTRL" = "y" ]; then
 #	bool 'Enable isdnctrl debug-option' CONFIG_ISDNCTRL_DEBUG
 	bool 'Enable configfile-option (uses dbm lib)' CONFIG_ISDNCTRL_CONF
 	bool 'Enable timru-controls' CONFIG_ISDNCTRL_TIMRU
+	if [ "$CONFIG_EXPERIMENTAL" = "y" ]; then
+		bool 'Enable udp-info-controls' CONFIG_ISDNCTRL_DWABC_UDP_INFO
+	fi
 fi
 bool 'iprofd' CONFIG_IPROFD
+bool 'divertctrl' CONFIG_DIVERTCTRL
 endmenu
 mainmenu_option nextcomment
 comment 'Card configuration tools'
-bool 'telesctrl' CONFIG_TELESCTRL
 bool 'hisaxctrl' CONFIG_HISAXCTRL
 bool 'icnctrl' CONFIG_ICNCTRL
 if [ "$CONFIG_ICNCTRL" = "y" ]; then
 	bool 'Enable icnctrl debug-option' CONFIG_ICNCTRL_DEBUG
 fi
 bool 'pcbitctl' CONFIG_PCBITCTL
-bool 'avmcapictrl' CONFIG_AVMCAPICTRL
+bool 'avmcapictrl / capiinit' CONFIG_AVMCAPICTRL
 if [ -f $CONFIG_KERNELDIR/drivers/isdn/act2000/act2000.h ] ; then
 	bool 'actctrl' CONFIG_ACTCTRL
 fi
+bool 'eiconctrl' CONFIG_EICONCTRL
 if [ "$CONFIG_EXPERIMENTAL" = "y" ]; then
 	bool 'loopctrl' CONFIG_LOOPCTRL
 	if [ "$CONFIG_LOOPCTRL" = "y" ]; then
@@ -111,6 +115,11 @@ fi
 if [ "$CONFIG_EXPERIMENTAL" = "y" ]; then
 	bool 'capifax' CONFIG_CAPIFAX
 	bool 'rcapid' CONFIG_RCAPID
+	bool 'pppdcapiplugin' CONFIG_PPPDCAPIPLUGIN
+fi
+if [ "$CONFIG_EXPERIMENTAL" = "y" ]; then
+	bool 'eurofile' CONFIG_EUROFILE
+		source eurofile/.Config.in
 fi
 endmenu
 mainmenu_option nextcomment

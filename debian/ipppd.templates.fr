@@ -1,0 +1,223 @@
+Template: ipppd/makedev
+Type: select
+Choices: yes, no
+Choices-fr: oui, non
+Default: yes
+Description: May I create ISDN device entries?
+ Everybody should basically choose "yes" here.
+ .
+ Your system may be missing ISDN-specific entries in /dev . Before ipppd
+ can be of any use to you, these entries must be made. Select "no" if you
+ don't want this, e.g. because you want to do it yourself by hand. Note
+ that the answer here is used for all ISDN-related packages that may need
+ to create devices. Debian policy demands that this question be asked.
+Description-fr: Puis-je créer les entrées de type RNIS ?
+ Tout le monde doit dire « oui » ici !
+ .
+ Il se peut que votre système n'ait pas d'entrée de type RNIS (ISDN, en
+ anglais) dans /dev. Il faut créer ces entrées pour qu'ipppd serve à
+ quelque chose. Choisissez « non » si vous ne voulez pas le faire,
+ c'est-à-dire si vous voulez le faire manuellement. Remarquez que votre
+ réponse sera utilisée pour tous les paquets relatifs à RNIS qui ont
+ besoin de créer des périphériques. La Charte Debian exige que cette
+ question soit posée.
+
+Template: ipppd/ispwontdoit
+Type: note
+Description: ISP dialup config exists already
+ The files device.${IPPP0} and ipppd.${IPPP0} already exist. Therefore the ipppd
+ configuration phase won't touch anything there, as it looks like it's
+ already been configured.
+ .
+ If it doesn't work yet, and you want to try the automatic configuration,
+ stop all ISDN processes (use "/etc/init.d/isdnutils stop"), remove the
+ files mentioned above, and rerun the configuration with "dpkg-reconfigure
+ ipppd".  After that, restart the ISDN processes: "/etc/init.d/isdnutils
+ start".
+Description-fr: La configuration pour appeler le FAI existe déjà
+ Les fichiers device.${IPPP0} et ipppd.${IPPP0} existent déjà. Il semble donc que
+ la configuration a déjà été faite : rien ne sera changé.
+ .
+ Si pour l'instant rien ne marche et que vous vouliez essayer la
+ configuration automatique, arrêtez tous les processus RNIS (avec :
+ /etc/init.d/isdnutils stop), supprimez les fichiers device.ippp0 et
+ ipppd.ippp0 et relancez la configuration avec : dpkg-reconfigure ipppd.
+ Ensuite relancez les processus RNIS : /etc/init.d/isdnutils start.
+
+Template: ipppd/ispphone
+Type: string
+Description: What is your ISP's phone number?
+ What number must be dialed for connecting to the internet?
+ .
+ This is the number complete with areacode, any necessary leading zeroes
+ etc. that may be needed to get an outside line.
+ .
+ It is possible to enter more than one number here if there are
+ alternatives available, simply enter the numbers with a space in between.
+ .
+ Leave this blank if you want to manually configure the ISP connection.
+Description-fr: Quel est le numéro d'appel de votre FAI ?
+ Quel numéro faut-il composer pour se connecter sur internet ?
+ .
+ C'est un numéro complet, avec l'indicatif de zone, les zéros nécessaires
+ et tout ce qui permet un accès vers l'extérieur.
+ .
+ On peut donner plusieurs numéros si nécessaire ; séparez-les par un
+ espace.
+ .
+ Laissez ce champ vide si vous voulez configurer « à la main » la connexion
+ vers le FAI.
+
+Template: ipppd/eaz
+Type: string
+Default: 0
+Default-fr: 0
+Description: What is your local MSN?
+ When making a call with ISDN, the MSN (phone number) that is originating
+ the call must be given in the call-setup message. While usually a wrong
+ MSN will be replaced by the main MSN for the ISDN line, especially on
+ PABXes a wrong MSN (often the extension number in this case) will cause
+ the call-setup to fail. So, it is best to enter the correct local MSN
+ here.
+ .
+ This may also be necessary if you want the costs to be registered to one
+ particular MSN, in case you have more than one MSN and this is supported
+ by your telco.
+Description-fr: Quel est votre numéro de téléphone interne ?
+ Lors d'un appel avec une ligne RNIS, le numéro de téléphone émetteur de
+ l'appel doit être donné dans le message de configuration de l'appel.
+ D'ordinaire, un mauvais numéro sera remplacé par le numéro de téléphone
+ principal de la ligne RNIS, mais avec certains auto-commutateurs privés
+ (PABX), un mauvais numéro -- dans ce cas, il s'agit souvent d'une
+ erreur dans le suffixe -- entraînera l'échec de la configuration de
+ l'appel. Il vaut donc mieux fournir le bon numéro interne ici.
+ .
+ Cela peut aussi s'avérer nécessaire si vous voulez enregistrer les
+ coûts de communication d'un numéro particulier, si vous avez plus d'un
+ numéro interne et si votre opérateur télécom fournit ce service.
+
+Template: ipppd/isplogin
+Type: string
+Description: What is the user name for logging into your ISP?
+ Most (all?) ISPs need a user name and password for authenticating you as a
+ valid user before allowing access. Enter the user name here. The password
+ will be asked for next.
+Description-fr: Quel est votre nom d'utilisateur pour vous connecter à votre FAI ?
+ La plupart (tous ?) des FAI demandent un nom d'utilisateur et un mot de
+ passe pour vous authentifier avant de permettre l'accès à leur service.
+ Veuillez donner ce nom. Le mot de passe, c'est pour la prochaine question.
+
+Template: ipppd/isppasswd
+Type: password
+Description: What is the password for logging into your ISP?
+ The password you give here will be entered into /etc/ppp/pap-secrets and
+ /etc/ppp/chap-secrets together with the username.
+Description-fr: Quel est votre mot de passe pour vous connecter à votre FAI ?
+ Le mot de passe que vous entrez ici sera mis dans /etc/ppp/pap-secrets
+ et dans /etc/ppp/chap-secrets avec votre nom d'utilisateur.
+
+Template: ipppd/isploginpapalreadythere
+Type: note
+Description: ISP user name already in pap-secrets
+ The user name you entered for logging into your ISP is already listed in
+ the /etc/ppp/pap-secrets file. That's not a problem; the existing entry
+ will be commented out, and a new entry with the data you just entered will
+ be inserted.
+Description-fr: Votre nom d'utilisateur est déjà dans pap-secrets
+ Le nom d'utilisateur que vous avez donné pour vous connecter à votre
+ FAI existe déjà dans le fichier /etc/ppp/pap-secrets. Ce n'est pas un
+ problème ; l'entrée existante sera mise en commentaire et la valeur
+ que vous venez de donner sera inscrite.
+
+Template: ipppd/isploginchapalreadythere
+Type: note
+Description: ISP user name already in chap-secrets
+ The user name you entered for logging into your ISP is already listed in
+ the /etc/ppp/chap-secrets file. That's not a problem; the existing entry
+ will be commented out, and a new entry with the data you just entered will
+ be inserted.
+Description-fr: Votre nom d'utilisateur est déjà dans chap-secrets
+ Le nom d'utilisateur que vous avez donné pour vous connecter à votre
+ FAI existe déjà dans le fichier /etc/ppp/chap-secrets. Ce n'est pas un
+ problème ; l'entrée existante sera mise en commentaire et la valeur
+ que vous venez de donner sera inscrite.
+
+Template: ipppd/isploginpapchapalreadythere
+Type: note
+Description: ISP user name already in chap-secrets and pap-secrets
+ The user name you entered for logging into your ISP is already listed in
+ the chap-secrets and pap-secrets files in /etc/ppp/. That's not a problem;
+ the existing entries will be commented out, and new entries with the data
+ you just entered will be inserted.
+Description-fr: Votre nom d'utilisateur est déjà dans chap-secrets et dans pap-secrets
+ Le nom d'utilisateur que vous avez donné pour vous connecter à votre
+ FAI existe déjà dans les fichiers chap-secrets et pap-secrets dans le
+ répertoire /etc/ppp/. Ce n'est pas un problème ; l'entrée existante
+ sera mise en commentaire et la valeur que vous venez de donner sera
+ inscrite.
+
+Template: ipppd/oldipup
+Type: note
+Description: /etc/ppp/ip-up.d/00-isdnutils still exists
+ The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package
+ still exists. If you changed that file at some point, you may need to redo
+ those changes in the 00-ipppd file (which is the new name). After that,
+ please delete the old 00-isdnutils file.
+ .
+ Until it is deleted, it will still be used! This may cause conflicts.
+Description-fr: /etc/ppp/ip-up.d/00-isdnutils existe encore.
+ Le fichier /etc/ppp/ip-up.d/00-isdnutils qui appartient à l'ancien paquet
+ isdnutils existe encore. Si vous avez modifié ce fichier en quelque façon,
+ vous pouvez vouloir transférer ces changements au nouveau fichier
+ 00-ipppd. Ensuite veuillez supprimer l'ancien fichier 00-isdnutils.
+ .
+ Tant qu'il n'est pas supprimé, il est utilisé et cela peut provoquer des
+ conflits.
+
+Template: ipppd/oldipdown
+Type: note
+Description: /etc/ppp/ip-down.d/99-isdnutils still exists
+ The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package
+ still exists. If you changed that file at some point, you may need to redo
+ those changes in the 99-ipppd file (which is the new name). After that,
+ please delete the old 99-isdnutils file.
+ .
+ Until it is deleted, it will still be used! This may cause conflicts.
+Description-fr: /etc/ppp/ip-down.d/99-isdnutils existe encore
+ Le fichier /etc/ppp/ip-down.d/99-isdnutils qui appartient à l'ancien
+ paquet isdnutils existe encore. Si vous avez modifié ce fichier en quelque
+ façon, vous pouvez vouloir transférer ces changements au nouveau fichier
+ 99-ipppd. Ensuite veuillez supprimer l'ancien fichier 99-isdnutils.
+ .
+ Tant qu'il n'est pas supprimé, il est utilisé et cela peut provoquer des
+ conflits.
+
+Template: ipppd/oldipupdown
+Type: note
+Description: old /etc/ppp/ip-up.d and ip-down.d scripts still exist
+ The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils
+ files from the old isdnutils package still exist. If you changed those
+ files at some point, you may need to redo those changes in the 00-ipppd
+ and 99-ipppd files (which are the new names). After that, please delete
+ the old 00-isdnutils and 99-isdnutils files.
+ .
+ Until they are deleted, they will still be used! This may cause conflicts.
+Description-fr: Les anciens scripts /etc/ppp/ip-up.d et ip-down.d existent encore
+ Les fichiers /etc/ppp/ip-up.d/00-isdnutils et
+ /etc/ppp/ip-down.d/99-isdnutils qui appartiennent à l'ancien paquet
+ isdnutils existent encore. Si vous avez modifié ces fichiers en quelque
+ façon, vous pouvez vouloir transférer ces changements aux nouveaux
+ fichiers 00-ipppd et 99-ipppd. Ensuite veuillez supprimer les anciens
+ fichiers 00-isdnutils et 99-isdnutils.
+ .
+ Tant qu'ils ne sont pas supprimés, il sont utilisés et cela peut provoquer
+ des conflits.
+
+Template: ipppd/noisdnutilsinit
+Type: note
+Description: (re)start ipppd by hand
+ There is no /etc/init.d/isdnutils on your system; hence you will have to
+ stop and start any ipppd daemons by hand.
+Description-fr: Lancez ou relancez ipppd « à la main ».
+ Il n'y a pas de /etc/init.d/isdnutils sur votre système. Il vous faut donc
+ lancer ou arrêter les démons ipppd « à la main ».

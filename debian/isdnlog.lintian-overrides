@@ -1,0 +1,5 @@
+isdnlog: script-not-executable ./usr/share/isdn/default/provider
+isdnlog: script-not-executable ./usr/share/isdn/default/stop
+isdnlog: select-with-translated-default-field isdnlog/country de
+isdnlog: select-with-translated-default-field isdnlog/country nl
+isdnlog: select-with-translated-default-field isdnlog/country ca

@@ -22,7 +22,7 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-char sys_rcsid[] = "$Id: sys-linux.c,v 1.20 1999/08/03 14:17:34 paul Exp $";
+char sys_rcsid[] = "$Id: sys-linux.c,v 1.25 2000/07/25 20:23:51 kai Exp $";
 
 #define _LINUX_STRING_H_
 
@@ -35,6 +35,7 @@ char sys_rcsid[] = "$Id: sys-linux.c,v 1.20 1999/08/03 14:17:34 paul Exp $";
 #include <sys/stat.h>
 #include <sys/file.h>
 #include <sys/utsname.h>
+#include <sys/sysmacros.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -92,6 +93,10 @@ static void decode_version (char *buf, int *version,
 int sockfd;			/* socket for doing interface ioctls */
 
 static char *lock_file;
+static int kernel_version;
+
+#define SIN_ADDR(x)     (((struct sockaddr_in *) (&(x)))->sin_addr.s_addr)
+#define KVERSION(j,n,p) ((j)*1000000 + (n)*1000 + (p))
 
 #define MAX_IFS		4096
 
@@ -857,26 +862,35 @@ static int defaultroute_exists (void)
     int    result = 0;
 
     if (!open_route_table())
-      {
-        return 0;
-      }
+      return 0;
 
     while (read_route_table(&rt) != 0)
       {
+        if (kernel_version > KVERSION(2,1,0) && SIN_ADDR(rt.rt_genmask) != 0)
+	  continue;
+	
         if ((rt.rt_flags & RTF_UP) == 0)
-	  {
-	    continue;
-	  }
+          continue;
 
         if (((struct sockaddr_in *) &rt.rt_dst)->sin_addr.s_addr == 0L)
 	  {
             struct in_addr ina;
             ina.s_addr = ((struct sockaddr_in *) &rt.rt_gateway)->sin_addr.s_addr;
-	    syslog (LOG_ERR,
-		    "ppp not replacing existing default route to %s[%s]",
-		    rt.rt_dev, inet_ntoa (ina) );
-	    result = 1;
-	    break;
+	    if (!deldefaultroute)
+	      {
+	        syslog (LOG_ERR,
+		      "ppp not replacing existing default route to %s[%s]",
+		       rt.rt_dev, inet_ntoa (ina) );
+	        result = 1;
+	        break;
+	      }
+	    else
+	      {
+	        SET_SA_FAMILY (rt.rt_dst,     AF_INET);
+		SET_SA_FAMILY (rt.rt_gateway, AF_INET);
+		rt.rt_flags = RTF_UP | RTF_GATEWAY;
+		ioctl(sockfd, SIOCDELRT, &rt);
+	      }
 	  }
       }
 
@@ -1256,19 +1270,17 @@ static void decode_version (char *buf, int *version,
 	  }
       }
     
-    if (*buf != '\0' && strncmp(buf, "-pre", 4))  /* ignore any "-preX" part */
+    if (*buf != '\0' && strncmp(buf, "-pre", 4) && strncmp(buf, "pre", 3))  /* ignore any "-preX" part */
       {
-	*version      =
-	*modification =
 	*patch        = 0;
       }
   }
 
 /*
  * ppp_available - check whether the system has any ppp interfaces
- * (in fact we check whether we can do an ioctl on ppp0).
+ * (in fact we check whether we can do an ioctl on devname).
  */
-int ppp_available(void)
+int ppp_available(char *devname)
 {
 	int s;
 	struct ifreq ifr;
@@ -1281,7 +1293,7 @@ int ppp_available(void)
 	if( (s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 		return 0;
     
-	strncpy (ifr.ifr_name, "ippp0", sizeof (ifr.ifr_name));
+	strncpy (ifr.ifr_name, devname, sizeof (ifr.ifr_name));
 	if(ioctl(s, SIOCGIFFLAGS, (caddr_t) &ifr) < 0)
 		return 0;
 
@@ -1310,8 +1322,8 @@ int ppp_available(void)
 
 		sprintf(no_ppp_msg,
 			"Sorry - isdnPPP driver version %d.%d.%d is out of date.\n"
-			"Maybe ippp0 has no 'syncppp' encapsulation?\n",
-			driver_version, driver_modification, driver_patch);
+			"Maybe %s has no 'syncppp' encapsulation?\n",
+			driver_version, driver_modification, driver_patch, devname);
 		return 0;
 	}
     return 1;

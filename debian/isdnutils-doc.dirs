@@ -1,8 +1,3 @@
-usr/share/doc/isdnutils/ipppd
-usr/share/doc/isdnutils/lib
-usr/share/doc/isdnutils/examples
-usr/share/doc/isdnutils/examples/default
-usr/share/doc/isdnutils/examples/vbox
-usr/share/doc/isdnutils/examples/isdnlog
-usr/share/doc/isdnutils/isdnlog
-usr/share/doc/isdnutils-doc
+usr/share/doc-base
+usr/share/doc/isdnutils/FAQ
+usr/share/doc/isdnutils-doc/Mini-FAQ

@@ -1,6 +1,7 @@
 #!/bin/sh
+exit 0	# not done when building a package for debian
 #
-# $Id: makedev.sh,v 1.3 1998/11/23 10:02:34 fritz Exp $
+# $Id: makedev.sh,v 1.5 2000/02/24 13:29:26 paul Exp $
 #
 # This script creates all ISDN devices under /dev .
 # Many/most distributions don't include these devices.
@@ -21,7 +22,7 @@ MAJ=45
 MIN=0
 rm -f $DEV/isdnctrl* $DEV/ippp*
 while [ $MIN -lt 64 ] ; do
-#	mknod -m 600 $DEV/isdn$MIN c $MAJ $MIN
+	mknod -m 600 $DEV/isdn$MIN c $MAJ $MIN
 	mknod -m 660 $DEV/isdnctrl$MIN c $MAJ `expr $MIN + 64`
 	mknod -m 600 $DEV/ippp$MIN c $MAJ `expr $MIN + 128`
 	MIN=`expr $MIN + 1`
@@ -35,7 +36,7 @@ then	# Debian/SuSE standard
 fi
 rm -f $DEV/isdninfo
 mknod -m 444 $DEV/isdninfo c $MAJ 255
-ln -sf $DEV/isdnctrl0 $DEV/isdnctrl
+ln -sf isdnctrl0 $DEV/isdnctrl
 
 MAJ=43
 MIN=0

@@ -1,0 +1,12 @@
+Document: isdn4linux-FAQ-de
+Title: isdn4linux FAQ in german
+Author: many
+Abstract: The FAQ for isdn4linux in general (german language).
+Section: Apps/Net
+
+Format: HTML
+Index: /usr/share/doc/isdnutils-doc/FAQ/i4lfaq-de.html
+Files: /usr/share/doc/isdnutils-doc/FAQ/i4lfaq-de-*.html
+
+Format: text
+Files: /usr/share/doc/isdnutils-doc/FAQ/i4lfaq-de.txt.gz

@@ -1,4 +1,4 @@
-/* $Id: isdnctrl.c,v 1.35 1999/10/27 14:36:19 keil Exp $
+/* $Id: isdnctrl.c,v 1.50 2002/01/31 19:53:41 paul Exp $
  * ISDN driver for Linux. (Control-Utility)
  *
  * Copyright 1994,95 by Fritz Elfert (fritz@isdn4linux.de)
@@ -21,6 +21,45 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: isdnctrl.c,v $
+ * Revision 1.50  2002/01/31 19:53:41  paul
+ * Fixed error messages when opening /dev/isdnctrl - /dev/isdn/isdnctrl etc.,
+ * only /dev/isdnctrl was mentioned and people assumed that isdnctrl wasn't
+ * devfs-compliant yet when the open failed due to other reasons.
+ * Zero the phone struct before use.
+ *
+ * Revision 1.49  2001/06/11 17:55:58  paul
+ * Added 'break' statement after handling data version 5 (otherwise fallthrough
+ * into data version 6 handling!!)
+ *
+ * Revision 1.48  2001/05/23 14:59:23  kai
+ * removed traces of TIMRU. I hope it's been dead for a long enough time now.
+ *
+ * Revision 1.47  2001/05/23 14:48:23  kai
+ * make isdnctrl independent of the version of installed kernel headers,
+ * we have our own copy now.
+ *
+ * Revision 1.46  2001/03/15 22:02:44  kai
+ * fixed a stack overflow when using isdnctrl status
+ *
+ * Revision 1.45  2001/03/01 14:59:15  paul
+ * Various patches to fix errors when using the newest glibc,
+ * replaced use of insecure tempnam() function
+ * and to remove warnings etc.
+ *
+ * Revision 1.44  2000/08/17 09:24:06  paul
+ * Added --version option to display (isdn4k-utils) version,
+ * and fixed a compile warning on alpha.
+ *
+ * Revision 1.43  2000/06/29 17:38:26  akool
+ *  - Ported "imontty", "isdnctrl", "isdnlog", "xmonisdn" and "hisaxctrl" to
+ *    Linux-2.4 "devfs" ("/dev/isdnctrl" -> "/dev/isdn/isdnctrl")
+ *
+ * Revision 1.42  2000/04/27 06:32:28  calle
+ * DriverId can be longer than 8 for "mapping" and "busreject".
+ *
+ * Revision 1.41  2000/04/12 21:49:40  detabc
+ * add test for maybe undefined IIOCNETDWRSET define
+ *
  * Revision 1.40  2000/01/27 15:08:09  paul
  * Error messages from addlink/removelink are now userfriendly.
  *
@@ -28,7 +67,11 @@
  * Made error message for 'status' command clearer if IIOCNETGPN
  * is not implemented in kernel (e.g. 2.0.x kernels).
  *
- * [[ rev. 1.37 and 1.38 not yet for debian ]]
+ * Revision 1.38  1999/11/20 22:23:53  detabc
+ * added netinterface abc-secure-counter reset (clear) support.
+ *
+ * Revision 1.37  1999/11/07 22:04:05  detabc
+ * add dwabc-udpinfo-utilitys in isdnctrl
  *
  * Revision 1.36  1999/11/02 20:41:21  keil
  * make phonenumber ioctl compatible for ctrlconf too
@@ -40,7 +83,7 @@
  * Changed my mail-address.
  *
  * Revision 1.33  1999/06/07 19:25:38  paul
- * 'status' command added
+ * isdnctrl.man.in
  *
  * Revision 1.32  1998/12/23 12:51:44  paul
  * didn't compile with old kernel source
@@ -236,30 +279,18 @@
 #include <ctype.h>
 #include <errno.h>
 
-#include <linux/isdn.h>
- /* fix version skew between 2.0 and 2.1 kernels (structs are identical) */
-#if (NET_DV == 0x04)
-# undef NET_DV
-# define NET_DV 0x05
-#endif
-#include <linux/isdnif.h>
-
 #include "config.h"
 #define _ISDNCTRL_C_
 #include "isdnctrl.h"
 
-#ifndef INF_DV
-#define INF_DV 0
+#ifdef I4L_DWABC_UDPINFO
+#include <isdn_dwabclib.h>
 #endif
 
 #ifdef I4L_CTRL_CONF
 #	include "../lib/libisdn.h"
 #	include "ctrlconf.h"
 #endif /* I4L_CTRL_CONF */
-
-#ifdef I4L_CTRL_TIMRU
-#	include "ctrltimru.h"
-#endif /* I4L_CTRL_TIMRU */
 
 #define CMD_IFCONFIG "ifconfig"
 #define CMD_OPT_IFCONFIG "down"
@@ -270,53 +301,40 @@ typedef	char *(*defs_fcn_t)();
 
 defs_fcn_t defs_fcns [] = {
 	defs_basic,
-
-#if defined(I4L_CTRL_TIMRU) && defined(HAVE_TIMRU)
-	defs_timru,
-	defs_budget,
-#endif
-
 	NULL
 };
 
-int MSNLEN_COMPATIBILITY = 0;
 char nextslaveif[10];
 
-/*
- * do_phonenumber handle back/forward compatibility between
- * version 5 and version 6 of isdn_net_ioctl_phone
- *
- */
- 
-int do_phonenumber(void *p, char *number, int outflag) {
-	isdn_net_ioctl_phone_old *phone_old = (isdn_net_ioctl_phone_old *) p;
-	isdn_net_ioctl_phone_new *phone_new = (isdn_net_ioctl_phone_new *) p;
-	isdn_net_ioctl_phone *phone = (isdn_net_ioctl_phone *) p;
-	int maxlen = ISDN_MSNLEN;
-	
-	if (MSNLEN_COMPATIBILITY)
-		maxlen = 20;
-	if (strlen(number) > maxlen) {
-		fprintf(stderr, "phone-number must not exceed %d characters\n", maxlen);
-		return -1;
+int set_isdn_net_ioctl_phone(isdn_net_ioctl_phone *ph, char *name, 
+			     char *phone, int outflag)
+{
+	switch (data_version) {
+	case 0x04:
+	case 0x05:
+		if (strlen(phone) > 19) {
+			fprintf(stderr, "phone-number must not exceed %d characters\n", 19);
+			return -1;
+		}
+		/*
+		 * null termination happens automatically because
+		 * we clear the entire struct first
+		 */
+		strncpy(ph->phone_5.name, name, sizeof(ph->phone_5.name)-1);
+		strncpy(ph->phone_5.phone, phone, sizeof(ph->phone_5.phone)-1);
+		ph->phone_5.outgoing = outflag;
+                break;
+	case 0x06:
+		if (strlen(phone) > 31) {
+			fprintf(stderr, "phone-number must not exceed %d characters\n", 31);
+			return -1;
+		}
+		strncpy(ph->phone_6.name, name, sizeof(ph->phone_6.name)-1);
+		strncpy(ph->phone_6.phone, phone, sizeof(ph->phone_6.phone)-1);
+		ph->phone_6.outgoing = outflag;
 	}
-	switch(MSNLEN_COMPATIBILITY) {
-		case 1:
-			strcpy(phone_old->phone, number);
-			phone_old->outgoing = outflag;
-			break;
-		case 2:
-			strcpy(phone_new->phone, number);
-			phone_new->outgoing = outflag;
-			break;
-		default:
-			strcpy(phone->phone, number);
-			phone->outgoing = outflag;
-			break;
-	}
-	return(0);
+	return 0;
 }
-
 
 int exec_args(int fd, int argc, char **argv);
 
@@ -330,9 +348,7 @@ void usage(void)
         fprintf(stderr, "    addif [name]               add net-interface\n");
         fprintf(stderr, "    delif name [force]         remove net-interface\n");
         fprintf(stderr, "    reset [force]              remove all net-interfaces\n");
-#ifdef ISDN_NET_DM_OFF
         fprintf(stderr, "    dialmode name [off|manual|auto]  set the dial mode\n");
-#endif
         fprintf(stderr, "    addphone name in|out num   add phone-number to interface\n");
         fprintf(stderr, "    delphone name in|out num   remove phone-number from interface\n");
         fprintf(stderr, "    eaz name [eaz|msn]         get/set eaz for interface\n");
@@ -384,16 +400,18 @@ void usage(void)
         fprintf(stderr, "    readconf [file]            read the settings from file\n");
 #endif /* I4L_CTRL_CONF */
         fprintf(stderr, "    status name                show interface status (connected or not)\n");
-#ifdef I4L_CTRL_TIMRU
-		fprintf(stderr,"Note: TIMRU Ctrl   Extension-Support enabled\n");
-#else
-		fprintf(stderr,"Note: TIMRU Ctrl   Extension-Support disabled\n");
+#ifdef I4L_DWABC_UDPINFO
+        fprintf(stderr, "    abcclear  name             reset (clear) abc-secure-counter\n");
 #endif
-#ifdef HAVE_TIMRU
-		fprintf(stderr,"Note: TIMRU Kernel Support enabled\n");
-#else
-		fprintf(stderr,"Note: TIMRU Kernel Support disabled\n");
+#ifdef I4L_DWABC_UDPINFO
+		fprintf(stderr,"    -udpisisdn   destination-host or ip-number\n");
+		fprintf(stderr,"    -udponline   destination-host or ip-number\n");
+		fprintf(stderr,"    -udphangup   destination-host or ip-number\n");
+		fprintf(stderr,"    -udpdial     destination-host or ip-number\n");
+		fprintf(stderr,"    -udpclear    destination-host-or ip-number\n");
 #endif
+        fprintf(stderr, "    -V                         display API versions\n");
+        fprintf(stderr, "    --version                  display isdnctrl version\n");
         exit(-2);
 }
 
@@ -463,7 +481,7 @@ static void listbind(char *s, int e)
                 int ch;
                 sscanf(p + 1, "%d", &ch);
                 *p = '\0';
-                printf("%s, Channel %d%s\n", s, ch, (e > 0) ? ", exclusive" : "");
+                printf("%s, channel %d%s\n", s, ch, (e > 0) ? ", exclusive" : "");
         } else
                 printf("Nothing\n");
 }
@@ -471,20 +489,10 @@ static void listbind(char *s, int e)
 static void listif(int isdnctrl, char *name, int errexit)
 {
         isdn_net_ioctl_cfg cfg;
-        union p {
-#if (NET_DV == 5)
-		isdn_net_ioctl_phone_new phone;
-#else
-		isdn_net_ioctl_phone phone;
-#endif
-                char n[1024];
-        } ph;
-        char nn[1024];
+	char ph_in[1024], ph_out[1024];
 
         memset(&cfg, 0, sizeof cfg);	/* clear in case of older kernel */
-#ifdef ISDN_NET_DM_OFF
 	cfg.dialmode = 0xDEADBEEF;
-#endif
         strcpy(cfg.name, name);
         if (ioctl(isdnctrl, IIOCNETGCF, &cfg) < 0) {
                 if (errexit) {
@@ -493,19 +501,18 @@ static void listif(int isdnctrl, char *name, int errexit)
                 } else
                         return;
         }
-        strcpy(ph.phone.name, name);
-        do_phonenumber(&ph.phone, "", 0);
-        if (ioctl(isdnctrl, IIOCNETGNM, &ph.phone) < 0) {
+	set_isdn_net_ioctl_phone((isdn_net_ioctl_phone *) ph_in, 
+				 name, "", 0);
+        if (ioctl(isdnctrl, IIOCNETGNM, &ph_in) < 0) {
                 if (errexit) {
                         perror(name);
                         exit(-1);
                 } else
                         return;
         }
-        strcpy(nn, ph.n);
-        strcpy(ph.phone.name, name);
-        do_phonenumber(&ph.phone, "", 1);
-        if (ioctl(isdnctrl, IIOCNETGNM, &ph.phone) < 0) {
+	set_isdn_net_ioctl_phone((isdn_net_ioctl_phone *) ph_out, 
+				 name, "", 1);
+        if (ioctl(isdnctrl, IIOCNETGNM, &ph_out) < 0) {
                 if (errexit) {
                         perror(name);
                         exit(-1);
@@ -515,9 +522,8 @@ static void listif(int isdnctrl, char *name, int errexit)
         printf("\nCurrent setup of interface '%s':\n\n", cfg.name);
         printf("EAZ/MSN:                %s\n", cfg.eaz);
         printf("Phone number(s):\n");
-        printf("  Outgoing:             %s\n", ph.n);
-        printf("  Incoming:             %s\n", nn);
-#ifdef ISDN_NET_DM_OFF
+        printf("  Outgoing:             %s\n", ph_out);
+        printf("  Incoming:             %s\n", ph_in);
         printf("Dial mode:              ");
 	if (cfg.dialmode == ISDN_NET_DM_OFF)
 		puts("off");
@@ -529,10 +535,6 @@ static void listif(int isdnctrl, char *name, int errexit)
 		puts("not in kernel (please upgrade your kernel)");
 	else
 		printf("unknown value (0x%x)\n", cfg.dialmode);
-#else
-#warning ISDN_NET_DM_OFF not defined? Old isdn4kernel?
-        printf("Dial mode:              not available at compilation\n");
-#endif
         printf("Secure:                 %s\n", cfg.secure ? "on" : "off");
         printf("Callback:               %s\n", num2callb[cfg.callback]);
         if (cfg.callback == 2)
@@ -541,10 +543,6 @@ static void listif(int isdnctrl, char *name, int errexit)
                 printf("Reject before Callback: %s\n", cfg.cbhup ? "on" : "off");
         printf("Callback-delay:         %d\n",cfg.cbdelay / 5);
         printf("Dialmax:                %d\n", cfg.dialmax);
-#ifdef HAVE_TIMRU
-        printf("Dial-Timeout:           %d\n", cfg.dialtimeout);
-        printf("Dial-Wait:              %d\n", cfg.dialwait);
-#endif
         printf("Hangup-Timeout:         %d\n", cfg.onhtime);
         printf("Incoming-Hangup:        %s\n", cfg.ihup ? "on" : "off");
         printf("ChargeHangup:           %s\n", cfg.chargehup ? "on" : "off");
@@ -582,47 +580,50 @@ static void listif(int isdnctrl, char *name, int errexit)
 }
 
 
-#ifdef IIOCNETGPN
 static void statusif(int isdnctrl, char *name, int errexit)
 {
-	isdn_net_ioctl_phone phone;
+        isdn_net_ioctl_phone phone;
 	int rc;
 	static int isdninfo = -1;
 
 	if (isdninfo < 0) {
-		isdninfo = open("/dev/isdninfo", O_RDONLY);
+	        isdninfo = open("/dev/isdn/isdninfo", O_RDONLY);
+		if (isdninfo < 0)
+		        isdninfo = open("/dev/isdninfo", O_RDONLY);
 		if (isdninfo < 0) {
-			perror("Can't open /dev/isdninfo");
+			perror("Can't open /dev/isdninfo or /dev/isdn/isdninfo");
 			exit(-1);
 		}
 	}
+
 	memset(&phone, 0, sizeof phone);
-	strncpy(phone.name, name, sizeof phone.name);
+	set_isdn_net_ioctl_phone(&phone, name, "", 0);
 	rc = ioctl(isdninfo, IIOCNETGPN, &phone);
-	if (rc == 0) {
-		printf("%s connected %s %s\n",
-			name, phone.outgoing?"to":"from", phone.phone);
-		return;
-	}
-	if (errno == ENOTCONN) {
-		printf("%s is not connected\n", name);
-		if (errexit) {
-			exit(1); /* exit 1 if interface specified & not conn. */
+	if (rc < 0) {
+		if (errno == ENOTCONN) {
+			printf("%s is not connected\n", name);
+			if (errexit) {
+				exit(1); /* exit 1 if interface specified & not conn. */
 		}
+			return;
+		}
+		if (errexit) {
+			perror(name);
+			exit(-1);
+		}
+	}
+	switch (data_version) {
+	case 0x04:
+	case 0x05:
+		printf("%s connected %s %s\n",
+		       name, phone.phone_5.outgoing?"to":"from", phone.phone_5.phone);
 		return;
-	}
-	if (errno == EINVAL) {
-		puts("Sorry, not available in your kernel (2.2.12 or higher is required)");
-		exit(-1);
-	}
-	if (errexit) {
-		perror(name);
-		exit(-1);
+	case 0x06:
+		printf("%s connected %s %s\n",
+		       name, phone.phone_6.outgoing?"to":"from", phone.phone_6.phone);
+		return;
 	}
 }
-#else
-#warning IIOCNETGPN not defined? Old isdn4kernel? Or 2.0.x kernel...
-#endif
 
 int findcmd(char *str)
 {
@@ -637,7 +638,6 @@ int findcmd(char *str)
 }
 
 
-#ifdef ISDN_NET_DM_OFF
 /*
  * do_dialmode() - handle dialmode settings
  *		   parameters:
@@ -704,7 +704,6 @@ do_dialmode(int args, int dialmode, int fd, char *id, int errexit)
 	else
 		puts("illegal value (wrong kernel version?)");
 }
-#endif /* dialmode in kernel source */
 
 int exec_args(int fd, int argc, char **argv)
 {
@@ -715,11 +714,7 @@ int exec_args(int fd, int argc, char **argv)
 	FILE *iflst;
 	char *p;
 	char s[255], dummy[255];
-#if (NET_DV == 5)
-	isdn_net_ioctl_phone_new phone;
-#else
 	isdn_net_ioctl_phone phone;
-#endif
 	isdn_net_ioctl_cfg cfg;
 	isdn_ioctl_struct iocts;
 	unsigned long j;
@@ -753,7 +748,13 @@ int exec_args(int fd, int argc, char **argv)
 #else
 		if (id != NULL && i != RESET) {
 #endif /* I4L_CTRL_CONF */
-			if (strlen(id) > 8) {
+			if (i == BUSREJECT || i == MAPPING) {
+			   if (strlen(id) > sizeof(iocts.drvid)-1) {
+				fprintf(stderr, "DriverId must not exceed %u characters!\n", (unsigned int)sizeof(iocts.drvid)-1);
+				close(fd);
+				return -1;
+			   }
+			} else if (strlen(id) > 8) {
 				fprintf(stderr, "Interface name must not exceed 8 characters!\n");
 				close(fd);
 				return -1;
@@ -774,7 +775,17 @@ int exec_args(int fd, int argc, char **argv)
 		argv += args;
 
 		memset(&cfg, 0, sizeof cfg);	/* clear in case of older kernel */
+
 		switch (i) {
+#ifdef I4L_DWABC_UDPINFO
+			case ABCCLEAR:
+			        if ((result = ioctl(fd, IIOCNETDWRSET, id)) < 0) {
+			        	perror(id);
+			        	return -1;
+			        }
+			        printf("ABC secure-counter for %s now clear\n", id);
+					break;
+#endif
 			case ADDIF:
 			        strcpy(s, args?id:"");
 			        if ((result = ioctl(fd, IIOCNETAIF, s)) < 0) {
@@ -972,8 +983,7 @@ int exec_args(int fd, int argc, char **argv)
 			        	return -1;
 			        }
 			        outflag = strcmp(arg1, "out") ? 0 : 1;
-			        strcpy(phone.name, id);
-			        if (do_phonenumber(&phone, arg2, outflag))
+			        if (set_isdn_net_ioctl_phone(&phone, id, arg2, outflag))
 			        	return -1;
 			        if ((result = ioctl(fd, IIOCNETANM, &phone)) < 0) {
 			        	perror(id);
@@ -987,8 +997,7 @@ int exec_args(int fd, int argc, char **argv)
 			        	return -1;
 			        }
 			        outflag = strcmp(arg1, "out") ? 0 : 1;
-			        strcpy(phone.name, id);
-			        if (do_phonenumber(&phone, arg2, outflag))
+			        if (set_isdn_net_ioctl_phone(&phone, id, arg2, outflag))
 			        	return -1;
 			        if ((result = ioctl(fd, IIOCNETDNM, &phone)) < 0) {
 			        	perror(id);
@@ -996,7 +1005,7 @@ int exec_args(int fd, int argc, char **argv)
 			        }
 			        break;
 
-			case LIST:
+		        case LIST:
 			        if (!strcmp(id, "all")) {
 			        	char name[10];
 			        	if ((iflst = fopen(FILE_PROC, "r")) == NULL) {
@@ -1019,7 +1028,6 @@ int exec_args(int fd, int argc, char **argv)
 			        break;
 
 			case STATUS:
-#ifdef IIOCNETGPN
 			        if (!strcmp(id, "all")) {
 			        	char name[10];
 			        	if ((iflst = fopen(FILE_PROC, "r")) == NULL) {
@@ -1037,11 +1045,9 @@ int exec_args(int fd, int argc, char **argv)
 			        		}
 			        	}
 			        	fclose(iflst);
-			        } else
+			        } else {
 			        	statusif(fd, id, 1);
-#else
-				puts("Sorry, not configured into isdnctrl");
-#endif /* defined IIOCNETGPN */
+				}
 			        break;
 
 			case EAZ:
@@ -1202,21 +1208,17 @@ int exec_args(int fd, int argc, char **argv)
 			        		fprintf(stderr, "Slave triggerlevel must be >= 0 (%s)\n", arg1);
 			        		exit(-1);
 			        	}
-#if HAVE_TRIGGERCPS
 			        	cfg.triggercps = i;
 			        	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
 			        		perror(id);
 			        		exit(-1);
 			        	}
-#endif
 			        }
 					if (data_version < 3)
 						printf("Option 'trigger' IGNORED!\n");
-#if HAVE_TRIGGERCPS
 					else
 			        	printf("Slave triggerlevel for %s is %d cps.\n",
 								cfg.name, cfg.triggercps);
-#endif
 			        break;
 
 			case CHARGEHUP:
@@ -1312,7 +1314,7 @@ int exec_args(int fd, int argc, char **argv)
 			        if (args == 2) {
 			        	i = -1;
 			        	if (strcmp(arg1, "on") && strcmp(arg1, "off") &&
-                    strcmp(arg1, "in") && strcmp(arg1, "out")) {
+					    strcmp(arg1, "in") && strcmp(arg1, "out")) {
 			        		fprintf(stderr, "Callback-parameter must be 'on', 'in', 'out' or 'off'\n");
 			        		return -1;
 			        	}
@@ -1453,7 +1455,6 @@ int exec_args(int fd, int argc, char **argv)
 			        break;
 
                 	case DIALMODE:
-#ifdef ISDN_NET_DM_OFF
 				if(args == 2) {
 					if (!strcmp(arg1, "on") || !strcmp(arg1, "manual"))
 						cfg.dialmode = ISDN_NET_DM_MANUAL;
@@ -1490,101 +1491,7 @@ int exec_args(int fd, int argc, char **argv)
 					do_dialmode(args, cfg.dialmode, fd, id, 1);
 				}
 
-#else	/* not in kernel include file */
-				fprintf(stderr, "No 'dialmode' field in kernel source when compiled, old isdn4kernel?\n");
-				exit(-1);
-#endif
                         	break;
-
-
-#ifdef I4L_CTRL_TIMRU
-			case DIALTIMEOUT:
-#ifdef HAVE_TIMRU
-			        strcpy(cfg.name, id);
-                		if((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                       			perror(id);
-                       			exit(-1);
-                		}
-                        	if (args) {
-                                	i = -1;
-                                	sscanf(arg1, "%d", &i);
-                                	if (i < 0) {
-                                        	fprintf(stderr, "Dial-Timeout must be >= 0\n");
-                                        	exit(-1);
-                                	}
-                                	cfg.dialtimeout = i;
-                                	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                        	perror(id);
-                                        	exit(-1);
-                                	}
-                        	}
-                        	printf("Dial-Timeout for %s is %d sec.\n", cfg.name, cfg.dialtimeout);
-#else
-					fprintf(stderr, "No TIMRU in Kernel\n");
-					exit(-1);
-#endif
-                        	break;
-
-                	case DIALWAIT:
-#ifdef HAVE_TIMRU
-                        	strcpy(cfg.name, id);
-                        	if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                	perror(id);
-                                	exit(-1);
-                        	}
-                        	if (args) {
-                                	i = -1;
-                                	sscanf(arg1, "%d", &i);
-                                	if (i < 0) {
-                                        	fprintf(stderr, "Dial-Wait must be >= 0\n");
-                                        	exit(-1);
-                                	}
-                                	cfg.dialwait = i;
-                                	if ((result = ioctl(fd, IIOCNETSCF, &cfg)) < 0) {
-                                        	perror(id);
-                                        	exit(-1);
-                                	}
-                        	}
-                        	printf("Dial-Wait for %s is %d sec.\n", cfg.name, cfg.dialwait);
-#else
-					fprintf(stderr, "No TIMRU in Kernel\n");
-					exit(-1);
-#endif
-                        	break;
-
-                	case ADDRULE:
-                	case INSRULE:
-                	case DELRULE:
-                	case SHOWRULES:
-                	case FLUSHRULES:
-                	case FLUSHALLRULES:
-                	case DEFAULT:
-#ifdef HAVE_TIMRU
-                        	if((args = hdl_timeout_rule(fd, id, i, argc, argv)) < 0)
-					exit(-1);
-				argc -= args;
-				argv += args;
-#else
-					fprintf(stderr, "No TIMRU in Kernel\n");
-					exit(-1);
-#endif
-                        	break;
-
-			case BUDGET:
-			case SHOWBUDGETS:
-			case SAVEBUDGETS:
-			case RESTOREBUDGETS:
-#ifdef HAVE_TIMRU
-                        	if((args = hdl_budget(fd, id, i, argc, argv)) < 0)
-					exit(-1);
-				argc -= args;
-				argv += args;
-#else
-					fprintf(stderr, "No TIMRU in Kernel\n");
-					exit(-1);
-#endif
-                        	break;
-#endif
 
 #ifdef I4L_CTRL_CONF
 			case WRITECONF:
@@ -1671,6 +1578,8 @@ int exec_args(int fd, int argc, char **argv)
 
 			}
 			break;
+		default:
+			printf("here %d\n",i);
 		}
 
 #if DEBUG
@@ -1698,24 +1607,25 @@ void check_version(int report) {
 	int fd;
 
 	if (report) {
-		printf("isdnctrl's view of API-Versions:\n");
-		printf("ttyI: %d, net: %d, info: %d\n", TTY_DV, NET_DV, INF_DV);
+		printf("isdnctrl version %s\n", VERSION);
 	}
-	fd = open("/dev/isdninfo", O_RDWR);
+	fd = open("/dev/isdn/isdninfo", O_RDWR);
+	if (fd < 0)
+	        fd = open("/dev/isdninfo", O_RDONLY);
 	if (fd < 0) {
-		perror("/dev/isdninfo");
+                perror("Can't open /dev/isdninfo or /dev/isdn/isdninfo");
 		exit(-1);
 	}
 	data_version = ioctl(fd, IIOCGETDVR, 0);
 	if (data_version < 0) {
 		fprintf(stderr, "Could not get version of kernel ioctl structs!\n");
-		fprintf(stderr, "Make sure, you are using the correct version.\n");
+		fprintf(stderr, "Make sure that you are using the correct version.\n");
 		fprintf(stderr, "(Try recompiling isdnctrl).\n");
 		exit(-1);
 	}
 	close(fd);
 	if (report) {
-		printf("Kernel's view of API-Versions:\n");
+		printf("Kernel's view of API-versions:\n");
 		printf("ttyI: %d, net: %d, info: %d\n",
 			data_version & 0xff,
 			(data_version >> 8) & 0xff,
@@ -1723,42 +1633,16 @@ void check_version(int report) {
 		return;
 	}
 	data_version = (data_version >> 8) & 0xff;
-	/* consider NET_DV 0x04 and 0x05 to be the same */
-	if (data_version == 0x04)
-		data_version = 0x05;
-	if (data_version != NET_DV) {
-		if ((data_version == 5) && (NET_DV == 6)) {
-			MSNLEN_COMPATIBILITY = 1;
-			return;
-		}
-		if ((data_version == 6) && (NET_DV == 5)) {
-			MSNLEN_COMPATIBILITY = 2;
-			return;
-		}
-		fprintf(stderr, "Version of kernel ioctl structs (%d) does NOT match\n",
-			data_version);
-		fprintf(stderr, "version of isdnctrl (%d)!\n", NET_DV);
-		if (data_version < 1) {
-			fprintf(stderr, "Kernel-Version too old, terminating.\n");
-			fprintf(stderr, "UPDATE YOUR KERNEL.\n");
-			exit(-1);
-		}
-		if (data_version > NET_DV) {
-			fprintf(stderr, "Kernel-Version newer than isdnctrl-Version, terminating.\n");
-			fprintf(stderr, "GET A NEW VERSION OF isdn4k-utils.\n");
-			exit(-1);
-		}
-		if ((NET_DV == 3) || (data_version == 3)) {
-			fprintf(stderr, "Version 3 is an interim NOT compatible to others, terminating\n");
-			fprintf(stderr, "RECOMPILE isdnctrl!\n");
-			exit(-1);
-		}
-		if (data_version < 3)
-			fprintf(stderr, "- Option 'trigger' disabled.\n");
-		if (data_version < 2)
-			fprintf(stderr, "- Option 'chargeint' disabled.\n");
-		fprintf(stderr, "Make sure, you are using the correct version.\n");
-		fprintf(stderr, "Recompiling of isdnctrl is STRONGLY RECOMMENDED.\n");
+
+	if (data_version < 4) {
+		fprintf(stderr, "Kernel-version too old, terminating.\n");
+		fprintf(stderr, "UPDATE YOUR KERNEL.\n");
+		exit(-1);
+	}
+	if (data_version > 6) {
+		fprintf(stderr, "Kernel-version newer than isdnctrl-version, terminating.\n");
+		fprintf(stderr, "GET A NEW VERSION OF isdn4k-utils.\n");
+		exit(-1);
 	}
 }
 
@@ -1780,11 +1664,104 @@ int main(int argc, char **argv)
 		check_version(1);
 		exit(0);
 	}
+	if ((argc == 2) && (!strcmp(argv[1], "--version"))) {
+		printf("isdnctrl version %s\n", VERSION);
+		exit(0);
+	}
+#ifdef I4L_DWABC_UDPINFO
+	{
+		int art = 0;
+		char *p = argv[1];
+
+		if(!strcmp(p,"-udpisisdn")) {
+			art = 1;
+		} else if(!strcmp(p,"-udponline")) {
+			art = 2;
+		} else if(!strcmp(p,"-udphangup")) {
+			art = 3;
+		} else if(!strcmp(p,"-udpdial")) {
+			art = 4;
+		} else if(!strcmp(p,"-udpclear")) {
+			art = 5;
+		}
+
+		if(art) {
+
+			char *err = NULL;
+			int retw = 0;
+			p = argv[2];
+
+			if(argc != 3) {
+
+				usage();
+				exit(1);
+			}
+
+			switch(art) {
+			case 1:	retw = isdn_udp_isisdn(p,&err);		break;
+			case 2:	retw = isdn_udp_online(p,&err);		break;
+			case 3:	retw = isdn_udp_hangup(p,&err);		break;
+			case 4:	retw = isdn_udp_dial(p,&err);		break;
+			case 5:	retw = isdn_udp_clear_ggau(p,&err);	break;
+			}
+
+			if(err != NULL) {
+
+				fprintf(stderr,"%s\n",err);
+				free(err);
+				err = NULL;
+			}
+
+			if(!retw) {
+
+				switch(art) {
+				case 1:
+					printf("destination %s is NOT over i4l routed\n",p);
+					break;
+				case 2:
+					printf("destination %s is NOT online\n",p);
+					break;
+				case 3:
+					printf("destination %s CANNOT hangup the line\n",p);
+					break;
+				case 4:
+					printf("destination %s CANNOT dialing\n",p);
+					break;
+				case 5:
+					printf("CANNOT reset (clear) abc-secure-counter's for destination %s\n",p);
+				}
+
+			} else {
+
+				switch(art) {
+				case 1:
+					printf("destination %s is over i4l routed\n",p);
+					break;
+				case 2:
+					printf("destination %s is online\n",p);
+					break;
+				case 3:
+					printf("destination %s trigger hangup \n",p);
+					break;
+				case 4:
+					printf("destination %s trigger dialing\n",p);
+					break;
+				case 5:
+					printf("reset (clear) abc-secure-counter's for destination %s\n",p);
+				}
+			}
+
+			exit(!retw);
+		}
+	}
+#endif
 	check_version(0);
 
-	fd = open("/dev/isdnctrl", O_RDWR);
+	fd = open("/dev/isdn/isdnctrl", O_RDWR);
+	if (fd < 0)
+	        fd = open("/dev/isdnctrl", O_RDWR);
 	if (fd < 0) {
-		perror("/dev/isdnctrl");
+		perror("Can't open /dev/isdnctrl or /dev/isdn/isdnctrl");
 		exit(-1);
 	}
 

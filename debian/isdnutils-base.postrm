@@ -1,0 +1,52 @@
+#! /bin/sh
+# postrm script for isdnutils
+
+set -e
+
+. /usr/share/debconf/confmodule  # despite the #DEBHELPER thing below,
+                                 # this needs to be done here anyway.
+                                 # <frustration>
+                                 # Joey Hess sucks, at the least when it comes
+                                 # to giving assistance in using his tools, as
+                                 # well as # not being able to document his
+                                 # stuff in # any useful way for non-telepathic
+                                 # people.
+                                 # </frustration>
+
+# summary of how this script can be called:
+#        * <postrm> `remove'
+#        * <postrm> `purge'
+#        * <old-postrm> `upgrade' <new-version>
+#        * <new-postrm> `failed-upgrade' <old-version>
+#        * <new-postrm> `abort-install'
+#        * <new-postrm> `abort-install' <old-version>
+#        * <new-postrm> `abort-upgrade' <old-version>
+#        * <disappearer's-postrm> `disappear' <r>overwrit>r> <new-version>
+# for details, see /usr/doc/packaging-manual/
+
+case "$1" in
+       purge)
+	 rmdir /etc/isdn 2>/dev/null || true
+	 if [ -d /etc/isdn ]; then
+	 	echo "There are still files in /etc/isdn/ that you may want to remove manually."
+	 fi
+         ;;
+
+       remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+         ;;
+
+    *)
+         echo "postrm called with unknown argument \`$1'" >&2
+         exit 0
+	 ;;
+esac
+
+# NOT automatically added by dh_installinit (done by hand)
+if [ "$1" = "purge" ] ; then
+	update-rc.d isdnutils remove >/dev/null
+fi 
+# End NOT automatically added section
+
+#DEBHELPER#
+
+exit 0

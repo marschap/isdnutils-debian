@@ -1,0 +1,56 @@
+Using multiple ipppd daemons
+----------------------------
+
+Sometimes it can be useful to have different internet connections, for example
+to use one during the day and one during the evening because of cost
+differences at different times of the day, or for backup purposes when your
+primary internet service provider (ISP) doesn't work, or simply for testing
+different ISPs.  There's quite a simple way of doing this.
+
+- Configure your "main" or "default" ISP on ippp0.
+
+- Configure others as ippp1, ippp2, ...
+
+- Modify the /etc/ppp/ip-up.d/00-ipppd and /etc/ppp/ip-down.d/ipppd scripts:
+  change the line
+	ippp0)	route del default
+  to
+	ippp*)	route del default
+
+- The default route will be set to ippp0 when the system is started up, that's
+  why the default ISP should be on ippp0. When IP packets have to go to the
+  internet, the connection to that ISP will be built up automatically
+  (assuming that the dialmode is "auto", which it is by default).
+
+- If you now want to use another ISP, e.g. the one that ippp2 is configured
+  for, make sure that ippp0 is not connected (do "isdnctrl hangup ippp0" to be
+  sure), and cause a dialout on ippp2: "isdnctrl dial ippp2". When the
+  connection is made, the /etc/ppp/ip-up.d/00-ipppd script will cause the
+  default route to be set to ippp2, so that any future autodials to the
+  internet will be routed via the ippp2 device.
+  This means that manually choosing an interface with "isdnctrl dial ipppXX"
+  will cause that interface to be used until another interface is explicitly
+  chosen via another "isdnctrl dial ipppZZ", or until the whole isdnutils is
+  stopped and started (e.g. because of a reboot).
+
+- This means that anyone in the "dialout" group can change the ISP to which
+  the system will call, not just the root user.
+
+- Note: all ipppd daemons for all configured interfaces will always run;
+  the selection of which interface is used is done purely by the default
+  network route.
+
+- This system only works for connections that should carry the default route!
+  If you also have a dialup via syncPPP e.g. to your office, then that
+  interface should be treated differently of course! In that case, don't use
+  "ippp*" in the /etc/ppp/ scripts, but explicitly list the interfaces that
+  are applicable:
+	ippp0|ippp1|ippp2)	route del default
+
+
+If you have any comments or questions on this, feel free to send an email to
+isdnutils@packages.debian.org .  Enjoy!
+
+
+2001-10-25
+Paul Slootman <paul@debian.org>

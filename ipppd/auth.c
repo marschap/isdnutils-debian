@@ -8,6 +8,8 @@
  * Copyright (c) 1993 The Australian National University.
  * All rights reserved.
  *
+ * 2000-07-25 Callback improvements by richard.kunze@web.de 
+ *
  * Redistribution and use in source and binary forms are permitted
  * provided that the above copyright notice and this paragraph are
  * duplicated in all such forms and that any documentation,
@@ -36,7 +38,7 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-char auth_rcsid[] = "$Id: auth.c,v 1.14 1998/11/05 09:42:36 hipp Exp $";
+char auth_rcsid[] = "$Id: auth.c,v 1.19 2002/03/11 15:53:21 paul Exp $";
 
 #include <stdio.h>
 #include <stddef.h>
@@ -117,7 +119,7 @@ static int  have_chap_secret __P((char *, char *));
 static int  scan_authfile __P((FILE *, char *, char *, char *,
 	  struct wordlist **, char *));
 static void free_wordlist __P((struct wordlist *));
-static void auth_script __P((int,char *));
+static void auth_script __P((int,char *,int));
 
 /*
  * An Open on LCP has requested a change from Dead to Establish phase.
@@ -143,7 +145,7 @@ void link_terminated(int linkunit)
 #endif
 	
 	if(lns[linkunit].auth_up_script)
-		auth_script(linkunit,_PATH_AUTHDOWN);
+		auth_script(linkunit,_PATH_AUTHDOWN,0);
 	if (lns[linkunit].phase == PHASE_DEAD)
 		return;
 	if (lns[linkunit].logged_in) {
@@ -219,7 +221,7 @@ void link_down(int unit)
 	else {
 		struct link_struct *q;
 		int i; /* bugcheck, stop after 1024 links */
-		for(i=1024,q=lns[unit].bundle_next;!i && q!=&lns[unit];q=q->bundle_next,i--) {
+		for(i=1024,q=lns[unit].bundle_next;i && q!=&lns[unit];q=q->bundle_next,i--) {
 			if(q->bundle_next == &lns[unit])
 			break;
 		}
@@ -444,30 +446,39 @@ static void network_phase(int linkunit)
  */
 static void callback_phase(int linkunit)
 {
-		lcp_options *wo = &lcp_wantoptions[ lns[linkunit].lcp_unit ];
-
-/* hack here: remote is always the server for callback */
-		if (wo->neg_cbcp && !(lns[linkunit].pci.calltype & CALLTYPE_INCOMING) ) {
-			lns[linkunit].phase = PHASE_CALLBACK;
-			lns[linkunit].cbcp_unit = linkunit;        /* cbcp always corresponds to a link */
-			cbcp[ lns[linkunit].cbcp_unit ].us_unit = linkunit;
-			(*cbcp_protent.lowerup)(lns[linkunit].cbcp_unit);
-			(*cbcp_protent.open)(lns[linkunit].cbcp_unit);
-		}
-		else 
-			network_phase(linkunit);
+  lcp_options *go = &lcp_gotoptions[ lns[linkunit].lcp_unit ];
+  
+  /* hack here: remote is always the server for callback */
+  if (go->neg_callback && !(lns[linkunit].pci.calltype & CALLTYPE_INCOMING)) {
+    /* Do CBCP if we did negotiate CBCP, take the lionk
+       down and wait for callback if we negotiated RFC
+       1570 style callback */
+    if (go->cbopt.type == CB_CBCP) {
+      lns[linkunit].phase = PHASE_CALLBACK;
+      /* cbcp always corresponds to a link */
+      lns[linkunit].cbcp_unit = linkunit; 
+      cbcp[ lns[linkunit].cbcp_unit ].us_unit = linkunit;
+      (*cbcp_protent.lowerup)(lns[linkunit].cbcp_unit);
+      (*cbcp_protent.open)(lns[linkunit].cbcp_unit);
+    } else {
+	lns[linkunit].phase = PHASE_TERMINATE;
+    }
+  } else {
+    network_phase(linkunit);
+  }
 }
 
 /*
  * The peer has failed to authenticate himself using `protocol'.
  */
-void auth_peer_fail(int unit,int protocol)
+void auth_peer_fail(int unit,int protocol, int reason)
 {
 	/*
 	 * Authentication failure: take the link down
 	 */
 	lcp_close(lns[unit].lcp_unit,"auth failure");
 	lns[unit].phase = PHASE_TERMINATE;
+	auth_script(unit, _PATH_AUTHFAIL, reason);
 }
 
 /*
@@ -502,13 +513,14 @@ void auth_peer_success(int linkunit,int protocol)
 /*
  * We have failed to authenticate ourselves to the peer using `protocol'.
  */
-void auth_withpeer_fail(int unit,int protocol)
+void auth_withpeer_fail(int unit,int protocol,int reason)
 {
 	/*
 	 * We've failed to authenticate ourselves to our peer.
 	 * He'll probably take the link down, and there's not much
 	 * we can do except wait for that.
 	 */
+	auth_script(unit, _PATH_AUTHFAIL, reason);
 }
 
 /*
@@ -709,7 +721,7 @@ int check_passwd(int linkunit,char *auser,int userlen,char *apasswd,
 		if (lns[linkunit].addresses != NULL)
 			free_wordlist(lns[linkunit].addresses);
 		lns[linkunit].addresses = addrs;
-		auth_script(linkunit,_PATH_AUTHUP);
+		auth_script(linkunit,_PATH_AUTHUP,0);
 		lns[linkunit].auth_up_script = 1;
 	}
 	return ret;
@@ -1077,7 +1089,12 @@ int auth_ip_addr(int unit,u_int32_t addr)
 		if (strcmp(ptr_word, "-") == 0)
 			break;
 
+		/* "*" means any addresses authorized */
+		if (strcmp(ptr_word, "*") == 0)
+			return 1;
+
 		accept = 1;
+
 		if (*ptr_word == '!') {
 			accept = 0;
 			++ptr_word;
@@ -1107,7 +1124,7 @@ int auth_ip_addr(int unit,u_int32_t addr)
 		} else {
 			np = getnetbyname (ptr_word);
 			if (np != NULL && np->n_addrtype == AF_INET)
-				a = htonl (*(u_int32_t *)np->n_net);
+				a = htonl ((unsigned long)np->n_net);
 			else
 				a = inet_addr (ptr_word);
 		}
@@ -1297,15 +1314,15 @@ static void free_wordlist(struct wordlist *wp)
 
 /*
  * auth_script - execute a script with arguments
- * interface-name peer-name real-user tty speed
+ * interface-name peer-name real-user tty speed remote-number [fail-reason]
  */
-static void auth_script(int linkunit,char *script)
+static void auth_script(int linkunit,char *script,int error_reason)
 {
 	char strspeed[32];
 	struct passwd *pw;
 	char struid[32];
 	char *user_name;
-	char *argv[8];
+	char *argv[9];
 
 	if ((pw = getpwuid(getuid())) != NULL && pw->pw_name != NULL)
 		user_name = pw->pw_name;
@@ -1323,7 +1340,11 @@ static void auth_script(int linkunit,char *script)
 	argv[5] = strspeed;
 	argv[6] = lns[linkunit].pci.remote_num;
 	argv[7] = NULL;
-
+	if (error_reason) {
+	  sprintf(struid,"%d",error_reason);
+	  argv[7] = struid;
+	  argv[8] = NULL;
+	}
 	run_program(script, argv, debug,linkunit);
 }
 

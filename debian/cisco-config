@@ -1,0 +1,34 @@
+interface Dialer3
+ description Profile t.b.v. D-Channel callback
+ bandwidth 64
+ ip unnumbered Loopback0
+ no ip directed-broadcast
+ encapsulation ppp
+ no keepalive
+ dialer remote-name eric
+ dialer idle-timeout 119
+ dialer enable-timeout 2
+ dialer string 00548541800
+ dialer caller 548541800 callback
+ dialer pool 1
+ dialer-group 1
+ peer default ip address 193.173.35.78
+ no cdp enable
+ ppp callback accept
+ ppp authentication chap pap callin
+
+username eric password 7 094E431E4A544F
+isdn switch-type basic-net3
+isdn tei-negotiation first-call
+
+interface BRI0
+ no ip address
+ no ip directed-broadcast
+ encapsulation ppp
+ dialer pool-member 1
+ isdn switch-type basic-net3
+ no cdp enable
+ ppp callback accept
+ ppp authentication chap pap callin
+
+ip route 193.173.35.78 255.255.255.255 Dialer3

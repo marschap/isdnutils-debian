@@ -1,8 +1,8 @@
-/* $Id: isdnlog.h,v 1.14 1998/12/09 20:39:30 akool Exp $
+/* $Id: isdnlog.h,v 1.25 2001/06/08 11:55:24 kai Exp $
  *
  * ISDN accounting for isdn4linux.
  *
- * Copyright 1995, 1998 by Andreas Kool (akool@isdn4linux.de)
+ * Copyright 1995 .. 2000 by Andreas Kool (akool@isdn4linux.de)
  *                     and Stefan Luethje (luethje@sl-gw.lake.de)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,98 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: isdnlog.h,v $
+ * Revision 1.25  2001/06/08 11:55:24  kai
+ * fix to compile with newer kernel headers. Maybe someone wants to fix isdnlog to recognize the number of channels at run time?
+ *
+ * Revision 1.24  1999/12/31 13:30:02  akool
+ * isdnlog-4.00 (Millenium-Edition)
+ *  - Oracle support added by Jan Bolt (Jan.Bolt@t-online.de)
+ *
+ * Revision 1.23  1999/11/16 18:09:39  akool
+ * isdnlog-3.67
+ *   isdnlog-3.66 writes wrong provider number into it's logfile isdn.log
+ *   there is a patch and a repair program available at
+ *   http://www.toetsch.at/linux/i4l/i4l-3_66.htm
+ *
+ * Revision 1.22  1999/09/11 22:28:24  akool
+ * isdnlog-3.50
+ *   added 3. parameter to "-h" Option: Controls CHARGEHUP for providers like
+ *   DTAG (T-Online) or AOL.
+ *   Many thanks to Martin Lesser <m-lesser@lesser-com.de>
+ *
+ * Revision 1.21  1999/05/04 19:32:40  akool
+ * isdnlog Version 3.24
+ *
+ *  - fully removed "sondernummern.c"
+ *  - removed "gcc -Wall" warnings in ASN.1 Parser
+ *  - many new entries for "rate-de.dat"
+ *  - better "isdnconf" utility
+ *
+ * Revision 1.20  1999/04/10 16:35:29  akool
+ * isdnlog Version 3.13
+ *
+ * WARNING: This is pre-ALPHA-dont-ever-use-Code!
+ * 	 "tarif.dat" (aka "rate-xx.dat"): the next generation!
+ *
+ * You have to do the following to test this version:
+ *   cp /usr/src/isdn4k-utils/isdnlog/holiday-de.dat /etc/isdn
+ *   cp /usr/src/isdn4k-utils/isdnlog/rate-de.dat /usr/lib/isdn
+ *   cp /usr/src/isdn4k-utils/isdnlog/samples/rate.conf.de /etc/isdn/rate.conf
+ *
+ * After that, add the following entries to your "/etc/isdn/isdn.conf" or
+ * "/etc/isdn/callerid.conf" file:
+ *
+ * [ISDNLOG]
+ * SPECIALNUMBERS = /usr/lib/isdn/sonderrufnummern.dat
+ * HOLIDAYS       = /usr/lib/isdn/holiday-de.dat
+ * RATEFILE       = /usr/lib/isdn/rate-de.dat
+ * RATECONF       = /etc/isdn/rate.conf
+ *
+ * Please replace any "de" with your country code ("at", "ch", "nl")
+ *
+ * Good luck (Andreas Kool and Michael Reinelt)
+ *
+ * Revision 1.19  1999/03/25 19:39:55  akool
+ * - isdnlog Version 3.11
+ * - make isdnlog compile with egcs 1.1.7 (Bug report from Christophe Zwecker <doc@zwecker.com>)
+ *
+ * Revision 1.18  1999/03/24 19:37:49  akool
+ * - isdnlog Version 3.10
+ * - moved "sondernnummern.c" from isdnlog/ to tools/
+ * - "holiday.c" and "rate.c" integrated
+ * - NetCologne rates from Oliver Flimm <flimm@ph-cip.uni-koeln.de>
+ * - corrected UUnet and T-Online rates
+ *
+ * Revision 1.17  1999/03/07 18:18:51  akool
+ * - new 01805 tarif of DTAG
+ * - new March 1999 tarife
+ * - added new provider "01051 Telecom"
+ * - fixed a buffer overrun from Michael Weber <Michael.Weber@Post.RWTH-Aachen.DE>
+ * - fixed a bug using "sondernnummern.c"
+ * - fixed chargeint change over the time
+ * - "make install" now install's "sonderrufnummern.dat", "tarif.dat",
+ *   "vorwahl.dat" and "tarif.conf"! Many thanks to
+ *   Mario Joussen <mario.joussen@post.rwth-aachen.de>
+ * - Euracom Frames would now be ignored
+ * - fixed warnings in "sondernnummern.c"
+ * - "10plus" messages no longer send to syslog
+ *
+ * Revision 1.16  1999/01/24 19:01:35  akool
+ *  - second version of the new chargeint database
+ *  - isdnrep reanimated
+ *
+ * Revision 1.15  1999/01/10 15:23:16  akool
+ *  - "message = 0" bug fixed (many thanks to
+ *    Sebastian Kanthak <sebastian.kanthak@muehlheim.de>)
+ *  - CITYWEEKEND via config-file possible
+ *  - fixes from Michael Reinelt <reinelt@eunet.at>
+ *  - fix a typo in the README from Sascha Ziemann <szi@aibon.ping.de>
+ *  - Charge for .at optimized by Michael Reinelt <reinelt@eunet.at>
+ *  - first alpha-Version of the new chargeinfo-Database
+ *    ATTENTION: This version requires the following manual steps:
+ *      cp /usr/src/isdn4k-utils/isdnlog/tarif.dat /usr/lib/isdn
+ *      cp /usr/src/isdn4k-utils/isdnlog/samples/tarif.conf /etc/isdn
+ *
  * Revision 1.14  1998/12/09 20:39:30  akool
  *  - new option "-0x:y" for leading zero stripping on internal S0-Bus
  *  - new option "-o" to suppress causes of other ISDN-Equipment
@@ -191,6 +283,8 @@
 /****************************************************************************/
 
 #include <tools.h>
+#include <holiday.h>
+#include <rate.h>
 #include "socket.h"
 
 /****************************************************************************/
@@ -201,6 +295,7 @@
 /****************************************************************************/
 
 #define BROADCAST   0x7f
+#define OUTGOING    !call[chan].dialin
 
 /****************************************************************************/
 
@@ -264,7 +359,7 @@
 #define VERBOSE_HEX	    1  /* only "HEX:" messages from /dev/isdnctrl */
 #define VERBOSE_CTRL	    2  /* any message from /dev/isdnctrl */
 #define	VERBOSE_INFO	    4  /* any message from /dev/isdninfo */
-#define VERBOSE_RATE	    8  /* any message from ioctl(IIOCGETCPS) */
+#define VERBOSE_FLOW	    8  /* any message from ioctl(IIOCGETCPS) */
 
 /****************************************************************************/
 
@@ -330,6 +425,7 @@ _EXTERN int     bilingual;
 _EXTERN int  	hupctrl;
 _EXTERN int  	hup1;
 _EXTERN int  	hup2;
+_EXTERN int  	hup3;
 _EXTERN int     trim;
 _EXTERN int     trimi;
 _EXTERN int     trimo;
@@ -344,11 +440,13 @@ _EXTERN	char    isdnctrl2[FNSIZE];
 _EXTERN	char   *outfile;
 _EXTERN	char    tmpout[PATH_MAX];
 _EXTERN int     readkeyboard;
-_EXTERN	int     interns0;
-_EXTERN	int	preselect;
 _EXTERN	int	other;
-_EXTERN IFO     ifo[ISDN_MAX_CHANNELS];
-_EXTERN IO      io[ISDN_MAX_CHANNELS];
+
+// I think 16 is the maximum isdnlog currently handles, but to
+// be on the safe side, keep it at 64
+
+_EXTERN IFO     ifo[64];
+_EXTERN IO      io[64];
 
 #undef _EXTERN
 
@@ -365,7 +463,8 @@ _EXTERN int  morectrl(int card);
 _EXTERN void moreinfo(void);
 _EXTERN void morekbd(void);
 _EXTERN void processcint(void);
-_EXTERN void processrate(void);
+_EXTERN void processflow(void);
+_EXTERN void processRate(int chan);
 _EXTERN void clearchan(int chan, int total);
 
 #undef _EXTERN
@@ -378,18 +477,18 @@ _EXTERN void clearchan(int chan, int total);
 #define _EXTERN extern
 #endif
 
-#define Exit(a) __Exit(__FILE__,__LINE__,a)
+#define Exit(a) _Exit_isdnlog(__FILE__,__LINE__,a)
 
-_EXTERN void __Exit(char *File, int Line, int RetCode);
+_EXTERN void _Exit_isdnlog(char *File, int Line, int RetCode);
+#ifndef  _REP_FUNC_C_
 _EXTERN int  print_msg(int Level, const char *fmt, ...);
+#endif
+_EXTERN void info(int chan, int reason, int state, char *msg);
 _EXTERN int  Change_Channel(int old_channel, int new_channel);
 _EXTERN void set_time_str(void);
 _EXTERN void now(void);
 _EXTERN void logger(int chan);
 _EXTERN int  ringer(int chan, int event);
-_EXTERN void initSondernummern(void);
-_EXTERN int  is_sondernummer(char *num);
-
 #undef _EXTERN
 
 /****************************************************************************/
@@ -454,5 +553,6 @@ _EXTERN const char *userfile(void);
 #undef _EXTERN
 
 /****************************************************************************/
+extern int prefix2pnum(int);
 
 #endif /* _ISDNLOG_H_ */

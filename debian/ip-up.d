@@ -13,7 +13,7 @@ PPP_NET=`echo $PPP_LOCAL | sed 's,\.[0-9]*\.[0-9]*$,.0.0/16,'`
 case "$PPP_IFACE" in
 	ippp0)	route del default
 		route add default netmask 0 $PPP_IFACE	# usually necessary
-		# The next lines are for firewalling.
+		# The next lines are for simple firewalling.
 		# See comments in /etc/isdn/device.* about firewalling!
 		#ipchains -D input -j DENY   -i $PPP_IFACE 2>/dev/null
 		#ipchains -A input -j ACCEPT -i $PPP_IFACE -p TCP  -d $PPP_NET 1000:
