@@ -354,6 +354,7 @@ debian_patches = \
 	capi20-soname \
 	libtool \
 	imon-update \
+	ppp-2.4.3 \
 
 patch: patch-stamp
 

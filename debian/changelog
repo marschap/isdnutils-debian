@@ -1,3 +1,11 @@
+isdnutils (1:3.6.2005-01-03-4) unstable; urgency=medium
+
+  * Add firmware information for recent AVM cards.
+  * Build pppdcapiplugin modules for ppp 2.4.3.
+  * Build isdnvboxclient for s390 again.
+
+ -- Matthias Klose <doko@debian.org>  Sun, 27 Feb 2005 15:54:59 +0100
+
 isdnutils (1:3.6.2005-01-03-3) unstable; urgency=medium
 
   * capiinit looks for firmware in /usr/share/isdn/`uname -r` first.
