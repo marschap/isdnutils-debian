@@ -21,7 +21,7 @@
 do_what="$1"
 
 if [ ! -d /etc/isdn ]; then
-       echo "The /etc/isdn directory does not exist; this can't happen!"
+       log_failure_msg "The /etc/isdn directory does not exist; this can't happen!"
        exit 1
 fi
 
@@ -54,8 +54,8 @@ listdaemons() {
 
 list_unconfigured() {
     if [ -n "$not_configured" ]; then
-        echo "Note: the following configuration files are not configured yet:"
-        for i in $not_configured; do echo "	$i"; done
+        log_success_msg "Note: the following configuration files are not yet configured:"
+        for i in $not_configured; do log_success_msg "	$i"; done
     fi
 }
 
@@ -79,23 +79,37 @@ isdncards_unchecked=true
 check_isdncards() {
     if $isdncards_unchecked; then
 	isdncards_unchecked=false
-        if [ -e /dev/isdninfo ]; then ISDNINFO=/dev/isdninfo;
-        elif [ -e /dev/isdn/isdninfo ]; then ISDNINFO=/dev/isdn/isdninfo;
-        else echo " error:"
-            echo "    Neither /dev/isdninfo nor /dev/isdn/isdninfo exist!"
+        if [ -e /dev/isdninfo ]; then
+	    ISDNINFO=/dev/isdninfo
+        elif [ -e /dev/isdn/isdninfo ]; then
+	    ISDNINFO=/dev/isdn/isdninfo
+	elif [ -d /.dev/ ] && [ -e /proc/mounts ] && grep -qE '^[^ ]+ /\.dev' /proc/mounts; then
+	    # udev is running
+	    old_pwd=$(pwd)
+	    cd /dev && WRITE_ON_UDEV=1 ./MAKEDEV isdn
+	    cd $old_pwd
+	    if [ -e /dev/isdninfo ]; then
+		ISDNINFO=/dev/isdninfo
+	    elif [ -e /dev/isdn/isdninfo ]; then
+		ISDNINFO=/dev/isdn/isdninfo
+	    fi
+	fi
+        if [ -z "$ISDNINFO" ]; then
+	    log_failure_msg " error:"
+            log_failure_msg "    Neither /dev/isdninfo nor /dev/isdn/isdninfo exist!"
             # apparently a devfs system...
-            echo "    Before you can use any ISDN facilities, ensure you have the proper kernel"
-            echo "    modules loaded. These will probably be 'isdn' and 'hisax'."
-            echo "    Read /usr/share/doc/isdnutils-base/README.HiSax.gz for more information"
-            echo "    (e.g. with 'zless /usr/share/doc/isdnutils-base/README.HiSax.gz')."
+            log_success_msg "    Before you can use any ISDN facilities, ensure you have the proper kernel"
+            log_success_msg "    modules loaded. These will probably be 'isdn' and 'hisax'."
+            log_success_msg "    Read /usr/share/doc/isdnutils-base/README.HiSax.gz for more information"
+            log_success_msg "    (e.g. with 'zless /usr/share/doc/isdnutils-base/README.HiSax.gz')."
             exit 0
         fi
 	set -- `perl -ne 's/^idmap:\s+//; s/ -//g; s/(\S+) \1/\1/g; print; exit;' $ISDNINFO 2>/dev/null`
 	if [ $# -eq 0 -a "$do_what" != stop ]; then
-            echo " "
-            echo " no ISDN cards configured! Please configure 'hisax' module with modconf"
-            echo "    Read /usr/share/doc/isdnutils-base/README.HiSax.gz for more information"
-            echo "    (e.g. with 'zless /usr/share/doc/isdnutils-base/README.HiSax.gz')."
+            log_success_msg " "
+            log_success_msg " no ISDN cards configured! Please configure 'hisax' module with modconf"
+            log_success_msg "    Read /usr/share/doc/isdnutils-base/README.HiSax.gz for more information"
+            log_success_msg "    (e.g. with 'zless /usr/share/doc/isdnutils-base/README.HiSax.gz')."
 	    exit 0
 	fi
 	isdncards="$@"
@@ -122,8 +136,8 @@ start_isdnlog() {
         if   [ -e /dev/$device ];      then DEVISDNCTRL=/dev/$device;
         elif [ -e /dev/isdn/$device ]; then DEVISDNCTRL=/dev/isdn/$device;
         else
-            echo " error:"
-            echo "    Neither /dev/$device nor /dev/isdn/$device exist!"
+            log_failure_msg " error:"
+            log_failure_msg "    Neither /dev/$device nor /dev/isdn/$device exist!"
             continue
         fi
         devicenum=${device#isdnctrl}
@@ -134,8 +148,8 @@ start_isdnlog() {
         fi
 	cardid=$1; shift
         if [ -z "$cardid" ]; then
-            echo " error:"
-            echo "    There doesn't appear to be a $device device!"
+            log_failure_msg " error:"
+            log_failure_msg "    There doesn't appear to be a $device device!"
             continue
         fi
         if $isdn_verbose; then /bin/echo -e "$what\c"; what=''; fi
@@ -232,12 +246,12 @@ start_devices() {
     fi
     listdevices
     if [ -z "$DEVS" -a ! -f /etc/isdn/noconfig ]; then
-        echo "  There is apparently no configuration created yet."
-        echo "  You can create configuration files with the 'isdnconfig' tool."
-        echo " "
-        echo "  If you don't want this warning in future, please create the file"
-        echo "     /etc/isdn/noconfig"
-        echo "  For more information, see /usr/share/doc/isdnutils-base/HOWTO.isdnutils.gz"
+        log_success_msg "  There is apparently no configuration created yet."
+        log_success_msg "  You can create configuration files with the 'isdnconfig' tool."
+        log_success_msg " "
+        log_success_msg "  If you don't want this warning in future, please create the file"
+        log_success_msg "     /etc/isdn/noconfig"
+        log_success_msg "  For more information, see /usr/share/doc/isdnutils-base/HOWTO.isdnutils.gz"
     fi
     # start devices in order
     # Device files of the form "device.ippp2+3" means that this (ippp3) is a
@@ -289,7 +303,7 @@ start_devices() {
 	    if sh /etc/isdn/device.$device start $extraopts > /dev/null; then
                 : # OK
             else
-                echo " $device failed."
+                log_failure_msg " $device failed."
             fi
 	    extraopts="slave $master"
 	done
@@ -378,21 +392,21 @@ start_ipppd() {
     if $ipppd_have_up || $ipppd_have_down; then
 	echo ""
         if ! $ipppd_have_up; then # have only down
-            echo "The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package still"
-            echo "exists. If you changed that file at some point, you may need to redo those"
-            echo "changes in the 99-ipppd file (which is the new name). After that, please"
-            echo "delete the old 99-isdnutils file."
+            log_warning_msg "The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package still"
+            log_warning_msg "exists. If you changed that file at some point, you may need to redo those"
+            log_warning_msg "changes in the 99-ipppd file (which is the new name). After that, please"
+            log_warning_msg "delete the old 99-isdnutils file."
         elif ! $ipppd_have_down; then # have only up
-            echo "The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package still"
-            echo "exists. If you changed that file at some point, you may need to redo those"
-            echo "changes in the 00-ipppd file (which is the new name). After that, please"
-            echo "delete the old 00-isdnutils file."
+            log_warning_msg "The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package still"
+            log_warning_msg "exists. If you changed that file at some point, you may need to redo those"
+            log_warning_msg "changes in the 00-ipppd file (which is the new name). After that, please"
+            log_warning_msg "delete the old 00-isdnutils file."
         else # have both
-            echo "The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils files"
-            echo "from the old isdnutils package still exist. If you changed those files at some"
-            echo "point, you may need to redo those changes in the 00-ipppd and 99-ipppd files"
-            echo "(which are the new names). After that, please delete the old 00-isdnutils"
-            echo "and 99-isdnutils files."
+            log_warning_msg "The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils files"
+            log_warning_msg "from the old isdnutils package still exist. If you changed those files at some"
+            log_warning_msg "point, you may need to redo those changes in the 00-ipppd and 99-ipppd files"
+            log_warning_msg "(which are the new names). After that, please delete the old 00-isdnutils"
+            log_warning_msg "and 99-isdnutils files."
         fi
         sleep 5
     fi

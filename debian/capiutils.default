@@ -1,0 +1,8 @@
+# some defaults for loading of mISDN modules
+
+MISDN_MODULES="mISDN_core mISDN_l1 mISDN_l2 l3udss1 mISDN_capi"
+
+# load the following module, after loading the mISDN modules
+#MISDN_DRIVER="hfcpci protocol=2"
+
+MISDN_DRIVER=

@@ -113,10 +113,6 @@ See also: isdnctrl(8) ifconfig(8) route(8)
 ippp0 should be the interface that is the default route; if not, you need to
 edit the device.xxx file(s).
 
-/etc/init.d/netbase may need to be modified for "IP spoofing protection".
-Basically, replace all "eth1" by "ippp0" or "isdn0" (whatever interface is
-appropriate).
-
 If using ipmasq, the stuff should work pretty much out of the box, if you tell
 ipmasq that ippp0 is the external interface.
 

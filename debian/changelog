@@ -1,3 +1,18 @@
+isdnutils (1:3.6.2005-01-03-4ubuntu1) hoary; urgency=low
+
+  * Sync with Debian package.
+  * Tighten isdnutils-base's dependency on makedev to correctly create
+    ISDN devices (closes: #297539). Ubuntu #3156.
+  * Add dependency of isdnactivecards on capiutils (closes: #298004, #300377).
+  * Fixes to build on amd64 using gcc-4.0 (closes: #297988).
+  * Fix vboxd on little-endian machines (closes: #300977).
+  * Use a private IP address for the device.DEVICE template (closes: #301297).
+  * debian/HOWTO (CONFIG.gz): Remove paragraph about /etc/init.d/netbase.
+    Closes: #240853.
+  * Quote ISP login name in secrets and ipppd config files. Closes: #274161.
+
+ -- Matthias Klose <doko@debian.org>  Mon, 28 Mar 2005 19:21:27 +0200
+
 isdnutils (1:3.6.2005-01-03-4) unstable; urgency=medium
 
   * Add firmware information for recent AVM cards.
@@ -6,12 +21,54 @@ isdnutils (1:3.6.2005-01-03-4) unstable; urgency=medium
 
  -- Matthias Klose <doko@debian.org>  Sun, 27 Feb 2005 15:54:59 +0100
 
+isdnutils (1:3.6.2005-01-03-3ubuntu5) hoary; urgency=low
+
+  * /etc/init.d/capiutils: Create capi20 device file, if missing.
+    Load mISDN modules defined in /etc/default/capiutils.
+  * /etc/default/capiutils: New file.
+  * Blacklist the hisax and hisax_fcpcipnp modules, so that the capi
+    driver gets used.
+
+ -- Matthias Klose <doko@ubuntu.com>  Mon,  7 Mar 2005 16:59:39 +0100
+
+isdnutils (1:3.6.2005-01-03-3ubuntu4) hoary; urgency=low
+
+  * Create device files in /dev, when udev is running. The old
+    ISDN driver isn't aware of sysfs.
+
+ -- Matthias Klose <doko@ubuntu.com>  Thu,  3 Mar 2005 17:36:07 +0100
+
+isdnutils (1:3.6.2005-01-03-3ubuntu3) hoary; urgency=low
+
+  * Fix capiinit/capi.conf patch.
+
+ -- Matthias Klose <doko@ubuntu.com>  Sun, 27 Feb 2005 20:43:19 +0100
+
+isdnutils (1:3.6.2005-01-03-3ubuntu2) hoary; urgency=low
+
+  * Add firmware information for recent AVM cards.
+  * Build pppdcapiplugin modules for ppp 2.4.3.
+
+ -- Matthias Klose <doko@debian.org>  Sun, 27 Feb 2005 15:54:59 +0100
+
+isdnutils (1:3.6.2005-01-03-3ubuntu1) hoary; urgency=low
+
+  * Synchronise with Debian.
+
+ -- Matthias Klose <m@klose.in-berlin.de>  Sat, 15 Jan 2005 15:46:00 +0100
+
 isdnutils (1:3.6.2005-01-03-3) unstable; urgency=medium
 
   * capiinit looks for firmware in /usr/share/isdn/`uname -r` first.
   * update capiinit manpage.
 
  -- Matthias Klose <doko@debian.org>  Sat, 15 Jan 2005 15:14:11 +0100
+
+isdnutils (1:3.6.2005-01-03-2ubuntu1) hoary; urgency=low
+
+  * Depend on lsb-base, prettify init scripts.
+
+ -- Matthias Klose <m@klose.in-berlin.de>  Sat,  8 Jan 2005 18:03:03 +0100
 
 isdnutils (1:3.6.2005-01-03-2) unstable; urgency=low
 

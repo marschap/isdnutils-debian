@@ -16,9 +16,10 @@ set -e
 
 case "$1" in
     configure)
+        old_pwd=$(pwd)
         cd /dev
         echo "Note: running MAKEDEV to create ISDN devices in /dev..."
-        /sbin/MAKEDEV isdn-tty isdn-io isdn-ippp
+        WRITE_ON_UDEV=1 ./MAKEDEV isdn-tty isdn-io isdn-ippp
         rm -f isdnctrl
         ln -s isdnctrl0 isdnctrl
         forcerestart=false
@@ -47,11 +48,11 @@ case "$1" in
                 ISPLOGIN=$(echo $ISPLOGIN | sed 's,@,\\@,')
                 perl -i -pe '$_ = "" if /^# REMOVE the/; $_ = "" if /^echo "Warning!/; $_ = "" if /^LEADINGZERO=0/; s,^LOCALMSN=\d+,LOCALMSN='"'$EAZ'"',; s,^REMOTEMSN=\d+,REMOTEMSN='"'$ISPPHONE'"',; s, out \$LEADINGZERO\$MSN, out \$MSN,;' /etc/isdn/device.$IPPPX
                 perl -i -pe '$_ = "" if /^# REMOVE the/; $_ = "" if /^# Warning! not configured yet!/; s,^name X.,name '"$ISPLOGIN"',; s,^#ms-get-dns,ms-get-dns,;' /etc/isdn/ipppd.$IPPPX
-                perl -i -pe "s,^$ISPLOGIN\s,#\$&," /etc/ppp/pap-secrets /etc/ppp/chap-secrets
+                perl -i -pe "s,^\"?$ISPLOGIN\s,#\$&," /etc/ppp/pap-secrets /etc/ppp/chap-secrets
                 echo "# Added by automatic ipppd configuration" >> /etc/ppp/pap-secrets
                 echo "# Added by automatic ipppd configuration" >> /etc/ppp/chap-secrets
-                printf "$ISPLOGIN\t\"*\"\t\"$ISPPASSWD\"\n"     >> /etc/ppp/pap-secrets
-                printf "$ISPLOGIN\t\"*\"\t\"$ISPPASSWD\"\n"     >> /etc/ppp/chap-secrets
+                printf "\"$ISPLOGIN\"\t\"*\"\t\"$ISPPASSWD\"\n"     >> /etc/ppp/pap-secrets
+                printf "\"$ISPLOGIN\"\t\"*\"\t\"$ISPPASSWD\"\n"     >> /etc/ppp/chap-secrets
                 forcerestart=true
             fi
         fi

@@ -1,42 +1,116 @@
-#!/bin/sh
-#
+#!/bin/sh -e
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 DAEMON=/usr/sbin/capiinit
 NAME=capiinit
 DESC='ISDN CAPI Cards'
-FLAGS="defaults"
 
 test -f $DAEMON || exit 0    # sanity check
+. /lib/lsb/init-functions
 
-set -e
+if [ -f /etc/default/capiutils ]; then
+  . /etc/default/capiutils
+fi
+
+mkcapidev()
+{
+  if [ ! -e /dev/capi20 ]; then
+    mknod -m 660 /dev/capi20 c 68 0
+    chown root:dialout /dev/capi20
+  fi
+}
+
+mountcapifs()
+{
+  if ! grep -q 'devfs$' /proc/filesystems; then
+    return
+  fi
+  if ! grep -q 'capifs$' /proc/filesystems; then
+    modprobe capifs
+  fi
+  if grep -q '^capifs /dev/capi ' /proc/mounts; then
+    return
+  fi
+  rm -rf /dev/capi
+  mkdir -m 755 /dev/capi
+  mount -t capifs -omode=0666 capifs /dev/capi
+}
+
+umountcapifs()
+{
+  if ! grep -q '^capifs /dev/capi ' /proc/mounts; then
+    return
+  fi
+  umount /dev/capi
+  if ! grep -q '^capifs ' /proc/mounts; then
+    rmmod capifs 2>/dev/null || true
+  fi
+}
 
 case "$1" in
   start)
-    grep -Evq '^ *$|^ *#' /etc/isdn/capi.conf || exit 0
-    echo "Starting $DESC :"
-    $DAEMON start
-    echo 'Done.'
+    mkcapidev
+    mountcapifs
+    if grep -Evq '^ *$|^ *#' /etc/isdn/capi.conf; then
+      # assume AVM driver
+      log_begin_msg "Starting $DESC..."
+      $DAEMON start
+      log_end_msg $?
+    elif [ -n "$MISDN_DRIVER" ]; then
+      # assume mISDN driver
+      modprobe capi
+      log_begin_msg "Loading mISDN..."
+      for m in $MISDN_MODULES; do
+        modprobe $m || true
+      done
+      modprobe $MISDN_DRIVER || true
+      log_end_msg $?
+    fi
     ;;
   stop)
     if [ -d /proc/capi ]; then
-        echo -n "Stopping $DESC :"
+      if grep -Evq '^ *$|^ *#' /etc/isdn/capi.conf; then
+        log_begin_msg "Stopping $DESC :"
         $DAEMON stop
-        echo ' done.'
+        log_end_msg $?
+      fi
+      if [ -n "$MISDN_DRIVER" ]; then
+	modprobe -r ${MISDN_DRIVER%% *}
+        for m in $MISDN_MODULES; do ms="$m $ms"; done
+        for m in $ms; do
+          modprobe -r $m || true
+        done
+      fi
     fi
+    umountcapifs
     exit 0
     ;;
   reload|restart|force-reload)
     # reload doesn't really work here...
-    echo "Restarting $DESC :"
     if [ -d /proc/capi ]; then
+      if grep -Evq '^ *$|^ *#' /etc/isdn/capi.conf; then
+        log_begin_msg "Restarting $DESC :"
         $DAEMON stop
+      fi
     fi
-    $DAEMON start
-    echo 'Done.'
+    mkcapidev
+    mountcapifs
+    if grep -Evq '^ *$|^ *#' /etc/isdn/capi.conf; then
+      $DAEMON start
+      log_end_msg $?
+    elif [ -n "$MISDN_DRIVER" ]; then
+      # assume mISDN driver
+      log_begin_msg "Loading mISDN..."
+      modprobe capi
+      for m in $MISDN_MODULES; do
+        modprobe $m || true
+      done
+      modprobe $MISDN_DRIVER || true
+      log_end_msg $?
+    fi
     ;;
   *)
-    echo "Usage: /etc/init.d/$NAME {start|stop|restart|force-reload}"
+    log_success_msg "Usage: /etc/init.d/$NAME {start|stop|restart|force-reload}"
     exit 1
     ;;
 esac
