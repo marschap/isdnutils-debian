@@ -1,7 +1,7 @@
 CPPFLAGS    = 
 LDLIBS      = -lXmu -lSM -lICE -lXext -lXaw -lXt -lXpm -lX11
 CFLAGS      = -pipe -g -O2 -Wall
-LDFLAGS     = -pipe
+LDFLAGS     = -pipe -L/usr/X11R6/lib
 # Some "black" magic to determine optimal compiler flags for target
 # architecture
 TARGET_ARCH:= $(shell if [ \! -r .compile-options ] ; then ( \

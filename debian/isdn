@@ -1,0 +1,45 @@
+#! /bin/sh
+# /etc/init.d/isdnlog: start and stop isdnlog
+#
+# Written by Christian Schwarz <C.Schwarz@monet.m.isar.de>.
+#
+# Note: You have to change the settings below, if you do not have a
+# teles ISDN adapter.
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+DAEMON=/usr/sbin/isdnlog
+NAME=isdnlog
+
+test -f $DAEMON || exit 0
+
+# Set run_isdnlog to 1 to start isdnlog at boot or 0 to disable it.
+run_isdnlog=0
+
+case "$1" in
+  start)
+    if [ $run_isdnlog = 1 ]; then
+      # Rotate log files.
+      (cd /var/log/isdn;\
+      savelog -g adm -m 640 -u root -c 4 isdnctrl isdnlog vbox* >/dev/null)
+      echo -n "Setting up ISDN: "
+      echo -n "isdnlog "
+      # Note: On some systems it is necessary to change the "line0"
+      # into "teles0" in the next line:
+      /sbin/telesctrl line0 1 4
+      /usr/sbin/isdnlog -vw2 -m1015 /dev/isdnctrl 2>/var/log/isdn/isdnlog &
+      echo
+    fi
+    ;;
+  stop)
+    if [ $run_isdnlog = 1 ]; then
+      start-stop-daemon --stop --verbose --pidfile /var/run/$NAME.pid --exec $DAEMON
+    fi
+    ;;
+  *)
+    echo "Usage: /etc/init.d/$NAME {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0
+

@@ -64,7 +64,7 @@ CONFDIR     = /etc/isdnlog
 CONFFILE    = isdnlog.conf
 USERFILE    = isdnlog.users
 
-LOGFILE     = /var/log/isdn.log
+LOGFILE     = /var/log/isdn/calls
 PIDFILE     = /var/run/isdnlog.pid
 
 ETCDIR      = /sbin

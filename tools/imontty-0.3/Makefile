@@ -8,7 +8,7 @@ SBINPATH=/sbin
 MAN8PATH=$(MANDEST)/man8
 
 CCFLAGS=-I$(ISDN_INCLUDE) -I/usr/include/g++-include -O6
-LDFLAGS=-lcurses -ltermcap -lm
+LDFLAGS=-lcurses /lib/libtermcap.so.2 -lm
 
 # nothing to change behind this line
 

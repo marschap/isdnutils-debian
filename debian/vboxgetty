@@ -1,0 +1,37 @@
+#! /bin/sh
+# /etc/init.d/vboxgetty: start and stop vboxgetty
+#
+# Written by Christian Schwarz <C.Schwarz@monet.m.isar.de>.
+#
+# Note: You have to modify the vboxgetty call to refer to your calling
+# number and user id.
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+DAEMON=/usr/sbin/vboxgetty
+NAME=vboxgetty
+
+test -f $DAEMON || exit 0
+
+# Set run_vbox to 1 to start vboxgetty at boot or 0 to disable it.
+run_vbox=0
+
+case "$1" in
+  start)
+    if [ $run_vbox = 1 ]
+    then
+      /usr/sbin/vboxgetty -d/dev/ttyI5 -i"ATZ&E57299" -uschwarz &
+    fi
+    ;;
+  stop)
+    if [ $run_vbox = 1 ]
+    then
+      start-stop-daemon --stop --verbose --pidfile /var/run/vbox-pid.ttyI5 --exec $DAEMON
+    fi
+    ;;
+  *)
+    echo "Usage: /etc/init.d/$NAME {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0

@@ -1,0 +1,72 @@
+#!/bin/sh
+
+echo "Checking for ISDN device inodes ... "
+
+DEV=/dev
+
+echo -n "... isdn/isdnctrl/ippp "
+if [ ! -c $DEV/isdn0 -o ! -c $DEV/isdnctrl -o ! -c $DEV/isdnctrl0 \
+	-o ! -c $DEV/ippp0 ]; then
+    echo -n "(creating..."
+    MAJ=45
+    MIN=0
+    rm -f $DEV/isdn? $DEV/isdn?? $DEV/isdnctrl* $DEV/ippp*
+    while [ $MIN -lt 64 ] ; do
+	mknod -m 600 $DEV/isdn$MIN c $MAJ $MIN
+	mknod -m 600 $DEV/isdnctrl$MIN c $MAJ `expr $MIN + 64`
+	mknod -m 600 $DEV/ippp$MIN c $MAJ `expr $MIN + 128`
+	MIN=`expr $MIN + 1`
+    done
+    ln -sf $DEV/isdnctrl0 $DEV/isdnctrl
+    echo "done)"
+else
+    echo "(exists)"
+fi
+
+echo -n "... isdninfo "
+if [ ! -c $DEV/isdninfo ]; then
+    rm -f $DEV/isdninfo
+    mknod -m 444 $DEV/isdninfo c $MAJ 255
+    echo "(created)"
+else
+    echo "(exists)"
+fi
+
+echo -n "... ttyI "
+if [ ! -c $DEV/ttyI0 ]; then
+    MAJ=43
+    MIN=0
+    rm -f $DEV/ttyI*
+    while [ $MIN -lt 64 ] ; do
+	mknod -m 666 $DEV/ttyI$MIN c $MAJ $MIN
+	MIN=`expr $MIN + 1`
+    done
+    echo "(created)"
+else
+    echo "(exists)"
+fi
+
+echo -n "... cui "
+if [ ! -c $DEV/cui0 ]; then
+    MAJ=44
+    MIN=0
+    rm -f $DEV/cui*
+    while [ $MIN -lt 64 ] ; do
+	    mknod -m 666 $DEV/cui$MIN c $MAJ $MIN
+	    MIN=`expr $MIN + 1`
+    done
+    echo "(created)"
+else
+    echo "(exists)"
+fi
+
+echo "Creating links in /etc/rc?.d directories ..."
+/usr/sbin/update-rc.d isdn defaults >/dev/null
+/usr/sbin/update-rc.d vboxgetty defaults >/dev/null
+
+echo
+echo "NOTE: You have to set up the files /etc/isdnlog/isdnlog.conf,"
+echo "/etc/init.d/isdn, and /etc/init.d/vboxgetty yourself!"
+echo "Documentation is supplied in /usr/doc/isdnutils."
+echo
+

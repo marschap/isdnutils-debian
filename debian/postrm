@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ $1 = "purge" ]
+then
+	/usr/sbin/update-rc.d isdn remove >/dev/null
+	/usr/sbin/update-rc.d vboxgetty remove >/dev/null
+fi
+

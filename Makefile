@@ -1,7 +1,7 @@
 VERSION=2.0
 SUBDIRS=isdn icn teles pcbit ppp4i4k doc tools
 # Where to install the mapages
-export MANDEST = /usr/local/man
+export MANDEST = /usr/man
 # Where to install control programs
 export SBINDEST = /sbin
 # Where to install the modules ($KERNELDIR/modules)

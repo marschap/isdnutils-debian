@@ -22,10 +22,10 @@ SPOOLDIR	=	/var/spool/vbox
 # Verzeichnis in das `vboxgetty' installiert wird (*Nur* für root).       #
 #-------------------------------------------------------------------------#
 
-INSTALLSBINDIR	=	/usr/local/sbin
+INSTALLSBINDIR	=	/sbin
 
-INSTALLXSBINDIR	=	/usr/X11/bin
-INSTALLXBINDIR	=	/usr/X11/bin
+INSTALLXSBINDIR	=	/usr/X11R6/bin
+INSTALLXBINDIR	=	/usr/X11R6/bin
 
 #-------------------------------------------------------------------------#
 # INSTALLSBIN                                                             #
@@ -41,7 +41,7 @@ INSTALLSBIN	=	install -s -o root -g root -m 750
 # Verzeichnis in das `vbox' (message viewer) installiert wird.            #
 #-------------------------------------------------------------------------#
 
-INSTALLBINDIR	=	/usr/local/bin
+INSTALLBINDIR	=	/usr/bin
 
 #-------------------------------------------------------------------------#
 # INSTALLBIN                                                              #

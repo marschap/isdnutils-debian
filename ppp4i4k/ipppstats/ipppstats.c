@@ -42,7 +42,7 @@ static char rcsid[] = "$Id: pppstats.c,v 1.11 1995/07/11 06:41:45 paulus Exp $";
 
 #include <ctype.h>
 #include <errno.h>
-#include <nlist.h>
+/*#include <nlist.h>*/
 #include <stdio.h>
 #include <signal.h>
 #include <fcntl.h>

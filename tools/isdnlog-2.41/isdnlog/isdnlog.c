@@ -3034,7 +3034,7 @@ int main(int argc, char *argv[], char *envp[])
             else
               p = argv[optind];
 
-            sprintf(fn, "%s/%s", TMPDIR, p);
+            sprintf(fn, "/var/log/isdn/%s", p);
           } /* if */
 
           if (!verbose || ((fprot = fopen(fn, "a")) != (FILE *)NULL)) {

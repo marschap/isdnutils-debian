@@ -1,0 +1,44 @@
+isdnutils (2.0-5) unstable; urgency=low
+
+  * Fixed log rotating (now done on each boot up).
+  * Renamed source package directory to isdnutils-2.0.
+
+ -- Christian Schwarz <schwarz@debian.org>  Sun, 27 Oct 1996 23:06:29 +0100
+
+isdnutils (2.0-4) unstable; urgency=low
+
+  * First public release.
+  * Fixed bug in postinst.
+  * Renamed log files.
+  * Better support for log rotating.
+
+ -- Christian Schwarz <schwarz@debian.org>  Tue, 8 Oct 1996 13:57:45 +0200
+
+isdnutils (2.0-3) unstable; urgency=low
+
+  * Moved files into better locations.
+  * Renamed log files.
+  * Marked files in /etc/init.d as conffiles.
+  * Upgraded to Debian package standard 2.1.1.0
+
+ -- Christian Schwarz <schwarz@debian.org>  Sat, 5 Oct 1996 17:56:30 +0200
+
+isdnutils (2.0-2) unstable; urgency=low
+
+  * Added debian files for automatic package generation via debian.rules.
+  * Fixed bug: /etc/init.d/isdn referred to `line0' instead of `teles0'.
+  * Moved log files into directory /var/log/isdn.
+  * Added log file rotation.
+  * Improved /etc/init.d scripts.
+
+ -- Christian Schwarz <C.Schwarz@monet.m.isar.de>  Thu, 15 Aug 1996 17:16:00 +0200 
+
+isdnutils (2.0-1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Christian Schwarz <C.Schwarz@monet.m.isar.de>  Mon, 29 Jul 1996 22:41:06 +0200
+ 
+Local variables:
+mode: debian-changelog
+End:
