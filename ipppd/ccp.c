@@ -42,7 +42,7 @@ char ccp_rcsid[] = "$Id: ccp.c,v 1.11 1999/06/21 13:28:42 hipp Exp $";
 
 #include "compressions.h"
 
-#include <linux/isdn_lzscomp.h>
+#include "../ipppcomp/isdn_lzscomp.h"
 
 /*
  * Protocol entry points from main code.

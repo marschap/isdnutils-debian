@@ -104,6 +104,9 @@ binary-arch: checkroot build
 	install -m 0644 debian/doc-base-isdn4linux-faq-eng debian/tmp/usr/share/doc-base/isdn4linux-faq-eng
 	# end of extra stuff
 	debstd README 
+	mv debian/tmp/usr/share/man debian/tmp/usr/man
+	mv debian/tmp/usr/share/doc/isdnutils/* debian/tmp/usr/doc/isdnutils
+	rm -rf debian/tmp/usr/share/doc
 	# dpkg-gencontrol -pisdnutils
 	dpkg-gencontrol
 	chown -R root.root debian/tmp

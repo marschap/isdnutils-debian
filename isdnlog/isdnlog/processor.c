@@ -2364,8 +2364,6 @@ static void decode(int chan, register char *p, int type, int version, int tei)
 			p += 3;	/* skip '.' */
 			tm.tm_year  = (strtol(p+=3,NIL,16)-'0') * 10;
 			tm.tm_year +=  strtol(p+=3,NIL,16)-'0';
-			if (tm.tm_year < 70)
-			    tm.tm_year += 100;
 			p += 3; /* skip '-' */
 			tm.tm_hour  = (strtol(p+=3,NIL,16)-'0') * 10;
 			tm.tm_hour +=  strtol(p+=3,NIL,16)-'0';
@@ -2390,6 +2388,8 @@ static void decode(int chan, register char *p, int type, int version, int tei)
 		    else {
 		    	goto UNKNOWN_ELEMENT; /* no choice... */
 		    }
+                    if (tm.tm_year < 70)
+                        tm.tm_year += 100;
                     tm.tm_wday  = tm.tm_yday = 0;
                     tm.tm_isdst = -1;
 

@@ -1,3 +1,11 @@
+isdnutils (1:3.0-12slink14) stable; urgency=high
+
+  * Y2K fix for isdnlog (date received from ISDN line wasn't interpreted
+    correctly).
+    -- Paul Slootman <paul@debian.org>  Mon, 10 Jan 2000 12:41:20 +0100
+
+ -- Vincent Renardias <vincent@debian.org>  Mon, 10 Jan 2000 14:48:30 +0100
+
 isdnutils (1:3.0-12slink13) stable; urgency=high
 
   * build of 3.0-13 for slink, as this is fixes a security problem (see next

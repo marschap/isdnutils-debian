@@ -274,7 +274,7 @@ time_t atom(register char *p)
   p += 4;
   *p = 0;
 
-  tm.tm_year = atoi(p1 + 2);
+  tm.tm_year = atoi(p1) - 1900;
 
 #ifdef DEBUG_1
   if (tm.tm_year < 1995) {
