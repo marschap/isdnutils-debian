@@ -1,3 +1,20 @@
+isdnutils (2.0-7) unstable; urgency=low
+
+  * imontty not linked against libtermcap or libncurses anymore (bug #8196)
+
+ -- Christian Schwarz <schwarz@debian.org>  Fri, 21 Mar 1997 00:17:20 +0100
+
+isdnutils (2.0-6) unstable; urgency=low
+
+  * Removed isdnlog, vbox, and related programs.
+  * Fix bug: /dev/isdninfo had wrong major number.
+  * Upgraded to Debian package standard 2.1.2.2.
+  * Moved isdnbutton into /usr/X11R6/bin.
+  * Changed priority to extra.
+  * Added dependency on xlib6.
+
+ -- Christian Schwarz <schwarz@debian.org>  Thu, 6 Mar 1997 19:51:18 +0100
+
 isdnutils (2.0-5) unstable; urgency=low
 
   * Fixed log rotating (now done on each boot up).
@@ -41,4 +58,5 @@ isdnutils (2.0-1) unstable; urgency=low
  
 Local variables:
 mode: debian-changelog
+add-log-mailing-address: "schwarz@debian.org"
 End:

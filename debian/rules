@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 # debian.rules file - for isdnutils (2.0).
-# Copyright 1996 by Christian Schwarz.
+# Copyright 1996,1997 by Christian Schwarz.
 # I hereby give you perpetual unlimited permission to copy,
 # modify and relicense this file, provided that you do not remove
 # my name from the file itself.  (I assert my moral right of
@@ -11,18 +11,14 @@ package=isdnutils
 build:
 	$(checkdir)
 	$(MAKE)
-	(cd tools/vbox-1.0; $(MAKE) vbox)
-	(cd tools/isdnlog-2.41/xisdnload; xmkmf; $(MAKE))
 	touch build
 
 clean:
 	$(checkdir)
 	-rm -f build
 	-$(MAKE) -i clean
-	(cd tools/isdnlog-2.41; $(MAKE) distclean)
 	rm -f tools/imontty-0.3/imont
-	(cd tools/vbox-1.0; $(MAKE) -i clean clear)
-	(cd tools/isdnlog-2.41/xisdnload; $(MAKE) -i clean; rm -f Makefile)
+	rm -f tools/isdnlog-2.41/bin/{isdnlog,isdnrep}
 	-rm -rf *~ debian/tmp debian/*~ debian/files*
 
 binary-indep:  checkroot build
@@ -36,67 +32,33 @@ binary-arch:	checkroot build
 	-rm -rf debian/tmp
 	# Install directories.
 	install -d debian/tmp debian/tmp/DEBIAN
-	install -d debian/tmp/etc/isdnlog
-	install -d debian/tmp/etc/init.d
-	install -d debian/tmp/sbin
-	install -d debian/tmp/usr/bin
-	install -d debian/tmp/usr/X11R6/bin
-	install -d debian/tmp/usr/sbin
-	install -d debian/tmp/usr/doc/isdnutils
-	install -d debian/tmp/usr/doc/isdnutils/examples
-	install -d debian/tmp/usr/man/man1
-	install -d debian/tmp/usr/man/man4
-	install -d debian/tmp/usr/man/man8
-	install -d debian/tmp/var/spool/vbox
-	install -d debian/tmp/var/log
-	install -o root -g dialout -m 750 -d debian/tmp/var/log/isdn
-	install -d debian/tmp/var/lock
-	install -d debian/tmp/usr/X11R6/lib/X11/app-defaults
+	cd debian/tmp && install -d `cat ../dirs`
         # Install isdn4k-utils docs.
-	install -o root -g root -m 644 CREDITS CAUSE.1tr6 README README.mgetty README.tcpdump patch-mgetty-0.99-May31 tcpdump-3.0.3-isdn.diff.gz debian/tmp/usr/doc/isdnutils/
+	install -o root -g root -m 644 CREDITS CAUSE.1tr6 README README.tcpdump tcpdump-3.0.3-isdn.diff.gz debian/tmp/usr/doc/isdnutils/
 	install -o root -g root -m 755 etc/{rc.isdn,rc.isdn.syncppp,rc.isdn.syncppp.1} debian/tmp/usr/doc/isdnutils/examples/
 	# Install device related stuff.
 	install -o root -g root -m 644 doc/ttyI.4 debian/tmp/usr/man/man4/
 	(cd debian/tmp/usr/man/man4; ln -sf ttyI.4.gz cui.4.gz)
-	install -o root -g bin -m 750 -s icn/icnctrl pcbit/pcbitctl teles/telesctrl debian/tmp/sbin/
-	install -o root -g bin -m 750 -s isdn/isdnctrl debian/tmp/sbin/
+	install -o root -g root -m 755 -s icn/icnctrl pcbit/pcbitctl teles/telesctrl isdn/isdnctrl debian/tmp/sbin/
 	install -o root -g root -m 644 doc/{isdnctrl,icnctrl,telesctrl,pcbitctl}.8 debian/tmp/usr/man/man8/
 	# Install low level control programs and daemons.
 	# Install PPP daemons.
-	install -o root -g bin -m 555 -s ppp4i4k/ipppd.2.2.0f/ipppd debian/tmp/usr/sbin/
+	install -o root -g bin -m 755 -s ppp4i4k/ipppd.2.2.0f/ipppd debian/tmp/usr/sbin/
 	install -o root -g root -m 644 ppp4i4k/ipppd.2.2.0f/pppd.8 debian/tmp/usr/man/man8/ipppd.8
-	install -o root -g daemon -m 755 -s ppp4i4k/ipppstats/ipppstats debian/tmp/usr/sbin/
+	install -o root -g root -m 755 -s ppp4i4k/ipppstats/ipppstats debian/tmp/usr/sbin/
 	install -o root -g root -m 644 ppp4i4k/ipppstats/ipppstats.8 debian/tmp/usr/man/man8/
-	# Install isdnlog and related programs.
-	install -o root -g bin -m 700 -s tools/isdnlog-2.41/bin/isdnlog debian/tmp/usr/sbin/
-	install -o root -g root -m 755 -s tools/isdnlog-2.41/bin/isdnrep debian/tmp/usr/bin/
-	install -o root -g root -m 644 tools/isdnlog-2.41/conf/avon debian/tmp/etc/isdnlog/
-	install -o root -g root -m 644 tools/isdnlog-2.41/samples/* debian/tmp/usr/doc/isdnutils/examples/
-	install -o root -g root -m 644 tools/isdnlog-2.41/BUGS debian/tmp/usr/doc/isdnutils/BUGS.isdnlog
-	install -o root -g root -m 644 tools/isdnlog-2.41/README debian/tmp/usr/doc/isdnutils/README.isdnlog
 	# Install monitoring tools.
 	install -o root -g bin -m 755 -s isdn/iprofd debian/tmp/usr/sbin/
 	install -o root -g root -m 644 doc/iprofd.8 debian/tmp/usr/man/man8/
 	install -o root -g bin -m 755 -s tools/imon/imon tools/imontty-0.3/imontty debian/tmp/usr/sbin/
 	install -o root -g root -m 644 tools/imontty-0.3/imontty.8 debian/tmp/usr/man/man8/
-	# Install vbox programs.
-	install -o root -g root -m 755 debian/vboxgetty debian/tmp/etc/init.d/vboxgetty
-	install -o root -g bin -m 750 -s tools/vbox-1.0/bin/vboxgetty debian/tmp/usr/sbin/
-	install -o root -g root -m 755 -s tools/vbox-1.0/bin/{vbox,rmdcatheader,rmdcutheader} debian/tmp/usr/bin/
-	install -o root -g root -m 644 tools/vbox-1.0/README debian/tmp/usr/doc/isdnutils/README.vbox
-	install -o root -g root -m 644 tools/vbox-1.0/doc/de/vbox.txt debian/tmp/usr/doc/isdnutils/vbox.german.txt
         # Install isdnbutton.
-	install -o root -g dialout -m 4750 -s tools/isdnbutton-1.1/isdnbutton debian/tmp/usr/sbin/
-        # Install XISDNLoad.
-	install -o root -g root -m 755 tools/isdnlog-2.41/xisdnload/xisdnload debian/tmp/usr/X11R6/bin/
-	install -o root -g root -m 644 tools/isdnlog-2.41/xisdnload/xisdnload.man debian/tmp/usr/man/man1/xisdnload.1
-	install -o root -g root -m 644 tools/isdnlog-2.41/xisdnload/XISDNLoad.ad debian/tmp/usr/X11R6/lib/X11/app-defaults/XISDNLoad
+	install -o root -g dialout -m 4750 -s tools/isdnbutton-1.1/isdnbutton debian/tmp/usr/X11R6/bin/
 	# Install Debian specific files.
-	install -o root -g root -m 755 debian/isdn debian/tmp/etc/init.d/isdn
-	install -o root -g root -m 755 debian/{postinst,postrm} debian/tmp/DEBIAN/
-	cp debian/conffiles debian/tmp/DEBIAN/
+	install -o root -g root -m 755 debian/postinst debian/tmp/DEBIAN/
 	cp debian/copyright debian/tmp/usr/doc/$(package)/
 	cp debian/changelog debian/tmp/usr/doc/$(package)/changelog.Debian
+	cp debian/TODO.Debian debian/tmp/usr/doc/$(package)/
 	-gzip -9 -q debian/tmp/usr/doc/$(package)/*
 	-gunzip debian/tmp/usr/doc/$(package)/copyright
 	-gzip -9 -q debian/tmp/usr/doc/$(package)/examples/*

@@ -26,7 +26,7 @@ fi
 echo -n "... isdninfo "
 if [ ! -c $DEV/isdninfo ]; then
     rm -f $DEV/isdninfo
-    mknod -m 444 $DEV/isdninfo c $MAJ 255
+    mknod -m 444 $DEV/isdninfo c 45 255
     echo "(created)"
 else
     echo "(exists)"
@@ -59,14 +59,4 @@ if [ ! -c $DEV/cui0 ]; then
 else
     echo "(exists)"
 fi
-
-echo "Creating links in /etc/rc?.d directories ..."
-/usr/sbin/update-rc.d isdn defaults >/dev/null
-/usr/sbin/update-rc.d vboxgetty defaults >/dev/null
-
-echo
-echo "NOTE: You have to set up the files /etc/isdnlog/isdnlog.conf,"
-echo "/etc/init.d/isdn, and /etc/init.d/vboxgetty yourself!"
-echo "Documentation is supplied in /usr/doc/isdnutils."
-echo
 

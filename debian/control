@@ -1,18 +1,13 @@
 Source: isdnutils
 Section: net
-Priority: standard
+Priority: extra
 Maintainer: Christian Schwarz <schwarz@debian.org>
-Standards-Version: 2.1.1.0
+Standards-Version: 2.1.2.2
 
 Package: isdnutils
 Architecture: any
-Depends: libc5, ncurses3.0, termcap-compat, libg++27
-Suggests: xlib
-Description: Isdn utility programs
+Depends: libc5 (>= 5.4.0), ncurses3.0, libg++27, xlib6
+Suggests: isdnlog, vbox
+Description: ISDN utility programs
  The ISDN utility package includes tools to set up and control the kernel
- ISDN facilities. Therefore, you need a kernel with an ISDN driver or you
- have to load ISDN kernel modules.
- .
- This package als includes the isdnlog daemon that logs all activity on
- the D-channel, a special version of the PPP daemon for use of synchronous
- PPP, and a voice box program.
+ ISDN driver.
