@@ -23,7 +23,11 @@ MAILTO="${4}"
 if (test -f "${MSNAME}")
 then
    (
+      echo "From: vboxmail <`/usr/bin/id -un`>"
+      echo "To: ${MAILTO}"
+      echo "Subject: New message from ${CALLER} (${CALLID})"
+      echo ""
       @BINDIR@/vboxmode $MSNAME
 
-   ) | @MAILCMD@ -s "New message from ${CALLER} (${CALLID})" ${MAILTO}
+   ) | /usr/sbin/sendmail -oi -t
 fi

@@ -49,12 +49,12 @@ AC_DEFUN(GND_PACKAGE_TCL,
       if (test "${gnd_use_tcl_lib}" = "")
       then
          gnd_1st_tcl_lib_test="tcl8.0"
-         gnd_2nd_tcl_lib_test="tcl7.6"
+         gnd_2nd_tcl_lib_test="tcl8.2"
          gnd_3rd_tcl_lib_test="tcl"
       else
          gnd_1st_tcl_lib_test="${gnd_use_tcl_lib}"
          gnd_2nd_tcl_lib_test="tcl8.0"
-         gnd_3rd_tcl_lib_test="tcl7.6"
+         gnd_3rd_tcl_lib_test="tcl8.2"
       fi
 
       AC_CHECK_LIB(m,

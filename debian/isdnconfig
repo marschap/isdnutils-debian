@@ -6,7 +6,7 @@
 
 set -e -C
 
-EXAMPLES=/usr/doc/isdnutils/examples/default
+EXAMPLES=/usr/share/doc/isdnutils/examples/default
 
 # version of cp that doesn't mind if source is gzipped
 function mycp {
@@ -27,7 +27,7 @@ function mycp {
 	then
 	    zcat $mycpSRC > $mycpDEST
 	else
-	    echo "isdnutils ERROR! $mycpSRC doesn't exist (tell isdnutils@debian.org)"
+	    echo "isdnutils ERROR! $mycpSRC doesn't exist (tell isdnutils@packages.debian.org)"
 	    return 1
 	fi
     fi
@@ -159,14 +159,13 @@ Name for new configuration (ippp0 ippp1 ...) : "
 		echo "Installed new config file /etc/isdn/ipppd.$device ."
 		done=1
 	    fi
-#OLD# The files installed below are now conffiles.
-#OLD	    if [ -d /etc/ppp/ip-up.d -a ! -e /etc/ppp/ip-up.d/isdnutils ]
+#OLD	    if [ -d /etc/ppp/ip-down.d -a ! -e /etc/ppp/ip-down.d/isdnutils ]
 #OLD	    then
-#OLD		if mycp $EXAMPLES/ip-up.d /etc/ppp/ip-up.d/isdnutils
+#OLD		if mycp $EXAMPLES/ip-down.d /etc/ppp/ip-down.d/isdnutils
 #OLD		then
-#OLD		   echo "Installed new config file /etc/ppp/ip-up.d/isdnutils ."
-#OLD		   [ -e /etc/ppp/ip-up -a ! -x /etc/ppp/ip-up ] &&
-#OLD						chmod +x /etc/ppp/ip-up
+#OLD		   echo "Installed new config file /etc/ppp/ip-down.d/isdnutils ."
+#OLD		   [ -e /etc/ppp/ip-down -a ! -x /etc/ppp/ip-down ] &&
+#OLD						chmod +x /etc/ppp/ip-down
 #OLD		   if [ $done -eq 0 ]
 #OLD		   then	done=1
 #OLD		   else	done=2
@@ -175,21 +174,6 @@ Name for new configuration (ippp0 ippp1 ...) : "
 #OLD		   echo "Existing /etc/ppp/ip-up.d/isdnutils not overwritten."
 #OLD		fi
 #OLD	    fi
-	    if [ -d /etc/ppp/ip-down.d -a ! -e /etc/ppp/ip-down.d/isdnutils ]
-	    then
-		if mycp $EXAMPLES/ip-down.d /etc/ppp/ip-down.d/isdnutils
-		then
-		   echo "Installed new config file /etc/ppp/ip-down.d/isdnutils ."
-		   [ -e /etc/ppp/ip-down -a ! -x /etc/ppp/ip-down ] &&
-						chmod +x /etc/ppp/ip-down
-		   if [ $done -eq 0 ]
-		   then	done=1
-		   else	done=2
-		   fi
-		else
-		   echo "Existing /etc/ppp/ip-up.d/isdnutils not overwritten."
-		fi
-	    fi
 	    if [ -d /etc/ppp -a ! -e /etc/ppp/auth-up ]
 	    then
 		if mycp $EXAMPLES/auth-up /etc/ppp/.

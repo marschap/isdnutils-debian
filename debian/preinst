@@ -2,6 +2,15 @@
 
 set -e
 
+if dpkg --compare-versions `dpkg -l libc6 | tail -1 | awk '{ print $3 }'` lt 2.1.2
+then
+    echo "Your libc6 version is too old for this version of isdnutils;"
+    echo "this shouldn't happen (unless your tried to install isdnutils manually)."
+    echo "Please use dselect or apt to upgrade your system."
+    echo "The installation of isdnutils is now being aborted."
+    exit 1
+fi
+
 OLDPACKAGES='isdnlog ipppd xisdnutils'
 PACKAGES=''
 
@@ -101,14 +110,67 @@ EOF
 				*)		echo "Enter 1 or 2 or 3 !";;
 			esac
 			if [ "$ans" = y ]; then
-				exit 0
+				break
 			fi
 			if [ "$ans" = r ]; then
 				mv -f /usr/sbin/ipppd /usr/sbin/ipppd.radius
-				exit 0
+				break
 			fi
 		done
 	fi
+fi
+
+if dpkg --compare-versions "$2" "<<" "1:3.0-14" && \
+	[ -s /etc/ppp/ip-up.d/isdnutils -o -s /etc/ppp/ip-down.d/isdnutils ]
+then
+	cat <<'EOF'
+
+There is a mechanism for running scripts when a PPP link goes up and when it
+goes down. When a link goes up the scripts in /etc/ppp/ip-up.d/ are run in
+order, and when it goes down the scripts in /etc/ppp/ip-down.d/ are run, also
+in order. The problem (up to now) was that the isdnutils script should be run
+as the first script, but by its naming it was not. Starting from this version,
+the "up" script should be called "00-isdnutils", and the "down" script should
+be called "99-isdnutils". However, you currently have the old names.
+
+If you have no idea what I'm talking about, choose number 1.
+
+1 - I can delete the current scripts.
+    If you have not made any changes, this is the best option.
+
+2 - I can resolve this by renaming the existing scripts to the new names.
+    This is the second-best option.
+
+3 - I can also leave the scripts alone.
+    You must then check and modify the setup manually.
+
+EOF
+	ans=NOK
+	while :; do
+		echo -n 'Choice: '
+		read ans bla
+		case x"$ans" in
+			x1)	ans=OK
+				echo 'I will delete the current scripts.'
+				# OK, not really deleting...
+				mv -f /etc/ppp/ip-up.d/isdnutils /etc/ppp/ip-up.d/isdnutils.dpkg-old
+				mv -f /etc/ppp/ip-down.d/isdnutils /etc/ppp/ip-down.d/isdnutils.dpkg-old
+				;;
+			x2)	ans=OK
+				echo 'I will rename the current scripts.'
+				rm -f /etc/ppp/ip-up.d/00-isdnutils
+				mv -f /etc/ppp/ip-up.d/isdnutils /etc/ppp/ip-up.d/00-isdnutils
+				rm -f /etc/ppp/ip-down.d/99-isdnutils
+				mv -f /etc/ppp/ip-down.d/isdnutils /etc/ppp/ip-down.d/99-isdnutils
+				;;
+			x3)	ans=OK
+				echo 'I will leave the scripts alone.'
+				echo 'You must check the scripts by hand!'
+				;;
+			*)	echo "Enter 1 or 2 or 3 !";;
+		esac
+		[ "$ans" = OK ] && break
+	done
 fi
 
 exit 0

@@ -64,8 +64,11 @@ char *modemsettings;
 #ifndef ISDN_LMSNLEN
 #define ISDN_LMSNLEN 0
 #endif
+#ifndef ISDN_MODEM_NUMREG
+#define ISDN_MODEM_NUMREG ISDN_MODEM_ANZREG   /* compat with old kernel */
+#endif
 
-#define BUFSZ ((ISDN_MODEM_ANZREG+ISDN_MSNLEN+ISDN_LMSNLEN)*ISDN_MAX_CHANNELS)
+#define BUFSZ ((ISDN_MODEM_NUMREG+ISDN_MSNLEN+ISDN_LMSNLEN)*ISDN_MAX_CHANNELS)
 
 void
 dumpModem(int dummy)

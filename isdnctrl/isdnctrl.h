@@ -1,7 +1,7 @@
 /* $Id: isdnctrl.h,v 1.14 1999/06/07 19:25:42 paul Exp $
  * ISDN driver for Linux. (Control-Utility)
  *
- * Copyright 1994,95 by Fritz Elfert (fritz@wuemaus.franken.de)
+ * Copyright 1994,95 by Fritz Elfert (fritz@isdn4linux.de)
  * Copyright 1995 Thinking Objects Software GmbH Wuerzburg
  *
  * This file is part of Isdn4Linux.
@@ -21,8 +21,17 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: isdnctrl.h,v $
+ * Revision 1.16  1999/11/02 20:41:21  keil
+ * make phonenumber ioctl compatible for ctrlconf too
+ *
+ * Revision 1.15  1999/09/06 08:03:26  fritz
+ * Changed my mail-address.
+ *
  * Revision 1.14  1999/06/07 19:25:42  paul
  * 'status' command added
+ *
+ * Revision 1.13  1999/03/15 15:53:06  cpetig
+ * added v110 and modem to the level2 encapsulations
  *
  * Revision 1.12  1998/10/21 16:18:48  paul
  * Implementation of "dialmode" (successor of "status")
@@ -193,6 +202,12 @@ char *l2protostr[] = {
 #ifdef ISDN_PROTO_L2_X25DTE
 	"x25dte", "x25dce",
 #endif
+#ifdef ISDN_PROTO_L2_V11096
+	"v110_9600", "v110_19200", "v110_38400",
+#endif
+#ifdef ISDN_PROTO_L2_MODEM
+	"modem",
+#endif
 	"\0"
 };
 
@@ -201,6 +216,12 @@ int l2protoval[] = {
         ISDN_PROTO_L2_X75BUI, ISDN_PROTO_L2_HDLC,
 #ifdef ISDN_PROTO_L2_X25DTE
 	ISDN_PROTO_L2_X25DTE, ISDN_PROTO_L2_X25DCE,
+#endif
+#ifdef ISDN_PROTO_L2_V11096
+	ISDN_PROTO_L2_V11096, ISDN_PROTO_L2_V11019, ISDN_PROTO_L2_V11038,
+#endif
+#ifdef ISDN_PROTO_L2_MODEM
+	ISDN_PROTO_L2_MODEM,
 #endif
 	-1
 };
@@ -272,6 +293,28 @@ _EXTERN char * num2key(int num, char **keytable, int *numtable);
 _EXTERN int exec_args(int fd, int argc, char **argv);
 
 _EXTERN char * defs_basic(char *id);
+
+_EXTERN int MSNLEN_COMPATIBILITY;
+
+/*
+ * do_phonenumber handle back/forward compatibility between
+ * version 5 and version 6 of isdn_net_ioctl_phone
+ *
+ */
+ 
+typedef struct {
+  char name[10];
+  char phone[20];
+  int  outgoing;
+} isdn_net_ioctl_phone_old;
+
+typedef struct {
+  char name[10];
+  char phone[32];
+  int  outgoing;
+} isdn_net_ioctl_phone_new;
+
+_EXTERN int do_phonenumber(void *p, char *number, int outflag);
 
 #undef _EXTERN
 

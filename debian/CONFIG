@@ -1,50 +1,69 @@
-Howto configure isdn4linux
-==========================
+Howto configure isdnutils
+=========================
+
+For the latest info on the debian isdnutils package, see:
+http://www.debian.org/~paul/isdnutils/
+
+Example versions of the configuration files mentioned below (those that
+exist in /etc/isdn/) can be created via the `isdnconfig' menu-driven
+utility.
+
 
 the naming system
 -----------------
-/dev/ttyI0	isdn modem emulation device. Note that the user interface
-		emulates a modem (it understands AT commands); this emulation
-		doesn't mean you can use it to call an analog modem.
-/dev/cui0	isdn modem emulation device : old form. don't use (obsolete).
-/dev/ippp0	synchronous ppp device
-ippp0		isdn network device. This name is used if you transfer with
-		syncPPP encapsulation. You have to create the connection to
-		/dev/ippp0 (for the kernel it's only a name without meaning).
-		If you have multiple ippp devices, assign the one you want to
-		have the default route to 'ippp0', this is what is expected by
-		the default scripts.
-isdn0		isdn network device. This name is used with rawIP network
-		connections.
+/dev/ttyI0      isdn modem emulation device. Note that the user interface
+                emulates a modem (it understands AT commands); this emulation
+                doesn't mean you can use it to call an analog modem.
+/dev/cui0       isdn modem emulation device : old form. don't use (obsolete).
+/dev/ippp0      synchronous ppp device
+ippp0           isdn network device. This name is used if you transfer with
+                syncPPP encapsulation (the usual for internet connections).
+                This is "connected" to /dev/ippp0 by the ipppd daemon.
+                If you have multiple ippp devices, assign the one you want to
+                have the default route to 'ippp0', this is what is expected by
+                the default scripts.
+isdn0           isdn network device. This name is used with rawIP network
+                connections (to other linux systems for example, preferable
+                to syncPPP).
 
-see also : ttyI(4) cui(4)
-	
+see also : ttyI(4)
+
 
 ISDN kernel modules
 -------------------
-If you compile your own kernel :
- - Don't use the old teles driver; use HiSax instead (standard in
-   kernels > 2.0.30, best use >= 2.0.36)
- - Configure lilo to pass the right options to the kernel.
+
+ - The default debian kernel has ISDN support, so no reason to recompile your
+   kernel just for ISDN.
+ - In the 2.2.xx range of kernels, use at least 2.2.12; below that,
+   no guarantees of a working system; above that, it keeps getting
+   better (so get the highest 2.2.x version!).
+ - Configure lilo to pass the right options to the kernel if you have configured
+   the ISDN drivers statically, i.e. not as modules:
    E.g. in /etc/lilo.conf : append="hisax=3,2,10,0xd80,0,line0"
 
 If you use modules (preferable):
+
  - Use modconf, select the modules "isdn" and "hisax" with the right
-   options. Don't use the teles modules, use hisax instead.
+   options. In case you have a card not supported by hisax, you won't be able
+   to use the "hisax" driver; check the kernel docs.
+
+ - The hisax docs are included with isdnutils as
+   /usr/share/doc/isdnutils/README.HiSax ; for other ISDN kernel docs you will
+   have to install the appropriate kernel-doc-2.2.xx package and see the
+   /usr/share/doc/kernel-doc-2.2.xx/Documentation/isdn/ directory.
+
  - You can look what modconf did:
    /etc/modules should have the lines
-	isdn
-	hisax type=3 protocol=2 io=0x180 irq=15 id=line0
-   If you want kerneld to load the modules, you don't need the
-   /etc/modules entry, but additional entries in /etc/conf.modules:
-	options hisax type=3 protocol=2 io=0x180 irq=15 id=line0
-	alias ippp0 isdn
-	alias char-major-43 hisax
-	alias char-major-44 hisax
-	alias char-major-45 hisax
-
-See also: /usr/src/linux/Documentation/isdn/README.HiSax
-	and other files in that directory (or wherever your kernel doc is).
+        isdn
+        hisax type=3 protocol=2 io=0x180 irq=15 id=line0
+   If you want kerneld to load the modules (not recommended),
+   you don't need the /etc/modules entry, but additional entries
+   in /etc/conf.modules:
+        options hisax type=3 protocol=2 io=0x180 irq=15 id=line0
+        alias ippp0 isdn
+        alias char-major-43 hisax
+        alias char-major-44 hisax
+        alias char-major-45 hisax
 
 
 ISDNLOG
@@ -74,22 +93,27 @@ option).
 ISDN network device
 -------------------
 
-isdnconf will create example files with lots of comments, which need to
+isdnconfig will create example files with lots of comments, which need to
 be edited before the configuration will be used:
 
     /etc/isdn/device.DEVICE
 
+The most important places that need to be edited are marked with XXX_
+
 DEVICE can be isdn0, isdn1 ... (used for rawip devices)
 or ippp0, ippp1, ippp2 ... (used for ippp devices).
 See also: isdnctrl(8) ifconfig(8) route(8)
-	  isdnctrl help text (pppbind is not documented in the man page)
-	  and any book about unix networking for ifconfig/route details.
+          and any book about unix networking for ifconfig/route details
+          (or the networking howto)
 ippp0 should be the interface that is the default route; if not, you need to
 edit the device.xxx file(s).
 
 /etc/init.d/netbase may need to be modified for "IP spoofing protection".
 Basically, replace all "eth1" by "ippp0" or "isdn0" (whatever interface is
 appropriate).
+
+If using ipmasq, the stuff should work pretty much out of the box, if you tell
+ipmasq that ippp0 is the external interface.
 
 
 ISDN ppp daemon
@@ -100,11 +124,16 @@ be edited before ipppd will be started:
 
     /etc/isdn/ipppd.DEVICE
 
+The most important place that needs to be edited is marked with XXX_
+You will also need to add an entry to /etc/ppp/pap-secrets or
+/etc/ppp/chap-secrets.
+
 DEVICE can be ippp0, ippp1 ...
 Note: there is no connection between the network device "ipppX" and the
 real device /dev/ipppX, unless you create a pppbind with isdnctrl.
 Default in debian is to create pppbinds and let one ipppd handle one
-connection.
+connection (in theory one ipppd process can handle many ipppX devices, but
+that generally is confusing).
 
 The ipppd does not support ioptions.<tty>. And this setup will neither
 read /etc/ppp/options nor ioptions. Put the whole configuration into
@@ -117,9 +146,36 @@ scripts in the /etc/ppp/ip-up.d/ and /etc/ppp/ip-down.d/ directories. Isdnutils
 will have put a script into each of these directories; this can be useful for
 setting the default route (if you have dynamic IP numbers). You can also do
 other things; read the comments in /etc/ppp/ip-up and /etc/ppp/ip-down, and
-also in the /etc/ppp/ip-up.d/isdnutils and /etc/ppp/ip-down.d/isdnutils scripts.
+also in the /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils
+scripts.
+
+For MPPP (channel bundling), see /usr/share/doc/isdnutils/README.MPPP .
 
 see also : ipppd(8)
+
+
+ISDN ttyI devices
+-----------------
+
+You can use these devices with any program like normal modem devices
+ttyS (e.g. uucp, minicom, pppd). With pppd you can create asynchronous
+ppp connections (that's nonsense with isdn, but you can do that).
+
+Note, however, that you CANNOT connect with analog modems! The ttyI
+devices only resemble normal modem devices in the way you use the AT
+commands.
+
+The first two devices ttyI0 and ttyI1 belong to your first isdn card,
+the next two devices to the next card etc. And after that it starts
+again with the first card. If you only have one isdn card, all devices
+are used with that card. If you have two cards, the devices 0,1,4,5,8,9
+... are used by the first card, the devices 2,3,6,7,10,11 ... are used
+by the second card. [PS: this apparently isn't valid any more, but I
+only have one card, so can't check this]
+
+A device is not bound to a channel. You can use several device at the
+same time (e.g. have vboxgetty waiting for incoming calls on 5 devices,
+and use two devices with minicom at the same time).
 
 
 ISDN modem emulation
@@ -131,24 +187,9 @@ were a modem. isdnconf will create an empty file (or use "touch
 
 see also : iprofd(8)
 
-
-ISDN ttyI devices
------------------
-
-You can use these devices with any program like normal modem devices
-ttyS (e.g. uucp, minicom, pppd). With pppd you can create asynchronous
-ppp connections (that's nonsence with isdn, but you can do that).
-
-The first two devices ttyI0 and ttyI1 belong to your first isdn card,
-the next two devices to the next card etc. And after that it starts
-again with the first card. If you only have one isdn card, all devices
-are used with that card. If you have two cards, the devices 0,1,4,5,8,9
-... are used by the first card, the devices 2,3,6,7,10,11 ... are used
-by the second card.
-
-A device is not bound to a channel. You can use several device at the
-same time (e.g. have vboxgetty waiting for incoming calls on 5 devices,
-and use two devices with minicom at the same time).
+However, I personally recommend forgetting about this and use the
+"modem init string" feature of whatever package you use to access the
+/dev/ttyIx devices.
 
 
 ISDN voice box

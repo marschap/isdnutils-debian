@@ -1,15 +1,121 @@
-isdnutils (1:3.0-12slink14) stable; urgency=high
+isdnutils (1:3.0-20) frozen unstable; urgency=medium
 
-  * Y2K fix for isdnlog (date received from ISDN line wasn't interpreted
-    correctly).
-    -- Paul Slootman <paul@debian.org>  Mon, 10 Jan 2000 12:41:20 +0100
+  * Release manager: this fixes an important bug for those that use an AVM B1
+    card (not many people); basically, previous versions don't work at all.
+    Apparently more people are starting to test potato now...
+  * capi20 problems fixed. closes:#62233
+  * isdnlog, when starting scripts, didn't expand a number of variables
+    correctly (they always had value '7'). closes:#62318
+  * Fixed thruput logging in isdnlog, thanks to Christoph Martin for finding
+    the problem and supplying a patch. closes:#54839
+  * Added documentation about using MPPP (channel bundling for PPP).
+  * Fixed lintian errors "no-section-field", "no-priority-field".
 
- -- Vincent Renardias <vincent@debian.org>  Mon, 10 Jan 2000 14:48:30 +0100
+ -- Paul Slootman <paul@debian.org>  Fri, 14 Apr 2000 09:15:23 +0200
 
-isdnutils (1:3.0-12slink13) stable; urgency=high
+isdnutils (1:3.0-19) frozen unstable; urgency=low
 
-  * build of 3.0-13 for slink, as this is fixes a security problem (see next
-    point).
+  * Release manager: please install this version, even though no RC bugs have
+    been filed (although IMHO 62127 qualifies as RC).
+  * Stopping isdnutils always gave an error due to a logic error when fixing
+    #59533. closes:#62127
+  * Installing isdnutils freshly (i.e. without any old version being present)
+    didn't offer to run isdnconfig, leaving the newbie user clueless about how
+    to get isdnutils to work. Not asking anything in the postinst is good from
+    an installation point of view, so now the /etc/init.d/isdnutils script
+    gives a hint how to configure it if that's not done yet.
+  * Documentation cleaned up: updates for 2.2 kernels; some points clarified
+    in the HOWTO; README.HiSax from kernel source included.
+  * iprofd now builds with latest kernel code.
+
+ -- Paul Slootman <paul@debian.org>  Tue, 11 Apr 2000 14:29:20 +0200
+
+isdnutils (1:3.0-18) frozen unstable; urgency=low
+
+  * Missed one MAKEDEV in init.d.functions which needed to be fixed for
+    bug #55670.
+  * Vbox usage of `mail' changed to direct invocation of /usr/sbin/sendmail.
+    closes:#60625
+  * Stop ISDN interfaces even if there is no config file for those (anymore).
+    closes:#59533
+  * Sanity check in preinst for high enough version of libc6. Shouldn't be
+    necessary, but as some stuff is done in the preinst, the dpkg check doesn't
+    engage soon enough for some silly reason.
+    closes:#53410
+  * Possible core dump in imontty fixed, also documentation enhanced for this.
+    closes:#60298
+
+ -- Paul Slootman <paul@debian.org>  Wed, 22 Mar 2000 17:37:28 +0100
+
+isdnutils (1:3.0-17) frozen unstable; urgency=low
+
+  * Don't install the empty directory /usr/share/sbin. closes:#55454
+  * Suggest blinkd as per <debacle@knorke.in-berlin.de> W. Borgert's
+    suggestion. Oops, he didn't make it a bug report.
+  * Another isdnctrl update for kernel compatibility, closes:#51232
+  * isdnctrl manpage updated (clarified).
+  * isdnctrl `status' command is now clearer if the kernel doesn't
+    support it. closes:#51052
+  * ctrlconf now also works for different kernels (side-effect of fixing #51232)
+  * fixed vboxplay (typo and alsutils support). closes:#58518
+  * added netmask 255.255.255.255 to example device and ipppd config files.
+    closes:#50011
+  * change MAKEDEV invocation as per makedev maintainer's directions.
+    closes:#55670
+  * added ".vmsg" extension to voice message files in the example script.
+    This is in part response to #48977 (which can't be closed yet as there's
+    another part which isn't fixed at this time).
+
+ -- Paul Slootman <paul@debian.org>  Thu, 24 Feb 2000 16:35:37 +0100
+
+isdnutils (1:3.0-16) unstable; urgency=low
+
+  * Made isdnctrl compatible between 2.0, 2.2 and 2.3/2.4 kernels.
+  * Another small Y2K thing in the isdnlog suite.
+  * If /etc/isdn/isdn.conf still refers to the old location for areacode.dat
+    and that file doesn't exist anymore, fix isdn.conf.
+  * Fixed the example isdn.conf (oops).
+  * Applied patch from Gerrit Pape <pape@innominate.de> for isdnrep with HTML
+    output if called without -t arg.
+
+ -- Paul Slootman <paul@debian.org>  Fri,  7 Jan 2000 13:15:45 +0100
+
+isdnutils (1:3.0-15) unstable; urgency=low
+
+  * Fixed a silly Y2K bug in isdnlog that prevents setting the time from
+    the ISDN line. Only affected EuroISDN, not 1TR6, as the fix was already
+    there but in an "if-then-else" branch instead of outside. Grr.
+    closes:#53830
+
+ -- Paul Slootman <paul@debian.org>  Sun,  2 Jan 2000 19:43:06 +0100
+
+isdnutils (1:3.0-14) unstable; urgency=low
+
+  * fix a couple of problems when going to FHS (/usr/doc, /usr/man,
+    /usr/lib/isdn) => (/usr/share/doc, /usr/share/man, /usr/share/isdn)
+    Should now conform to standards version 3.0.1.
+  * Add 'netmask 0' to 'route * default' commands, that is needed on 2.2.x
+    kernels, and doesn't do any harm on 2.0.x kernels. closes:#35363
+  * Don't require /etc/ppp/ioptions to exist i.e. comply to the documentation.
+    closes:#42613
+  * "nohostroute" is now (again!) a synonym for "-hostroute" as an ipppd option.
+    closes:#42644
+  * Include /var/lib/isdn/ as a directory in the package, so that the calls can
+    be logged there by isdnlog. closes:#42947
+  * Ensured that the example device configuration script included the ${device}
+    parameter to all route commands. Note that existing scripts may need to be
+    fixed manually! closes:#43261
+  * Renamed /etc/ppp/ip-up.d/isdnutils to /etc/ppp/ip-up.d/00-isdnutils so that
+    it is run as (almost?) the first script. /etc/ppp/ip-down.d/isdnutils
+    similarly renamed to /etc/ppp/ip-down.d/99-isdnutils for symmetry, although
+    that is not as important as the 'up' script. preinst asks what to do about
+    this (renaming conffiles sucks).  closes:#43381
+  * Fixed isdnconfig to leave ip-up.d/isdnutils alone.
+
+ -- Paul Slootman <paul@debian.org>  Mon,  2 Nov 1999 18:23:42 +0100
+
+isdnutils (1:3.0-13) stable; urgency=high
+
   * don't install xmonisdn as setuid root. It calls shell scripts in a
     non-secure way. It's better to have the user be in group dialout.
   * now compiles with glibc2. I left this too long in the pipeline, sorry.

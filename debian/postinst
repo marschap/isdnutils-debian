@@ -3,7 +3,7 @@
 [ $1 = configure ] || exit 0
 
 cd /dev
-./MAKEDEV isdn-tty isdn-io isdn-ippp 
+/sbin/MAKEDEV isdn-tty isdn-io isdn-ippp 
 rm -f isdnctrl
 ln -s isdnctrl0 isdnctrl
 
@@ -14,6 +14,22 @@ then
 		savelog -l /var/lib/isdn/calls
 	fi
 	mv /var/log/isdn/calls* /var/lib/isdn
+fi
+
+# when moving the areacode stuff from /usr/lib/isdn to /usr/share/isdn,
+# the isdn.conf wasn't fixed. Doing that now if necessary.
+if [ -f /etc/isdn/isdn.conf ] && grep '^AREALIB=/usr/lib/isdn/areacode.dat' /etc/isdn/isdn.conf >/dev/null 2>&1
+then
+    if [ -f /usr/lib/isdn/areacode.dat ]
+    then
+        : # forget it, the user has an areacode.dat file in the "old" place.
+    elif [ -f /usr/share/isdn/areacode.dat ]
+    then
+        echo "Hmm, you have the wrong location for the areacode file in /etc/isdn/isdn.conf,"
+        echo -e "fixing that now...\c"
+        perl -i.bak -pe 's,^AREALIB=/usr/lib/isdn/areacode.dat,AREALIB=/usr/share/isdn/areacode.dat,' /etc/isdn/isdn.conf
+        echo " done."
+    fi
 fi
 
 # previous to 3.0-10, the calls info was stored in /var/log/isdn.log. This is
@@ -65,20 +81,18 @@ if [ ! -z "$TEXT" ]; then
 	TEXT=''
 fi
 
-if ! dpkg --compare-versions "$2" ">=" "2.1"; then
-	echo -n "
-Isdnutils have changed a lot. Now all configuration files are stored in
-/etc/isdn. Many programs have new names, new options and new
-configuration files. Old configuration files will not work in many
-cases. For more information look at /usr/doc/isdnutils in particular
-'README.debian' and 'CONFIG'.
+if [ "x$2" != "x" -a "x$2" != "x<unknown>" ]; then   # it was configured before
+    if ! dpkg --compare-versions "$2" ">=" "2.1"; then	# previous was old vers.
+        cat <<'EOF'
 
-There is a program called 'isdnconfig' that will install example config
-files for you. Start this program now (y/n)? "
-	read answer
-	case $answer in
-		y*|Y*) isdnconfig;;
-	esac
+Isdnutils have changed a lot. Now all configuration files are
+stored in /etc/isdn. Many programs have new names, new options
+and new configuration files. Old configuration files will not work
+in many cases. For more information look at /usr/share/doc/isdnutils;
+in particular 'README.debian' and 'HOWTO.isdnutils'.
+
+EOF
+    fi
 fi
 
 # Stuff below is for editing the device config files...
@@ -142,7 +156,7 @@ edit_devfile() {
 	print;
   }
   unless (/^# Configuration /) {
-	print STDERR "Sorry, modification failed. Please do it by hand\n(use /usr/doc/isdnutils/examples/default/device.DEVICE.gz as an example).";
+	print STDERR "Sorry, modification failed. Please do it by hand\n(use /usr/share/doc/isdnutils/examples/default/device.DEVICE.gz as an example).";
 	exit 1;
   }
 
@@ -210,12 +224,23 @@ fi
 if ! dpkg --compare-versions "`uname -r`" ">=" "2.0.36" 
 then
 	echo "
-These isdnutils were compiled for kernel 2.0.36 and up.
-You are running a kernel older than 2.0.36.
-This will basically work, although the 'isdnctrl dialmode' facility will
-not work. You are urged to upgrade to 2.0.36 or higher.
+These isdnutils were compiled for kernel 2.0.36 and up,
+and kernel 2.2.12 and up.  You are running a kernel
+older than 2.0.36.  This will basically work, although
+the 'isdnctrl dialmode' facility will not work.
+You are urged to upgrade to 2.0.36 or higher
+(if upgrading to a 2.2 kernel, please use at least 2.2.12).
 
 Press ENTER to continue 	[Return]"
+	read
+elif ! dpkg --compare-versions "`uname -r`" ">=" "2.2.12"
+then
+	echo "
+Kernel versions less than 2.2.12 will probably cause problems with the
+isdnutils; you are running `uname -r`. Please upgrade to at least 2.2.12
+before reporting any bugs!
+
+Press ENTER to continue         [Return]"
 	read
 fi
 

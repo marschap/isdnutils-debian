@@ -20,7 +20,7 @@ build:
 		< debian/dot.config > .config
 	# use perl script as uudecode isn't `required'
 	# Sigh, we don't know anymore where this script exists :-(
-	(cd vbox/examples; ls /usr/doc/perl*/examples/uudecode.gz | head -1 | xargs zcat | perl - beep.msg.example.uu)
+	(cd vbox/examples; ls /usr/doc/perl*/examples/uudecode.gz /usr/share/doc/perl*/examples/uudecode.gz 2>/dev/null | head -1 | xargs zcat | perl - beep.msg.example.uu)
 	make subconfig
 	$(MAKE) CFLAGS="-O2 -Wall -g"
 	touch build
@@ -54,30 +54,30 @@ binary-arch: checkroot build
 	cd debian/tmp && install -d `cat ../dirs`
 	$(MAKE) install DESTDIR=`pwd`/debian/tmp
 	# clean up misplaced files etc.
-	rm -f debian/tmp/etc/isdn/*.new debian/tmp/usr/man/man1/xmonisdn.1x
-	mv debian/tmp/usr/man/man1/xisdnload.1x debian/tmp/usr/X11R6/man/man1/
+	rm -f debian/tmp/etc/isdn/*.new debian/tmp/usr/share/man/man1/xmonisdn.1x
+	mv debian/tmp/usr/share/man/man1/xisdnload.1x debian/tmp/usr/X11R6/man/man1/
 	mv debian/tmp/usr/bin/x* debian/tmp/usr/X11R6/bin/
 	mv debian/tmp/usr/sbin/imon* debian/tmp/usr/bin/
-	mv debian/tmp/usr/lib/isdn/areacodes debian/tmp/usr/lib/isdn/areacode.dat
+	mv debian/tmp/usr/share/isdn/areacodes debian/tmp/usr/share/isdn/areacode.dat
 	# move some extra stuff from upstream source into debian tree
-	cp areacode/areacode.doc debian/tmp/usr/doc/isdnutils/.
-	cd debian/tmp/usr/doc/isdnutils/vbox/; \
+	cp areacode/areacode.doc debian/tmp/usr/share/doc/isdnutils/.
+	cd debian/tmp/usr/share/doc/isdnutils/vbox/; \
 	    mv vbox.txt vbox.de.txt ; \
 	    mv vbox.sgml vbox.de.sgml ; \
 	    sgml2html -c latin vbox.de.sgml
 	for A in vbox/examples/*example ; do \
-	    cp $$A debian/tmp/usr/doc/isdnutils/examples/vbox/`basename $$A .example`; \
+	    cp $$A debian/tmp/usr/share/doc/isdnutils/examples/vbox/`basename $$A .example`; \
 	done
 	cp ipppd/NOTES.IPPPD ipppd/README* \
-			    debian/tmp/usr/doc/isdnutils/ipppd/.
+			    debian/tmp/usr/share/doc/isdnutils/ipppd/.
 	cp lib/README.Syntax.conffile \
-			    debian/tmp/usr/doc/isdnutils/lib/Syntax.conffile.de
-	cp isdnlog/BUGS	    debian/tmp/usr/doc/isdnutils/isdnlog/BUGS.de
-	cp isdnlog/FAQ	    debian/tmp/usr/doc/isdnutils/isdnlog/FAQ.de
-	cp isdnlog/README   debian/tmp/usr/doc/isdnutils/isdnlog/README.de
-	cp isdnlog/TODO	    debian/tmp/usr/doc/isdnutils/isdnlog/TODO.de
-	cp pcbit/README.pt  debian/tmp/usr/doc/isdnutils/README.pcbit.pt
-	cp xmonisdn/README  debian/tmp/usr/doc/isdnutils/README.xmonisdn
+			    debian/tmp/usr/share/doc/isdnutils/lib/Syntax.conffile.de
+	cp isdnlog/BUGS	    debian/tmp/usr/share/doc/isdnutils/isdnlog/BUGS.de
+	cp isdnlog/FAQ	    debian/tmp/usr/share/doc/isdnutils/isdnlog/FAQ.de
+	cp isdnlog/README   debian/tmp/usr/share/doc/isdnutils/isdnlog/README.de
+	cp isdnlog/TODO	    debian/tmp/usr/share/doc/isdnutils/isdnlog/TODO.de
+	cp pcbit/README.pt  debian/tmp/usr/share/doc/isdnutils/README.pcbit.pt
+	cp xmonisdn/README  debian/tmp/usr/share/doc/isdnutils/README.xmonisdn
 	# extra stuff, not originating from the upstream source
 	install -m 0755 debian/isdnconfig	debian/tmp/usr/sbin/
 	install -m 0755 debian/xisdnload-netup	debian/tmp/etc/isdn/
@@ -86,29 +86,29 @@ binary-arch: checkroot build
 	install -m 0755 debian/xmonisdn-netdown	debian/tmp/etc/isdn/
 	install -m 0644 debian/init.d.functions	debian/tmp/etc/isdn/
 	install -m 0444 debian/ioptions		debian/tmp/etc/ppp/
-	install -m 0755 debian/ip-down.d  debian/tmp/etc/ppp/ip-down.d/isdnutils
-	install -m 0755 debian/ip-up.d	  debian/tmp/etc/ppp/ip-up.d/isdnutils
+	install -m 0755 debian/ip-down.d debian/tmp/etc/ppp/ip-down.d/99-isdnutils
+	install -m 0755 debian/ip-up.d	 debian/tmp/etc/ppp/ip-up.d/00-isdnutils
 	# install examples
 	for A in debian/device.DEVICE debian/ipppd.DEVICE \
 	        debian/callerid.conf debian/isdn.conf debian/isdnlog.DEVICE \
 		debian/vboxd.conf debian/vboxgetty.conf debian/vbox.conf \
 		debian/auth-down debian/auth-up \
 		debian/standard.tcl ; do \
-	    cp $$A debian/tmp/usr/doc/isdnutils/examples/default/; \
+	    cp $$A debian/tmp/usr/share/doc/isdnutils/examples/default/; \
 	done
-	install -m 0755 debian/grepconfig.pl	debian/tmp/usr/doc/isdnutils/examples/
-	cd debian/tmp/usr/doc/isdnutils/examples ; cp vbox/*msg default/
-	install -m 0644 debian/CONFIG		debian/tmp/usr/doc/isdnutils/
-	install -m 0444 debian/ioptions		debian/tmp/etc/ppp/
+	install -m 0755 debian/grepconfig.pl debian/tmp/usr/share/doc/isdnutils/examples/
+	cd debian/tmp/usr/share/doc/isdnutils/examples ; cp vbox/*msg default/
+	install -m 0644 debian/CONFIG	     debian/tmp/usr/share/doc/isdnutils/
+	ln -s CONFIG debian/tmp/usr/share/doc/isdnutils/HOWTO.isdnutils
+	install -m 0644 debian/README.HiSax  debian/tmp/usr/share/doc/isdnutils/
+	install -m 0644 debian/README.MPPP   debian/tmp/usr/share/doc/isdnutils/
+	install -m 0444 debian/ioptions      debian/tmp/etc/ppp/
 	install -m 0644 debian/doc-base-isdn4linux-faq-de  debian/tmp/usr/share/doc-base/isdn4linux-faq-de
 	install -m 0644 debian/doc-base-isdn4linux-faq-eng debian/tmp/usr/share/doc-base/isdn4linux-faq-eng
 	# end of extra stuff
 	debstd README 
-	mv debian/tmp/usr/share/man debian/tmp/usr/man
-	mv debian/tmp/usr/share/doc/isdnutils/* debian/tmp/usr/doc/isdnutils
-	rm -rf debian/tmp/usr/share/doc
 	# dpkg-gencontrol -pisdnutils
-	dpkg-gencontrol
+	dpkg-gencontrol -isp
 	chown -R root.root debian/tmp
 	chmod -R go=rX debian/tmp
 	dpkg --build debian/tmp ..

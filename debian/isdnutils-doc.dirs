@@ -1,8 +1,8 @@
-usr/doc/isdnutils/ipppd
-usr/doc/isdnutils/lib
-usr/doc/isdnutils/examples
-usr/doc/isdnutils/examples/default
-usr/doc/isdnutils/examples/vbox
-usr/doc/isdnutils/examples/isdnlog
-usr/doc/isdnutils/isdnlog
-usr/doc/isdnutils-doc
+usr/share/doc/isdnutils/ipppd
+usr/share/doc/isdnutils/lib
+usr/share/doc/isdnutils/examples
+usr/share/doc/isdnutils/examples/default
+usr/share/doc/isdnutils/examples/vbox
+usr/share/doc/isdnutils/examples/isdnlog
+usr/share/doc/isdnutils/isdnlog
+usr/share/doc/isdnutils-doc

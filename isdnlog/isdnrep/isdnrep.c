@@ -930,16 +930,18 @@ int read_logfile(char *myname)
 		if (begintime == 0)
 			begintime = time(NULL);
 
-		if (endtime == 0)
-			endtime = time(NULL);
-
 		get_time_value(begintime,&lday,SET_TIME);
 		sprintf(start, "%s %s", get_time_value(0,NULL,GET_DATE),
 		                        get_time_value(0,NULL,GET_YEAR));
 
-		get_time_value(endtime,&lday,SET_TIME);
-		sprintf(stop, "%s %s", get_time_value(0,NULL,GET_DATE),
-		                       get_time_value(0,NULL,GET_YEAR));
+		if (endtime) {
+            get_time_value(endtime,&lday,SET_TIME);
+            sprintf(stop, "%s %s", get_time_value(0,NULL,GET_DATE),
+                                   get_time_value(0,NULL,GET_YEAR));
+        }
+        else {
+            strcpy(stop, start);
+        }
 
 		print_line2(F_1ST_LINE,"I S D N  Connection Report");
 		print_line2(F_TEXT_LINE,"");

@@ -2,8 +2,8 @@
 #
 # You don't need to change this file!
 #
-# Please read /usr/doc/isdnutils/README.debian
-# and         /usr/doc/isdnutils/CONFIG.gz .
+# Please read /usr/share/doc/isdnutils/README.debian
+# and         /usr/share/doc/isdnutils/CONFIG.gz .
 #
 # This file is for stopping and starting isdnlog only.
 # The other ISDN stuff is handled via /etc/init.d/isdnutils .

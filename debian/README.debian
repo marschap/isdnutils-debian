@@ -1,11 +1,17 @@
 isdnutils for DEBIAN
 --------------------
 
- - New upstream source. This version only works with the new ISDN kernel code,
-   included in Linux 2.0.36 and (soon?) in 2.1.xxx.
+ - See /usr/share/doc/isdnutils/HOWTO for information on configuring
+   isdnutils.
 
- - Most of this package works in the same way to the previous (2.1beta1)
-   version, expect that it is now split into different packages for
-   convenience.
+ - This version only works with the new ISDN kernel code,
+   included in Linux 2.0.36 and 2.2.12 or higher.
 
-Paul Slootman <paul@debian.org>, Tue, 17 Nov 1998 11:03:38 +0100
+ - This package will be split into separate components sometime
+   after the release of debian 2.2 potato.
+
+ - The latest official FAQ is available at http://www.mhessler.de/i4lfaq.html
+
+ - See http://www.debian.org/~paul/isdnutils/ for the latest info.
+
+Paul Slootman <paul@debian.org>, Tue, 11 Apr 2000 14:08:51 +0200

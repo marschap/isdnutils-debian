@@ -435,6 +435,7 @@ static struct cmd {
 #ifdef __linux__
     {"hostroute", 0, sethostroute}, /* Add host route (default) */
     {"-hostroute", 0, setnohostroute}, /* Don't add host route */
+    {"nohostroute", 0, setnohostroute}, /* Don't add host route */
 #endif
     {"+force-driver",0,setforcedriver},
 

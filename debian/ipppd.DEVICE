@@ -39,13 +39,13 @@ lcp-restart 1		# Set timeout for LCP
 
 # AUTHENTICATION
 
-name X			# set local name for auth
+name X			# set local name for auth XXX_
 #user X			# set name for auth with peer; default is value for name
 #usehostname		# use hostname for auth
 #remotename X		# set remote name for auth
 #noauth			# (dont) require peer (the other) to auth
-#require-pap		# allow only pap authentication
-#require-chap		# allow only chap authentication
+#require-pap		# allow only pap authentication (dialin only)
+#require-chap		# allow only chap authentication (dialin only)
 #login			# use system password database for pap
 #papcrypt		# pap passwords are encrypted
 
@@ -78,7 +78,7 @@ nolzs			# LZS compression off (not yet supported fully)
 noipdefault		# don't use name for default ip addr
 #useifip		# use ip addresses form interface
 #usefirstip		# use first ip from auth file for remote
-#netmask X		# set netmask X
+netmask 255.255.255.255	# set netmask, 255.255.255.255 is for pointopoint
 #defaultroute 		# (dont) set default route 
 nohostroute		# dont set host route
 #noproxyarp		# (dont) set an proxy arp entry
@@ -87,8 +87,9 @@ nohostroute		# dont set host route
 mtu 1500		# set maximum size of transmit units to X (1500 is OK)
 #useifmtu		# use mtu from interface
 #ipparam X		# set ip parameters in script X
-#ms-dns X		# dns address for the peers use
-#ms-wins X		# wins address for the peers use
+#ms-dns X		# dns address for the peers use (dialin only)
+#ms-wins X		# wins address for the peers use (dialin only)
+#ms-get-dns		# accept peers suggestion of dns address (dialout)
 #set_userip 		# define valid ip addresses in /etc/ppp/useriptab
 
 

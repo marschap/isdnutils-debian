@@ -1,7 +1,7 @@
-/* $Id: isdnctrl.c,v 1.33 1999/06/07 19:25:38 paul Exp $
+/* $Id: isdnctrl.c,v 1.35 1999/10/27 14:36:19 keil Exp $
  * ISDN driver for Linux. (Control-Utility)
  *
- * Copyright 1994,95 by Fritz Elfert (fritz@wuemaus.franken.de)
+ * Copyright 1994,95 by Fritz Elfert (fritz@isdn4linux.de)
  * Copyright 1995 Thinking Objects Software GmbH Wuerzburg
  *
  * This file is part of Isdn4Linux.
@@ -21,6 +21,24 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: isdnctrl.c,v $
+ * Revision 1.40  2000/01/27 15:08:09  paul
+ * Error messages from addlink/removelink are now userfriendly.
+ *
+ * Revision 1.39  1999/11/23 10:17:27  paul
+ * Made error message for 'status' command clearer if IIOCNETGPN
+ * is not implemented in kernel (e.g. 2.0.x kernels).
+ *
+ * [[ rev. 1.37 and 1.38 not yet for debian ]]
+ *
+ * Revision 1.36  1999/11/02 20:41:21  keil
+ * make phonenumber ioctl compatible for ctrlconf too
+ *
+ * Revision 1.35  1999/10/27 14:36:19  keil
+ * make the phone number struct compatible between NET_DV 5 and 6
+ *
+ * Revision 1.34  1999/09/06 08:03:25  fritz
+ * Changed my mail-address.
+ *
  * Revision 1.33  1999/06/07 19:25:38  paul
  * 'status' command added
  *
@@ -261,8 +279,44 @@ defs_fcn_t defs_fcns [] = {
 	NULL
 };
 
-
+int MSNLEN_COMPATIBILITY = 0;
 char nextslaveif[10];
+
+/*
+ * do_phonenumber handle back/forward compatibility between
+ * version 5 and version 6 of isdn_net_ioctl_phone
+ *
+ */
+ 
+int do_phonenumber(void *p, char *number, int outflag) {
+	isdn_net_ioctl_phone_old *phone_old = (isdn_net_ioctl_phone_old *) p;
+	isdn_net_ioctl_phone_new *phone_new = (isdn_net_ioctl_phone_new *) p;
+	isdn_net_ioctl_phone *phone = (isdn_net_ioctl_phone *) p;
+	int maxlen = ISDN_MSNLEN;
+	
+	if (MSNLEN_COMPATIBILITY)
+		maxlen = 20;
+	if (strlen(number) > maxlen) {
+		fprintf(stderr, "phone-number must not exceed %d characters\n", maxlen);
+		return -1;
+	}
+	switch(MSNLEN_COMPATIBILITY) {
+		case 1:
+			strcpy(phone_old->phone, number);
+			phone_old->outgoing = outflag;
+			break;
+		case 2:
+			strcpy(phone_new->phone, number);
+			phone_new->outgoing = outflag;
+			break;
+		default:
+			strcpy(phone->phone, number);
+			phone->outgoing = outflag;
+			break;
+	}
+	return(0);
+}
+
 
 int exec_args(int fd, int argc, char **argv);
 
@@ -310,8 +364,8 @@ void usage(void)
         fprintf(stderr, "    trigger mastername cps     set slave trigger level\n");
         fprintf(stderr, "    dial name                  force dialing of interface\n");
         fprintf(stderr, "    system on|off              switch isdn-system on or off\n");
-        fprintf(stderr, "    addlink name               MPPP, increase number of links\n");
-        fprintf(stderr, "    removelink name            MPPP, decrease number of links\n");
+        fprintf(stderr, "    addlink name               MPPP, increase number of links (dial)\n");
+        fprintf(stderr, "    removelink name            MPPP, decrease number of links (hangup)\n");
         fprintf(stderr, "    pppbind name [devicenum]   PPP, bind interface to ippp-device (exclusive)\n");
         fprintf(stderr, "    pppunbind name             PPP, remove ippp-device binding\n");
         fprintf(stderr, "    addrule name rule ...      add timeout-rule\n");
@@ -418,7 +472,11 @@ static void listif(int isdnctrl, char *name, int errexit)
 {
         isdn_net_ioctl_cfg cfg;
         union p {
-                isdn_net_ioctl_phone phone;
+#if (NET_DV == 5)
+		isdn_net_ioctl_phone_new phone;
+#else
+		isdn_net_ioctl_phone phone;
+#endif
                 char n[1024];
         } ph;
         char nn[1024];
@@ -436,7 +494,7 @@ static void listif(int isdnctrl, char *name, int errexit)
                         return;
         }
         strcpy(ph.phone.name, name);
-        ph.phone.outgoing = 0;
+        do_phonenumber(&ph.phone, "", 0);
         if (ioctl(isdnctrl, IIOCNETGNM, &ph.phone) < 0) {
                 if (errexit) {
                         perror(name);
@@ -446,7 +504,7 @@ static void listif(int isdnctrl, char *name, int errexit)
         }
         strcpy(nn, ph.n);
         strcpy(ph.phone.name, name);
-        ph.phone.outgoing = 1;
+        do_phonenumber(&ph.phone, "", 1);
         if (ioctl(isdnctrl, IIOCNETGNM, &ph.phone) < 0) {
                 if (errexit) {
                         perror(name);
@@ -554,7 +612,7 @@ static void statusif(int isdnctrl, char *name, int errexit)
 		return;
 	}
 	if (errno == EINVAL) {
-		puts("Sorry, not configured in your kernel");
+		puts("Sorry, not available in your kernel (2.2.12 or higher is required)");
 		exit(-1);
 	}
 	if (errexit) {
@@ -648,7 +706,6 @@ do_dialmode(int args, int dialmode, int fd, char *id, int errexit)
 }
 #endif /* dialmode in kernel source */
 
-
 int exec_args(int fd, int argc, char **argv)
 {
 	int i,
@@ -658,7 +715,11 @@ int exec_args(int fd, int argc, char **argv)
 	FILE *iflst;
 	char *p;
 	char s[255], dummy[255];
+#if (NET_DV == 5)
+	isdn_net_ioctl_phone_new phone;
+#else
 	isdn_net_ioctl_phone phone;
+#endif
 	isdn_net_ioctl_cfg cfg;
 	isdn_ioctl_struct iocts;
 	unsigned long j;
@@ -669,7 +730,7 @@ int exec_args(int fd, int argc, char **argv)
 	char *id;
 	char *arg1;
 	char *arg2;
-
+	int  outflag;
 
 	for (; *argv != NULL; argv++, argc--) {
 		if ((i = findcmd(argv[0])) < 0) {    /* Unknown command */
@@ -737,18 +798,16 @@ int exec_args(int fd, int argc, char **argv)
 			        break;
 
 			case DELIF:
-			        if (args == 2)
-			        	if (!strcmp(arg1, "force"))
-			        	{
+			        if (args == 2) {
+			        	if (!strcmp(arg1, "force")) {
 			        		char command[255];
 			        		sprintf(command,"%s %s %s",CMD_IFCONFIG, id, CMD_OPT_IFCONFIG);
 
 			        		if (system(command))
 			        			return -2;
-			        	}
-			        	else
+			        	} else
 			        		usage();
-
+				}
 			        if ((result = ioctl(fd, IIOCNETDIF, id)) < 0) {
 			        	perror(id);
 			        	return -1;
@@ -809,8 +868,8 @@ int exec_args(int fd, int argc, char **argv)
 			case PPPBIND:
 			        strcpy(cfg.name, id);
 			        if ((result = ioctl(fd, IIOCNETGCF, &cfg)) < 0) {
-                                perror(id);
-                                return -1;
+                                	perror(id);
+                                	return -1;
 			        }
 			        if ((args == 2 && sscanf(arg1, "%d%s", &cfg.pppbind,dummy) == 1) ||
 			            (args == 1 && sscanf(id, "ippp%d%s", &cfg.pppbind,dummy) == 1)) {
@@ -818,15 +877,14 @@ int exec_args(int fd, int argc, char **argv)
 			        		sprintf(s, "%s or %s", id, arg1);
 			        		perror(s);
 			        		return -1;
-              	}
-             	} else {
-             		if (args == 1)
+              				}
+             			} else {
+           		  		if (args == 1)
 			       			fprintf(stderr,"Unknown interface `%s', use ipppX\n", id);
 			       		else
 			       			fprintf(stderr,"Unknown argument `%s'\n", arg1);
 			       		return -1;
-             	}
-
+				}
 			        printf("%s bound to ", id);
 			        if (cfg.pppbind >= 0)
 			        	printf("%d\n", cfg.pppbind);
@@ -913,13 +971,10 @@ int exec_args(int fd, int argc, char **argv)
 			        	fprintf(stderr, "Direction must be \"in\" or \"out\"\n");
 			        	return -1;
 			        }
-			        phone.outgoing = strcmp(arg1, "out") ? 0 : 1;
-			        if (strlen(arg2) > 20) {
-			        	fprintf(stderr, "phone-number must not exceed 20 characters\n");
-			        	return -1;
-			        }
+			        outflag = strcmp(arg1, "out") ? 0 : 1;
 			        strcpy(phone.name, id);
-			        strcpy(phone.phone, arg2);
+			        if (do_phonenumber(&phone, arg2, outflag))
+			        	return -1;
 			        if ((result = ioctl(fd, IIOCNETANM, &phone)) < 0) {
 			        	perror(id);
 			        	return -1;
@@ -931,13 +986,10 @@ int exec_args(int fd, int argc, char **argv)
 			        	fprintf(stderr, "Direction must be \"in\" or \"out\"\n");
 			        	return -1;
 			        }
-			        phone.outgoing = strcmp(arg1, "out") ? 0 : 1;
-			        if (strlen(arg2) > 20) {
-			        	fprintf(stderr, "phone-number must not exceed 20 characters\n");
-			        	return -1;
-			        }
+			        outflag = strcmp(arg1, "out") ? 0 : 1;
 			        strcpy(phone.name, id);
-			        strcpy(phone.phone, arg2);
+			        if (do_phonenumber(&phone, arg2, outflag))
+			        	return -1;
 			        if ((result = ioctl(fd, IIOCNETDNM, &phone)) < 0) {
 			        	perror(id);
 			        	return -1;
@@ -1330,8 +1382,20 @@ int exec_args(int fd, int argc, char **argv)
 			        	perror(id);
 			        	return -1;
 			        }
-			        if (result)
-			        	printf("Can't increase the number of links. Error %d\n",-result);
+				if (result) {
+					printf("Can't increase the number of links:\n\t");
+					switch (result) {
+						case -1: printf("MPPP not in the kernel config.\n");
+							 break;
+						case 1: printf("%s doesn't exist\n", id);
+							break;
+						case 2: printf("no slave devices configured for %s\n", id);
+							break;
+						case 5: printf("%s not currently connected.\n", id);
+							break;
+						default: printf("unknown error %d\n", result);
+					}
+				}
 			        else
 			        	printf("Ok, added a new link. (dialing)\n");
 			        break;
@@ -1341,8 +1405,20 @@ int exec_args(int fd, int argc, char **argv)
 			        	perror(id);
 			        	return -1;
 			        }
-			        if (result)
-			        	printf("Can't decrease number of links: %d\n", result);
+				if (result) {
+					printf("Can't decrease the number of links:\n\t");
+					switch (result) {
+						case -1: printf("MPPP not in the kernel config.\n");
+							 break;
+						case 1: printf("%s doesn't exist\n", id);
+							break;
+						case 2: printf("no slave devices configured for %s\n", id);
+							break;
+						case 5: printf("%s not currently connected.\n", id);
+							break;
+						default: printf("unknown error %d\n", result);
+					}
+				}
 			        else
 			        	printf("Ok, removed a link. (hangup)\n");
 			        break;
@@ -1651,6 +1727,14 @@ void check_version(int report) {
 	if (data_version == 0x04)
 		data_version = 0x05;
 	if (data_version != NET_DV) {
+		if ((data_version == 5) && (NET_DV == 6)) {
+			MSNLEN_COMPATIBILITY = 1;
+			return;
+		}
+		if ((data_version == 6) && (NET_DV == 5)) {
+			MSNLEN_COMPATIBILITY = 2;
+			return;
+		}
 		fprintf(stderr, "Version of kernel ioctl structs (%d) does NOT match\n",
 			data_version);
 		fprintf(stderr, "version of isdnctrl (%d)!\n", NET_DV);

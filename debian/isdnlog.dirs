@@ -4,10 +4,10 @@ usr/sbin
 usr/X11R6/bin
 usr/X11R6/man/man1
 usr/X11R6/lib/X11/app-defaults
-usr/doc/isdnutils/lib
-usr/doc/isdnutils/examples
-usr/doc/isdnutils/examples/default
-usr/doc/isdnutils/examples/isdnlog
-usr/doc/isdnutils/isdnlog
+usr/share/doc/isdnutils/lib
+usr/share/doc/isdnutils/examples
+usr/share/doc/isdnutils/examples/default
+usr/share/doc/isdnutils/examples/isdnlog
+usr/share/doc/isdnutils/isdnlog
 var/lib/isdn
 var/log/isdn

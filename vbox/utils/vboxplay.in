@@ -22,6 +22,7 @@ VOLUME=$2
 # check whether NAS is running, and adjust DOPLAY to correspond
 # check two locations, apparently it moves around...
 PLAY=/auplay-not-found-so-dont-use-it
+OPTIONS=''
 [ -x /usr/bin/auplay     ] && PLAY=/usr/bin/auplay
 [ -x /usr/bin/X11/auplay ] && PLAY=/usr/bin/X11/auplay
 if [ -x $PLAY ]; then
@@ -34,15 +35,16 @@ if [ -x $PLAY ]; then
 		PLAY=/auplay-not-usable-so-dont-use-it
 	fi
 fi
-if [ ! -x PLAY ]; then	# try aplay (from alsautils) instead
+if [ ! -x $PLAY ]; then	# try aplay (from alsautils) instead
 	if [ -x /usr/bin/aplay ]; then
 		PLAY=/usr/bin/aplay
 		# if anyone has a better suggestion,
 		# send email to isdnutils@packages.debian.org!
-		DOPLAY="$PLAY -q -u -p ulaw /dev/fd/0"
+		DOPLAY="$PLAY -q /dev/fd/0"
+		OPTIONS="-u"
 	fi
 fi
-if [ ! -x PLAY ]; then	# use play (from sox) instead
+if [ ! -x $PLAY ]; then	# use play (from sox) instead
 	# we need to convert to decimal for 'play'. Try 'dc'.
 	if [ -x /usr/bin/dc ]; then
 		soxvolume=`echo "2k $VOLUME 100/ps." | /usr/bin/dc`
@@ -57,7 +59,7 @@ fi
 
 case $? in
 
-   2|3|4|6) @BINDIR@/vboxtoau <$SAMPLE | $DOPLAY
+   2|3|4|6) @BINDIR@/vboxtoau $OPTIONS <$SAMPLE | $DOPLAY
             ;;
          *) echo "$0: unknown vbox message format!"
             ;;

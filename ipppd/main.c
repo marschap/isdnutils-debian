@@ -70,7 +70,7 @@ char main_rcsid[] = "$Id: main.c,v 1.16 1999/06/21 13:28:49 hipp Exp $";
  * /etc/ppp/ioptions exists.
  */
 #ifndef	REQ_SYSOPTIONS
-#define REQ_SYSOPTIONS	1
+#define REQ_SYSOPTIONS	0
 #endif
 
 /* interface vars */

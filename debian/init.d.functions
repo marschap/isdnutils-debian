@@ -5,8 +5,8 @@
 # Try not to change this file!  It should not be necessary.
 #
 #
-# Please read /usr/doc/isdnutils/README.debian
-# and         /usr/doc/isdnutils/CONFIG.gz .
+# Please read /usr/share/doc/isdnutils/README.debian
+# and         /usr/share/doc/isdnutils/HOWTO.isdnutils.gz .
 #
 # This file is for use from the /etc/init.d/isdn* scripts.
 # If you want to do things differently, I advise you to put the
@@ -18,9 +18,11 @@
 # differently, let me (isdnutils@packages.debian.org) know and
 # we'll try to work something out.
 
+do_what="$1"
+
 if [ ! -d /etc/isdn ]
 then
-       echo "The /etc/isdn directory does not exist!"
+       echo "The /etc/isdn directory does not exist; this shouldn't be possible!"
        exit 1
 fi
 
@@ -40,6 +42,13 @@ not_configured=''
 listdevices() {
 	DEVS=`find /etc/isdn -regex '/etc/isdn/device\.\(ippp\|isdn\)[0-9]+' -printf '%f\n'`
 }
+
+# devices for which there is no config file (anymore)
+listextradevices() {
+    # can't count on "isdnctrl status all" yet, unfortunately...
+	DEVS=`/usr/sbin/isdnctrl list all | grep 'Current setup' | cut -f2 -d"'" | sort`
+}
+
 listdaemons() {
 	DAEMONS=`find /etc/isdn -regex '/etc/isdn/ipppd\.ippp[0-9]+' -printf '%f\n'`
 }
@@ -59,8 +68,10 @@ check_isdncards() {
     then
 	isdncards_unchecked=false
 	set -- `perl -ne 's/^idmap:\s+//; s/ -//g; s/(\S+) \1/\1/g; print; exit;' /dev/isdninfo 2>/dev/null`
-	if [ $# -eq 0 ]; then
-	    echo " no ISDN cards configured! aborting..."
+	if [ $# -eq 0 -a "$do_what" != stop ]; then
+            echo " "
+            echo " no ISDN cards configured! Please configure 'hisax' module with modconf"
+            echo " (read /usr/share/doc/isdnutils/HOWTO.isdnutils.gz for more info)."
 	    exit 0
 	fi
 	isdncards="$@"
@@ -134,6 +145,14 @@ start_devices() {
     olddir=`pwd`
     cd /etc/isdn
     listdevices
+    if [ -z "$DEVS" -a ! -f /etc/isdn/noconfig ]; then
+        echo "  There is apparently no configuration created yet."
+        echo "  You can create configuration files with the 'isdnconfig' tool."
+        echo " "
+        echo "  If you don't want this warning in future, please create the file"
+        echo "     /etc/isdn/noconfig"
+        echo "  For more information, see /usr/share/doc/isdnutils/HOWTO.isdnutils.gz"
+    fi
     for devicefile in $DEVS ; do
         test -e $devicefile || continue;
         device=${devicefile#*.}
@@ -146,7 +165,7 @@ start_devices() {
 		if [ ! -c /dev/$device ]; then
 			cd /dev
 			echo -n " (creating /dev/$device)"
-			./MAKEDEV $device || true
+			/sbin/MAKEDEV $device || true
 			cd /etc/isdn
 		fi
 		sh ${devicefile} start > /dev/null
@@ -170,6 +189,19 @@ stop_devices() {
 	    sh ${devicefile} stop > /dev/null
 	fi
     done
+    listextradevices
+    if [ ! -z "$DEVS" ]; then
+        if $isdn_verbose; then echo -n "$what"; what=''; fi
+        echo -e "\nThere are ISDN devices for which there are no config files: $DEVS"
+        echo -n "These are now also being stopped..."
+        # There's no graceful way of doing this...
+        for device in $DEVS; do
+            echo -n " $device"
+            /sbin/ifconfig $device down || true
+            /usr/sbin/isdnctrl delif $device || true
+        done
+        echo " done."
+    fi
     cd $olddir
 }
 
@@ -209,6 +241,8 @@ stop_ipppd() {
 		--pidfile /var/run/ipppd.$device.pid \
 		--exec /usr/sbin/ipppd
     done
+    # in case of removed config files, kill off any remaining ipppds...
+    killall ipppd 2>/dev/null && echo -e "\n\tunknown ipppd processes killed... \c"
     cd $olddir
 }
 

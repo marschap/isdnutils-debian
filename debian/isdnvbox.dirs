@@ -1,8 +1,8 @@
 etc/isdn
 usr/bin
 usr/sbin
-usr/doc/isdnvbox
-usr/doc/isdnvbox/examples
-usr/doc/isdnvbox/examples/default
-usr/doc/isdnvbox/examples/vbox
+usr/share/doc/isdnvbox
+usr/share/doc/isdnvbox/examples
+usr/share/doc/isdnvbox/examples/default
+usr/share/doc/isdnvbox/examples/vbox
 var/spool/vbox

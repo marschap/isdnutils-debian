@@ -1,0 +1,126 @@
+MPPP - Multi Point to Point Protocol (channel bundling)
+====================================
+
+Here's a simple collection of information on the subject of MPPP.
+
+
+From the official I4L FAQ http://www.mhessler.de/i4lfaq.html
+-------------------------
+
+18.6 2channel_mpppconfig: How do I configure MPPP?
+
+First you define a (normal) interface for ipppd (e.g. "isdnctrl addif ippp0",
+etc). This interface will be used as your master interface.
+Then you must configure a slave device for every additional channel (e.g.
+"isdnctrl addslave ippp0 <slave_interface>", configure slave_interface, etc -
+see the i4l manual for more). To enable MPPP negotiation, ipppd must be called
+with the "+mp" option.
+
+To use channel bundling you must first activate the 'master' or initial
+call. Now you can add the slave channels with the command:
+
+    isdnctrl addlink device
+
+and close them with the command:
+
+    isdnctrl removelink ippp0
+
+This is different to other encapsulations of isdn4linux!
+
+Please also note, that the slave device has to be in dialmode auto for
+this to work. For manual control, use (replace "slave" with the name of the
+slave interface):
+
+    isdnctrl dial slave
+
+and
+
+    isdnctrl hangup slave
+
+With syncPPP, there is no automatic activation of slave devices, they have to
+be added and removed. However, there is the program ibod available, which can
+do this automatically. Have a look at: http://www.compound.se/ibod.html
+
+In the file etc/rc.isdn.syncppp.MPPP in the isdn4k-utils package you can find a
+sample script (unfortunately missing in some i4l version).
+
+Please note that your Internet Provider has to allow you to make use of these
+features. Also, there may be a limit on how many channels you are allowed to
+open at the same time. It could be that all links are dropped when you exceed
+this limit.
+
+
+18.7 2channel_mpppgoodbad: What are the advantages and disadvantages of MPPP?
+
+A disadvantage is that the slave channel has to be activated "manually".
+ipppd cannot by itself turn the slave channel on and off as it needs
+to. The normal automatic functions of ipppd are either unreliable (auto
+hangup) don't work at all (auto dial). This is not true for the other
+encapsulations. The transfers rates are very good (ca. 30 KB/s with 4
+channels).
+
+
+
+From the isdn4linux mailing list
+--------------------------------
+
+From: Martin Bialasinski <agr30+news@uni-koeln.de>
+Subject: Re: enabling MPPP in Debian?
+Date: Wed, 12 Apr 2000 00:19:04 +0200
+
+* "LD" == Louis-David Mitterrand <cunctator@apartia.ch> wrote:
+
+LD> As hard as I look in the docs and in the config files I really
+LD> can't get MPPP to work on my Debian box:
+
+This is what I did:
+
+Configure ippp0 for single channel.
+
+Add to device.ippp0 before the "NETWORK SETUP" section:
+
+       #        Channel bundling
+        
+        SLAVE=ippp1
+        
+        isdnctrl addslave ${device} $SLAVE
+        bindnum=`expr $SLAVE : 'ippp\(.\)'`
+        if [ ! -z "$bindnum" ]
+        then
+                isdnctrl pppbind $SLAVE $bindnum
+        fi
+        if [ ! -z "$REMOTEMSN" ]
+        then
+                for MSN in $REMOTEMSN; do
+                        isdnctrl addphone $SLAVE out 0$REMOTEMSN
+                done
+        fi
+        isdnctrl eaz $SLAVE $LOCALMSN
+        isdnctrl l2_prot $SLAVE hdlc
+        isdnctrl l3_prot $SLAVE trans
+        isdnctrl encap $SLAVE syncppp
+        isdnctrl huptimeout $SLAVE 90
+        isdnctrl secure $SLAVE on                                       
+        isdnctrl dialmode $SLAVE $DIALMODE || true
+
+Add to ipppd.ippp0:
+
+/dev/ippp1
++mp
+
+Restart the ISDN system via the init.d script (/etc/init.d/isdnutils restart)
+
+isdnctrl dial ippp0     # Dial
+isdnctrl addlink ippp0  # Dial second channel
+isdnctrl removelink ippp0  # Hangup second channel
+
+You can monitor the lines with imon.
+
+
+-- 
+
+To add yourself to this mailing list send email to
+majordomo@listserv.isdn4linux.de containing
+"subscribe isdn4linux <your_email_address>" in the message body.
+
+-- 

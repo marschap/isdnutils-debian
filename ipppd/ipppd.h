@@ -49,14 +49,12 @@
 #include <linux/version.h>
 #if (LINUX_VERSION_CODE < ((0x020100)+88))
 #define ISDN_PPP_COMP_MAX_OPTIONS 16
-/*
 struct isdn_ppp_comp_data {
         int num;
         unsigned char options[ISDN_PPP_COMP_MAX_OPTIONS];
         int optlen;
         int flags;
 };
-*/
 #endif
 
 #ifndef PPP_LINK_CCP

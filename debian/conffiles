@@ -6,5 +6,5 @@
 /etc/isdn/xmonisdn-netup
 /etc/isdn/xmonisdn-netdown
 /etc/ppp/ioptions
-/etc/ppp/ip-up.d/isdnutils
-/etc/ppp/ip-down.d/isdnutils
+/etc/ppp/ip-up.d/00-isdnutils
+/etc/ppp/ip-down.d/99-isdnutils

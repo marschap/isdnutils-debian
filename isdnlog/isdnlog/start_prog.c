@@ -985,7 +985,7 @@ static char *ArgToChar(int type, void* Ptr)
 		                     break;
 	}
 
-	return RetCode[Cnt];
+	return RetCode[Cnt++];
 }
 
 /****************************************************************************/

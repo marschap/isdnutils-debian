@@ -5,10 +5,10 @@ It was downloaded from ftp.franken.de.
 
 GPL Copyrights:
 
-  For the complete GPL version 2 text, see /usr/doc/copyright/GPL.
+  For the complete GPL version 2 text, see /usr/share/common-licenses/GPL .
 
 
-All changes for debian are Done by Christian Schwarz <schwarz@debian.org>,
+All changes for debian are done by Christian Schwarz <schwarz@debian.org>,
 Andreas Jellinghaus <aj@debian.org>, Paul Slootman <paul@debian.org> or
 derived from the work of other debian developers and licensed under GPL.
 

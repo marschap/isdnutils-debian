@@ -2388,10 +2388,10 @@ static void decode(int chan, register char *p, int type, int version, int tei)
 		    else {
 		    	goto UNKNOWN_ELEMENT; /* no choice... */
 		    }
-                    if (tm.tm_year < 70)
-                        tm.tm_year += 100;
                     tm.tm_wday  = tm.tm_yday = 0;
                     tm.tm_isdst = -1;
+                    if (tm.tm_year < 70)
+                        tm.tm_year += 100;
 
                     t = mktime(&tm);
 
@@ -3629,6 +3629,7 @@ static void processbytes()
 #if RATE_PER_SAMPLE
   auto     double  DiffTime2;
 #endif
+  static   int	   wakeups = 0;
 
 
   for (bchan = 0; bchan < chans; bchan++)
@@ -3687,6 +3688,12 @@ static void processbytes()
         else
           call[chan].ibps = call[chan].obps = 0.0;
 
+	if (DiffTime < wakeup) {
+	    wakeups = 0;
+	}
+	if (DiffTime / wakeup > wakeups) {
+	  wakeups++;
+	  /* ignore the indenting from here ....*/
         if (change && (call[chan].ibytes + call[chan].obytes)) {
 
           sprintf(sx, "I=%s %s/s  O=%s %s/s%s",
@@ -3740,6 +3747,7 @@ static void processbytes()
 
             info(chan, PRT_SHOWBYTE, STATE_BYTE, sx);
         } /* else */
+	} /*... stop ignoring indenting from here. */
       } /* if */
     } /* if */
 } /* processbytes */
