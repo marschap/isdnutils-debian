@@ -13,6 +13,5 @@ LDFLAGS = $(all_libraries)
 LDADD = 
 
 sbin_PROGRAMS = capiinit
-man_MANS = capiinit.8
 
 capiinit_SOURCES = capiinit.c

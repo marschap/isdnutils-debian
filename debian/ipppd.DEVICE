@@ -79,10 +79,10 @@ noipdefault		#  do not  use name for default ip addr
 #useifip		# (do)     use ip addresses from interface
 #usefirstip		# (do)     use first ip from auth file for remote
 netmask 255.255.255.255	#  do      set netmask, 255.255.255.255 for pointopoint
-#defaultroute 		# (do not) set default route 
+#defaultroute 		# (do not) set default route (for Debian config, don't uncomment)
 nohostroute		#  do not  set host route
 #proxyarp		# (do not) set an proxy arp entry
-#mru X			# (do not) set maximum size of receive units to X
+mru 1524		#  do      set maximum size of receive units to X
 #default-mru		# (do not) enable mru negotation
 mtu 1500		#  do      set max size of transmit units (1500 is OK)
 #useifmtu		# (do not) use mtu from interface

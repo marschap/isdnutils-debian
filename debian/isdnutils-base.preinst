@@ -11,37 +11,47 @@ set -e
 
 case "$1" in
     install|upgrade)
-            tempfile=`tempfile -d /var/tmp -p isdn.`
             if [ "$1" = "upgrade" ]; then
-               echo "upgrading" > $tempfile
-               echo "Checking whether you need the ipppd package..."
-               if [ `ls /etc/isdn/ipppd.* 2>/dev/null | wc -l` -gt 0 ] ||
+               if dpkg --compare-versions "$2" lt 1:3.1pre1b-1; then
+                  tempfile=`tempfile -d /var/tmp -p isdn.`
+                  echo "upgrading" > $tempfile
+                  echo "Checking whether you need the ipppd package..."
+                  if [ `ls /etc/isdn/ipppd.* 2>/dev/null | wc -l` -gt 0 ] ||
                                         /bin/netstat -i | grep -q '^ippp'; then
-                  cp /dev/null $tempfile 2>&1
-                  # ls /etc/isdn/ipppd.* > $tempfile 2>&1
-                  # /bin/netstat -i >> $tempfile 2>&1
-                  dpkg -l ipppd >> $tempfile 2>&1
-                  if grep -q '^i.* ipppd ' $tempfile; then
-                    : # ok, safe
-                  elif grep -q ipppd/makedev /var/cache/debconf/config.dat; then
-                    : # There's no clean way of checking whether
-                    # "apt-get install isdnutils ipppd" is used to upgrade,
-                    # and using this dirty little trick shows that ipppd
-                    # is at least present. However, if ipppd was installed
-                    # but removed (not purged) then that line is still in there.
-                    # Check 'dpkg -l ipppd' for '^rc' ? Nah, if it was installed
-                    # and they removed it, tough cookies.
-                    # Or is there a cleaner way?
-                  else
-                    . /usr/share/debconf/confmodule
-                    db_input critical isdnutils/no_ipppd_selected || true
-                    db_go || true
-                    db_stop
-                    if [ "$1" = upgrade -a -x /etc/init.d/isdnutils ]; then
-                        echo "Restarting the old isdnutils, which were probably stopped earlier..."
-                        /etc/init.d/isdnutils start
-                    fi
-                    exit 1
+                     cp /dev/null $tempfile 2>&1
+                     # ls /etc/isdn/ipppd.* > $tempfile 2>&1
+                     # /bin/netstat -i >> $tempfile 2>&1
+                     dpkg -l ipppd >> $tempfile 2>&1 || true
+                     if grep -q '^i.* ipppd ' $tempfile; then
+                        : # ok, safe
+                        rm -f $tempfile
+                     elif grep -q ipppd/whichif /var/cache/debconf/config.dat; then
+                        : # There's no clean way of checking whether
+                        # "apt-get install isdnutils ipppd" is used to upgrade,
+                        # and using this dirty little trick shows that ipppd
+                        # is at least present. However, if ipppd was installed
+                        # but removed (not purged) then that line is still in there.
+                        # Check 'dpkg -l ipppd' for '^rc' ? Nah, if it was installed
+                        # and they removed it, tough cookies.
+                        # Or is there a cleaner way?
+                        rm -f $tempfile
+                     else
+                        rm -f $tempfile
+                        . /usr/share/debconf/confmodule
+                        db_input critical isdnutils/no_ipppd_selected || true
+                        db_go || true
+                        db_stop
+                        if [ "$1" = upgrade -a -x /etc/init.d/isdnutils ]; then
+                           echo "NOTICE: You have a /etc/isdn/ipppd.* file, but don't have ipppd installed."
+                           echo "        This could leave you without internet connectivity, so the"
+                           echo "        installation of isdnutils is now being aborted."
+                           echo "        Either install ipppd, or remove the /etc/isdn/ipppd.* files"
+                           echo "        and reinstall."
+                           echo "Restarting the old isdnutils, which were probably stopped earlier..."
+                           /etc/init.d/isdnutils start
+                        fi
+                        exit 1
+                     fi
                   fi
                fi
             fi
@@ -61,7 +71,9 @@ case "$1" in
             # else
             if [ -s /etc/cron.weekly/isdnutils ]; then
                 # apparently upgrading from 3.0-20
-                if [ `md5sum < /etc/cron.weekly/isdnutils` = 455aaa39c744cb4726dddda665751c9f ]; then
+                # There are different versions of md5sum out there!!!
+                md5sum < /etc/cron.weekly/isdnutils | read x y
+                if [ "$x" = 455aaa39c744cb4726dddda665751c9f ]; then
                     # unchanged, so delete it
                     rm -f /etc/cron.weekly/isdnutils
                 else

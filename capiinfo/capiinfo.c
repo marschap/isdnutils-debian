@@ -1,10 +1,13 @@
-/* $Id: capiinfo.c,v 1.5 2001/01/15 10:22:50 calle Exp $
+/* $Id: capiinfo.c,v 1.11 2004/01/16 15:27:12 calle Exp $
  *
  * A CAPI application to get infomation about installed controllers
  *
- * This program is free software; you can redistribute it and/or modify          * it under the terms of the GNU General Public License as published by          * the Free Software Foundation; either version 2, or (at your option)
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
  * any later version.
- *                                                                               * This program is distributed in the hope that it will be useful,
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -14,6 +17,24 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: capiinfo.c,v $
+ * Revision 1.11  2004/01/16 15:27:12  calle
+ * remove several warnings.
+ *
+ * Revision 1.10  2003/08/16 16:56:02  keil
+ * fix some typos
+ *
+ * Revision 1.9  2003/08/02 14:50:21  keil
+ * fix wrong b3support bits
+ *
+ * Revision 1.8  2003/03/11 13:36:27  paul
+ * Fixed wrapping of GNU license (only obvious on tty > 80 columns).
+ *
+ * Revision 1.7  2003/01/14 13:56:47  calle
+ * bugfix in output of manufacturer version.
+ *
+ * Revision 1.6  2002/07/11 09:29:53  armin
+ * sync with new cvs server.
+ *
  * Revision 1.5  2001/01/15 10:22:50  calle
  * - error reasons now also as strings using function capi_info2str().
  *
@@ -36,6 +57,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#define _LINUX_LIST_H
 #include <capi20.h>
 #include <linux/capi.h>
 
@@ -72,9 +94,9 @@ struct bittext b2support[] = {
 /*  1 */ { 0x0002, "Transparent" },
 /*  2 */ { 0x0004, "SDLC" },
 /*  3 */ { 0x0008, "LAPD with Q.921 for D channel X.25 (SAPI 16)" },
-/*  4 */ { 0x0010, "T.30 fro fax group 3" },
+/*  4 */ { 0x0010, "T.30 for fax group 3" },
 /*  5 */ { 0x0020, "Point-to-Point Protocol (PPP)" },
-/*  6 */ { 0x0040, "Tranparent (ignoring framing errors of B1 protocol)" },
+/*  6 */ { 0x0040, "Transparent (ignoring framing errors of B1 protocol)" },
 /*  7 */ { 0x0080, "Modem error correction and compression (V.42bis or MNP5)" },
 /*  8 */ { 0x0100, "ISO 7776 (X.75 SLP) with V.42bis compression" },
 /*  9 */ { 0x0200, "V.120 asyncronous mode" },
@@ -87,11 +109,11 @@ struct bittext b3support[] = {
 /*  0 */ { 0x0001, "Transparent" },
 /*  1 */ { 0x0002, "T.90NL, T.70NL, T.90" },
 /*  2 */ { 0x0004, "ISO 8208 (X.25 DTE-DTE)" },
-/*  3 */ { 0x0010, "X.25 DCE" },
-/*  4 */ { 0x0020, "T.30 for fax group 3" },
-/*  5 */ { 0x0040, "T.30 for fax group 3 with extensions" },
-/*  6 */ { 0x0080, "reserved" },
-/*  7 */ { 0x0100, "Modem" },
+/*  3 */ { 0x0008, "X.25 DCE" },
+/*  4 */ { 0x0010, "T.30 for fax group 3" },
+/*  5 */ { 0x0020, "T.30 for fax group 3 with extensions" },
+/*  6 */ { 0x0040, "reserved" },
+/*  7 */ { 0x0080, "Modem" },
  { 0, 0 }
 };
 
@@ -134,8 +156,9 @@ int main(int argc, char **argv)
 
    CAPI20_GET_PROFILE(0, (CAPI_MESSAGE)&cprofile);
    ncontr = cprofile.ncontroller;
+   printf("Number of Controllers : %d\n", ncontr);
 
-   err = CAPI20_REGISTER(0, 0, 2048, &ApplId);
+   err = CAPI20_REGISTER(1, 1, 2048, &ApplId);
    if (err != CapiNoError) {
        fprintf(stderr, "could not register - %s (%#x)\n", capi_info2str(err), err);
        return 1;
@@ -151,10 +174,11 @@ int main(int argc, char **argv)
        vbuf = (unsigned long *)buf;
        printf("CAPI Version: %lu.%lu\n",vbuf[0], vbuf[1]);
        if (isAVM) {
-          printf("Manufacturer Version: %lu.%02lu-%02lu  (%lu.%lu)\n",
+          printf("Manufacturer Version: %lu.%01lx%01lx-%02lu  (%lu.%lu)\n",
                   (vbuf[2]>>4) & 0x0f,
-                  (((vbuf[2]<<4) & 0xf0) | ((vbuf[3]>>4) & 0x0f)),
-                  vbuf[3] & 0x0f,
+                  ((vbuf[2]<<4) & 0xf0),
+		  ((vbuf[3]>>4) & 0x0f),
+                  (vbuf[3] & 0x0f),
                   vbuf[2], vbuf[3] );
        } else {
           printf("Manufacturer Version: %lu.%lu\n",vbuf[2], vbuf[3]);
@@ -198,7 +222,6 @@ int main(int argc, char **argv)
 	   fprintf(stderr, "FAC REQ - %s (%#x)\n", capi_info2str(err), err);
 	   continue;
        }
-	
        err = capi20_waitformessage(ApplId, 0);
        if (err != CapiNoError) {
 	   fprintf(stderr, "FAC WAIT - %s (%#x)\n", capi_info2str(err), err);
@@ -224,7 +247,7 @@ int main(int argc, char **argv)
        SuppServices |= cmsg.FacilityConfirmationParameter[7] << 8;
        SuppServices |= cmsg.FacilityConfirmationParameter[8] << 16;
        SuppServices |= cmsg.FacilityConfirmationParameter[9] << 24;
-       
+
        printf("\nSupplementary services support: 0x%08x\n", SuppServices);
        showbitvalues(SupportedServices, SuppServices);
        printf("\n");

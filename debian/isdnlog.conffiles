@@ -1,2 +1,3 @@
 /etc/isdn/isdnlog.users
 /etc/isdn/stop
+/etc/logrotate.d/isdnlog

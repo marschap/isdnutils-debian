@@ -1,2 +1,4 @@
-isdnutils source: autoconf-generated-file-in-source isdnlog/client/config.cache
-isdnutils source: autoconf-generated-file-in-source isdnlog/client/config.status
+isdnutils source: configure-generated-file-in-source isdnlog/client/config.cache
+isdnutils source: configure-generated-file-in-source isdnlog/client/config.log
+isdnutils source: configure-generated-file-in-source isdnlog/client/config.status
+

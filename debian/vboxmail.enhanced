@@ -1,0 +1,119 @@
+#! /bin/sh
+##
+## vboxmail.enhanced
+## - This script can be used as a drop-in replacement for vboxmail.
+##   Simply copy it to /etc/isdn/vboxmail, and ensure that you have
+##   the following packages installed:
+##
+##      sox mime-construct
+##
+## - You also need to obtain an MP3 encoder such as lame from somewhere.
+##   Unfortunately, such an encoder isn't packaged in Debian due to
+##   patent issues. Visit http://petition.eurolinux.org/ for information
+##   about such patents and what you can do about it.
+##
+## - There is code for lame and xingmp3enc. If you have another encoder,
+##   please feel free to submit a patch :-)
+##
+## - If no MP3 encoder is found, a WAV file is sent, which will be twice
+##   the size of an MP3. But it's better than nothing...
+##
+## - Thanks to Tobias Geiger for the first version of this script.
+
+# Usage: vboxmail MESSAGENAME CALLERNAME CALLERID MAIL-TO-ADDRESS
+
+
+MSNAME="${1}"
+CALLER="${2}"
+CALLID="${3}"
+MAILTO="${4}"
+timestamp=`date +%d-%B--%H-%M-%S`
+
+onlynotify() {
+    (
+       echo "From: vboxmail <`/usr/bin/id -un`>"
+       echo "To: ${MAILTO}"
+       echo "Subject: VoiceBox Message from ${CALLER} (phonenum ${CALLID})"
+       echo ""
+       echo "$@"
+
+    ) | /usr/sbin/sendmail -oi -t
+}
+
+if [ ! -s "$MSNAME" ]; then	
+  onlynotify "message file appears to be missing!"
+  exit 0
+fi
+
+# some declarations here are only valid if the file $MSNAME exists...
+
+bodytext=`vboxmode $MSNAME`
+MODE=$?
+
+caller=`vboxmode $MSNAME | awk 'BEGIN {FS=": "} /Speaker\ caller\ number/ {print $2}'`
+if [ "$caller" == "0" ]; then caller=unknown;fi
+
+if [ ! -x /usr/bin/sox ] || [ ! -x /usr/bin/mime-construct ]; then
+    # not all necessary packages installed...
+    onlynotify "$bodytext"
+    exit 0
+fi
+
+# Determine mode of message file, then decide on the conversion.
+# Tested for adpcm-4 and ulaw, possibly needs to be changed for others.
+
+if [ $MODE -le 6 ]; then
+    # convert from vbox (ADPCM) to AU and then to WAV
+    PREPROC='vboxtoau < $MSNAME | sox -t .au - -t wav -ub -'
+elif [ $MODE -ge 128 -a $MODE -le 150 ]; then
+    # convert from vbox (ULAW) to WAV
+    PREPROC='sox 8000 -t .ul $MSNAME -t wav -r 44100 -s -w -c 2 - resample 2>/dev/null'
+else
+    # Unknown vbox mode. Revert to old behaviour.
+    onlynotify "$bodytext"
+    exit 0
+fi
+
+TMPWAV=$(tempfile -s .wav)
+TMPMP3=${TMPWAV%.wav}.mp3
+
+if [ -x /usr/local/bin/lame ]; then
+    # uses mime-construct and a "BIG PIPE" :) to convert
+    # from (depending on vbox format) vbox-format to au,
+    # then from au to wav,
+    # then from wav-format to mp3 (using lame)
+    eval $PREPROC | /usr/local/bin/lame -S -mj -b56 --lowpass 12 --lowpass-width 0 - $TMPMP3 2>/dev/null
+elif [ -x /usr/local/bin/xingmp3enc ]; then
+    eval $PREPROC > $TMPWAV
+    /usr/local/bin/xingmp3enc -B 64 $TMPWAV >/dev/null 2>&1
+    rm -f $TMPWAV
+    # TMPMP3 is automagically generated
+
+# elif ... # add more encoders here!
+
+else # no mp3 encoder available? So send the .WAV
+    TYPE=audio/x-wav
+    EXT=wav
+    eval $PREPROC > $TMPWAV
+fi
+
+if [ -s $TMPMP3 ]; then
+    TYPE=audio/mpeg
+    EXT=mp3
+    INPUT=$TMPMP3
+else
+    TYPE=audio/x-wav
+    EXT=wav
+    INPUT=$TMPWAV
+fi
+
+mime-construct --to ${MAILTO} \
+               --header "From: vboxmail <`/usr/bin/id -un`>" \
+               --subject "VoiceBox Message from ${CALLER} (phonenum ${CALLID})" \
+               --string "$bodytext" \
+               --type $TYPE \
+               --attachment $timestamp---$caller.$EXT \
+               --file $INPUT
+rm -f $TMPWAV $TMPMP3
+
+exit 0

@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: Menuconfig,v 1.7 1999/09/06 08:03:27 fritz Exp $
+# $Id: Menuconfig,v 1.8 2002/07/04 10:52:18 paul Exp $
 #
 # This script is borrowed from the linux Menuconfig script.
 #

@@ -1,5 +1,3 @@
-usr/bin/capifax
-usr/bin/capifaxrcvd
 usr/bin/capiinfo
 usr/sbin/actctrl
 usr/sbin/avmcapictrl
@@ -29,8 +27,6 @@ usr/share/isdn/te_etsi.sm
 usr/share/isdn/te_etsi.sq
 usr/share/isdn/te_etsi.sx
 usr/share/isdn/te_etsi.sy
-usr/share/man/man1/capifax.1
-usr/share/man/man8/capifaxrcvd.8
 usr/share/man/man8/rcapid.8
 usr/share/man/man8/capiinit.8
 usr/share/man/man8/actctrl.8

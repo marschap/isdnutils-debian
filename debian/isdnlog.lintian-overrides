@@ -1,3 +1,4 @@
+isdnlog: possible-bashism-in-maintainer-script config:78 '. /etc/isdn/isdnrate.conf >/dev/null'
 isdnlog: script-not-executable ./usr/share/isdn/default/provider
 isdnlog: script-not-executable ./usr/share/isdn/default/stop
 isdnlog: select-with-translated-default-field isdnlog/country de

@@ -5,7 +5,6 @@ AC_PREFIX_DEFAULT(/usr)
 
 I4LCONFDIR=`eval echo ${CONFIG_I4LCONFDIR:-"/etc/isdn"}`
 I4LVERSION=${I4LVERSION:-"?.?"}
-CONFIG_KERNELDIR=${CONFIG_KERNELDIR:-"/usr/src/linux"}
 CONFIG_SBINDIR=${CONFIG_SBINDIR:-"/sbin"}
 CONFIG_MANDIR=${CONFIG_MANDIR:-"/usr/man"}
 #MANDATE=`grep CHECKIN isdnctrl.man.in | awk '{print $4}'`
@@ -19,7 +18,7 @@ dnl Checks for libraries.
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS(linux/capi.h,,
-	AC_MSG_ERROR("Missing $ac_hdr. Kernel source installed?"))
+	[AC_MSG_ERROR([Missing $ac_hdr. Kernel source installed?])])
 dnl not used AC_CHECK_HEADERS(capi20.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
@@ -41,7 +40,6 @@ AC_ARG_WITH(man,
 AC_SUBST(INSTALL)
 AC_SUBST(I4LCONFDIR)
 AC_SUBST(I4LVERSION)
-AC_SUBST(CONFIG_KERNELDIR)
 AC_SUBST(CONFIG_SBINDIR)
 AC_SUBST(CONFIG_MANDIR)
 AM_CONFIG_HEADER(config.h)

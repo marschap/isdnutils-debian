@@ -23,10 +23,15 @@
 #include <string.h>
 #include <dlfcn.h>
 #include <errno.h>
+#include <netinet/in.h>
 #include <linux/if.h>
-#include <linux/in.h>
 
-static char *revision = "$Revision: 1.22 $";
+
+static char *revision = "$Revision: 1.35 $";
+
+/* -------------------------------------------------------------------- */
+
+#define AVMADSLPARAMFILE "/etc/drdsl/adsl.conf"
 
 /* -------------------------------------------------------------------- */
 
@@ -69,6 +74,7 @@ static int wakeupnow = 0;
 /* -------------------------------------------------------------------- */
 
 static void handlemessages(void) ;
+static int shmatch(char *string, char *expr);
 static void stringlist_free(STRINGLIST **pp);
 static int stringlist_append_string(STRINGLIST **pp, char *s);
 static STRINGLIST *stringlist_split(char *tosplit, char *seps);
@@ -90,7 +96,7 @@ static capi_contrinfo cinfo = { 0 , 0, 0 };
 
 /* -------------------------------------------------------------------- */
 
-static char *opt_controller = "1";
+static char *opt_controller;
 /*
  * numbers
  */
@@ -111,11 +117,15 @@ static STRINGLIST *inmsns;
 #define PROTO_X75		1
 #define PROTO_V42BIS		2
 #define PROTO_MODEM		3
-#define PROTO_ADSLPPPOE		4
-#define PROTO_ADSLPPPOA		5
-#define PROTO_ADSLPPPOALLC	6
+#define PROTO_V110_ASYNC	4
+#define PROTO_V120_ASYNC	5
+#define PROTO_ADSLPPPOE		6
+#define PROTO_ADSLPPPOA		7
+#define PROTO_ADSLPPPOALLC	8
+#define PROTO_ANALOGMODEM	9
 static char *opt_proto = "hdlc";
 static int proto = PROTO_HDLC;
+static int opt_avmadsl = 0;
 static int opt_vpi = -1; /* T-DSL: 1  */
 static int opt_vci = -1; /* T-DSL: 32 */
 /*
@@ -159,6 +169,7 @@ static int opt_voicecallwakeup  = 0;
 static int optcb(void) { return opt_cbflag = 1; }
 static int optacceptdelay(void) { return opt_acceptdelayflag = 1; }
 static int optvoicecallwakeup(void) { return opt_voicecallwakeup = 1; }
+static int optavmadsl(void) { return opt_avmadsl = 1; }
 
 static option_t my_options[] = {
 	{
@@ -245,6 +256,10 @@ static option_t my_options[] = {
 	{
 		"vci", o_int, &opt_vci,
 		"VCI for Fritz!Card DSL"
+	},
+	{
+		"avmadsl", o_special_noarg, &optavmadsl,
+		"read DSL parameters from /etc/drdsl/adsl.conf"
 	},
 	{ NULL }
 };
@@ -357,6 +372,18 @@ static void plugin_check_options(void)
 		return;
 	init = 1;
 
+	if (opt_avmadsl) {
+	   if (access(AVMADSLPARAMFILE, R_OK) == 0) {
+	      dbglog("loading adsl parameters from %s ...", AVMADSLPARAMFILE);
+              if (options_from_file (AVMADSLPARAMFILE, 0, 0, 0) == 0)
+	         die(1);
+	   } else {
+	       dbglog("using default adsl parameters");
+	       if (!opt_controller) opt_controller = "2";
+	       opt_proto = "adslpppoe";
+	   }
+	}
+
 	/*
 	 * protocol
 	 */
@@ -368,6 +395,10 @@ static void plugin_check_options(void)
 	   proto = PROTO_V42BIS;
 	} else if (strcasecmp(opt_proto, "modem") == 0) {
 	   proto = PROTO_MODEM;
+	} else if (strcasecmp(opt_proto, "v110async") == 0) {
+	   proto = PROTO_V110_ASYNC;
+	} else if (strcasecmp(opt_proto, "v120async") == 0) {
+	   proto = PROTO_V120_ASYNC;
 	} else if (strcasecmp(opt_proto, "adslpppoe") == 0) {
 	   proto = PROTO_ADSLPPPOE;
 	   if (!opt_channels) opt_channels = "1";
@@ -377,11 +408,14 @@ static void plugin_check_options(void)
 	} else if (strcasecmp(opt_proto, "adslpppoallc") == 0) {
 	   proto = PROTO_ADSLPPPOALLC;
 	   if (!opt_channels) opt_channels = "1";
+	} else if (strcasecmp(opt_proto, "analogmodem") == 0) {
+	   proto = PROTO_ANALOGMODEM;
 	} else {
 	   option_error("capiplugin: unknown protocol \"%s\"", opt_proto);
 	   die(1);
 	}
-        if (strcasecmp(opt_proto, "modem") == 0)
+        if (strcasecmp(opt_proto, "modem") == 0 || 
+	    strcasecmp(opt_proto, "analogmodem") == 0)
 		cipmask = CIPMASK_VOICE;
 	else cipmask = CIPMASK_DATA;
 
@@ -471,7 +505,9 @@ static void plugin_check_options(void)
 		if (tmp == sl->s || *tmp) goto illcontr;
 		if (sl->next) {
 			sl = sl->next;
-			cinfo.ddi = sl->s;
+			cinfo.ddi = strdup(sl->s);
+			if (cinfo.ddi == 0)
+			   goto illcontr;
 			if (sl->next && sl->next->s) {
 			        sl = sl->next;
 				cinfo.ndigits = strtol(sl->s, &tmp, 10);
@@ -491,8 +527,24 @@ static void plugin_check_options(void)
 	 * cli & inmsn
 	 */
 	if (opt_cli) {
+		STRINGLIST *sl;
+		char *old;
 		stringlist_free(&clis);
 		clis = stringlist_split(opt_cli, " \t,");
+		for (sl = clis; sl; sl = sl->next) {
+		   if (*sl->s != '*') {
+		      old = sl->s;
+		      sl->s = (char *)malloc(strlen(old)+2);
+		      if (sl->s) {
+			 *sl->s = '*';
+			 strcpy(sl->s+1, old);
+			 free(old);
+		      } else {
+			 sl->s = old;
+	                 option_error("capiplugin: prepend '*' to cli failed");
+		      }
+		   }
+		}
 	}
 	if (opt_inmsn) {
 		stringlist_free(&inmsns);
@@ -574,6 +626,55 @@ illcontr:
 	option_error("capiplugin: illegal controller specification \"%s\"",
 				opt_controller);
 	die(1);
+}
+
+/* -------------------------------------------------------------------- */
+/* -------- Match with * and ? ---------------------------------------- */
+/* -------------------------------------------------------------------- */
+
+static int shmatch(char *string, char *expr)
+{
+   char *match = expr;
+   char *s = string;
+   char *p;
+   int escape = 0;
+
+   while (*match && *s) {
+      if (escape) {
+	     if (*s != *match)
+		    return 0;
+	     s++;
+		 match++;
+      } else if (*match == '\\') {
+         match++;
+         escape = 1;
+      } else if (*match == '*') {
+		 match++;
+		 if (*match == 0) 
+		    return 1;
+         if (*match == '\\') 
+            match++;
+         while ((p = strchr(s, *match)) != 0) {
+		    if (shmatch(p+1, match+1))
+			   return 1;
+		    s = p + 1;
+         }
+		 return 0;
+	  } else if (*match == '?') {
+	     s++;
+		 match++;
+	  } else {
+	     if (*s != *match)
+		    return 0;
+	     s++;
+		 match++;
+	  }
+   }
+   if (*s == 0) {
+      if (*match == 0) return 1;
+      if (*match == '*' && match[1] == 0) return 1;
+   }
+   return 0;
 }
 
 /* -------------------------------------------------------------------- */
@@ -808,6 +909,7 @@ static void setup_timeout(void)
 		_timeout (timeoutfunc, 0, 1);
 }
 
+#if PPPVER >= PPPVersion(2,4,0,0)
 static void unsetup_timeout(void)
 {
 	timeoutshouldrun = 0;
@@ -815,6 +917,7 @@ static void unsetup_timeout(void)
 		untimeout (timeoutfunc, 0);
 	timeoutrunning = 0;
 }
+#endif
 
 /* -------------------------------------------------------------------- */
 /* -------- demand & wakeup pppd -------------------------------------- */
@@ -1006,7 +1109,7 @@ static void disconnectall(void)
 	    handlemessages();
         } while (connections && time(0) < t);
 
-	if (connections)
+	if (connections && !exiting)
         	fatal("capiplugin: disconnectall failed");
 }
 
@@ -1140,9 +1243,8 @@ static void incoming(capi_connection *cp,
 
 	if (opt_cli) {
 	   for (p = clis; p; p = p->next) {
-	       if (   (s = strstr(callingnumber, p->s)) != 0
-                   && strcmp(s, p->s) == 0)
-		   break;
+	       if (shmatch(callingnumber, p->s))
+		  break;
 	   }
 	   if (!p) {
 	           info("capiplugin: ignoring call, cli mismatch (%s != %s)",
@@ -1179,7 +1281,7 @@ static void incoming(capi_connection *cp,
 		case 5:  /* 7 kHz audio */
 		case 16: /* Telephony */
 		case 26: /* 7 kHz telephony */
-	                if (proto == PROTO_MODEM) {
+	                if (proto == PROTO_MODEM || proto == PROTO_ANALOGMODEM) {
 			   if (demand) goto wakeupmatch;
 			   if (coso == COSO_LOCAL) goto callback;
 			   goto accept;
@@ -1203,6 +1305,14 @@ static void incoming(capi_connection *cp,
 			   if (coso == COSO_LOCAL) goto callback;
 			   goto accept;
 	                } else if (proto == PROTO_V42BIS) {
+			   if (demand) goto wakeupmatch;
+			   if (coso == COSO_LOCAL) goto callback;
+			   goto accept;
+	                } else if (proto == PROTO_V110_ASYNC) {
+			   if (demand) goto wakeupmatch;
+			   if (coso == COSO_LOCAL) goto callback;
+			   goto accept;
+	                } else if (proto == PROTO_V120_ASYNC) {
 			   if (demand) goto wakeupmatch;
 			   if (coso == COSO_LOCAL) goto callback;
 			   goto accept;
@@ -1261,6 +1371,15 @@ accept:
 	      break;
            case PROTO_MODEM:
 	      (void) capiconn_accept(cp, 8, 1, 0, 0, 0, 0, 0);
+	      break;
+           case PROTO_V110_ASYNC:
+	      (void) capiconn_accept(cp, 2, 1, 0, 0, 0, 0, 0);
+	      break;
+           case PROTO_V120_ASYNC:
+	      (void) capiconn_accept(cp, 0, 9, 0, 0, 0, 0, 0);
+	      break;
+           case PROTO_ANALOGMODEM:
+	      (void) capiconn_accept(cp, 7, 7, 7, 0, 0, 0, 0);
 	      break;
 	}
 	conn_remember(cp, CONNTYPE_INCOMING);
@@ -1363,12 +1482,13 @@ capiconn_callbacks callbacks = {
 	received: 0, 
 	datasent: 0, 
 	chargeinfo: chargeinfo,
+	dtmf_received: 0,
 
 	capi_put_message: put_message,
 
-	debugmsg: dbglog,
-	infomsg: info,
-	errmsg: error
+	debugmsg: (void (*)(const char *, ...))dbglog,
+	infomsg: (void (*)(const char *, ...))info,
+	errmsg: (void (*)(const char *, ...))error
 };
 
 /* -------------------------------------------------------------------- */
@@ -1416,10 +1536,30 @@ static capi_connection *setupconnection(char *num, int awaitingreject)
 	} else if (proto == PROTO_MODEM) {
 		cp = capiconn_connect(ctx,
 				controller, /* contr */
-				1, /* cipvalue */
+				4, /* cipvalue */
 				opt_channels ? 0 : number, 
 				opt_channels ? 0 : opt_msn,
 				8, 1, 0,
+				0, 0, 0,
+				opt_channels ? AdditionalInfo : 0,
+				0);
+	} else if (proto == PROTO_V110_ASYNC) {
+		cp = capiconn_connect(ctx,
+				controller, /* contr */
+				2, /* cipvalue */
+				opt_channels ? 0 : number, 
+				opt_channels ? 0 : opt_msn,
+				2, 1, 0,
+				0, 0, 0,
+				opt_channels ? AdditionalInfo : 0,
+				0);
+	} else if (proto == PROTO_V120_ASYNC) {
+		cp = capiconn_connect(ctx,
+				controller, /* contr */
+				2, /* cipvalue */
+				opt_channels ? 0 : number, 
+				opt_channels ? 0 : opt_msn,
+				0, 9, 0,
 				0, 0, 0,
 				opt_channels ? AdditionalInfo : 0,
 				0);
@@ -1447,6 +1587,16 @@ static capi_connection *setupconnection(char *num, int awaitingreject)
 				0, /* B3Config */
 				opt_channels ? AdditionalInfo : 0,
 				0);
+	} else if (proto == PROTO_ANALOGMODEM) {
+		cp = capiconn_connect(ctx,
+				controller, /* contr */
+				4, /* cipvalue */
+				opt_channels ? 0 : number, 
+				opt_channels ? 0 : opt_msn,
+				7, 7, 7,
+				0, 0, 0,
+				opt_channels ? AdditionalInfo : 0,
+				0);
 	} else {
 		fatal("capiplugin: unknown protocol \"%s\"", opt_proto);
 		return 0;
@@ -1472,27 +1622,50 @@ static capi_connection *setupconnection(char *num, int awaitingreject)
 static void makeleasedline(void)
 {
 	capi_connection *cp;
+	int retry = 0;
 	time_t t;
 
-	cp = setupconnection("", 0);
-
-	t = time(0)+opt_dialtimeout;
 	do {
-		handlemessages();
-		if (status != EXIT_OK && conn_find(cp)) {
-			info("capiplugin: pppd status %d, disconnecting ...", status);
- 			dodisconnect(cp);
-		}
-	} while (time(0) < t && conn_inprogress(cp));
+	     if (retry) {
+		t = time(0)+opt_redialdelay;
+		do {
+		   handlemessages();
+		   if (status != EXIT_OK)
+		      die(status);
+		} while (time(0) < t);
+	     }
 
-	if (status != EXIT_OK)
+	     cp = setupconnection("", 0);
+
+	     t = time(0)+opt_dialtimeout;
+	     do {
+		handlemessages();
+		if (status != EXIT_OK) {
+		   if (conn_find(cp)) {
+		      info("capiplugin: pppd status %d, disconnecting ...", status);
+		      dodisconnect(cp);
+		   } else {
+		      die(status);
+		   }
+		}
+	     } while (time(0) < t && conn_inprogress(cp));
+
+	     if (conn_isconnected(cp))
+		goto connected;
+
+	     if (status != EXIT_OK)
 		die(status);
 
+	} while (++retry < opt_dialmax);
+
+connected:
         if (conn_isconnected(cp)) {
-		t = time(0)+opt_connectdelay;
-		do {
-			handlemessages();
-		} while (time(0) < t);
+	   t = time(0)+opt_connectdelay;
+	   do {
+	      handlemessages();
+	      if (status != EXIT_OK)
+		 die(status);
+	   } while (time(0) < t);
 	}
 
 	if (status != EXIT_OK)
@@ -1503,7 +1676,7 @@ static void makeleasedline(void)
 }
 
 /* -------------------------------------------------------------------- */
-/* -------- connect a dislup connection ------------------------------- */
+/* -------- connect a dialup connection ------------------------------- */
 /* -------------------------------------------------------------------- */
 
 static void makeconnection(STRINGLIST *numbers)
@@ -1529,9 +1702,13 @@ static void makeconnection(STRINGLIST *numbers)
 		   t = time(0)+opt_dialtimeout;
 		   do {
 		      handlemessages();
-		      if (status != EXIT_OK && conn_find(cp)) {
-			info("capiplugin: pppd status %d, disconnecting ...", status);
-			 dodisconnect(cp);
+		      if (status != EXIT_OK) {
+			 if (conn_find(cp)) {
+			    info("capiplugin: pppd status %d, disconnecting ...", status);
+			    dodisconnect(cp);
+			 } else {
+			    die(status);
+			 }
 		      }
 		   } while (time(0) < t && conn_inprogress(cp));
 
@@ -1545,10 +1722,12 @@ static void makeconnection(STRINGLIST *numbers)
 
 connected:
         if (conn_isconnected(cp)) {
-		t = time(0)+opt_connectdelay;
-		do {
-			handlemessages();
-		} while (time(0) < t);
+	   t = time(0)+opt_connectdelay;
+	   do {
+	      handlemessages();
+	      if (status != EXIT_OK)
+		 die(status);
+	   } while (time(0) < t);
 	}
 
         if (!conn_isconnected(cp))
@@ -1669,10 +1848,12 @@ static void waitforcall(void)
 	} while (!conn_incoming_connected());
 
         if (conn_incoming_connected()) {
-		time_t t = time(0)+opt_connectdelay;
-		do {
-			handlemessages();
-		} while (time(0) < t);
+	   time_t t = time(0)+opt_connectdelay;
+	   do {
+	      handlemessages();
+	      if (status != EXIT_OK)
+		 die(status);
+	   } while (time(0) < t);
 	}
 	add_fd(capi20_fileno(applid));
 	setup_timeout();
@@ -1816,7 +1997,7 @@ void plugin_init(void)
 
 	add_options(my_options);
 
-	if ((err = capi20_register (30, 8, 2048, &applid)) != 0) {
+	if ((err = capi20_register (2, 8, 2048, &applid)) != 0) {
 		serrno = errno;
 		fatal("capiplugin: CAPI_REGISTER failed - %s (0x%04x) [%s (%d)]",
 				capi_info2str(err), err,

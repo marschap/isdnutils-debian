@@ -1,11 +1,12 @@
-.\" CHECKIN $Date: 2000/09/01 12:35:44 $
+.\" CHECKIN $Date: 2004/07/13 21:44:20 $
 .TH ISDNRATE 1 "@MANDATE@" -lt-
 .SH NAME
 isdnrate \- Print telefon rates and various info from rate\-files(5).
 .SH SYNOPSIS
 .BI "isdnrate \-b" best " \-d" day " \-f" from " \-h" hour " \-l" len
 .B \-o
-.BI \-p provs
+.BI "\-p" provs " \-r"
+.I \fPv\fINN
 .B \-s
 .BI "\-t" takt " \-v" verbose " \-x" exclude
 .BI " \-C \-D" det " -\G" data " \-H \-L \-N \-O" socketfile " \-P" piddir
@@ -59,6 +60,10 @@ Note also, spaces in country- or service names may be given as underscores.
 .BI \-b best
 Print only \fIbest\fP providers. Default is all.
 .P
+.BI \-c rateconf
+Use \fIrateconf\fP as provider selection file and ignore setting in
+.IR isdn.conf .
+.P
 .BI \-d day
 Calc rates for \fIday\fP. \fIday\fP can be one of
 .IP
@@ -91,6 +96,11 @@ Time
 .IR hh [ :mm [ :ss ]]
 of call. Default is now.
 .P
+.BI \-i ratefile
+Use \fIratefile\fP (usually rate-CC.dat) as source for telephone fees and
+ignore setting in
+.IR isdn.conf .
+.P
 .BI \-l len
 Length of call in second. Default value is 153 secs.
 .P
@@ -106,6 +116,10 @@ is the provider number, without the leading VBN, or
 if there are more variations, or
 .I B
 for business providers.
+.P
+\fB\-r\fPv\fINN\fP
+Show only providers whose vbn begins with \fINN\fP.
+The vbn is also known as provider prefix consisting of VBN and provider number.
 .P
 .B \-s
 Consider
@@ -251,7 +265,7 @@ Start the isdnrate daemon.
 .br
 Start the isdnrate daemon, write
 .I isdnrate.pid
-to /var/run and create thew given socket.
+to /var/run and create the given socket.
 .P
 .I isdnrate -CH -b5 -f01 -l120 Attersee
 .br
@@ -266,6 +280,13 @@ for a connection length of 2 Minutes.
 .br
 Show rates and zones for destination USA for providers
 .IR "1_2 " and " 24" .
+.P
+.I isdnrate -C -l60 -rv010 HAM
+.br
+Show rates for a one minute call to Hamburg (HAM: airport code) and
+use only providers whose vbn begins with 010.
+So provider A with vbn 01030 is displayed,
+provider B with vbn 0190023 is not.
 .P
 .I isdnrate -CX -H -dW -b5 US CA
 .br
@@ -295,7 +316,7 @@ getting a SIGHUP signal.
 .SH "SEE ALSO"
 .BR rate-files(5) ", " isdnlog(8) ", " isdn.conf(5)
 .SH BUGS
-Definitly yes. Sometimes more then one daemon can be started, sometimes the
+Definitely yes. Sometimes more then one daemon can be started, sometimes the
 socket is not removed, when the daemon terminates. if this happens
 ('socket in use'), do a
 .I rm /tmp/isdnrate

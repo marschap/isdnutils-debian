@@ -25,7 +25,7 @@
  * PATCHLEVEL 9
  */
 
-char main_rcsid[] = "$Id: main.c,v 1.20 2002/01/31 19:49:07 paul Exp $";
+char main_rcsid[] = "$Id: main.c,v 1.25 2003/06/30 22:30:57 keil Exp $";
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -40,6 +40,7 @@ char main_rcsid[] = "$Id: main.c,v 1.20 2002/01/31 19:49:07 paul Exp $";
 #include <pwd.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <time.h>
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -64,6 +65,8 @@ char main_rcsid[] = "$Id: main.c,v 1.20 2002/01/31 19:49:07 paul Exp $";
 #include "pathnames.h"
 #include "patchlevel.h"
 #include "protos.h"
+
+extern int readpassw(char *, int);
 
 /*
  * If REQ_SYSOPTIONS is defined to 1, pppd will not run unless
@@ -139,7 +142,7 @@ struct protent *protocols[] = {
 
 int main(int argc,char **argv)
 {
-	int             i,j;
+	int             i,j,l;
 	struct sigaction sa;
 	FILE            *pidfile;
 	struct timeval  timo;
@@ -241,6 +244,35 @@ int main(int argc,char **argv)
         exit(1);
     }
 
+    if (ask_passwd) {
+    	l = readpassw(passwd, MAXSECRETLEN);
+    	if (l <= 0) {
+    		fprintf(stderr, "get no password with askpassword\n");
+    		exit(1);
+    	}
+    } else if (fdpasswd) {
+ 	i=1;   
+    	l=0;
+    	while(i>0) {
+    		j = read(fdpasswd, &i, 1);
+    		if (j == -1 && (errno == EAGAIN || errno == EINTR))
+    			continue;
+    		if (j!=1)
+    			break;
+    		if (i=='\n')
+    			break;
+    		passwd[l++] = i;
+    		if (l>=MAXSECRETLEN) {
+    			l--;
+    			break;
+    		}
+    	}
+    	if (l <= 0) {
+    		fprintf(stderr, "get no password from fd(%d)\n", fdpasswd);
+    		exit(1);
+    	}
+    	passwd[l] = 0;
+    }
     remove_sys_options();
     check_auth_options();
     setipdefault();
@@ -252,16 +284,27 @@ int main(int argc,char **argv)
       die(1);
     }
     else {
-      char devstr[1024];
-      sprintf(devstr,"Found %d device%s: ",numdev, numdev==1?"":"s");
+      char devstr[1024], *p, *end;
+      end = devstr+sizeof(devstr)-1;	/* points to last byte in array */
+      /* p points to next empty byte always */
+      p = devstr + sprintf(devstr,"Found %d device%s: ",numdev, numdev==1?"":"s");
       for(i=0;i<numdev;i++)
       {
-        /* strcat(devstr,lns[i].devnam); */
-        strcat(devstr,lns[i].ifname);
-        if (i < numdev - 1)
-          strcat(devstr,", ");
+        int len = strlen(lns[i].ifname);
+        if (p+len+3 > end) {
+          /* not enough space left for interface name plus ... */
+          if (p+3 < end) /* enough space for ... */
+            strcpy(p, "..."); /* indicate truncation */
+          break;
+        }
+        strcpy(p, lns[i].ifname);
+        p += len;
+        if (i < numdev - 1) {
+          strcpy(p,", ");
+          p += 2;
+        }
       }
-      syslog(LOG_NOTICE,devstr);
+      syslog(LOG_NOTICE,"%s", devstr);
     }
 
     /*
@@ -304,7 +347,7 @@ int main(int argc,char **argv)
 			p++;
 		else
 			p = lns[0].devnam;
-		sprintf(pidfilename, "%s%s.%s.pid", _PATH_VARRUN, "ipppd", p);
+		snprintf(pidfilename, sizeof(pidfilename), "%s%s.%s.pid", _PATH_VARRUN, "ipppd", p);
 	}
 #endif
 	
@@ -521,6 +564,9 @@ static int init_unit(int linkunit)
 	lns[linkunit].upap_unit = lns[linkunit].chap_unit = lns[linkunit].lcp_unit;
 	upap[lns[linkunit].upap_unit].us_unit = chap[lns[linkunit].chap_unit].unit = linkunit;
 	lcp_lowerup(lns[linkunit].lcp_unit);
+#ifdef IPPP_FILTER
+	set_filters(linkunit, &pass_filter, &active_filter);
+#endif /* IPPP_FILTER */
 
 	return 0;
 }
@@ -928,6 +974,7 @@ int run_program(char *prog,char **args,int must_exist,int unit)
 		setsid();
 		umask (S_IRWXG|S_IRWXO);
 		chdir ("/");
+		/* AUD: full root privs? */
 		setuid(geteuid());
 		setgid(getegid());
 

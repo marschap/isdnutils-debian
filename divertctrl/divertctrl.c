@@ -1,5 +1,5 @@
 /* 
- * $Id: divertctrl.c,v 1.4 2001/06/10 17:38:25 werner Exp $
+ * $Id: divertctrl.c,v 1.5 2002/07/04 10:36:54 paul Exp $
  *
  * Control program for the dss1 diversion supplementary services. (User side)
  *
@@ -20,6 +20,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. 
  *
  * $Log: divertctrl.c,v $
+ * Revision 1.5  2002/07/04 10:36:54  paul
+ * Include stdlib.h for prototypes;
+ * Make some things depend on NETWORK_DIAL define.
+ *
  * Revision 1.4  2001/06/10 17:38:25  werner
  *
  * Updated tool and manpage with new remote dial feature

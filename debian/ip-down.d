@@ -14,7 +14,8 @@ case "$PPP_IFACE" in
                     # only reset default route if the
                     # current default route is via this interface
                     route del default
-                    route add default netmask 0 $PPP_IFACE   # usually necessary
+                    # route add default netmask 0 $PPP_IFACE   # usually necessary
+                    route add default netmask 0 gw $PPP_REMOTE # usually necessary
                 fi
 		# The next lines are for simple firewalling.
 		# See comments in /etc/isdn/device.* about firewalling!

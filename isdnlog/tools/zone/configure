@@ -1588,7 +1588,7 @@ fi
 done
 
 
-MANDATE=`grep CHECKIN mkzonedb.man | awk '{print $4}'`
+MANDATE=`grep CHECKIN mkzonedb.man.in | awk '{print $4}'`
 
 
 

@@ -1,0 +1,4 @@
+[type: gettext/rfc822deb] ipppd.templates
+[type: gettext/rfc822deb] isdnlog.templates
+[type: gettext/rfc822deb] isdnutils-base.templates
+[type: gettext/rfc822deb] isdnvboxserver.templates

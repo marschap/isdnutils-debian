@@ -1,0 +1,39 @@
+#! /bin/sh -e
+
+# DP: change libcapi20 so version name to libcapi20-3.so.2
+
+dir=
+if [ $# -eq 3 -a "$2" = '-d' ]; then
+    pdir="-d $3"
+    dir="$3/"
+elif [ $# -ne 1 ]; then
+    echo >&2 "usage: `basename $0`: -patch|-unpatch [-d <srcdir>]"
+    exit 1
+fi
+case "$1" in
+    -patch)
+        patch $pdir -f --no-backup-if-mismatch -p0 < $0
+        #cd ${dir}gcc && autoconf
+        ;;
+    -unpatch)
+        patch $pdir -f --no-backup-if-mismatch -R -p0 < $0
+        #rm ${dir}gcc/configure
+        ;;
+    *)
+	echo >&2 "usage: `basename $0`: -patch|-unpatch [-d <srcdir>]"
+        exit 1
+esac
+exit 0
+
+# append the patch here and adjust the -p? flag in the patch calls.
+--- capi20/Makefile.am~	2004-08-24 20:22:01.000000000 +0200
++++ capi20/Makefile.am	2004-09-04 07:45:03.000000000 +0200
+@@ -9,7 +9,7 @@
+ lib_LIBRARIES   = libcapi20dyn.a
+ 
+ libcapi20_la_SOURCES = capi20.c capifunc.c convert.c
+-libcapi20_la_LDFLAGS = -version-info 2:8:0
++libcapi20_la_LDFLAGS = -release 3 --version-info 2:8:0
+ libcapi20_la_CFLAGS = -fno-strict-aliasing
+ 
+ libcapi20dyn_a_SOURCES = capidyn.c

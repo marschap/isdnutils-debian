@@ -1,8 +1,9 @@
 #!/bin/sh -v
 
+	set -e
+
 	install -m 0755 scripts/isdncause                   debian/isdnutils-base/usr/bin/isdncause
 	install -m 0644 isdnctrl/README.libipt              debian/isdnutils-base/usr/share/doc/isdnutils-base/
-	install -m 0644 isdnctrl/patch-netfilter-1.1.2_isdn debian/isdnutils-base/usr/share/doc/isdnutils-base/
 	rm -f             debian/tmp/etc/isdn/eftusers
 	ln -s ../ftpusers debian/isdneurofile/etc/isdn/eftusers
 	install -m 0444 Mini-FAQ/isdn-faq.*           debian/isdnutils-doc/usr/share/doc/isdnutils-doc/Mini-FAQ/
@@ -52,11 +53,13 @@
 	    cp vbox/examples/$A.example debian/isdnvboxserver/usr/share/isdnvboxserver/default/$A; \
 	    ln -s ../../isdnvboxserver/default/$A debian/isdnvboxserver/usr/share/isdn/default/$A; \
 	done
+        install -m 0755 debian/vboxmail.enhanced debian/isdnvboxserver/usr/share/doc/isdnvboxserver/
 	install -m 0755 debian/grepconfig.pl debian/isdnutils-base/usr/share/doc/isdnutils-base/examples/
 	install -m 0644 debian/HOWTO	     debian/isdnutils-base/usr/share/doc/isdnutils-base/
 	ln -s HOWTO                          debian/isdnutils-base/usr/share/doc/isdnutils-base/CONFIG
 	ln -s HOWTO                          debian/isdnutils-base/usr/share/doc/isdnutils-base/HOWTO.isdnutils
 	install -m 0644 debian/README.HiSax  debian/isdnutils-base/usr/share/doc/isdnutils-base/
+	install -m 0644 debian/README.source debian/isdnutils-base/usr/share/doc/isdnutils-base/
 	install -m 0444 debian/ioptions      debian/ipppd/etc/ppp/
 	install -m 0644 debian/doc-base-isdn4linux-FAQ-de  debian/isdnutils-doc/usr/share/doc-base/isdn4linux-FAQ-de
 	install -m 0644 debian/doc-base-isdn4linux-FAQ-en  debian/isdnutils-doc/usr/share/doc-base/isdn4linux-FAQ-en
@@ -64,6 +67,7 @@
 	install -m 0644 isdnlog/rate-*.dat                 debian/isdnlog-data/usr/share/isdn/
 	install -m 0644 isdnlog/zone-*.cdb                 debian/isdnlog-data/usr/share/isdn/
 	install -m 0644 debian/isdnlog-data-README	   debian/isdnlog-data/usr/share/doc/isdnlog-data/README
+	install -m 0644 debian/isdnlog.logrotate.d	   debian/isdnlog/etc/logrotate.d/isdnlog
 	install -m 0644 debian/isdnutils-xtools-README	   debian/isdnutils-xtools/usr/share/doc/isdnutils-xtools/README
 	# not admin tools IMHO
 	mv debian/tmp/usr/sbin/imon*               debian/tmp/usr/bin/.

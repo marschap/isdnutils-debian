@@ -1,0 +1,14 @@
+#! /bin/sh
+# postrm script for libcapi20-3
+
+set -e
+
+case "$1" in
+    remove)
+        ldconfig
+	;;
+esac
+
+#DEBHELPER#
+
+exit 0

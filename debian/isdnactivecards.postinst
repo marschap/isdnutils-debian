@@ -6,6 +6,7 @@ set -e
 case "$1" in
     configure)
         cd /dev
+        echo "Note: running MAKEDEV to create CAPI devices in /dev..."
         /sbin/MAKEDEV capi
 	;;
 

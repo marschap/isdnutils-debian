@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.6 2000/03/25 12:56:40 armin Exp $
+# $Id: Makefile.in,v 1.7 2002/07/19 18:42:01 armin Exp $
 #
 # Makefile for eiconctrl
 # (C) 1997 Fritz Elfert
@@ -8,7 +8,7 @@
 
 SHELL			= /bin/sh
 CFLAGS			= -Wall -O2 -DUNIX -DLINUX
-INCLUDES		= -I. -I@CONFIG_KERNELDIR@/include -I@CONFIG_KERNELDIR@/drivers/isdn/eicon
+INCLUDES		= -I. -Iinclude
 LDFLAGS			= -L../lib @LIBS@
 PROGRAMS		= 
 PROGRAM			= eiconctrl
@@ -16,7 +16,7 @@ DIVALOADPROGRAM		= divaload
 DIVALOGDPROGRAM		= divalogd
 DIVALOGPROGRAM		= divalog
 DIVAPROGRAMS		= $(DIVALOADPROGRAM) $(DIVALOGDPROGRAM) $(DIVALOGPROGRAM)
-MANPAGES		= eiconctrl divaload divalog divalogd
+MANPAGE			= eiconctrl.8
 INSTALL			= @INSTALL@
 SBINDIR			= @CONFIG_SBINDIR@
 DATA_DIR		= @CONFIG_DATADIR@
@@ -93,11 +93,9 @@ install-data:
 	mkdir -p $(DESTDIR)$(DATA_DIR)
 	tar xpCfz $(DESTDIR)$(DATA_DIR) firmware/eicon_firm.tgz
 
-install-man: $(PROGRAM).man $(DIVALOADPROGRAM).man $(DIVALOGPROGRAM).man $(DIVALOGDPROGRAM).man
+install-man: $(PROGRAM).man
 	mkdir -p $(DESTDIR)$(MAN8DIR)
-	for i in $(MANPAGES); do \
-	    $(INSTALL_MAN) $$i.man $(DESTDIR)$(MAN8DIR)/$$i.8; \
-	done
+	$(INSTALL_MAN) $< $(DESTDIR)$(MAN8DIR)/$(MANPAGE)
 
 install: all install-man install-data
 	$(INSTALL_PROGRAM) $(PROGRAM) $(DESTDIR)$(SBINDIR)/$(PROGRAM)
@@ -116,9 +114,6 @@ ifeq ("@HAVE_NATIVE@","n")
 endif
 
 uninstall:
-	for i in $(MANPAGES); do \
-	    rm -f $(DESTDIR)$(MAN8DIR)/$$i.8; \
-	done
 	rm -f $(DESTDIR)$(SBINDIR)/$(PROGRAM) $(DESTDIR)$(MAN8DIR)/$(MANPAGE)
 ifeq ("@HAVE_NATIVE@","n")
 	rm -f $(DESTDIR)$(SBINDIR)/$(DIVALOADPROGRAM)

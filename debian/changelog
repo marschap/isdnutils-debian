@@ -1,3 +1,379 @@
+isdnutils (1:3.3.0.20040728-2) unstable; urgency=high
+
+  * Put libcapi20 development files into new libcapi20-dev package,
+    change libcapi20 soname to libcapi20-3, conflict with existing
+    versions of packages depending on libcapi20-3 (closes: #268767).
+  * Update debconf translation strings (closes: #268716).
+  * Update french debconf translation (closes: #269666).
+
+ -- Matthias Klose <doko@debian.org>  Sat,  4 Sep 2004 08:20:20 +0200
+
+isdnutils (1:3.3.0.20040728-1) unstable; urgency=high
+
+  * NMU.
+  * Fix build failure trying to append to /etc/services in install target.
+  * Fix build errors with gcc-3.4 (closes: #266523).
+  * Clean temporary files in preinst and postinst scripts (closes: #261405).
+  * Use better English in ipppd template (closes: #251483).
+
+ -- Matthias Klose <doko@debian.org>  Tue, 24 Aug 2004 19:54:19 +0200
+
+isdnutils (1:3.3.0.20040728-0.1) unstable; urgency=high
+
+  * NMU.
+  * Rename libcapi20-2 to libcapi20-3 (closes: #263528).
+  * Build capidyn.o using -fPIC on amd64 as well (closes: #260889).
+
+ -- Matthias Klose <doko@debian.org>  Mon,  9 Aug 2004 06:48:24 +0200
+
+isdnutils (1:3.3.0.20040704-0.4) unstable; urgency=low
+
+  * NMU.
+  * Don't rebuild capidyn.o on architectures, where it's not built at all.
+
+ -- Matthias Klose <doko@debian.org>  Tue, 13 Jul 2004 21:29:41 +0200
+
+isdnutils (1:3.3.0.20040704-0.3) unstable; urgency=low
+
+  * NMU.
+  * Rebuild capidyn.o using -fPIC (closes: #254432).
+  * Fix libcapi20.shlibs dependency (closes: #259087).
+
+ -- Matthias Klose <doko@debian.org>  Tue, 13 Jul 2004 06:59:02 +0200
+
+isdnutils (1:3.3.0.20040704-0.2) unstable; urgency=low
+
+  * NMU.
+  * Use libtool1.4 for libtoolizing capi20.
+  * debian/finish-install-* scripts: set -e.
+  * Remove outdated patches to isdnlog/zone files.
+
+ -- Matthias Klose <doko@debian.org>  Mon, 12 Jul 2004 22:34:16 +0200
+
+isdnutils (1:3.3.0.20040704-0.1) unstable; urgency=low
+
+  * NMU.
+  * New upstream CVS snapshot.
+    - Updated isdnlog to 4.68.
+    - ipppd works with 2.6 kernel (closes: #235056).
+    - capiutils works with 2.6 kernel (closes: #226211, #253617).
+  * Remove Non-free firmware file ISAR.BIN form package (closes: #250479).
+  * Convert to debhelper v4.
+  * Update config.{guess,sub} from autotools package (closes: #250479).
+  * Remove comments building with older compilers.
+  * Separate out debian patches into various dpatches.
+  * Added tr.po debconf translation (closes: #248336).
+  * ipppd/configure: Regenerate (closes: #255885).
+  * Use getent(1) in config/install scripts (closes: #248540).
+  * /etc/isdn/init.d.functions: Remove tempfile, if no devices configured.
+    Closes: #240083.
+  * On system start, start isdnactivecards before pppd (closes: #200053).
+  * Build shared libcapi libary with -fPIC (closes: #254432).
+  * Fix dependencies on virtual packages (closes: #254673).
+
+ -- Matthias Klose <doko@debian.org>  Wed,  7 Jul 2004 08:32:55 +0200
+
+isdnutils (1:3.3-8.1) unstable; urgency=low
+
+  * Updated to CVS snapshot 2004-06-25.
+
+ -- Matthias Klose <doko@debian.org>  Sat, 26 Jun 2004 10:41:41 +0200
+
+isdnutils (1:3.3-8) unstable; urgency=low
+
+  * ipppd: enabled the filter config option.
+    closes:#217576
+  * isdnvboxserver: use /proc/mounts, not mount command to discover
+    whether devfs is in use.
+    closes:#221313
+  * isdnactivecards: cosmetic fix to init.d script output.
+    closes:#225009
+  * isdnvboxserver: only strip leading and trailing spaces from the
+    debconf password value, not just anywhere, so that the "DES " string
+    remains intact.
+    closes:#229229
+  * isdnlog: check whether isdnutils' init.d script exists before
+    attempting to use it in the postinst script
+    (the check was already added to the prerm since 3.1pre4-4).
+    closes:#233176
+  * isdnlog: fix for isdnrep crashing if too many unknown MSNs were in the
+    log, causing some leftover debug code to overflow. (not exploitable)
+
+ -- Paul Slootman <paul@debian.org>  Fri,  5 Mar 2004 23:16:07 +0100
+
+isdnutils (1:3.3-7) unstable; urgency=low
+
+  * Updated to CVS version of 2003-12-17 (isdnlog version 4.67 with
+    enhancements to isdnrep).
+  * Updated fr.po debconf translation.
+    closes:#221206
+  * Added comment to ipppd.DEVICE default config file that 'defaultroute'
+    shouldn't be enabled when working with the standard Debian config setup.
+    closes:#221367
+  * Build pppdcapiplugin object for /usr/lib/pppd/2.4.2/ as ppp has changed
+    yet again.
+    closes:#223277
+  * Added patch from Adrian 'Dagurashibanipal' von Bidder to let "dialmax 0"
+    never give up.
+    closes:#219423
+
+ -- Paul Slootman <paul@debian.org>  Wed, 17 Dec 2003 14:04:32 +0100
+
+isdnutils (1:3.3-6) unstable; urgency=low
+
+  * Fix building problem, caused by change in the libc6 headers, which are now
+    in the linux-kernel-headers package, and which are now based on the 2.6
+    kernel ;-(  Nice job, such a major change which will break lots of things
+    while we're trying to get stuff ready for a release...
+    Include linux/{capi.h,isdn.h,kernelcapi.h} header files (with minor
+    changes) into the source.
+    closes:#220915
+
+ -- Paul Slootman <paul@debian.org>  Sun, 16 Nov 2003 13:39:30 +0100
+
+isdnutils (1:3.3-5) unstable; urgency=medium
+
+  * workaround for start-stop-daemon's bug of doing chdir / ;
+    pass the entire path of the config file to ipppd.
+    closes:#218751,#218885
+  * marked urgency=medium as this situation leads to ipppd being unusable for
+    people who have also upgraded dpkg.
+  * New nl.po file from translators.
+
+ -- Paul Slootman <paul@debian.org>  Mon,  3 Nov 2003 09:13:42 +0100
+
+isdnutils (1:3.3-4) unstable; urgency=medium
+
+  * Added Build-depends on automake1.4, as on m68k the build failed because it
+    wasn't there (although all other architectures had succesfully built
+    without it; it wasn't there on my own system either...)  Too bad m68k's
+    build daemon also seems to be the slowest :(
+  * Still urgency=medium to enable a fixed ppp package to move to testing
+    soon.
+
+ -- Paul Slootman <paul@debian.org>  Fri, 17 Oct 2003 09:17:58 +0200
+
+isdnutils (1:3.3-3) unstable; urgency=medium
+
+  * Rebuild for urgency=medium, which was lost when I fixed 215795.  As this
+    is for an RC bug #213216 (and to enable a fixed ppp package to go into
+    testing) I feel it warrants a new upload. See changelog for 1:3.3-1 for
+    details.
+
+ -- Paul Slootman <paul@debian.org>  Wed, 15 Oct 2003 08:21:23 +0200
+
+isdnutils (1:3.3-2) unstable; urgency=low
+
+  * remove libxaw-dev alternative from build deps, as that virtual package
+    apparently has gone away... closes:#215795
+
+ -- Paul Slootman <paul@debian.org>  Tue, 14 Oct 2003 21:50:54 +0200
+
+isdnutils (1:3.3-1) unstable; urgency=medium
+
+  * Now pppdcapiplugin supports pppd 2.4.2b3 (hence urgency: medium)
+    closes:#213216
+  * CVS version of 2003-10-14
+  * Updated Standards-version to 3.6.1
+  * Don't attempt to restart running isdnlog during install phase, doesn't
+    make much sense in a package-building environment...
+  * Change ipppd's suggests: dnrd to pdnsd.
+    closes:#203762
+  * Don't use 10.0.0.1 as default IP number in ipppd example (use
+    gluck.debian.org's address as suggested by the bug report, as I don't
+    expect that ipppd will be installed on gluck :)
+    closes:#208074
+  * Fixed init.d script to display the parm which is actually wrong.
+    closes:#213009
+  * Check for isdnvboxserver being installed or not fixed in cron.weekly
+    script, as vbox3 provides the same binary as was being checked on. Sigh...
+    closes:#204436
+  * Don't try to call init.d/isdnutils script from isdnlog's postinst if it
+    doesn't exist (yet).
+    closes:#186982
+  * Corrected location of README.HiSax file in init.d.functions.
+    closes:#193647
+  * Corrected location of calls log file as used in isdnbill.
+    closes:#185121
+  * Elaborated a bit in the long description of isdnlog-data and isdnlog-doc.
+  * Added manpage for isdnbill.
+
+ -- Paul Slootman <paul@debian.org>  Tue, 14 Oct 2003 14:47:02 +0200
+
+isdnutils (1:3.2pre3-4) unstable; urgency=low
+
+  * Build vbox with tcl8.3 instead of tcl8.4 because 8.4 has problems with
+    threading in combination with exec, resulting in no email being sent when
+    a message is received. closes:#194541,#198157
+  * The check on needing ipppd in the isdnutils-base preinst script only runs
+    if the previously installed version was from before ipppd was a separate
+    package. Also make the message given otherwise more verbose (despite the
+    debconf critical note that's already given).  closes:194853
+  * Debconf templates are now gettext-based, thanks to a patch from Christian
+    Perrier. closes:#201790
+
+ -- Paul Slootman <paul@debian.org>  Mon, 21 Jul 2003 10:00:22 +0200
+
+isdnutils (1:3.2pre3-3) unstable; urgency=low
+
+  * Sigh, forgot to change invocation of gcc on powerpc...
+    As gcc-2.95 apparently isn't used on powerpc anymore, the special case for
+    powerpc can be removed. closes:#193226
+
+ -- Paul Slootman <paul@debian.org>  Thu, 15 May 2003 14:35:11 +0200
+
+isdnutils (1:3.2pre3-2) unstable; urgency=low
+
+  * Changed Build-Depends on gcc-3.0 for powerpc to gcc-3.2, as 3.0 doesn't
+    seem to be available in unstable for powerpc.
+
+ -- Paul Slootman <paul@debian.org>  Tue, 13 May 2003 10:22:04 +0200
+
+isdnutils (1:3.2pre3-1) unstable; urgency=low
+
+  * Updated to 3.2pre3 upstream (CVS) version of 2003-03-11
+  * Fixed locations where capiinit seaches for files. closes:#171442,#173614
+  * Fixed isdnvboxserver config script for when an empty string is given for
+    the MSN in debconf. Thanks to Peter Palfrader for the patch.
+    closes:#170066
+  * Changed Build-Depends on libxaw-dev to libxaw-dev|libxaw7-dev
+    closes:#169978
+  * Changed Build-Depends on libncurses4-dev to libncurses5-dev,
+    tcl8.3-dev to tcl8.4-dev
+  * Fixed typo in init.d.functions concerning README.Debian.  closes:#170446
+  * isdnctrl will now readconf / writeconf from / to stdin / stdout if "-" is
+    given as the filename.
+  * Ran aclocal in capi20 directory, which should help building elsewhere.
+    Hopefully closes:#171626
+  * Rehashed the automake / autoconf stuff in vbox, replaced "missing" here
+    and there where configure was running it in a new and different way...
+  * For vboxgetty, check that the inittab entry uses a devfs-compatible name
+    if devfs is in use, and vice versa. Ditto for vboxgetty.conf.
+    closes:#172170
+  * isdnctrl status all won't attempt to show non-ISDN interfaces.
+  * isdnctrl status active only lists those interfaces that are connected.
+  * xisdnload patch from Stephan Boettcher applied for handling interfaces
+    that are in dialmode manual.
+
+ -- Paul Slootman <paul@debian.org>  Sat, 10 May 2003 12:22:39 +0200
+
+isdnutils (1:3.2pre1-4) unstable; urgency=low
+
+  * Added mru setting of 1524 to default ipppd config file,
+    sometimes this is needed apparently with some dialin routers.
+  * Changed checking of md5sum in isdnutils-base.preinst as there are
+    apparently different versions of md5sum out there that use different
+    output formats...
+
+ -- Paul Slootman <paul@debian.org>  Mon, 30 Dec 2002 12:26:29 +0100
+
+isdnutils (1:3.2pre1-3) unstable; urgency=low
+
+  * Added conflicts: libcapi20 to libcapi20-2. closes:#169615
+  * Move libcapi20.so.2.0.7 to libcapi20-2.so.2; this was screwed up because
+    2.0.6 became 2.0.7.   closes:#169616
+  * Updated the autoconf stuff in capifax/. closes:#169566
+
+ -- Paul Slootman <paul@debian.org>  Mon, 18 Nov 2002 20:40:51 +0100
+
+isdnutils (1:3.2pre1-2) unstable; urgency=low
+
+  * Fixed isdnactivecards dependency on libcapi20 (should have been
+    libcapi20-2). closes:#169218
+  * Now the ipppd debconf will also not touch anything if the ISP phone number
+    is set to "manual". Normally this isn't necessary, as the preceding
+    question ("which interface to configure") also allows an escape. But
+    perhaps some people only read the instructions on the second question :-)
+    Unfortunately another part of bug 154836 ("upgrade should not restart the
+    isdn connections") can't be helped when upgrading from the 3.0 series, as
+    upgrading first calls the old (3.0) prerm script, which stops the
+    connections...
+    closes:#154836
+  * Removed -u option from aplay invocation in vboxplay. closes:#165757
+  * Added automake1.6 to build-deps which should help, until I've had time to
+    look closer. closes:#167376
+
+ -- Paul Slootman <paul@debian.org>  Fri, 15 Nov 2002 16:28:56 +0100
+
+isdnutils (1:3.2pre1-1) unstable; urgency=low
+
+  * Dedicated to Vista. RIP.
+  * Updated to CVS version of 2002-10-08. closes:#159151
+  * upstream change to capi20.c closes:#152559
+  * Package libcapi20 renamed to libcapi20-2 on advice of the lib guru Junichi
+    Uekawa. closes:#147740
+  * Applied supplied patch to xmonisdn. closes:#154586
+  * Fixed reference to HOWTO doc, closes:#160754
+  * Reinstated the http://people.debian.org/~paul/isdnutils/ page.
+    closes:#157146
+  * Changed the setting of the default route (in /etc/ppp/ip-{up,down}.d/)
+    from "route add default netmask 0 $PPP_IFACE"
+    to   "route add default netmask 0 gw $PPP_REMOTE".
+    Apparently the former confuses the hell out of free-swan...
+    closes:#160867
+  * Updated autovbox manpage as per hints from esr. closes:#153952
+  * (repeated, as 1:3.1pre4-6 wasn't released)
+    imon, imontty: set stdio buffer for /dev/isdninfo explicitly to 2048, as
+    on some systems it apparently is 1024 (why?), and the isdninfo driver
+    doesn't handle partial reads; with more than one channel connected, a line
+    > 1024 is generated...  closes:#148868
+
+ -- Paul Slootman <paul@debian.org>  Tue,  8 Oct 2002 10:04:58 +0200
+
+isdnutils (1:3.1pre4-6) unstable; urgency=low
+
+  * Updated to CVS version of 2002-07-17
+  * imon, imontty: set stdio buffer for /dev/isdninfo explicitly to 2048, as
+    on some systems it apparently is 1024 (why?), and the isdninfo driver
+    doesn't handle partial reads; with more than one channel connected, a line
+    > 1024 is generated...  closes:#148868
+  * imon: explicitly write spaces everywhere so that the colour attributes are
+    set correctly, it looked really ugly with non-standard colours otherwise.
+  * isdnlog: postinst script could mess up when editing the location of the
+    isdnrate socket.
+
+ -- Paul Slootman <paul@debian.org>  Mon, 15 Jul 2002 14:04:12 +0200
+
+isdnutils (1:3.1pre4-5) unstable; urgency=low
+
+  * Updated to CVS version of 2002-07-04
+  * ipppd: applied patch supplied by Emmanuel Charpentier, which backports the
+    MS-CHAP implementation from pppd-2.4.1 to ipppd. This means ipppd now also
+    supports MS-CHAP without the need for libdes.
+  * isdnvboxserver: when creating the spool directory, also create the
+    necessary subdirectories and copy the standard.tcl there. This is
+    necessary for operation...
+  * isdnvboxserver: new and improved vboxmail script, now optionally sends the
+    recorded message by email, thanks to Tobias Geiger. For now the script
+    resides in /usr/share/doc/isdnvboxserver/vboxmail.enhanced, as it needs
+    sox and mime-construct (and ideally an MP3 encoder), but I don't want to
+    let isdnvboxserver depend on those. The user can copy this script to
+    /etc/isdn/vboxmail .
+  * isdneurofile: Added README.Debian to inform the user about necessary
+    kernel options for this package.
+  * ipppd: check whether running the init script gives errors. closes:#145883
+  * ipppd: escape @ in login name when inserting into ipppd.ipppX file with
+    perl, as perl otherwise interprets the @ as an array indicator.
+    closes:#150230
+  * isdnutils-xtools: prevent initial spike when starting xisdnload when the
+    system has been online for some time. closes:#149392
+  * isdnlog: added a logrotate.d entry for /var/log/isdn/isdnlog.
+    closes:#148689
+  * isdnutils-base: If a 3.0-something isdnutils postrm still exists, fix it
+    so that purging isdnutils won't forcibly remove /etc/isdn, /var/lib/isdn
+    etc.  This is a possible scenario if someone upgrades to isdnutils-base,
+    ipppd by hand and then does dpkg --purge isdnutils. DAMHIKT. Modifying the
+    old postinst is terrible, but it's the only viable option AFAICS.
+  * isdnlog: added an option for starting isdnrate as a daemon. This is asked
+    via debconf (priority low), and the actual control is in the file
+    /etc/isdn/isdnrate.conf Also changed the default socket for isdnrate from
+    /tmp/isdnrate to /var/run/isdnrate/socket.  closes:#144899
+  * isdnlog: control file had two dependency lines, which resulted in only the
+    last line being used, thus losing the dependency on isdnutils-base.
+    closes:#151924
+
+ -- Paul Slootman <paul@debian.org>  Thu,  4 Jul 2002 19:37:49 +0200
+
 isdnutils (1:3.1pre4-4) unstable; urgency=high
 
   * Fixed ipppd debconf config file (typo, triggered whenever there's no

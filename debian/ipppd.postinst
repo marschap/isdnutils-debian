@@ -16,18 +16,11 @@ set -e
 
 case "$1" in
     configure)
-        set +e
-        db_get ipppd/makedev
-        rc=$?
-        set -e
-        allowmakedev=$RET
-        if [ $rc -eq 30 -o "$allowmakedev" = "yes" ]; then
-            cd /dev
-            echo "creating ISDN devices in /dev..."
-            /sbin/MAKEDEV isdn-tty isdn-io isdn-ippp
-            rm -f isdnctrl
-            ln -s isdnctrl0 isdnctrl
-        fi
+        cd /dev
+        echo "Note: running MAKEDEV to create ISDN devices in /dev..."
+        /sbin/MAKEDEV isdn-tty isdn-io isdn-ippp
+        rm -f isdnctrl
+        ln -s isdnctrl0 isdnctrl
         forcerestart=false
         RET=ippp0
         db_get ipppd/whichif || true
@@ -44,12 +37,14 @@ case "$1" in
         esac
         if [ "$IPPPX" != none -a ! -s /etc/isdn/device.$IPPPX -a ! -s /etc/isdn/ipppd.$IPPPX ]; then
             db_get ipppd/ispphone || true; ISPPHONE="$RET"
-            if [ "$ISPPHONE" != '' ]; then
+            if [ "$ISPPHONE" != '' -a "$ISPPHONE" != manual ]; then
                 db_get ipppd/eaz       || true; EAZ="$RET"
                 db_get ipppd/isplogin  || true; ISPLOGIN="$RET"
                 db_get ipppd/isppasswd || true; ISPPASSWD=$(echo "$RET" | sed 's,",\\&,g')
                 cp /usr/share/isdn/default/device.DEVICE /etc/isdn/device.$IPPPX
                 cp /usr/share/isdn/default/ipppd.DEVICE /etc/isdn/ipppd.$IPPPX
+                # escape any @ in the username, as perl wants to expand that as an arrary
+                ISPLOGIN=$(echo $ISPLOGIN | sed 's,@,\\@,')
                 perl -i -pe '$_ = "" if /^# REMOVE the/; $_ = "" if /^echo "Warning!/; $_ = "" if /^LEADINGZERO=0/; s,^LOCALMSN=\d+,LOCALMSN='"'$EAZ'"',; s,^REMOTEMSN=\d+,REMOTEMSN='"'$ISPPHONE'"',; s, out \$LEADINGZERO\$MSN, out \$MSN,;' /etc/isdn/device.$IPPPX
                 perl -i -pe '$_ = "" if /^# REMOVE the/; $_ = "" if /^# Warning! not configured yet!/; s,^name X.,name '"$ISPLOGIN"',; s,^#ms-get-dns,ms-get-dns,;' /etc/isdn/ipppd.$IPPPX
                 perl -i -pe "s,^$ISPLOGIN\s,#\$&," /etc/ppp/pap-secrets /etc/ppp/chap-secrets
@@ -78,13 +73,20 @@ case "$1" in
             set -e
 	fi
         if [ -s /etc/init.d/isdnutils ]; then
+            err=false
             if $forcerestart; then
-                /etc/init.d/isdnutils restart
+                /etc/init.d/isdnutils restart || err=true
             elif dpkg --compare-versions "$2" ">=" "1:3.1"; then # previous was new(er) vers.
-                /etc/init.d/isdnutils reload ipppd
+                /etc/init.d/isdnutils reload ipppd || err=true
             else
                 /etc/init.d/isdnutils stop ipppd || true
-                /etc/init.d/isdnutils start ipppd
+                /etc/init.d/isdnutils start ipppd || err=true
+            fi
+            if $err; then
+                set +e
+                db_input high ipppd/isdnutilsinitbad
+                db_go
+                set -e
             fi
         else
             set +e

@@ -1,9 +1,9 @@
 Template: isdnlog/intro
 Type: text
-Description: Entering isdnlog configuration
- For correct isdnlog functioning, isdnlog needs to be configured
- with a number of settings. These are some or all (depending on
- the level you have configured debconf with) of:
+_Description: Entering isdnlog configuration
+ For correct isdnlog functioning, isdnlog needs to be configured with a
+ number of settings. These are some or all (depending on the level you have
+ configured debconf with) of:
  .
   - country          this is used for setting a number of defaults,
                      e.g. what rate tables to use for calculating
@@ -19,46 +19,57 @@ Description: Entering isdnlog configuration
  .
   - areacode         what your local areacode is (if applicable)
  .
- After installation, you will may have to edit
- /etc/isdn/isdnlog.isdnctrl0 before isdnlog can work
- properly, although that file is set up with reasonable
- defaults for most cases.
+ After installation, you will may have to edit /etc/isdn/isdnlog.isdnctrl0
+ before isdnlog can work properly, although that file is set up with
+ reasonable defaults for most cases.
  .
- If you previously had /etc/isdn/isdnlog.isdnctrl0, that
- will be preserved.
+ If you previously had /etc/isdn/isdnlog.isdnctrl0, that will be preserved.
 
 Template: isdnlog/country
 Type: select
-Choices: AT, CH, DE, ES, FR, LU, NL, NO, other
+__Choices: AT, CH, DE, ES, FR, LU, NL, NO, other
 Default: DE
-Description: What country is this system in?
- This is used for setting a number of defaults, e.g. what rate tables
- to use for calculating the cost of a call.
+_Description: What country is this system in?
+ This is used for setting a number of defaults, e.g. what rate tables to
+ use for calculating the cost of a call.
 
 Template: isdnlog/country_manual
 Type: string
-Description: Enter the ISO two-letter code for your country
+_Description: Enter the ISO two-letter code for your country
  This can't really be used for setting any defaults, but maybe some day...
  .
- Note that you will probably have to edit /etc/isdn/isdn.conf
- before isdnlog will be able to work.
+ Note that you will probably have to edit /etc/isdn/isdn.conf before
+ isdnlog will be able to work.
 
 Template: isdnlog/countryprefix
 Type: string
 Default: +
-Description: What is used to indicate an international number?
+_Description: What is used to indicate an international number?
 
 Template: isdnlog/countrycode
 Type: string
-Description: What is the countrycode for your country?
+Default: 49
+_Description: What is the countrycode for your country?
  e.g. ${default_countrycode} for ${default_country}
 
 Template: isdnlog/areaprefix
 Type: string
 Default: 0
-Description: What is used to indicate an areacode, if applicable?
+_Description: What is used to indicate an areacode, if applicable?
 
 Template: isdnlog/areacode
 Type: string
-Description: What is your local areacode, if applicable?
+_Description: What is your local areacode, if applicable?
 
+Template: isdnlog/isdnrate-daemon
+Type: select
+Choices: no, yes
+Default: no
+_Description: Run isdnrate as a daemon?
+ isdnrate is a utility to calculate the costs of a connection to a given
+ phone number, used e.g. for LCR systems to find the cheapest carrier on a
+ call-by-call basis. Having it run as a daemon speeds things up as then it
+ only has to load all the data just once.
+ .
+ This is only for people with special requirements, such as those using the
+ isdn2h323 package. Hence most people should say "no".

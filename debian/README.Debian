@@ -14,7 +14,8 @@ isdnutils has now also been split up into different packages:
   The base part, containing direct kernel support, e.g. isdnctrl
 
 - ipppd
-  Needed for connecting via syncPPP to e.g. an ISP
+  Needed for connecting via syncPPP to e.g. an ISP.
+  Now supports MS-CHAP authentication.
 
 - pppdcapiplugin
   If you have a CAPI-capable ISDN card, you can use this with the "normal"

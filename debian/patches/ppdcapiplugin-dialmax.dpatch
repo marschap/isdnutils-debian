@@ -1,0 +1,70 @@
+#! /bin/sh -e
+
+# DP: Let "dialmax 0" never give up.
+# DP: Patch by Adrian 'Dagurashibanipal' von Bidder
+
+dir=
+if [ $# -eq 3 -a "$2" = '-d' ]; then
+    pdir="-d $3"
+    dir="$3/"
+elif [ $# -ne 1 ]; then
+    echo >&2 "usage: `basename $0`: -patch|-unpatch [-d <srcdir>]"
+    exit 1
+fi
+case "$1" in
+    -patch)
+        patch $pdir -f --no-backup-if-mismatch -p1 < $0
+        #cd ${dir}gcc && autoconf
+        ;;
+    -unpatch)
+        patch $pdir -f --no-backup-if-mismatch -R -p1 < $0
+        #rm ${dir}gcc/configure
+        ;;
+    *)
+	echo >&2 "usage: `basename $0`: -patch|-unpatch [-d <srcdir>]"
+        exit 1
+esac
+exit 0
+
+--- isdnutils-3.3.orig/pppdcapiplugin/capiplugin.8
++++ isdnutils-3.3/pppdcapiplugin/capiplugin.8
+@@ -299,6 +299,10 @@
+ .B dialmax \fI<times>
+ Maximum number of times the list of phone numbers is tried before giving up.
+ Default value is 4.
++.br
++If dialmax is set to 0,
++the list is retried infinitely until a connection is made
++(or the process is stopped).
+ 
+ .TP
+ .B dialtimeout \fI<seconds>
+--- isdnutils-3.3.orig/pppdcapiplugin/capiplugin.c
++++ isdnutils-3.3/pppdcapiplugin/capiplugin.c
+@@ -1635,7 +1635,7 @@
+ 	     if (status != EXIT_OK)
+ 		die(status);
+ 
+-	} while (++retry < opt_dialmax);
++        } while ((++retry < opt_dialmax) || (opt_dialmax == 0));
+ 
+ connected:
+         if (conn_isconnected(cp)) {
+@@ -1697,7 +1697,7 @@
+ 		   if (status != EXIT_OK)
+ 		      die(status);
+ 	   }
+-	} while (++retry < opt_dialmax);
++        } while ((++retry < opt_dialmax) || (opt_dialmax == 0));
+ 
+ connected:
+         if (conn_isconnected(cp)) {
+@@ -1775,7 +1775,7 @@
+ 			info("capiplugin: callback failed (no call)");
+ 		}
+ 	   }
+-	} while (++retry < opt_dialmax);
++        } while ((++retry < opt_dialmax) || (opt_dialmax == 0));
+ 
+ 	fatal("capiplugin: callback failed (no call)");
+ }

@@ -45,10 +45,10 @@ esac
 
 # The (dummy) IP addresses
 #
-# Use 10.0.0.1 for LOCALIP and 10.0.0.2 for REMOTEIP if you have
+# Use 192.25.206.10 for LOCALIP and 10.0.0.2 for REMOTEIP if you have
 # dynamic IP addresses; with static address fill in the real values!
 
-LOCALIP=10.0.0.1	# XXX_
+LOCALIP=192.25.206.10	# XXX_
 REMOTEIP=10.0.0.2	# XXX_
 
 # Phone numbers (without the leading zero)

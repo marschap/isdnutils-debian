@@ -1,14 +1,15 @@
 #!/bin/sh -x
 
+	set -e
+
 	mv debian/isdnutils-xtools.files.orig debian/isdnutils-xtools.files
 	if [ -s debian/isdneurofile/etc/init.d/eftd.sh ]; then mv debian/isdneurofile/etc/init.d/eftd.sh debian/isdneurofile/etc/init.d/isdneurofile; fi
 	mv debian/isdnutils-doc/usr/share/doc/isdnutils/* debian/isdnutils-doc/usr/share/doc/isdnutils-doc/
 	rmdir debian/isdnutils-doc/usr/share/doc/isdnutils
-	rm -f debian/libcapi20/usr/lib/libcapi20.so debian/libcapi20/usr/lib/libcapi20.so.2
-	mv -f debian/libcapi20/usr/lib/libcapi20.so.2.0.6 debian/libcapi20/usr/lib/libcapi20.so.2
-	ln -s libcapi20.so.2 debian/libcapi20/usr/lib/libcapi20.so
 	cp pppdcapiplugin/README           debian/pppdcapiplugin/usr/share/doc/pppdcapiplugin/
 	cp pppdcapiplugin/examples/*       debian/pppdcapiplugin/usr/share/doc/pppdcapiplugin/examples/
+        # is installed into /etc/drdsl/ already:
+        rm -f debian/pppdcapiplugin/usr/share/doc/pppdcapiplugin/examples/adsl.conf
 	chmod -x debian/pppdcapiplugin/etc/ppp/peers/isdn/*
 	install -m 0644 capiinit/capi.conf debian/isdnactivecards/etc/isdn/
 	# ln -s ../isdnutils-doc/FAQ       debian/isdnutils-doc/usr/share/doc/isdnutils/

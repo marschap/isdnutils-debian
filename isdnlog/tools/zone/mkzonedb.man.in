@@ -1,6 +1,6 @@
-.\" $Id: $
+.\" $Id: mkzonedb.man.in,v 1.1 2003/03/11 13:08:00 paul Exp $
 .\"
-.\" CHECKIN $Date: $
+.\" CHECKIN $Date: 2003/03/11 13:08:00 $
 .\"
 .TH MKZONEDB 8 "@MANDATE@" mkzonedb "Linux System Administration"
 .SH NAME

@@ -1,5 +1,5 @@
 
-# Libtool was configured on host wurtel:
+# Libtool was configured on host cachaca:
 
 # Shell to use when invoking shell scripts.
 SHELL="/bin/sh"
@@ -43,7 +43,7 @@ LN_S="ln -s"
 NM="/usr/bin/nm -B"
 
 # A symbol stripping program
-STRIP=strip
+STRIP="strip"
 
 # Used to examine libraries when file_magic_cmd begins "file"
 MAGIC_CMD=file

@@ -305,7 +305,7 @@ config_vbox() {
     read user dummy
     if test -n "$user"
     then
-	if grep "^$user:" /etc/passwd > /dev/null
+	if getent passwd $user > /dev/null
 	then
 	    mkdir /var/spool/vbox/$user
 	    mkdir /var/spool/vbox/$user/messages
@@ -318,8 +318,7 @@ config_vbox() {
 		echo "Installed default sound file /var/spool/vbox/$user/messages/beep.msg"
 	    mycp $DEFAULTS/standard.msg /var/spool/vbox/$user/messages/ &&
 		echo "Installed default sound file /var/spool/vbox/$user/messages/standard.msg"
-	    usergrp=`grep "^$user:" /etc/passwd | cut -f4 -d:`
-	    [ -z "$usergrp" ] && usergrp=$user
+	    usergrp=`id -gn $user`
 	    chown -Rv $user.$usergrp /var/spool/vbox/$user
 	    INSTALL=true
 	else

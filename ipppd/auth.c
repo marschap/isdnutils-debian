@@ -38,7 +38,7 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-char auth_rcsid[] = "$Id: auth.c,v 1.19 2002/03/11 15:53:21 paul Exp $";
+char auth_rcsid[] = "$Id: auth.c,v 1.21 2002/07/06 00:34:08 keil Exp $";
 
 #include <stdio.h>
 #include <stddef.h>
@@ -587,26 +587,29 @@ void check_auth_options()
 		ao->neg_upap = 0;
 	}
 #ifdef RADIUS
-	if (wo->neg_upap && !uselogin && !have_upap_secret()
-		&& !useradius )
+	if (wo->neg_upap && !uselogin && !ask_passwd && !fdpasswd &&
+		!have_upap_secret() && !useradius )
 #else
-	if (wo->neg_upap && !uselogin && !have_upap_secret())
+	if (wo->neg_upap && !uselogin && !ask_passwd && !fdpasswd &&
+		!have_upap_secret())
 #endif
 		wo->neg_upap = 0;
 #ifdef RADIUS
-	if (ao->neg_chap && !have_chap_secret(our_name, remote_name)
-		&& !useradius ) {
+	if (ao->neg_chap && !ask_passwd && !fdpasswd &&
+		!have_chap_secret(our_name, remote_name) && !useradius ) {
 #else
-	if (ao->neg_chap && !have_chap_secret(our_name, remote_name)) {
+	if (ao->neg_chap && !ask_passwd && !fdpasswd &&
+		!have_chap_secret(our_name, remote_name)) {
 #endif
 		syslog(LOG_INFO,"info: no CHAP secret entry for this user!\n");
 		ao->neg_chap = 0;
 	}
 #ifdef RADIUS
-	if (wo->neg_chap && !have_chap_secret(remote_name, our_name)
-		&& !useradius )
+	if (wo->neg_chap && !ask_passwd && !fdpasswd &&
+		!have_chap_secret(remote_name, our_name) && !useradius )
 #else
-	if (wo->neg_chap && !have_chap_secret(remote_name, our_name))
+	if (wo->neg_chap && !ask_passwd && !fdpasswd &&
+		!have_chap_secret(remote_name, our_name))
 #endif
 		wo->neg_chap = 0;
 
@@ -664,7 +667,7 @@ int check_passwd(int linkunit,char *auser,int userlen,char *apasswd,
 
 	syslog(LOG_INFO,"Check_passwd called with user=%s\n",user);
 
-	strcpy(lns[linkunit].peer_authname,user);
+	snprintf(lns[linkunit].peer_authname,sizeof(lns[0].peer_authname), "%s", user);
 
 	/*
 	 * Open the file of upap secrets and scan for a suitable secret
@@ -758,7 +761,7 @@ int radius_check_passwd(linkunit,auser,userlen,apasswd,passwdlen,msg,msglen)
 	passwd[passwdlen] = '\0';
 	BCOPY(auser, user, userlen);
 	user[userlen] = '\0';
-	strcpy(lns[linkunit].peer_authname,user);
+	snprintf(lns[linkunit].peer_authname,sizeof(lns[0].peer_authname), "%s", user);
 
 	ret = UPAP_AUTHACK;
 
@@ -941,6 +944,8 @@ static int get_upap_passwd(void)
 	struct wordlist *addrs;
 	char secret[MAXWORDLEN];
 
+	if ((ask_passwd || fdpasswd) && passwd[0])
+		return 1;
 	filename = _PATH_UPAPFILE;
 	addrs = NULL;
 	f = fopen(filename, "r");
@@ -1029,6 +1034,12 @@ int get_secret(unit, client, server, secret, secret_len, save_addrs)
 	struct wordlist *addrs;
 	char secbuf[MAXWORDLEN];
 
+	if ((ask_passwd || fdpasswd) && passwd[0]) {
+		len = strlen(passwd);
+		BCOPY(passwd, secret, len);
+		*secret_len = len;
+		return 1;
+	}
 	filename = _PATH_CHAPFILE;
 	addrs = NULL;
 	secbuf[0] = 0;

@@ -1,4 +1,4 @@
-/* $Id: tools.h,v 1.57 2000/09/05 08:05:03 paul Exp $
+/* $Id: tools.h,v 1.61 2004/07/24 16:16:56 tobiasb Exp $
  *
  * ISDN accounting for isdn4linux.
  *
@@ -20,6 +20,67 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: tools.h,v $
+ * Revision 1.61  2004/07/24 16:16:56  tobiasb
+ * New entry `REPOPTIONS' in section [ISDNLOG] of the isdn configuration
+ * file.  This will be used for commandline options defaults of isdnrep.
+ *
+ * Revision 1.60  2004/01/28 14:27:47  tobiasb
+ * Second step in restricting fds at isdnlog restart and script starting.
+ * The fd limit is now taken from getrlimit() instead of NR_OPEN.
+ * Close_Fds(first) which tries to close all possible fds is generally
+ * built in but the execution must be requested with "closefds=yes" in
+ * the parameterfile otherwise the isdnlog behaviour remains unchanged.
+ *
+ * Revision 1.59  2003/08/26 19:46:13  tobiasb
+ * isdnlog-4.66:
+ *  - Added support for AVM B1 (with layer 2 d-channel trace) in point-to-
+ *    point mode, where only TEI 0 is used ("Anlagenanschluss" in German).
+ *    Many thanks to Klaus Heske for his testing efforts.
+ *  - The source number "0" in outgoing calls is now expanded to
+ *    +<country><area>0.  This may be useful for point-to-point setups,
+ *    when <area> contains area code and local number without extension.
+ *  - Basic support for different codesets in (E)DSS1 messages.  Except
+ *    for codeset 0, unknown information elements are now silently
+ *    ignored (controlled by ignore_unknown_IE in isdnlog/isdnlog.h).
+ *  - Added some information elements to isdnlog/messages.c.
+ *  - Increased the length of msn (local number) in struct telnum.
+ *  - Fixed seperation of country and area code for long numbers
+ *    in getDest, tools/dest.c.
+ *  - Changed broken (with gcc 2.95.2) generation of .depend.  The old
+ *    output did not consider the location of objectfiles in subdirs.
+ *    Remove this file before compiling this upgraded isdnlog.
+ *  - Moved DUALFIX... defines from tools/tools.h to isdnlog/isdnlog.h.
+ *  - Added missing R:-Links for cellphone entries in country-de.dat.
+ *  - Different entry for each city "Neustadt" in tools/zone/de/code.
+ *  - Earlier changes since isdnlog-4.65:
+ *     - Allow dualmode workaround 0x100 (DUALFIX_DESTNUM) to work also with
+ *       CALL_PROCEEDING messages for cleaning up unanswered incoming calls.
+ *
+ * Revision 1.58  2003/07/25 22:18:04  tobiasb
+ * isdnlog-4.65:
+ *  - New values for isdnlog option -2x / dual=x with enable certain
+ *    workarounds for correct logging in dualmode in case of prior
+ *    errors.  See `man isdnlog' and isdnlog/processor.c for details.
+ *  - New isdnlog option -U2 / ignoreCOLP=2 for displaying ignored
+ *    COLP information.
+ *  - Improved handling of incomplete D-channel frames.
+ *  - Increased length of number aliases shown immediately by isdnlog.
+ *    Now 127 instead of 32 chars are possible. (Patch by Jochen Erwied.)
+ *  - The zone number for an outgoing call as defined in the rate-file
+ *    is written to the logfile again and used by isdnrep
+ *  - Improved zone summary of isdnrep.  Now the real zone numbers as
+ *    defined in the rate-file are shown.  The zone number is taken
+ *    from the logfile as mentioned before or computed from the current
+ *    rate-file.  Missmatches are indicated with the chars ~,+ and *,
+ *    isdnrep -v ... explains the meanings.
+ *  - Fixed provider summary of isdnrep. Calls should no longer be
+ *    treated wrongly as done via the default (preselected) provider.
+ *  - Fixed the -pmx command line option of isdnrep, where x is the xth
+ *    defined [MSN].
+ *  - `make install' restarts isdnlog after installing the data files.
+ *  - A new version number generates new binaries.
+ *  - `make clean' removes isdnlog/isdnlog/ilp.o when called with ILP=1.
+ *
  * Revision 1.57  2000/09/05 08:05:03  paul
  * Now isdnlog doesn't use any more ISDN_XX defines to determine the way it works.
  * It now uses the value of "COUNTRYCODE = 999" to determine the country, and sets
@@ -834,6 +895,7 @@
 #define CONF_ENT_CIINTERVAL "CIINTERVAL"
 #define CONF_ENT_ABCLCR	"ABCLCR"
 #define CONF_ENT_PROVIDERCHANGE "PROVIDERCHANGE"
+#define CONF_ENT_CLOSEFDS  "CLOSEFDS"
 /****************************************************************************/
 
 /* Keywords for isdn.conf */
@@ -860,6 +922,7 @@
 #define CONF_ENT_TIME     "TIME"
 
 #define CONF_ENT_REPFMT   "REPFMT"
+#define CONF_ENT_REPOPTS  "REPOPTIONS"
 
 #define CONF_ENT_CALLFILE "CALLFILE"
 #define CONF_ENT_CALLFMT  "CALLFMT"
@@ -928,6 +991,7 @@ typedef struct {
   int     bearer;
   int	  si1;     /* Service Indicator entsprechend i4l convention */
   int	  si11;	   /* if (si1 == 1) :: 0 = Telefon analog / 1 = Telefon digital */
+  int     logcount; /* number of writen logfile entries (for DUALFIX_MULTLOG) */
   char    onum[MAXMSNS][NUMSIZE];
   int	  screening;
   char    num[MAXMSNS][NUMSIZE];
@@ -954,7 +1018,7 @@ typedef struct {
   char	  areacode[MAXMSNS][NUMSIZE];
   char	  vorwahl[MAXMSNS][NUMSIZE];
   char	  rufnummer[MAXMSNS][NUMSIZE];
-  char	  alias[MAXMSNS][NUMSIZE];
+  char	  alias[MAXMSNS][RETSIZE];
   char	  area[MAXMSNS][128];
   char	  money[64];
   char	  currency[32];
@@ -1082,16 +1146,27 @@ _EXTERN char     ilabel[256];
 _EXTERN char    	olabel[256];
 _EXTERN char    	idate[256];
 _EXTERN CALL    	call[MAXCHAN];
+
 #ifdef Q931
 _EXTERN int     	q931dmp;
 #else
 #define q931dmp 0
 #endif
+
 #if 0 /* Fixme: remove */
 _EXTERN int     	CityWeekend;
 #endif
+
 _EXTERN	int	 preselect;
+/* global variables specific to isdnlog (e.g. for parameterfile/commandline
+ * settings) should be moved to isdnlog/isdnlog.h.  |TB| 2003-08-22 */
 _EXTERN int	dual;
+/* Bitvalues 0x100 and greater in dual are used for activation of workarounds
+ * in isdnlog/processor.c.  The input value for -2 (commandline) or dual
+ * (parameterfile) is splitted between dual and dualfix. Bitvalues less than
+ * 0x100 remain unchanged in dual, greater values are copied to dualfix and
+ * removed from dual to maintain backward compatibility.  |TB| */
+_EXTERN int	dualfix;
 _EXTERN int	hfcdual;
 _EXTERN int	abclcr;
 _EXTERN char  * providerchange;
@@ -1140,6 +1215,7 @@ _EXTERN char *vboxcommand1  = NULL;
 _EXTERN char *vboxcommand2  = NULL;
 _EXTERN char *mgettypath    = NULL;
 _EXTERN char *mgettycommand = NULL;
+_EXTERN char *isdnrep_defopts = NULL;
 
 #else
 #define _EXTERN extern
@@ -1165,6 +1241,7 @@ _EXTERN char *vboxcommand1;
 _EXTERN char *vboxcommand2;
 _EXTERN char *mgettypath;
 _EXTERN char *mgettycommand;
+_EXTERN char *isdnrep_defopts;
 
 #endif
 

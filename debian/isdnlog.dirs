@@ -1,4 +1,5 @@
 etc/isdn
+etc/logrotate.d
 usr/bin
 usr/sbin
 usr/share/doc/isdnlog/examples
@@ -9,3 +10,4 @@ usr/share/man/man5
 usr/share/man/man8
 var/lib/isdn
 var/log/isdn
+var/run/isdnrate

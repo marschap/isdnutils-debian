@@ -1,5 +1,4 @@
 #!/bin/sh
-exit 0	# not done when building a package for debian
 #
 # $Id: makedev.sh,v 1.5 2000/02/24 13:29:26 paul Exp $
 #

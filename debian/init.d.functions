@@ -5,8 +5,8 @@
 # Try not to change this file!  It should not be necessary.
 #
 #
-# Please read /usr/share/doc/isdnutils/README.debian
-# and         /usr/share/doc/isdnutils/HOWTO.isdnutils.gz .
+# Please read /usr/share/doc/isdnutils-base/README.Debian
+# and         /usr/share/doc/isdnutils-base/HOWTO.isdnutils.gz .
 #
 # This file is for use from the /etc/init.d/isdn* scripts.
 # If you want to do things differently, I advise you to put the
@@ -82,18 +82,20 @@ check_isdncards() {
         if [ -e /dev/isdninfo ]; then ISDNINFO=/dev/isdninfo;
         elif [ -e /dev/isdn/isdninfo ]; then ISDNINFO=/dev/isdn/isdninfo;
         else echo " error:"
-             echo "    Neither /dev/isdninfo nor /dev/isdn/isdninfo exist!"
+            echo "    Neither /dev/isdninfo nor /dev/isdn/isdninfo exist!"
             # apparently a devfs system...
-             echo "    Before you can use any ISDN facilities, ensure you have the proper kernel"
-             echo "    modules loaded. These will probably be 'isdn' and 'hisax'."
-             echo "    Read /usr/share/doc/isdnutils/README.HiSax.gz for more information."
-             exit 0
+            echo "    Before you can use any ISDN facilities, ensure you have the proper kernel"
+            echo "    modules loaded. These will probably be 'isdn' and 'hisax'."
+            echo "    Read /usr/share/doc/isdnutils/README.HiSax.gz for more information"
+            echo "    (e.g. with 'zless /usr/share/doc/isdnutils-base/README.HiSax.gz')."
+            exit 0
         fi
 	set -- `perl -ne 's/^idmap:\s+//; s/ -//g; s/(\S+) \1/\1/g; print; exit;' $ISDNINFO 2>/dev/null`
 	if [ $# -eq 0 -a "$do_what" != stop ]; then
             echo " "
             echo " no ISDN cards configured! Please configure 'hisax' module with modconf"
-            echo " (read /usr/share/doc/isdnutils/HOWTO.isdnutils.gz for more info)."
+            echo "    Read /usr/share/doc/isdnutils/README.HiSax.gz for more information"
+            echo "    (e.g. with 'zless /usr/share/doc/isdnutils/README.HiSax.gz')."
 	    exit 0
 	fi
 	isdncards="$@"
@@ -159,6 +161,16 @@ start_isdnlog() {
         start-stop-daemon --start --pidfile=/var/run/isdnlog.$device.pid \
             --quiet --exec /usr/sbin/isdnlog -- -D -f$optionfile $DEVISDNCTRL &
     done
+    daemon=false
+    socket=/var/run/isdnrate/socket
+    if [ -s /etc/isdn/isdnrate.conf ]; then
+        set +e
+        . /etc/isdn/isdnrate.conf
+        set -e
+        if $daemon; then
+            /usr/bin/isdnrate -D2 -O$socket
+        fi
+    fi
 }
 
 stop_isdnlog() {
@@ -172,6 +184,7 @@ stop_isdnlog() {
                 --pidfile /var/run/isdnlog.$device.pid
                 # --exec /usr/sbin/isdnlog
     done
+    /usr/bin/isdnrate -CD3 2>/dev/null || true
 }
 
 reload_isdnlog() {
@@ -185,6 +198,18 @@ reload_isdnlog() {
                 --pidfile /var/run/isdnlog.$device.pid || return 1
                 # --exec /usr/sbin/isdnlog
     done
+    # stop daemon if it happens to be running, then start it if necessary
+    /usr/bin/isdnrate -CD3 2>/dev/null || true
+    daemon=false
+    socket=/var/run/isdnrate/isdnrate
+    if [ -s /etc/isdn/isdnrate.conf ]; then
+        set +e
+        . /etc/isdn/isdnrate.conf
+        set -e
+        if $daemon; then
+            /usr/bin/isdnrate -D2 -O$socket
+        fi
+    fi
 }
 
 start_devices() {
@@ -212,7 +237,7 @@ start_devices() {
         echo " "
         echo "  If you don't want this warning in future, please create the file"
         echo "     /etc/isdn/noconfig"
-        echo "  For more information, see /usr/share/doc/isdnutils/HOWTO.isdnutils.gz"
+        echo "  For more information, see /usr/share/doc/isdnutils-base/HOWTO.isdnutils.gz"
     fi
     # start devices in order
     # Device files of the form "device.ippp2+3" means that this (ippp3) is a
@@ -274,8 +299,8 @@ start_devices() {
 	if [ -s $tempfile ]; then
 	    . $tempfile
 	fi
-	rm -f $tempfile
     done
+    rm -f $tempfile
     cd "$olddir"
 }
 
@@ -342,7 +367,7 @@ start_ipppd() {
         if [ -c /dev/isdn/$master ]; then master=isdn/$master; fi
 	start-stop-daemon --start --quiet \
 	    --pidfile /var/run/ipppd.$master.pid \
-	    --exec /usr/sbin/ipppd -- file $optionfile $extraops /dev/$master $slaves &
+	    --exec /usr/sbin/ipppd -- file /etc/isdn/$optionfile $extraops /dev/$master $slaves &
     done
     cd "$olddir"
     # next part copied from ipppd.postinst

@@ -1,2 +1,0 @@
-libcapi20: non-dev-pkg-with-shlib-symlink usr/lib/libcapi20.so.2 usr/lib/libcapi20.so
-libcapi20: postinst-unsafe-ldconfig

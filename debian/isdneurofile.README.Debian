@@ -1,0 +1,16 @@
+isdneurofile for Debian
+-----------------------
+
+Transfer files using "eurofile" protocol. Somewhat experimental.
+
+For this, you must have configured the kernel correctly.
+As of time of writing (2002-05-01) the standard Debian kernel is missing
+the "X.25 PLP on top of ISDN" option, so you will have to configure, build,
+and install your own kernel. Don't forget to reboot after this!
+
+For making your own kernel-image packages, I recommend using the
+kernel-package package, which makes it very easy to build, install and
+upgrade your own kernels.
+
+
+ -- Paul Slootman <paul@debian.org>, Wed,  1 May 2002 16:26:05 +0200

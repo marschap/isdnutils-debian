@@ -5,37 +5,24 @@ set -e
 
 . /usr/share/debconf/confmodule
 
-# summary of how this script can be called:
-#        * <postinst> `configure' <most-recently-configured-version>
-#        * <old-postinst> `abort-upgrade' <new version>
-#        * <conflictor's-postinst> `abort-remove' `in-favour' <package>
-#          <new-version>
-#        * <deconfigured's-postinst> `abort-deconfigure' `in-favour'
-#          <failed-install-package> <version> `removing'
-#          <conflicting-package> <version>
-# for details, see /usr/doc/packaging-manual/
-#
-# quoting from the policy:
-#     Any necessary prompting should almost always be confined to the
-#     post-installation script, and should be protected with a conditional
-#     so that unnecessary prompting doesn't happen if a package's
-#     installation fails and the `postinst' is called with `abort-upgrade',
-#     `abort-remove' or `abort-deconfigure'.
-
 case "$1" in
     configure)
-        set +e
-        db_get isdnutils/makedev
-        rc=$?
-        set -e
-        allowmakedev=$RET
-        if [ $rc -eq 30 -o "$allowmakedev" = "yes" ]; then
-            cd /dev
-            echo "creating ISDN devices in /dev..."
-            /sbin/MAKEDEV isdn-tty isdn-io
-            rm -f isdnctrl
-            ln -s isdnctrl0 isdnctrl
+        set +e # don't exit if the db_get below fails
+        # undo bad things in (old) isdnutils postrm in case someone tries to
+        # dpkg --purge isdnutils (the 3.0-20 version), which would remove
+        # /etc/isdn /var/lib/isdn /var/log/isdn /var/spool/vbox
+        # thus ruining a lot of things
+
+        if [ -s /var/lib/dpkg/info/isdnutils.postinst ] &&
+           grep 'rm -rf /etc/isdn ' /var/lib/dpkg/info/isdnutils.postinst >/dev/null 2>&1; then
+            perl -i -pe 's,rm -rf /etc/isdn ,true # rm -rf  /etc/isdn ,' /var/lib/dpkg/info/isdnutils.postinst
         fi
+
+        cd /dev
+        echo "Note: running MAKEDEV to create ISDN devices in /dev..."
+        /sbin/MAKEDEV isdn-tty isdn-io
+        rm -f isdnctrl
+        ln -s isdnctrl0 isdnctrl
         # firmware handling
         db_get isdnutils/firmware || true
         firmware=$RET
@@ -113,6 +100,7 @@ the package or remove the vboxgetty line from /etc/inittab.
 
 EOF
 			  sleep 2
+			  rm -f $tempfile
 			fi
 		fi
                 # ignore errors from starting twice

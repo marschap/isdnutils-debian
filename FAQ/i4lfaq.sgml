@@ -4,7 +4,7 @@
 
 <title>FAQ for isdn4linux
 <author>Matthias Hessler (<tt><htmlurl url="mailto:hessler@isdn4linux.de" name="hessler@isdn4linux.de"></tt>)
-<date>v2.0.65, 6. December 2001
+<date>v2.0.88, 14. July 2004
 <abstract>
 If you are reading this FAQ online, you may consider downloading the whole
 thing, and reading it offline (much cheaper). To download the latest
@@ -12,7 +12,7 @@ version of this FAQ in TXT/HTML/SGML format, go to the homepage of this FAQ:
 <url url="http://www.mhessler.de/i4lfaq/">.
 
 A German translation of the FAQ is available at:
-<url url="http://www.wolf-b.de/i4l/i4lfaq-de.html">.
+<url url="http://www.wolf-b.de">.
 
 This FAQ answers questions that were frequently asked in the newsgroup
 de.alt.comm.isdn4linux. It contains questions any user should
@@ -55,7 +55,7 @@ or:
 <tt><url url="http://www.isdn4linux.de/faq/"></tt>.
 
 This FAQ is protected by the GNU General Public License (GPL) Version 2;
-(C) 1999 Matthias Hessler (for version 2.0)
+(C) 1999-2002 Matthias Hessler (for version 2.0)
 Distribution under the terms of the GPL is welcome. However,
 we offer NO GUARANTEES for the information herein. Please read the GNU
 General Public License for further details. A printed version is available
@@ -90,9 +90,10 @@ make use of ISDN specific features.
 Generally, isdn4linux can control ISDN cards that are connected to the PC's
 ISA or PCI bus. Also a few PCMCIA cards are supported. However, isdn4linux can
 <bf/not/ make use of any devices connected via a serial or parallel
-interface (which are called 'terminal adaptors'), with only one exception:
-the Creatix/Teles S0 box for the parallel port. For more details on which
-cards are supported see section <ref id="hardware" name="hardware">.
+interface (which are called 'terminal adaptors'), with only a few exceptions:
+the Creatix/Teles S0 box for the parallel port, and the Gazel 128 USB.
+For more details on which cards are supported see section
+<ref id="hardware" name="hardware">.
 
 <sect1> general_features: What features are supported by isdn4linux?  
 <label id="general_features">
@@ -117,13 +118,14 @@ pecularities apply. To find more about your country, check the section
 <p>
 Besides this FAQ, take a look at the various man pages and Readme's that come
 with the isdn4linux package. Then there is the isdn4linux website:
-<url url="http://www.isdn4linux.de">. There is also a news group and a
-mailing list on isdn4linux which will give you the most up to date
-information. To find out more about these great information sources, see
-section <ref id="docu" name="docu">.
+<url url="http://www.isdn4linux.de">. There is also a mailing list on
+isdn4linux which will give you the most up to date information. To find out
+more about these great information sources, see section <ref id="docu"
+name="docu">.
 And: check out all the great links listed in question
-<ref id="config_links" name="config_links">! You find information in your language,
-or information specific to your linux distribution.
+<ref id="config_links" name="config_links">!
+You may find information in your language, or information specific to your
+linux distribution.
 
 <sect1> general_getlatest: Where do I get the latest version of isdn4linux?  
 <label id="general_getlatest">
@@ -139,7 +141,7 @@ version that is currently in development. See the section
 <label id="general_contacts">
 <p>
 You can contact the isdn4linux developers through the www.isdn4linux.de
-website. Have a look at <url url="http://www.isdn4linux.de/contacts.php3">.
+website. Have a look at <url url="http://www.isdn4linux.de/contacts.shtml">.
 
 
 <!-- Development & Distribution -->
@@ -171,7 +173,7 @@ ISDN4LINUX). Take a CVS snapshot that is dated with about the date when your
 kernel came out. You find the kernel patches and the old isdn4k-utils packages
 on <url url="ftp://ftp.isdn4linux.de/pub/isdn4linux/">
 or on one of its mirrors
-(see <url url="http://www.isdn4linux.de/download.php3"> on how to find
+(see <url url="http://www.isdn4linux.de/download.shtml"> on how to find
 mirrors).
 
 <item>As a developer:
@@ -291,14 +293,22 @@ the other way around. For configuration see question
 <label id="feature_fax">
 <p>
 <itemize>
-<item><bf>For all passive cards (except from AVM): NO</bf>. However, there
-is a project working on this rather complicated problem. For more info on
+<item><bf>For all passive cards (except from AVM): NO</bf>. There
+was a project working on this rather complicated problem. For more info on
 its status have a look at:
-<tt><url url="http://home.enitel.no/mortenro/linux/i4lfax/index.html"></tt>
+<tt><url url="http://user.cs.tu-berlin.de/~ulfi/osvisions/i4lsoftfax/i4lfax/"></tt>
+Also, an idea exists to extend the new modular mISDN with layer 2 and layer 3
+protocols for fax. Once this works (e.g. with the Sedlbauer Speedfax card)
+then the layer 1 protocol (modulation/demodulation) could be implemented via
+the spandsp library which is part of the Asterisk project.
 <item><bf>For passive cards from AVM: Yes</bf>. AVM recently released a
 binary CAPI 2.0 driver which supports faxing. However, the setup is rather
 complicated. Get a start on:
 <url url="http://www.avm.de/ftp/cardware/fritzcrd/linux/index.htm">.
+Here is a German website which has some nice installation instructions:
+<tt><url url="http://ixi.thepenguin.de"></tt> or
+<tt><url url="http://capi4linux.thepenguin.de"></tt> or
+<tt><url url="http://www.thepenguin.de"></tt>
 Please also have a look on the mailing list for tips how to do it,
 and what the consequences/disadvantages are.
 <item><bf>For the active card AVM B1: Yes</bf> (its firmware has implemented
@@ -437,8 +447,16 @@ you have additional information on this.
 A useful sample config for yaps you might find on:
 <url url="http://www.tnt-computer.de/linux/yaps-suite1-1.tgz">
 
-Another program to send SMS is <tt/smsclient/. You can find it on:
-<url url="http://www.styx.demon.co.uk">.
+Another program to send SMS is <tt>asterisk</tt>. Have a look at:
+<url url="http://www.asterisk.org"> and
+<url url="http://www.voip-info.org/wiki-Asterisk+cmd+Sms">.
+One advantage over yaps is that it can also receive SMS, for Germany
+(you have to register for this first by sending a specific SMS -
+otherwise the SMS will be communicated to you by an automated voice
+call).
+
+Yet another program to send SMS is <tt>smsclient</tt>. You can find it on:
+<url url="http://www.smsclient.org">.
 
 <sect1> feature_btx: Is the German videotex/Btx/Datex-J possible with  
 isdn4linux?  
@@ -462,7 +480,7 @@ check it with, for example, xntp. You can also use a time server in
 the Internet with &dquot;netdate&dquot; or &dquot;rdate&dquot;.
 Check out the following urls on information about using time servers:
 <itemize>
-<item> <url url="http://www.eecis.udel.edu/~mills/ntp/servers.htm">
+<item> <url url="http://www.eecis.udel.edu/~mills/ntp/servers.html">
 <item> In German: <url url="http://www.ptb.de/deutsch/org/4/43/433/verb.htm">
 <item> In German: <url url="http://www.ptb.de/deutsch/aktuell/pi/pi00/pi0100.htm">
 </itemize>
@@ -496,13 +514,20 @@ have to download and manually install the binary drivers for this from
 AVMs ftp server. See the following web site for a nice howto:
 <url url="http://www.topf-sicret.de/help/capi20.html">. There was also
 lots of stuff written in the mailing list on this.
+Here is a German website which has some nice installation instructions:
+<tt><url url="http://ixi.thepenguin.de"></tt> or
+<tt><url url="http://capi4linux.thepenguin.de"></tt> or
+<tt><url url="http://www.thepenguin.de"></tt>
 </itemize>
 
 This interface follows the official CAPI 2.0 standard that was established
 recently for Linux by the CAPI Association (see
 <url url="http://www.capi.org">).
-There are activities to make this a general interface, also for
-other cards. However, there are no plans to implement a CAPI 1.1 interface.
+Since kernel 2.6.0 the CAPI interface has been used as the general
+interface, also for other cards. For passive cards, the new driver
+mISDN will replace the old hisax driver once it is fully functional.
+
+There are no plans to implement a CAPI 1.1 interface.
 
 <sect1> feature_uus: Is UUS (user to user signaling) supported?  
 <label id="feature_uus">
@@ -545,6 +570,10 @@ ISDN bus (dual mode/reversed card/COLP/...)?
 <p>
 Yes, isdn4linux offers several possibilities to do this. Have a look at
 question <ref id="isdnlog_reversedcard" name="isdnlog_reversedcard">.
+
+Please note that you may also use the software ISDN Sniffer for this,
+see the German web site
+<url url="http://krypt.cs.uni-sb.de/~osk/isdnosk.html">.
 
 <sect1> feature_chargeint: Can isdn4linux hang up just before the ISDN  
 provider would charge me for another unit?  
@@ -619,6 +648,26 @@ installed. Also, isdnlog should always be running (otherwise your dialout
 will be delayed by 3 seconds). If the ABC-extensions are not installed,
 isdnlog prints hints to the log file, which provider would have been chosen.
 
+<sect1> feature_internetdialin: Can isdn4linux be setup such that it  
+dials into the Internet, whenever I call it via telephone?  
+<label id="feature_internetdialin">
+<p>
+Yes, this is possible with isdnlog. You have to configure isdnlog such that
+it can execute a script whenever someone dials in. In the script you can
+check for the correct telephone number, then trigger the dialin.
+To access your computer then over the internet, you can then access it via
+its ip address. In case of dynamic ip address assignment, you probably want
+to store the new ip somehow. Storage in a html page or via dynamic DNS
+may be good possibilities.
+
+If you understand German, there was an article about exactly this setup in
+ct 18/2002, page 204 (Bei Anruf Internet - Handy-Anruf l&ouml;st
+Internet-Einwahl aus). Also, the following German web site explains
+how to set up such a configuration:
+<tt><url url="http://www.staschke.de/linux/anwahl.html"></tt>
+
+
+
 <sect1> feature_future: Which features are planned for the future?  
 <label id="feature_future">
 <p>
@@ -651,6 +700,11 @@ E.g.: /usr/src/linux/Documentation/isdn/README.HiSax
 </itemize>
 Many of the utilities also have man pages!
 
+To get a good technical overview over isdn4linux have a look at the
+great whitepaper 'ISDN4Linux, CAPI4Linux, CPI4Hisax and other cute acronyms:
+The ISDN subsystem in the Linux kernel', which can be found at:
+<tt><url url="http://www.linux-kongress.org/2002/papers/lk2002-germaschewski.pdf"></tt>
+
 For a Suse distribution the following information might be helpful:
 <itemize>
 <item><tt>/usr/doc/packages/i4l*</tt> (for i4l in general)
@@ -671,6 +725,14 @@ helpful articles at least on these issues:
 <item>ct 7/2001, page 228: <tt>Des Surfers Bastelstunde: Mobilfunktechnik
 HSCSD aussch&ouml;pfen</tt>
 (also contains information on dial-in configuration without HSCSD).
+<item>ct 15/2002, page 204: <tt>Bei Anruf Internet: Handy-Anruf l&ouml;st
+Internet-Einwahl aus</tt>
+<item>ct 3/2004, page 182: <tt>Heimserver im Eigenbau - Teil 4: ISDN-Grundlagen
+f&uuml;r Linux</tt>(also contains information about the new mISDN driver).
+An online version is available on:
+<tt><url url="http://www.heise.de/ct/04/03/182/"></tt>
+<item>ct 9/2004, page 100: <tt>Tux vermittelt - Linux als Telefonanlage mit
+VoIP</tt>(refers to software PBX4Linux)
 </itemize>
 
 Also have a look at question <ref id="config_links" name="config_links"> for
@@ -692,13 +754,11 @@ You can find it on:
 <sect1> docu_newsgroup: Where is the newsgroup for isdn4linux? 
 <label id="docu_newsgroup">
 <p>
-The newsgroup is <tt/de.alt.comm.isdn4linux/.
-You can read what is going on, or send a message yourself (before please
-make sure it is not answered in this FAQ).
-Most isdn4linux developers are present, and many other knowledgeable
-people. Don't be confused by the many German messages on it.
-<bf>English postings are very welcome, and will be
-answered in English!</bf>
+The newsgroup was <tt>de.alt.comm.isdn4linux</tt>, however had been
+closed down some time ago due to spam issues. To get in contact with
+the developers your best choice is to use the mailing list
+<ref id="docu_mailinglist" name="docu_mailinglist">. Alternatively, you find some interesting
+stuff in <tt>de.comp.os.unix.linux.isdn</tt>.
 
 <sect1> docu_mailinglist: Where is the mailing list for isdn4linux?  
 <label id="docu_mailinglist">
@@ -711,6 +771,9 @@ question has not been answered numerous times in the past (search
 isdn4linux,...). People on the mailing list get really annoyed when
 the question "can I fax with my card xxx" is asked yet another time
 (see question <ref id="feature_fax" name="feature_fax"> for the answer).
+To reduce spam, as of 25. Aug. 2003 the mailing list has been changed
+to permit posts from subscribed members only. To write, you must be
+subscribed first.
 
 When writing on the mailing list, please always provide:
 <itemize>
@@ -728,28 +791,33 @@ The mailing list contains the same messages as the newsgroup (see question
 responses to your question with your news reader. A bidirectional
 gateway ensures that mailing list and news are in sync.
 
-To subscribe constantly to the mailing list, send an email message to 
-<tt><htmlurl url="mailto:majordomo@listserv.isdn4linux.de"
-name="majordomo@listserv.isdn4linux.de"></tt>.
-The subject doesn't matter. The message body should read <tt/subscribe
-isdn4linux &lt;email address&gt;/, where &lt;email address&gt; is the
-address to which mail from the list should be sent. To unsubscribe send a
-message with the body <tt/unsubscribe isdn4linux &lt;email address&gt;/ at the
-same address. Please note: there are about 20-50 messages per day on this
-mailing list. To receive only one message per day, containing all postings,
-have a look at question
-<ref id="docu_maillistdigest" name="docu_maillistdigest">.
+To subscribe to the mailing list, go to the web frontend at
+<tt><htmlurl url="https://www.isdn4linux.de/mailman/listinfo/isdn4linux"
+name="https://www.isdn4linux.de/mailman/listinfo/isdn4linux"></tt> and
+submit the filled form. After that, you will <bf>not</bf> be subscribed yet.
+Instead, you will receive a confirmation at the mail address you entered
+in the above form. This is a security precaution to prevent subscription
+by other persons or subscription of mistyped mail addresses. When you
+receive the confirmation, just follow the instructions in that mail.
+(I.e.: simply reply). After having replied, you will be subscribed and
+receive a welcome mail. The welcome mail will contain your password, so
+you should probably keep it just in case you want to unsubscribe or change
+some options at the web frontend.
+To unsubscribe, go to the web frontend again, use your password to login
+and then unsubscribe.
+Please note: there are about 20-50 messages per day on this mailing list.
+To receive only one message per day, containing all postings, have a look
+at question <ref id="docu_maillistdigest" name="docu_maillistdigest">.
 
 <sect1> docu_maillistdigest: How can I get a digest of the mailing list for 
 isdn4linux (only one message per day)?  
 <label id="docu_maillistdigest">
 <p>
-Subscribe to the mailing list as described in question
-<ref id="docu_mailinglist" name="docu_mailinglist">, but as mailing list name
-use <tt/isdn4linux-digest/ rather than <tt/isdn4linux/. So your message body
-should read <tt/subscribe isdn4linux-digest &lt;email address&gt;/ for
-subscription, and <tt/unsubscribe isdn4linux-digest &lt;email address&gt;/
-for unsubscription.
+While filling the form as described in question
+<ref id="docu_mailinglist" name="docu_mailinglist">, simply click "Yes"
+at the radio-button, named "Would you like to receive list mail batched
+in a daily digest". You can change this option later when logging in
+the web frontend.
 
 <sect1> docu_mailarchive: Is there an archive of the isdn4linux mailing list?  
 <label id="docu_mailarchive">
@@ -761,17 +829,6 @@ archive to do a complete search.
 Messages are also saved (unsorted) at listserv.isdn4linux.de, collected by
 month. To access the archive, you can use
 <url url="http://www.isdn4linux.de/listarch/">.
-
-Alternatively, you can send an email to
-<tt><htmlurl url="mailto:majordomo@listserv.isdn4linux.de"
-name="majordomo@listserv.isdn4linux.de"></tt>.
-The subject doesn't matter. These commands are possible: 
-<itemize>
-<item>index isdn4linux - list which archive files are available
-<item>get isdn4linux filename - retrieves the file filename
-</itemize>
-The archives are named &dquot;archiv.yearmonth&dquot;, so
-&dquot;archiv.9610&dquot; is the archive for October 1996.
 
 Other archives are:
 <itemize>
@@ -805,7 +862,7 @@ Right now there is a driver for all passive card with certain Siemens
 chipsets (HiSax driver). Have a look at the <tt/README.HiSax/ that comes with
 the driver for the most up to date information on supported cards and which
 parameter to pass to Hisax.
-Here the status from 4th September 1999 (constantly improving):
+Here the status from 1st February 2002 (constantly improving):
 <itemize>
 <item>Teles 8.0/16.0/16.3 and compatible ones (like: Dr. Neuhaus Niccy
 1016, Creatix 16/S0)
@@ -820,6 +877,7 @@ Here the status from 4th September 1999 (constantly improving):
 <item>AVM Fritz PCMCIA
 <item>AVM Fritz PnP
 <item>AVM Fritz PCI (Teledat 150 PCI)
+<item>AVM Fritz PCI v2
 <item>ELSA Microlink PCC-16, PCF, PCF-Pro, PCC-8
 <item>ELSA Quickstep 1000
 <item>ELSA Quickstep 1000PCI (new name: ELSA Microlink PCI)
@@ -828,6 +886,7 @@ Here the status from 4th September 1999 (constantly improving):
 <item>ELSA PCMCIA
 <item>ITK ix1-micro Rev.2 (also: ITK colombus card)
 <item>Eicon DIVA 2.0 ISA and PCI (S0 and U interface, no PRO version)
+<item>Eicon.Diehl Diva 2.01 ISA and PCI, and Diva 2.02
 <item>Eicon DIVA Piccola
 <item>ASUSCOM NETWORK INC. ISDNLink 128K PC adapter (order code I-IN100-ST-D)
 <item>Dynalink IS64PH (OEM version of ASUSCOM NETWORK INC. ISDNLink 128K
@@ -841,7 +900,7 @@ than 50 card versions)
 <item>Sedlbauer ISDN-Controller PC/104
 <item>USR Sportster internal TA (compatible Stollmann tina-pp V3)
 <item>ith Kommunikationstechnik GmbH MIC 16 ISA card
-<item>Traverse Technologie NETjet PCI S0 card
+<item>Traverse Technologie NETjet PCI S0 card and NETspider U card
 <item>Dr. Neuhaus Niccy PnP/PCI
 <item>Siemens I-Surf 1.x (with ISAR =&lt; try type 29)
 <item>Siemens I-Surf 2.x (with IPAC =&gt; try type 12 asuscom)
@@ -854,6 +913,8 @@ the one called 'Wisecom' in NL does not work)
 <item>Gazel ISDN cards
 <item>HFC-PCI based cards
 <item>PCI/Winbond W6692 based cards
+<item>HFC-S+, HFC-SP/PCMCIA cards
+<item>HFC-USB ISDN TAs
 <item>ST5481 based USB ISDN adapters, e.g. BeWan Gazel 128 USB
 </itemize>
 Note:
@@ -870,6 +931,12 @@ loaded as modules.
 output of <tt>cat /proc/pci</tt>. You have HFC-PCI if you have a line
 saying "Master capable" for your card.
 <item>DataFire Micro V PCI = HFC-based card (type 35)
+<item>Xircom Cardbus Eth10/100+ (PCMCIA) is not supported by isdn4linux,
+but you can use it like an active external ISDN terminal adapter
+(requires the xircom and serial driver).
+<item>Gazel 128 USB from BeWAN Systems is supported as hisax_st5481 module.
+For configuration hints have a look at:
+<url url="http://www.posern.org/my-prjs/isdn/">.
 </itemize>
 
 In Germany: every ISDN card which German Telekom distributed in the past is
@@ -926,23 +993,36 @@ question <ref id="country_certified" name="country_certified">.
 If you want to buy an active card, then the developers would recommend
 the PCI Server from Eicon. The reason is that it can fax on both channels
 with AT class 2 commands, and includes a V.90 modem.
-The AVM B1 works also very well, but can only fax on one channel.
+The AVM B1 works also very well, and is likewise recommended. Old versions
+(up to 3.0) could receive faxes only on one channel, but since AVM B1 PCI V4
+all channels can be used simulateously for sending and receiving faxes.
+See also question <ref id="hardware_avmb1" name="hardware_avmb1"> for more details about this card.
 The Hypercope cards have also been reported to work very well, servicing
 all available channels for faxing. However, they require a hardware update
-for faxing and their linux driver is fairly new.
+for faxing and their linux driver is fairly new. See also question
+<ref id="hardware_hypercope" name="hardware_hypercope"> for more details about this card.
 
 If faxing is important for you, but you don't want to spent the money for an
 active card, then a card with ISAR chipset may work well for you, e.g.
 Sedlbauer Speedfax+ (in Germany you may be able to buy it at Conrads).
 
+And if you want to buy a USB terminal adapter, then the Gazel 128 USB from
+BeWAN Systems <url url="http://www.bewan.com"> has been reported to work fine
+with the hisax_st5481 module.
+
 <sect1> hardware_external: Does isdn4linux support external terminal adapters?  
 <label id="hardware_external">
 <p>
-No, but it doesn't need to. Terminal adapters are designed to behave
+Generally not, but it doesn't need to. Terminal adapters are designed to behave
 either like a modem or like a network card. Linux already supports both
 modems and network cards without isdn4linux - so no special ISDN driver
 is necessary (which usually greatly simplifies the configuration).
 For example, have a look at the dialout program wvdial.
+
+However, there is (at least) one exception. The Gazel 128 USB from BeWAN
+System in France <url url="http://www.bewan.com"> has been reported to
+work fine with the hisax_st5481 module. For configuration hints
+have a look at: <url url="http://www.posern.org/my-prjs/isdn/">.
 
 <sect1> hardware_cabeling: How should I wire my ISDN cables?  
 <label id="hardware_cabeling">
@@ -1085,9 +1165,17 @@ the specialities for the configuration of more than one card.
 Cards with an HFC-PCI chip allow some specialities that are not possible with
 other ISDN cards. So it is possible to run the card in NT mode (requires
 crossing the ISDN connection and change by software) - this means you can
-simulate to another ISDN card that your card is an NTBA (however, since
-isdn4linux does not implement the level 3 protocol used by the exchange,
-you can only use this mode like a leased line).
+simulate to another ISDN card that your card is an NTBA. Since isdn4linux does
+not implement the level 3 protocol used by the exchange, you can only use this
+mode like a leased line.
+
+However, some special software named PBX4Linux has been written for this.
+You may want to have a look at the German article in ct 9/2004 on how to use
+PBX4Linux.
+
+Another alternative for emulation of a PBX is Asterisk, to be found on:
+<tt><url url="www.asterisk.org"></tt>
+
 Also, it is possible to give up one B-channel in exchange for reading the
 complete D-channel protocol, which is great for isdnlog. The later can
 also be done with a reversed card (see question
@@ -1105,6 +1193,14 @@ hisaxctrl &lt;driver_name&gt; 10 2
 </code>
 Parameter 10 changes the number of available channels, parameter 12 switches
 the echo mode.
+
+Cards with HFC chips may be difficult to run on older mainboards.
+Ensure with <tt>lspci -v</tt> that an IRQ has been assigned to the card
+(if not check the PnP bios settings). Verify that the card is
+located in a slot with busmaster DMA capabilities. Verify whether the
+kernel is compiled such that it will run on your CPU (newer
+distributions may not run on CPUs like 486 or Pentium; Suse provides
+the kernel 'k_i386' to run with older hardware).
 
 <sect1> hardware_elsa: What should I know about ISDN cards from ELSA?  
 <label id="hardware_elsa">
@@ -1251,10 +1347,12 @@ not work, then there could be an issue with the motherboard. See question
 <ref id="hardware_irqsharing" name="hardware_irqsharing"> for this.
 
 One very interesting thing: the Fritz! card is currently the only passive card
-for which a capi driver exists. As a result, it can be configured to fax.
-See question <ref id="feature_capi" name="feature_capi"> and 
+for which a capi driver exists. As a result, it can be configured to
+fax. See question <ref id="feature_capi" name="feature_capi"> and 
 <url url="http://www.avm.de/ftp/cardware/fritzcrd/linux/index.htm">
-for more information on this.
+for more information on this. Usage of the capi driver is completely optional,
+you might as well stay with the standard driver if you do not need capi
+support.
 
 <sect1> hardware_avmb1: What is special about the AVM B1 card?  
 <label id="hardware_avmb1">
@@ -1275,9 +1373,9 @@ add &dquot;DSS1 P2P&dquot; to the load command for the firmware, like:
 avmcapictrl load /usr/lib/isdn/b1.t4 0 DSS1 P2P
 </code>
 
-There is also a mailing list for problems with the AVM B1 available on:
-linux-avmb1@calle.in-berlin.de (send an email to majordomo@calle.in-berlin.de
-with <tt>subscribe linux-avmb1 &lt;your email address&gt;</tt> in its body). 
+There is also a mailing list for problems with the AVM B1 available.
+Visit <url url="https://mlists.in-berlin.de/mailman/listinfo/linux-avmb1">
+for more details about it.
 
 <sect1> hardware_hypercope: What is special about the Hypercope cards?  
 <label id="hardware_hypercope">
@@ -1389,15 +1487,20 @@ plug off, and new plug (in the right direction) on.
 <sect1> hardware_pbx: i4l is connected to the internal bus of a PBX. Any problem?  
 <label id="hardware_pbx">
 <p>
-Many PBX run non-standard ISDN protocolls on their internal bus. This may cause
-i4l to print warnings like "Unexpected discriminator 0xZZ" (where ZZ is a
-hexadecimal number) when it encounters unexpected frames (some old versions
-even crash). This can increase your message file by as much as 1 MB in 3 days.
-The PBX <tt/Ackermann Euracom 181/ (discriminator 0xaa) as well as
-<tt/Ascom/ (discriminator 0x44/0x47) seem to be notorious for this.
-You can avoid the warning by adjusting the switch/case code for isdnlog in
-function <tt>processctrl(...)</tt> in <tt>processor.c</tt> and recompiling
-isdnlog. Please note that isdnlog will not be able to log any incoming
+Many PBX run non-standard ISDN protocolls on their internal bus.
+
+In old versions (before end of August 2003) this could cause i4l to print
+warnings like "Unexpected discriminator 0xZZ" (where ZZ is a hexadecimal
+number) when it encounters unexpected frames (some old versions even
+crash). This can increase your message file by as much as 1 MB in 3 days. The
+PBX <tt>Ackermann Euracom 181</tt> (discriminator 0xaa) as well as
+<tt>Ascom</tt> (discriminator 0x44/0x47) seem to be notorious for this. You can
+avoid the warning by adjusting the switch/case code for isdnlog in function
+<tt>processctrl(...)</tt> in <tt>processor.c</tt> and recompiling isdnlog.
+Since August 2003 ignoring these unknown packages has become the default,
+therefore the recompile is not necessary any more.
+
+Please note that isdnlog will not be able to log any incoming
 data packages, since the PBX has to forward the packages. To see everything,
 you have to bypass the PBX.
 
@@ -1409,8 +1512,8 @@ than Euro ISDN. You have to configure i4l (or the PBX) accordingly, best
 is you try to configure both on the same or similar protocolls.
 
 Also the MSN may be different than you expect. Check several versions, no
-digit (then use <tt/0/, which i4l will require in such a case), one digit, or
-two digits, or the whole MSN. Best is you call some device (e.g. ISDN
+digit (then use <tt>0</tt>, which i4l will require in such a case), one digit,
+or two digits, or the whole MSN. Best is you call some device (e.g. ISDN
 telephone) on the internal bus and check what i4l writes into the log file.
 
 When you can not dial out, the most common problem is that you have not
@@ -1429,7 +1532,7 @@ you cannot connect your card directly to the S0 bus in parallel to the PBX
 (otherwise nothing will work). You have to connect to an internal ISDN bus.
 Your MSN is usually the extension at the end of your telefon number.
 
-If your PBX is the <tt/Ackermann Euracom/, then you may also check out
+If your PBX is the <tt/Ackermann Euracom</tt>, then you may also check out
 this German site for the configuration software maKs:
 <url url="http://www.ganzfix.de"> 
 
@@ -1688,13 +1791,15 @@ to disconnect the RX leads (pin 3 and 6 on western plug), so that the NTBA
 will not see the ISDN card. In this case configure HiSax normally, NOT in
 point-to-point mode.
 
-<sect1> config_links: What helpful links are there about isdn4linux?  
+<sect1> config_links: What helpful links are there about and around  
+isdn4linux?  
 <label id="config_links">
 <p>
 These are helpful links that are currently available on how to configure
 isdn4linux:
 <itemize>
-<item>English: <url url="http://www.wurtel.demon.nl/i4l-howto-uk.html">
+<item>English: <url url="http://www.wurtel.cistron.nl/i4l-howto-uk.html">
+<item>Dutch: <url url="http://www.wurtel.cistron.nl/i4l-howto-nl.html">
 <item>German: <url url="http://www.franken.de/users/klaus/">
 <item>French: <url url="http://www.linux-france.org/article/connex/ISDN/">
 and <url url="http://www.linux-france.org/prj/inetdoc/guides/rnis/">
@@ -1707,12 +1812,20 @@ howto (isdn.html) and a ISDN quick-install guide (isdnquick.html).
 <url url="http://www.webideal.de/rh-isdn/">
 <item>Tips to configure Mandrake:
 <url url="http://www.mandrakeuser.org/connect/cisdn.html">
+<item>Tips to configure Gentoo:
+<url url="http://forums.gentoo.org/viewtopic.php?t=29991">
 <item>fli4l, a prepackaged Linux version to use an old PC as ISDN router:
 <url url="http://www.fli4l.de"> (great!)
+<item>LR101 (a project which tries to create a hardware router based on Linux):
+<url url="http://lr101.linux-it-solutions.de">
 <item>Scripts and installation tips from several people:
 <tt><url url="http://www.rosat.mpe-garching.mpg.de/&tilde;web/ISDN.html"></tt>
 <item>Documentation on abc extensions:
 <tt><url url="http://i4l.mediatronix.de/"></tt>
+<item>Installation of CAPI4LINUX, CAPI4LINUX, and CAPI4Hylafax (in German):
+<tt><url url="http://ixi.thepenguin.de"></tt> or
+<tt><url url="http://capi4linux.thepenguin.de"></tt> or
+<tt><url url="http://www.thepenguin.de"></tt>
 <item>Vbox development:
 <tt><url url="http://innominate.org/projects/vbox/index.php3"></tt>
 <item>Michael Hipp's page (general informations):
@@ -1721,11 +1834,52 @@ howto (isdn.html) and a ISDN quick-install guide (isdnquick.html).
 <tt><url url="http://www.auf-der-er.de/chargeint.html"></tt>
 <item>Homepage of kisdn (only works with Qt/KDE):
 <tt><url url="http://www.millenniumx.de/kisdn.html"></tt>
-<item>Configuration not only for UK (follow link to Linux Setup):
-<tt><url url="http://www.oakhaven-consultants.co.uk"></tt>
+<item>Homepage of linecontrol (manage isdn dialing similar to kisdn):
+<tt><url url="http://linecontrol.sourceforge.net"></tt>
+<item>(German) Homepage of ISDN Sniffer (read ISDN bus, e.g. via reversed
+card): <tt><url url="http://krypt.cs.uni-sb.de/~osk/isdnosk.html"></tt>
+<item>Homepage of Asterisk (Open Source Linux PBX):
+<tt><url url="http://www.asterisk.org"></tt>
 <item>Configuration software maKs for Ackermann Euracom (not isdn4linux related):
 <tt><url url="http://www.ganzfix.de"></tt>
 </itemize>
+
+<sect1> config_misdn: How should I configure the new mISDN driver, and what  
+is so special about it?  
+<label id="config_misdn">
+<p>
+The mISDN driver stands for modular ISDN. It is a complete rewrite of the old
+isdn drivers and now communicates via CAPI messages. The mISDN driver is
+retire the historical drivers once it is fully functional within the 2.6.x
+kernels. As a temporary work around the historical drivers have been
+ported into the early 2.6.x kernels to get isdn working, however, this will
+be fixed in later versions.
+
+To start mISDN, you have to load all the following modules:
+<itemize>
+<item>capi
+<item>mISDN_core
+<item>mISDN_l1
+<item>mISDN_l2
+<item>l3udss1
+<item>mISDN_capi
+<item>mISDN_isac (for isa card)
+<item>Hardware specific driver (e.g. hfcpci, or avmfritz)
+</itemize>
+
+Not all features are available. It is currently not planned to port
+1TR6 (the ancient ISDN protocoll in Germany) to the new driver.
+
+For more information on how to configure it have a look at the following
+website: <tt><url url="http://rcum.uni-mb.si/~uvp00845b/"></tt>
+
+For a more general description on the mISDN driver and the future of isdn4linux
+you may also read the German article published in ct 3/2004. An online
+version is available at: <tt><url url="http://www.heise.de/ct/04/03/182/"></tt>
+
+Please note that the current FAQ applies to old isdn drivers.
+mISDN may work differently than described in this FAQ.
+Please let me know about any amendmends for this FAQ.
 
 
 <!-- Troubleshooting
@@ -2238,6 +2392,49 @@ message, then either you have changed the source code yourself, or the
 author did not update the checksum when changing the source code (reason
 could be that the complete certification tests have not yet been run on 
 the changed code).
+
+
+<sect1> trouble_crcerror: How can I see the number of packets for HiSax with  
+invalid CRC?  
+<label id="trouble_crcerror">
+<p>
+With HiSax you can view the accumulated number of hardware CRC errors with:
+<code>
+hisaxctrl &lt;id&gt; 0 0
+</code>
+and reset them with:
+<code>
+hisaxctrl &lt;id&gt; 0 99
+</code>
+It is ok if you have the occasional CRC error, but if you see a lot of
+errors then check your cable termination & connectivity.
+
+
+<sect1> trouble_amproglibtool: When compiling isdn4k-utils I get the  
+error 'AM_PROG_LIBTOOL not found'?  
+<label id="trouble_amproglibtool">
+<p>
+You have to regenerate the files from automake/autoconf with your version of
+automake/autoconf.
+You can do it with the following shell script (assuming you
+stored the source code for the isdn4k-utils under ~/isdn/isdn4k-util):
+<code>
+cd ~/isdn/isdn4k-utils
+for i in capi20 capiinfo capifax capiinit rcapid ; do
+ cd $i
+ rm -f lt*
+ aclocal
+ libtoolize --force --automake --copy
+ automake --add-missing --copy
+ autoconf
+ cd ..
+done
+for i in eicon isdnlog ipppd ; do
+ cd $i
+ autoconf
+ cd ..
+done
+</code>
 
 
 <!-- Config MSN
@@ -3432,6 +3629,14 @@ call.
 Probably you did not tell the modem emulation with <tt>AT&amp;E</tt> which
 MSN to use. For example, use <tt>AT&amp;E123456</tt>; if your MSN is 123456.
 
+Please also note that only one application using the ttyI* devices will
+receive a ring for a particular MSN. Which will ring is selected by a loop
+over all ttyI* devices. A device is selected based on whether its
+parameters match (protocol, MSN) and whether it is currently not involved
+with another call. Therefore it does not make sense for multiple applications
+to register for the same MSN via the ttyI* devices, unless you want to
+have load sharing between the applications.
+
 <sect1> ttyI_callphone: Why can't I dial my telephone or fax from the ttyI*  
 devices?  
 <label id="ttyI_callphone">
@@ -3590,7 +3795,9 @@ IP addresses are dynamically assigned, then the disaster is inevitable.
 Then a new connection is started to bring down the open IP connections,
 which fails because the IP address is now different. The line is hung up,
 but the IP connections are still open, the line is dialed again, and
-so on... This can only be avoided with the RST-Revoking patch, which has found
+so on... This can only be avoided with the RST-provoking mode (see question
+<ref id="dod_rstprovoking" name="dod_rstprovoking">. A patch for it may be
+needed if it is not included in your distribution. The patch had found
 its way into the 2.0.x kernels, but not into 2.1/2.2/2.3. However, you can get
 an adjusted patch for 2.2.x kernels and some background information about it
 from: <url url="http://www.another.de/linux/router/">. See also question
@@ -3771,24 +3978,20 @@ call &dquot;sendmail -q&dquot;.
 prevent this?  
 <label id="dod_samba">
 <p>
-Andreas Glahn <tt><htmlurl url="mailto:andreas@tao.westfalen.de"
-name="andreas@tao.westfalen.de"></tt> wrote on 31 Jan 1997:
-I had this problems too. Then when starting the samba daemon I gave
-it the internal IP address I use here at home. Since then a samba
-request is no longer sent to default, but stays here.
-
-Take a look at the configuration with netstat and tcpdump. With tcpdump
-you can quickly find out to which IP address samba is trying to
-connect.
-
-My internal Linux computer has, e.g.: 192.168.99.99
-
-My Win95 computer:        n           192.168.99.88
-
-On the Linux computer I started samba with:
+When nmbd starts up it tries to bind to 0.0.0.0 or all interfaces, which
+is what triggers the ISDN dialup.
+The best way to solve this is to set "bind interfaces only = yes" and
+"interfaces = eth0" in smb.conf (in case you want to use Samba only in
+your LAN).
+Alternatively, you can give the samba daemon an internal ip address upon
+startup. First find out which ip address samba is trying to connect to
+(e.g. with netstat or tcpdump). Then start samba with:
 <code>
 nmdb -S -B 192.168.99.255 -I 192.168.99.99
 </code>
+if your Linux computer has 192.168.99.99 as ip address, and all users
+are in the same subnet (192.168.99.255).
+
 See also the above question:  set -broadcast and possibly -arp 
 when defining the interfaces!
 
@@ -3815,12 +4018,38 @@ want to use this feature then you can enter the name Netscape uses for lookup
 (probably 'news') in your local DNS or in your /etc/hosts, and let it point
 to localhost.
 
+<sect1> dod_rstprovoking: Why should I use the RST-provoking mode/patch?  
+<label id="dod_rstprovoking">
+<p>
+If on every dialup (in auto dialout mode) you get a different ip address
+(dynamic ip), and the dialup connection gets terminated (e.g due to
+inactivity) while some ip connections have not yet been closed, then the
+following problem will occur:
+when the program tries to close the connection this will trigger a new dialout.
+Since this will yield in a new ip address, the closing attempt will fail.
+After the timeout period another dialout will be attempted, with the same
+result, leading to a dial on demand disaster.
+To prevent this problem the RST-provoking mode has been invented.
+If on the closing attempt a new dialout is opened and the ip address changes,
+then the kernel will send a ip packet with the reset flag on. This will close
+down the open connection, preventing the dial on demand disaster.
+To activate the RST-provoking mode use the command 
+<code>
+echo 7 > /proc/sys/net/ipv4/ip_dynaddr
+</code>
+Use 5 instead of 7 to prevent syslog warnings. Check the current status with:
+<code>
+cat /proc/sys/net/ipv4/ip_dynaddr
+</code>
+Your distribution may or may not have the patch for this rst-provoking mode
+included, it was not liked in the kernel code for kernels newer than 2.0.x.
+
 <sect1> dod_closeipconnect: After closing the line, I discover with 
 <tt>netstat -nt</tt> that IP connections are still open. How can I close 
 these manually?  
 <label id="dod_closeipconnect">
 <p>
-This may only work with the RST-Revoking patch (mentioned in question
+This may only work with the RST-provoking mode (mentioned in question
 <ref id="dod_causes" name="dod_causes">): You can bring the interface
 &dquot;down&dquot; then back &dquot;up&dquot;. When you do this, it will
 try to dial out. But if you have removed the outgoing telephone number,
@@ -3934,6 +4163,14 @@ updates can only be switched off on the Cisco. You can configure
 &dquot;snapshot server&dquot; on the BRI interface. That means it will
 send out routing updates only when they are received through this interface.
 
+However, nowadays the most likely cause for open connection is that
+connection requests looking for a backdoor or a file sharing application
+cause issues like this. You can use the <tt>active-filter</tt> option
+of ipppd to indicate which packets should be regarded as link activity.
+See the man page for more details. A configuration could be like this:
+<code>
+active-filter 'outbound and not icmp[0] == 3 and not tcp[13] & 4 != 0'
+</code>
 
 <!-- 2 and more channels: MPPP, raw bundling
 -->
@@ -4053,6 +4290,12 @@ and
 <code>
 isdnctrl hangup slave
 </code>
+When using manual control please ensure that the slave device is shut down
+before the master device. Currently (August 2002) there is a hard-to-fix bug
+in the MPPP code which will cause a crash on the next dialout. A patch exists
+which cures the symptoms to prevent the crash (see mailing list). However,
+since the dialout will fail in any case it is best to avoid this situation
+altogether by using the proper shutdown sequence.
 
 With syncPPP, there is no automatic activation of slave devices, they have to
 be added and removed. However, there is the program <tt>ibod</tt> available,
@@ -4086,6 +4329,37 @@ message &dquot;modprobe: Can't locate module ippp1&dquot; and
 This is a pecularity of ipppd. It tries to set MTU even for slave devices,
 and the kernel can not find a corresponding network device. You can safely
 ignore this information message, MPPP should work nevertheless.
+
+<sect1> 2channel_multiplenumbers: How can I set up multiple number when  
+using MPPP?  
+<label id="2channel_multiplenumbers">
+<p>
+Master and slave device are fully independent of each other, except for using
+the same network device to deliver packets. Setting up multiple number for
+master and slave devices will result in synchronized dialout (to the same
+number). Therefore it is best to give the slave device no number by default
+and set up the slave with the same number as the master in some ip-up script.
+
+<sect1> 2channel_freebchannel: How could I set up isdn4linux to free the  
+second B-channel if a phone call comes in?  
+<label id="2channel_freebchannel">
+<p>
+Well, this is a tough one, due to technical limits. Even if isdn4linux freed
+a B-channel, the exchange would not repeat the setup call. Therefore, the
+phone would not ring. The phone only signals a second incoming phone call if
+you are on the phone with another call that could be suspended.
+
+One option would be that isdn4linux frees one B-channel, then takes the call,
+and transfers it to the phone via ECT (explicit call transfer); however, this
+feature requires proprietary (unknown) protocol extensions, and is usually
+only available behind large private exchanges - therefore not implemented
+in isdn4linux.
+Another option is that isdn4linux frees one B-channel, takes the call, then
+suspends it. However, the user would have to know to resume it without any
+phone ringing.
+The most sensible option is that you handle it will a phone application
+making use of isdn4linux. Possibly ant-phone could be used for such a purpose:
+<tt><url url="http://www.antcom.de/"></tt>
 
 
 <!-- Pecularities of your counterpart (remote device)
@@ -4501,8 +4775,44 @@ isdnctrl cbdelay isdn0 1
 (CBCP)?  
 <label id="callback_microsoft">
 <p>
-No, this is not implemented in isdn4linux. Since it is not trivial to
-implement, there are currently no plans to implement it.
+Yes, this is implemented in ipppd. To enable it you have to set the
+parameter &dquot;callback 6&dquot; as an ipppd option on the client side
+for an admin managed callback. This means the server will call back on
+the number it has been configured for.
+More interesting is a user managed callback, since the number to be called
+back can be provided by the user. Set the paramter
+&dquot;callback 123456&dquot; if you want to be dialed back on number 123456.
+To start the callback trigger it from the client via:
+<code>
+isdnctrl cbdelay &lt;device&gt; 5
+isdnctrl callback &lt;device&gt; out
+</code>
+Please remember that using the CBCP callback always requires both parties to
+connect and exchange data, so telephone charges will be incurred.
+Please note that the man page may be confusing about the callback parameter for
+ipppd. Please note these hints from NOTES.IPPPD:
+<verb>
+- 'callback type[,message]' enables the callback feature
+  also UNTESTED!
+  ie: 'callback 0'       -> simple callback (info via auth. etc.)
+      'callback 3,12346' -> us E.164 (tel) number 123456 for callback
+      'callback 6' is different. This value means, that the whole negotiation
+  is done with a seperate protocol after the authentification phase. Currently
+  it's not possible to set any options in this case. The ipppd accepts
+  everything from the remote side.
+</verb>
+The server side is not tested so far - please let me know if you have some
+feedback on using CBCP as a server).
+
+If you have a Red Hat distribution, setting the following parameters in
+ifcfg-ippp0 might do the trick for an admin managed callback:
+<code>
+CALLBACK=out
+CBDELAY=5
+CBCP=on
+</code>
+For user managed callback please follow the hints on:
+<url url="https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=125710">.
 
 
 <!-- Isdnlog
@@ -4515,7 +4825,7 @@ implement, there are currently no plans to implement it.
 <label id="isdnlog_rates">
 <p>
 This is the homepage of the rate data crew:
-<tt><url url="http://rates4linux.sourceforge.net/"></tt>. There you
+<tt><url url="http://sourceforge.net/projects/rates4linux"></tt>. There you
 can download the latest rate files (which change very frequently),
 or have a look at the latest rate news.
 
@@ -4623,6 +4933,9 @@ Please note that this only works when the second card is an ISAC based cards
 (e.g. old Teles cards, Fritz! classic), since it requires a special
 bug/feature of that chip. All other cards, like IPAC based cards (e.g. ELSA
 QS1000pro) will not work in the role of a re-poled card.
+Please note that this will only work on the standard BRI interface,
+since for the more expensive PRI interface no card is available which
+can be used (PRI is a point-to-point connection anyway).
 
 <item> HFC cards: some HFC-PCI based cards allow a special feature where one
 of the B channels can be sacrificed in exchange for reading the complete
@@ -4639,6 +4952,11 @@ makes use of the HFC option.
 Please note that a plain HFC-S does not work for hardware reasons, it has
 to be a newer one. If your card works with Hisax type 35 or 37, then it
 should work.
+
+Please also note that there is no known card for logging on a PRI interface
+in this way (also, the PRI interface is point-to-point, therefore only
+one device can be connected).
+
 
 <item> PBX: A third (theoretical) possibility exists for those who have
 their own PBX to which the other devices are connected. If the PBX can
@@ -4719,6 +5037,24 @@ This may happen when you start isdnlog with the options <tt>-t1</tt>
 or <tt>-t2</tt>, then the time is synchronized with the digital
 switching station. The screen saver thinks that more than x minutes have
 passed, which causes a short blackout of the screen.
+
+<sect1> isdnlog_nologging: Isdnlog does not log any incoming call for me?  
+<label id="isdnlog_nologging">
+<p>
+Please verify whether your setup complies with the restrictions given in the
+isdnlog man page:
+
+Isdnlog only works with the HiSax isdn driver. Other cards with their own
+driver are not supported. Additionally you need to enable d-channel logging
+(you can use "hisaxctrl &lt;DriverId&gt; 1 4" to do that, e.g.
+"hisaxctrl line0  1  4").  Isdnlog can only log outgoing calls that
+originate from your isdn card, and incoming calls. To get information
+about outgoing calls from other isdn devices (e.g. telephones), you need
+a second Teles isdn card, with crossed lines. Such a card is not usable
+for communicating, but can log outgoing calls from any device.
+
+See also question <ref id="isdnlog_reversedcard" name="isdnlog_reversedcard">
+for using two ISDN cards for logging.
 
 
 <!-- Audio
@@ -4897,7 +5233,7 @@ We are aware of at least the following countries:
 <item>Singapore
 <item>Spain
 <item>Sweden
-<item>Switzerland (see question <ref id="country_switherland" name="country_switherland">)
+<item>Switzerland (see question <ref id="country_switzerland" name="country_switzerland">)
 <item>The Netherlands (see question <ref id="country_netherlands" name="country_netherlands">)
 <item>United Arab Emirates
 <item>United Kingdom (see question <ref id="country_uk" name="country_uk">)
@@ -4922,8 +5258,14 @@ firmware. Thus the approval also covers the use of these cards with
 isdn4linux.
 <item>Elsa Quickstep series cards (new name Microlink PCI)
 <item>Eicon Diva 2.01 PCI
+<item>Teles 16.3 ISA (with Siemens chipset)
+<item>Sedlbauer Speedfax+ PCI
 <item>Passive cards: all cards based on the HFC-S chipset.
 </itemize>
+Actually, since April 2000 the rules for certification have changed. Now
+the producer of an ISDN card has to do only hardware tests, the driver is
+not part of the certification anymore. This applies to the whole European
+Community.
 
 <sect> 1tr6: German Pecularities for 1TR6 
 <label id="1tr6">
@@ -5056,7 +5398,7 @@ for their contribution to isdn4linux open source development.
 
 See Documentation/isdn/README.HiSax for details on how to set up your
 system with HiSax (protocol type is 4, give SPID together with your own
-number).
+number in the form of &lt;OWNNUMBER&gt;:&lt;SPID&gt;).
 
 Quite some time ago, the firm &dquot;Spellcaster&dquot; has written their own
 isdn4linux driver for their (active) cards. Both BRI and PRI cards are
@@ -5080,13 +5422,15 @@ As long as only one telephone number or MSN was applied for, the telephone
 company sends no caller ID. Therefore the MSN should be set to &dquot;0&dquot;.
 If more than one MSNs was applied for, then these should be set as usual.
 
-<sect1> country_switherland: Switzerland: We have neither an MSN nor an EAZ,  
+<sect1> country_switzerland: Switzerland: We have neither an MSN nor an EAZ,  
 just a plain telephone number. What do we have to use for i4l?  
-<label id="country_switherland">
+<label id="country_switzerland">
 <p>
-In Switzerland you have to use the <em>last digit</em> of your telephone
-number as your MSN/EAZ (&dquot;6&dquot; if you have the telephone number
-&dquot;123456&dquot;).
+In Switzerland usually you have to use the telephone number without area
+code. For old ISDN numbers where you have been assigned ten numbers in a
+row this may be different; in that case use the <em>last digit</em> of your
+telephone number as your MSN/EAZ (&dquot;6&dquot; if you have the telephone
+number &dquot;123456&dquot;).
 
 <sect1> country_uk: UK: What should we use as MSN?  
 <label id="country_uk">
@@ -5123,7 +5467,12 @@ international calls. For international data calls you have to dial
 By the way: for a BT Speedway card try to select AVM Fritz card (either
 ISA or PCI - depends on what you got; see question <ref id="hardware_fritz" name="hardware_fritz">).
 
-Also, check out <url url="http://www.wurtel.demon.nl/i4l-howto-uk.html">.
+Since about November 2001, all BT home highway and possibly Business Highway
+NTE boxes come with a built in USB terminal adapter. This terminal adapter is
+based on the ST-5481 chipset. Load the module st5481 for this device, then
+set up your isdn configuration with isdnctrl.
+
+Also, check out <url url="http://www.wurtel.cistron.nl/i4l-howto-uk.html">.
 
 <sect> misc: Miscellaneous  
 <label id="misc">

@@ -20,6 +20,10 @@
  *
  * 0.10 15.12.2000 lt Initial Version
  * 0.11 21.12.2000 lt calculate duration
+ * 0.12 05.04.2002 lt adapted for 2.4.x
+ * 0.13 05.04.2002 lt 2. try, thanks Achim Steinmetz
+ * 0.14 08.04.2002 lt fixed module unload
+ * 0.15 11.04.2002 lt make it pager compatible for 2.4.x
  */
 
 /* based on code found in lkmpg/node17.html, which is: */
@@ -29,19 +33,14 @@
 /* The necessary header files */
 
 /* Standard in kernel modules */
-#include <linux/kernel.h>	/* We're doing kernel work */
 #include <linux/module.h>	/* Specifically, a module */
-
-/* Deal with CONFIG_MODVERSIONS */
-#if CONFIG_MODVERSIONS==1
-#define MODVERSIONS
-#include <linux/modversions.h>
-#endif
-
+#include <linux/kernel.h>	/* We're doing kernel work */
 /* Necessary because we use proc fs */
 #include <linux/proc_fs.h>
 #include <linux/time.h>	/* get time */
 
+#define MODULE_VERSION "0.15"
+#define MODULE_NAME "modilp"
 
 /* In 2.2.3 /usr/include/linux/version.h includes a 
  * macro for this, but 2.0.35 doesn't - so I add it 
@@ -50,6 +49,10 @@
 #define KERNEL_VERSION(a,b,c) ((a)*65536+(b)*256+(c))
 #endif
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,0)
+#include <linux/init.h>		/* __init macros */
+#define get_fast_time do_gettimeofday
+#endif
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,1,4)
 #include <asm/uaccess.h>	/* for copy_user */
 
@@ -114,6 +117,53 @@ static void calc_diff(ulong d, char *p) {
  * use the special proc output provisions - we have to 
  * use a standard read function, which is this function */
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,0)
+static int proc_calc_metrics(char *page, char **start, off_t off,
+				 int count, int *eof, int len)
+{
+	if (len <= off+count) *eof = 1;
+	*start = page + off;
+	len -= off;
+	if (len>count) len = count;
+	if (len<0) len = 0;
+	return len;
+}
+
+/* new proc-fs interface */
+static int 
+read_func(
+		char *page,	/* data in user_space */
+		char **start,	/* where to write, ignored */
+		off_t off,	/* offset ignored */
+		int count,	/* maximum */
+		int *eof,	/* eof marker */
+		void *data) 	/* N/U */
+{
+	int i;
+	int len;
+	struct timeval tv;
+	get_fast_time(&tv);
+	for (i=0 ; i<N_CHANS; i++)
+		if (message[i].text && 
+				strlen(message[i].text) >= 70 && 
+				strstr(message[i].text, Connect))
+			calc_diff(tv.tv_sec-message[i].start, message[i].text+62);
+	len = sprintf (page,
+			/*2345678901234567890123456789012345678901234567890123456789012345678901234567890 */
+			/*        1         2         3         4         5         6         7          */
+			"Ch State   Msn - Number                    Alias              Duration Cost\n%s%s",
+			message[0].text, message[1].text);
+
+	/* BUG_ON(len > count); ? */
+#if 1
+	return proc_calc_metrics(page, start, off, count, eof, len);
+#else
+	*eof = 1;
+	return len;
+#endif
+}
+
+#else	
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,2,0)
 static ssize_t 
 module_output (
@@ -173,7 +223,7 @@ module_output (
 
   return len;			/* Return the number of bytes "read" */
 }
-
+#endif
 
 /* This function receives input from the user when the 
  * user writes to the /proc file. */
@@ -219,6 +269,45 @@ module_input (
   return 0;
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,0)
+static int 
+write_func(
+	struct file *file,	/* ignored */
+	const char *buffer,	/* data */
+	unsigned long count,	/* len */
+	void *data)		/* ignored */
+{
+	return module_input(file, buffer, count, 0);
+}	
+#endif	
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,0)
+static struct proc_dir_entry *modilp_file;
+
+static int __init init_modilp(void)
+{
+	modilp_file = create_proc_entry("isdnlog", 0644, NULL);
+	if (modilp_file == NULL)
+		return -ENOMEM;
+	modilp_file->read_proc = read_func; 	
+	modilp_file->write_proc = write_func; 	
+	modilp_file->owner = THIS_MODULE;
+	return 0;
+}
+
+static void __exit exit_modilp(void) 
+{
+	remove_proc_entry("isdnlog", NULL);
+}
+
+module_init(init_modilp);
+module_exit(exit_modilp);
+MODULE_AUTHOR("Leopold Totsch");
+MODULE_DESCRIPTION("line status for isdnlog");
+MODULE_LICENSE("GPL");
+EXPORT_NO_SYMBOLS;
+
+#else
 
 /* This function decides whether to allow an operation 
  * (return zero) or not allow it (return a non-zero 
@@ -393,3 +482,5 @@ cleanup_module ()
 {
   proc_unregister (&proc_root, Our_Proc_File.low_ino);
 }
+#endif
+

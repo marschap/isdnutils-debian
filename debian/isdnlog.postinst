@@ -5,23 +5,6 @@ set -e
 
 . /usr/share/debconf/confmodule
 
-# summary of how this script can be called:
-#        * <postinst> `configure' <most-recently-configured-version>
-#        * <old-postinst> `abort-upgrade' <new version>
-#        * <conflictor's-postinst> `abort-remove' `in-favour' <package>
-#          <new-version>
-#        * <deconfigured's-postinst> `abort-deconfigure' `in-favour'
-#          <failed-install-package> <version> `removing'
-#          <conflicting-package> <version>
-# for details, see /usr/doc/packaging-manual/
-#
-# quoting from the policy:
-#     Any necessary prompting should almost always be confined to the
-#     post-installation script, and should be protected with a conditional
-#     so that unnecessary prompting doesn't happen if a package's
-#     installation fails and the `postinst' is called with `abort-upgrade',
-#     `abort-remove' or `abort-deconfigure'.
-
 DOWHAT="$1"
 OLDVERSION="$2"
 
@@ -123,6 +106,7 @@ case "$DOWHAT" in
 	db_get isdnlog/countrycode   || true; COUNTRYCODE=$RET
 	db_get isdnlog/areaprefix    || true; AREAPREFIX=$RET
 	db_get isdnlog/areacode      || true; AREACODE=$RET
+        db_get isdnlog/isdnrate-daemon || true; ISDNRATE_DAEMON=$RET
 	db_stop
         $somethingchanged || md5sum=`md5sum $CONF`
 	perl -i -p \
@@ -144,8 +128,45 @@ case "$DOWHAT" in
                 somethingchanged=true
             fi
         fi
+        CONF=/etc/isdn/isdnrate.conf
+        daemon=false
+        socket=/var/run/isdnrate/socket
+        if [ -s $CONF ]; then
+            $somethingchanged || md5sum=`md5sum $CONF`
+            set +e
+            . $CONF
+            set -e
+        else
+            md5sum=dummyvalue
+            ( echo "# isdnrate configuration"
+              echo ""
+              echo "# This file is sourced into a Bourne shell."
+              echo ""
+            ) > $CONF
+        fi
+        if [ "x$ISDNRATE_DAEMON" = "xyes" ]; then
+            daemon=true
+        else
+            daemon=false
+        fi
+        if grep '^daemon=' $CONF >/dev/null 2>&1; then
+            perl -i -pe "s/^daemon=.*/daemon=$daemon/" $CONF
+        else
+            echo "daemon=$daemon" >> $CONF
+        fi
+        if grep '^socket=' $CONF >/dev/null 2>&1; then
+            perl -i -pe "s,^socket=.*,socket=$socket," $CONF
+        else
+            echo "socket=$socket" >> $CONF
+        fi
+        if $somethingchanged; then :; else
+            if [ "$md5sum" != "`md5sum $CONF`" ]; then
+                somethingchanged=true
+            fi
+        fi
+
 	if $somethingchanged; then
-            /etc/init.d/isdnutils $init isdnlog
+            if [ -x /etc/init.d/isdnutils ]; then /etc/init.d/isdnutils $init isdnlog; fi
 	fi
         ;;
 

@@ -7,33 +7,63 @@ if [ "$1" != "configure" ]; then exit 0; fi
 
 db_set isdnvboxserver/dummy donetwice # next time, do it again
 
+DEVDIR=/dev
+if [ ! -c $DEVDIR/ttyI6 ]; then
+    if grep 'type devfs' /proc/mounts >/dev/null; then
+        DEVDIR=/dev/isdn
+    else
+        cd /dev
+        echo "Note: running MAKEDEV to create ISDN tty devices in /dev..."
+        /sbin/MAKEDEV isdn-tty
+    fi
+fi
+
 # Do this first, so we can shortcut the rest
 if ! egrep -q '#-- isdn(vboxserver|utils) begin' /etc/inittab; then
     # I hate having to cater for history
     if ! egrep -q vboxgetty /etc/inittab; then
         db_get isdnvboxserver/doinit || true
         if [ $RET = yes ]; then
+
             cat >>/etc/inittab <<EOF
 #-- isdnvboxserver begin
-I6:2345:respawn:/usr/sbin/vboxgetty -d /dev/ttyI6
+I6:2345:respawn:/usr/sbin/vboxgetty -d $DEVDIR/ttyI6
 #-- isdnvboxserver end
 EOF
         else
             cat >>/etc/inittab <<EOF
 #-- isdnvboxserver begin
-#I6:2345:respawn:/usr/sbin/vboxgetty -d /dev/ttyI6
+#I6:2345:respawn:/usr/sbin/vboxgetty -d $DEVDIR/ttyI6
 #-- isdnvboxserver end
 EOF
         fi
     fi
 else
-    # restart with possibly changed parameters
-    if killall -q vboxgetty 2>/dev/null; then
-        : # ok
-    else
-        for i in /var/run/vboxgetty-*.pid; do
-            kill `cat $i 2>/dev/null || true` 2>/dev/null || true # sheesh
-        done
+    if grep vboxgetty /etc/inittab >/dev/null; then
+        # perhaps inittab still contains the pre-devfs device name,
+        # check it and give a notice if it's wrong (either way).
+        DEV=`grep vboxgetty /etc/inittab | sed 's,.*-d *\(/dev[^ ]*\).*,\1,'`
+        if [ -z "$DEV" ]; then
+            : # ok, no device found?
+        else
+            if [ -c "$DEV" ]; then
+                : # ok
+            else
+                oldDEVDIR=`expr "$DEV" : "\(.*\)/"`
+                if [ "$oldDEVDIR" != "$DEVDIR" ]; then
+                    db_get isdnvboxserver/devfs_inittab || true
+                    db_go
+                fi
+            fi
+        fi
+        # restart with possibly changed parameters
+        if killall -q vboxgetty 2>/dev/null; then
+            : # ok
+        else
+            for i in /var/run/vboxgetty-*.pid; do
+                kill `cat $i 2>/dev/null || true` 2>/dev/null || true # sheesh
+            done
+        fi
     fi
 fi
 # Doing this now isn't so bad, even though perhaps the config files
@@ -51,7 +81,7 @@ if [ -z "$RET" -o `echo "$RET" | tr A-Z a-z` = quit ]; then # do it by hand
 fi
 
 # DONT ADD A USER!
-# if ! grep -q '^vbox:' /etc/passwd; then
+# if ! getent passwd vbox; then
 #     stderr="`adduser --system --home /var/spool/vbox --ingroup dialout --disabled-password --gecos 'vbox daemons' vbox 2>&1`"
 #     if [ $? -ne 0 ]; then
 #         db_subst isdnvboxserver/adduserfailed MSG "$stderr"
@@ -65,7 +95,12 @@ VBOX_CONFFILE=
 if [ -s /etc/isdn/vboxgetty.conf ]; then
     # only use ttyI6
     eval `perl -- - /etc/isdn/vboxgetty.conf <<'EOF'
-        while (<>) { last if m,^port /dev/ttyI6,; }
+        while (<>) {
+            if (m,^port (/dev/(isdn/)?)ttyI6,) {
+                print "oldDEVDIR=$1\n";
+                last;
+            }
+        }
         while (<>) {
             last if m,^port,;
             if (/^\s+spooldir\s+(\S+)/) {
@@ -75,6 +110,10 @@ if [ -s /etc/isdn/vboxgetty.conf ]; then
         }
 EOF
     `
+    if [ "$oldDEVDIR" != "$DEVDIR/" ]; then
+        db_get isdnvboxserver/devfs_vboxgettyconf || true
+        db_go
+    fi
 fi
 if [ -s /etc/isdn/vboxd.conf ]; then
     eval `perl -- - /etc/isdn/vboxd.conf <<'EOF'
@@ -92,7 +131,7 @@ db_get isdnvboxserver/user || true
 VBOX_USER=`echo "$RET" | tr -d ' '`
 if [ ! -z "$VBOX_USER" ]; then
     db_get isdnvboxserver/password || true
-    VBOX_PASSWORD=$(echo "$RET" | tr -d ' ')
+    VBOX_PASSWORD=$(echo "$RET" | sed 's,^ *,,' | sed 's, *$,,')
 fi
 db_get isdnvboxserver/daemonuser || true
 VBOX_DUSER=`echo "$RET" | tr -d ' '`
@@ -172,7 +211,8 @@ if [ "$VBOX_SPOOL" != "$VBOX_SPOOLold" ]; then
             VBOX_USERSPOOL=/vvaarr/ssppooooll/vvbbooxx/doesntexist_2
         else
             # now we're free to create the new one
-            mkdir -p "$VBOX_SPOOL"
+            mkdir -p "$VBOX_SPOOL/incoming" "$VBOX_SPOOL/messages"
+            cp /usr/share/isdnvboxserver/default/standard.tcl "$VBOX_SPOOL/."
             db_subst isdnvboxserver/spoolcreate NEWSPOOL "$VBOX_SPOOL"
             db_input low  isdnvboxserver/spoolcreate || true
             db_go
@@ -214,7 +254,8 @@ if [ "$VBOX_SPOOL" != "$VBOX_SPOOLold" ]; then
 elif [ ! -d "$VBOX_SPOOL" ]; then
     # on initial installation it won't exist, and "old" name == new name
     # so create it here if necessary
-    mkdir -p "$VBOX_SPOOL"
+    mkdir -p "$VBOX_SPOOL/incoming" "$VBOX_SPOOL/messages"
+    cp /usr/share/isdnvboxserver/default/standard.tcl "$VBOX_SPOOL/."
     db_subst isdnvboxserver/spoolcreate NEWSPOOL "$VBOX_SPOOL"
     db_input low  isdnvboxserver/spoolcreate || true
     db_go
@@ -239,7 +280,7 @@ fi
 #XXXfi
 
 if [ ! -z "$VBOX_DUSER" ]; then
-    VBOX_USERHOME=`grep "^$VBOX_DUSER:" /etc/passwd | cut -f6 -d:`
+    VBOX_USERHOME=`getent passwd "$VBOX_DUSER" | cut -f6 -d:`
     if [ ! -z "$VBOX_USERHOME" ]; then
         if [ -d "$VBOX_SPOOL" ]; then
             chown -R "$VBOX_DUSER" "$VBOX_SPOOL"
@@ -275,7 +316,7 @@ if [ ! -z "$VBOX_DUSER" ]; then
     mv -f /etc/isdn/vboxgetty.conf /etc/isdn/vboxgetty.conf.bak || echo "mv 4 failed"
     perl -- - > /etc/isdn/vboxgetty.conf <<EOF
         open(STDIN, '/etc/isdn/vboxgetty.conf.bak');
-        while (<>) { print; last if m,^port /dev/ttyI6,; }
+        while (<>) { print; last if m,^port /dev/(isdn/)?ttyI6,; }
         while (<>) {
             if (m,^port,) {
             print;

@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -64,30 +64,37 @@ CC = @CC@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
 EXEEXT = @EXEEXT@
+HAVE_LIB = @HAVE_LIB@
 INSTALL = @INSTALL@
+LIB = @LIB@
 LIBTOOL = @LIBTOOL@
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
 LN_S = @LN_S@
+LTLIB = @LTLIB@
 MAKEINFO = @MAKEINFO@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
+SED = @SED@
 STRIP = @STRIP@
 VERSION = @VERSION@
 
 AUTOMAKE_OPTIONS = no-dependencies foreign
 CLEANFILES = *~ comperr
 MAINTAINERCLEANFILES = configure aclocal.m4 Makefile.in config.h.in
-
 include_HEADERS = capi20.h capiutils.h capicmd.h
 lib_LTLIBRARIES = libcapi20.la
 lib_LIBRARIES = libcapi20dyn.a
 
 libcapi20_la_SOURCES = capi20.c capifunc.c convert.c
-libcapi20_la_LDFLAGS = -version-info 2:6:0
+libcapi20_la_LDFLAGS = -release 3 --version-info 2:8:0
+libcapi20_la_CFLAGS = -fno-strict-aliasing
 
 libcapi20dyn_a_SOURCES = capidyn.c
+libcapi20dyn_a_CFLAGS = -fPIC
+# libcapi20_la_LIBADD = $(LIBADD_DL)
+CFLAGS = -fPIC -DPIC -g -O2
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
@@ -105,7 +112,6 @@ LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 libcapi20_la_LIBADD = 
 libcapi20_la_OBJECTS =  capi20.lo capifunc.lo convert.lo
-CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -137,7 +143,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 $(ACLOCAL_M4):  configure.in 
 	cd $(srcdir) && $(ACLOCAL)
 
-config.status: $(srcdir)/configure.in $(CONFIG_STATUS_DEPENDENCIES)
+config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck
 $(srcdir)/configure: $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
 	cd $(srcdir) && $(AUTOCONF)
@@ -284,7 +290,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
 
 mostlyclean-tags:
 
@@ -430,9 +436,10 @@ mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 			  stamp-h.in
-# libcapi20_la_LIBADD = $(LIBADD_DL)
 
 $(OBJECTS): libtool
+
+export SED
 
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck

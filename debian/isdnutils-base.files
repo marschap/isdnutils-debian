@@ -6,7 +6,6 @@ usr/sbin/divertctrl
 usr/sbin/hisaxctrl
 usr/sbin/iprofd
 usr/sbin/isdnctrl
-usr/share/isdn/ISAR.BIN
 usr/share/man/man4/isdn_audio.4
 usr/share/man/man4/isdnctrl.4
 usr/share/man/man4/isdninfo.4

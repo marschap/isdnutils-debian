@@ -1,0 +1,26 @@
+#! /bin/sh
+# postrm script for isdnlog
+
+set -e
+
+case "$1" in
+       purge)
+         if [ -d /etc/isdn ]; then
+            cd /etc/isdn
+            rm isdnlog.isdnctrl[02468] isdnrate.conf 2>/dev/null || true
+            cd /
+         fi
+         ;;
+
+       remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+         ;;
+
+    *)
+         echo "postrm called with unknown argument \`$1'" >&2
+         exit 0
+	 ;;
+esac
+
+#DEBHELPER#
+
+exit 0

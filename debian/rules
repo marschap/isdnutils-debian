@@ -5,14 +5,80 @@
 # Uncomment this to turn on verbose mode. 
 # export DH_VERBOSE=1
 
-# This is the debhelper compatability version to use.
-export DH_COMPAT=2
-
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
 
+# brace expansion
+export SHELL=/bin/bash
+
+DEB_HOST_ARCH		?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
+DEB_HOST_GNU_TYPE	?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+
+some_arch_match := no
+ifeq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH),hurd hppa s390 sh))
+  some_arch_match := yes
+endif
+
+auto: auto-update-stamp
+auto-update: auto-update-stamp
+auto-update-stamp: patch-stamp
+	: # update autotools files
+	for d in capi20 isdnlog/client vbox3; do \
+	  cp -p /usr/share/misc/config.* $$d/; \
+	done
+
+	@set -e; \
+	for d in capi20 capifax capiinfo capiinit rcapid; do \
+	  echo "Regenerating autotools files in $$d ..."; \
+	  cd $$d; \
+	  echo "  aclocal"; aclocal; \
+	  echo "  autoconf"; autoconf; \
+	  case "$$d" in rcapid);; *) echo "  autoheader"; autoheader; esac; \
+	  echo "  automake"; automake --add-missing; \
+	  touch configure.in; \
+	  touch aclocal.m4; \
+	  touch configure; \
+	  cd ..; \
+	done
+
+ifeq (0,1)
+	: # does not work, automake-1.3 was used ...
+	@set -e; \
+	for d in isdnlog/client; do \
+	  echo "Regenerating autotools files in $$d ..."; \
+	  cd $$d; \
+	  echo "  aclocal"; aclocal; \
+	  echo "  autoconf"; autoconf; \
+	  echo "  autoheader"; autoheader; \
+	  echo "  automake"; automake -c --add-missing; \
+	  touch configure.in; \
+	  touch aclocal.m4; \
+	  touch configure; \
+	  cd ..; \
+	done
+endif
+	@set -e; \
+	for d in vbox; do \
+	  echo "Regenerating autotools files in $$d ..."; \
+	  cd $$d; \
+	  echo "  aclocal-1.6"; aclocal-1.6; \
+	  echo "  autoconf"; autoconf; \
+	  echo "  automake-1.6"; automake-1.6 -c --add-missing; \
+	  touch configure.in; \
+	  touch aclocal.m4; \
+	  touch configure; \
+	  cd ..; \
+	done
+
+# autoheader doesn't work in vbox ... is it needed?
+#	  echo "  autoheader"; autoheader; \
+
+	cd ipppd && autoconf
+
+	touch auto-update-stamp
+
 build: build-stamp
-build-stamp:
+build-stamp: patch-stamp auto-update-stamp
 	dh_testdir
 
 	# we need a path to the kernel sources.
@@ -23,7 +89,8 @@ build-stamp:
 	#  build daemons...
 	# This has moved to an external script, as large chunks of shell
 	# script in makefiles is an ugly solution.
-	sh debian/prepare-kernel-source $(DEB_HOST_ARCH)
+	# sh debian/prepare-kernel-source $(DEB_HOST_ARCH)
+	-rm -f ../linux
 
 	cp debian/isdnactivecards.files.all     debian/isdnactivecards.files
 	cp debian/isdnactivecards.conffiles.all debian/isdnactivecards.conffiles
@@ -32,43 +99,60 @@ build-stamp:
 	test -f ../isdnutils.config && cp ../isdnutils.config .config || \
 	    sed -e "s#@KERNELDIR@#`pwd`/linux#" \
 		< debian/dotconfig > .config
-	# build only isdnvboxclient on the "excluded" arches
-	if [ $(DEB_HOST_ARCH) = hurd -o $(DEB_HOST_ARCH) = hurd-i386 -o $(DEB_HOST_ARCH) = hppa -o $(DEB_HOST_ARCH) = s390 -o $(DEB_HOST_ARCH) = sh ]; then \
-	    sed -e "s#@KERNELDIR@#`pwd`/linux#" < debian/dotconfig.vboxclientonly > .config; \
-	fi
-	# ugh
+ifeq ($(some_arch_match),yes)
+	: # build only isdnvboxclient on the "excluded" arches
+	sed -e "s#@KERNELDIR@#`pwd`/linux#" \
+		< debian/dotconfig.vboxclientonly > .config
+endif
+
+	: # ugh
 	touch eurofile/configure
 
-	# gcc 2.95 on powerpc doesn't compile our stuff - the compiler breaks
-	# with an internal error. So we use gcc-3.0
-	if [ $(DEB_HOST_ARCH) = powerpc ]; then \
-	  CC=gcc-3.0 $(MAKE) subconfig; \
-	else \
-	  $(MAKE) subconfig; \
-	fi
-	
+	$(MAKE) subconfig
+
 	$(MAKE)
 
-	# note the "NOT!" directly after the "if" below.
-	if ! [ $(DEB_HOST_ARCH) = hurd -o $(DEB_HOST_ARCH) = hurd-i386 -o $(DEB_HOST_ARCH) = hppa -o $(DEB_HOST_ARCH) = s390 -o $(DEB_HOST_ARCH) = sh ]; then \
-	    (cd isdnlog/tools/zone; $(MAKE) zonefiles); \
-	    (cd Mini-FAQ; make); \
-	fi
+ifneq ($(some_arch_match),yes)
+	: # rebuild libcapi20dyn using -fPIC -DPIC.
+	rm -f capi20/capidyn.o capi20/libcapi20dyn.*
+	$(MAKE) -C capi20 CFLAGS="-fPIC -DPIC -g -O2"
+endif
+
+ifneq ($(some_arch_match),yes)
+	cd isdnlog/tools/zone; $(MAKE) zonefiles
+	cd Mini-FAQ; make
+endif
 
 	touch build-stamp
 
 clean:
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp 
+	rm -f build-stamp auto-update-stamp
 
 	-$(MAKE) distclean
-	rm -f isdnlog/client/config.cache isdnlog/client/config.status
+	rm -f isdnlog/client/config.cache \
+		isdnlog/client/config.status isdnlog/client/config.log
 	#-rm -f vbox/examples/beep.msg.example
 	#-rm -f `find . -name "*~"`
 	#-rm -rf debian/tmp* `find debian/* -type d ! -name CVS` debian/files* core
 	-rm -rf linux debian/linux debian/kernel-source-*
 	-rm -f  debian/isdnactivecards.files debian/isdnactivecards.conffiles
+
+	: # remove updated autotools files
+	-find . -name config.sub -o -name config.guess | xargs rm -f
+	-find . -type l \
+	    \( -name install-sh -o -name mkinstalldirs -o -name missing \) \
+		| xargs rm -f
+	-find . -type d -name autom4te.cache | xargs rm -rf
+
+	-$(MAKE) distclean
+
+	debian/rules unpatch
+
+
+	rm -f capiinit/stamp-h.in
+	rm -f vbox/src/stamp-h1
 
 	dh_clean
 
@@ -86,25 +170,37 @@ install: build
 	# Add here commands to install the package into debian/tmp
 	# (the files get moved out by dh_movefiles later)
 	$(MAKE) install DESTDIR=`pwd`/debian/tmp
-	# note the "NOT!" directly after the "if" below.
-	if ! [ $(DEB_HOST_ARCH) = hurd -o $(DEB_HOST_ARCH) = hurd-i386 -o $(DEB_HOST_ARCH) = hppa -o $(DEB_HOST_ARCH) = s390 -o $(DEB_HOST_ARCH) = sh ]; then \
-	    chmod +x debian/finish-install-first.sh; \
-	    debian/finish-install-first.sh; \
-	    dh_movefiles -i; \
-	fi
-	# These apply to all arch'es:
-	mv debian/tmp/usr/share/man/man5/vbox_file.5 debian/tmp/usr/share/man/man5/vbox.5
-	install -m 0644 vbox/examples/vboxrc.example debian/isdnvboxclient/usr/share/doc/isdnvboxclient/examples/vboxrc
+ifneq ($(some_arch_match),yes)
+	chmod +x debian/finish-install-first.sh
+	debian/finish-install-first.sh
+	dh_movefiles -i
+endif
+	: # These apply to all arch'es:
+	mv debian/tmp/usr/share/man/man5/vbox_file.5 \
+	    debian/tmp/usr/share/man/man5/vbox.5
+	install -m 0644 vbox/examples/vboxrc.example \
+	    debian/isdnvboxclient/usr/share/doc/isdnvboxclient/examples/vboxrc
+
+ifneq ($(some_arch_match),yes)
+	gcc -shared -Wl,-soname -Wl,libcapi20-3.so.1 \
+	    -o debian/tmp/usr/lib/libcapi20-3.so.1 \
+	    capi20/.libs/capi20.o capi20/.libs/capifunc.o capi20/.libs/convert.o
+	ln -sf libcapi20-3.so.1 debian/tmp/usr/lib/libcapi20-3.so
+	ln -sf libcapi20-3.so debian/tmp/usr/lib/libcapi20.so
+	cp debian/libcapi20.la debian/tmp/usr/lib/
+endif
 
 	dh_movefiles -s
 
-	if ! [ $(DEB_HOST_ARCH) = hurd -o $(DEB_HOST_ARCH) = hurd-i386 -o $(DEB_HOST_ARCH) = hppa -o $(DEB_HOST_ARCH) = s390 -o $(DEB_HOST_ARCH) = sh ]; then \
-	    chmod +x debian/finish-install-last.sh; \
-	    debian/finish-install-last.sh; \
-	fi
+ifneq ($(some_arch_match),yes)
+	chmod +x debian/finish-install-last.sh
+	debian/finish-install-last.sh
+endif
+
 	# These apply to all arch'es:
 	# the binary is called vboxcnvt, not vboxconvert
-	mv debian/isdnvboxclient/usr/share/man/man1/vboxconvert.1 debian/isdnvboxclient/usr/share/man/man1/vboxcnvt.1
+	mv debian/isdnvboxclient/usr/share/man/man1/vboxconvert.1 \
+	    debian/isdnvboxclient/usr/share/man/man1/vboxcnvt.1
 
 # Build architecture-independent files here.
 # Pass -i to all debhelper commands in this target to reduce clutter.
@@ -139,27 +235,33 @@ binary-arch: build install
 	dh_testroot
 	dh_installdebconf
 	dh_installdocs
-	if ! [ $(DEB_HOST_ARCH) = hurd -o $(DEB_HOST_ARCH) = hurd-i386 -o $(DEB_HOST_ARCH) = hppa -o $(DEB_HOST_ARCH) = s390 -o $(DEB_HOST_ARCH) = sh ]; then \
-	    install -m 0644 debian/README.MPPP debian/README.multiple-ipppd debian/ipppd/usr/share/doc/ipppd/; \
-	fi
+ifneq ($(some_arch_match),yes)
+	install -m 0644 debian/README.MPPP debian/README.multiple-ipppd \
+	    debian/ipppd/usr/share/doc/ipppd/
+	install -m 0644 debian/isdneurofile.README.Debian \
+	    debian/isdneurofile/usr/share/doc/isdneurofile/README.Debian
+endif
 	dh_installexamples
 	dh_installmenu
 #	dh_installpam
 	# override the "global" DH_OPTIONS=-a setting for one command
-	if ! [ $(DEB_HOST_ARCH) = hurd -o $(DEB_HOST_ARCH) = hurd-i386 -o $(DEB_HOST_ARCH) = hppa -o $(DEB_HOST_ARCH) = s390 -o $(DEB_HOST_ARCH) = sh ]; then \
-	    env DH_OPTIONS='' dh_installinit --no-restart-on-upgrade --update-rcd-params='defaults 20 21' -pisdnactivecards; \
-	fi
+ifneq ($(some_arch_match),yes)
+	env DH_OPTIONS='' dh_installinit --no-restart-on-upgrade \
+		--update-rcd-params='defaults 13 21' -pisdnactivecards
+endif
 	# Ok, for two commands
 	# No, for one command after all. Do this one by hand.
 	# env DH_OPTIONS='' dh_installinit --no-restart-on-upgrade -pisdnutils-base
 	# the postinst stuff normally done by dh is now statically in there.
-	if ! [ $(DEB_HOST_ARCH) = hurd -o $(DEB_HOST_ARCH) = hurd-i386 -o $(DEB_HOST_ARCH) = hppa -o $(DEB_HOST_ARCH) = s390 -o $(DEB_HOST_ARCH) = sh ]; then \
-	    install -m 0755 debian/isdnutils-base.init debian/isdnutils-base/etc/init.d/isdnutils; \
-	fi
+ifneq ($(some_arch_match),yes)
+	install -m 0755 debian/isdnutils-base.init \
+		debian/isdnutils-base/etc/init.d/isdnutils
+endif
 	dh_installcron
-	if ! [ $(DEB_HOST_ARCH) = hurd -o $(DEB_HOST_ARCH) = hurd-i386 -o $(DEB_HOST_ARCH) = hppa -o $(DEB_HOST_ARCH) = s390 -o $(DEB_HOST_ARCH) = sh ]; then \
-	    ln -s ../man7/isdn_cause.7.gz   debian/isdnutils-base/usr/share/man/man1/isdncause.1.gz; \
-	fi
+ifneq ($(some_arch_match),yes)
+	ln -s ../man7/isdn_cause.7.gz \
+	    debian/isdnutils-base/usr/share/man/man1/isdncause.1.gz
+endif
 	# lintian junk
 	# - duh, it's an example, why should it be executable
 	install -d debian/isdnutils-base/usr/share/lintian/overrides
@@ -179,8 +281,8 @@ binary-arch: build install
 	install -m 644 debian/pppdcapiplugin.lintian-overrides debian/pppdcapiplugin/usr/share/lintian/overrides/pppdcapiplugin
 	# - there's no -dev package, so shut up about the shlib symlink
 	# - No, I don't call ldconfig in an unsafe manner
-	install -d debian/libcapi20/usr/share/lintian/overrides
-	install -m 644 debian/libcapi20.lintian-overrides debian/libcapi20/usr/share/lintian/overrides/libcapi20
+	install -d debian/libcapi20-3/usr/share/lintian/overrides
+	install -m 644 debian/libcapi20-3.lintian-overrides debian/libcapi20-3/usr/share/lintian/overrides/libcapi20-3
 	# - not much chance of more processed with the name "vboxgetty", and start-stop-daemon won't work
 	# - db_input in postinst only in extreme situations
 	install -d debian/isdnvboxserver/usr/share/lintian/overrides
@@ -190,7 +292,9 @@ binary-arch: build install
 	install -d debian/ipppd/usr/share/lintian/overrides
 	install -m 644 debian/ipppd.lintian-overrides debian/ipppd/usr/share/lintian/overrides/ipppd
 
-	dh_installchangelogs 
+	dh_installchangelogs
+	rm -rf debian/libcapi20-dev/usr/share/doc/libcapi20-dev
+	ln -s libcapi20-3 debian/libcapi20-dev/usr/share/doc/libcapi20-dev
 	dh_strip
 	dh_link
 	dh_compress
@@ -201,7 +305,7 @@ binary-arch: build install
 	dh_shlibdeps
 	dh_gencontrol
 ##	# dont build isdnvboxclient on all architectures.
-##	for pkg in isdnutils isdnutils-xtools ipppd isdnlog isdnvbox isdnvboxserver libcapi20 isdnactivecards pppdcapiplugin isdneurofile; do \
+##	for pkg in isdnutils isdnutils-xtools ipppd isdnlog isdnvbox isdnvboxserver libcapi20-3 isdnactivecards pppdcapiplugin isdneurofile; do \
 ##	    dpkg-gencontrol -ldebian/changelog -isp -p$pkg -Tdebian/$pkg.substvars -Pdebian/$pkg; \
 ##	done
 ##	case $(DEB_HOST_ARCH) in \
@@ -214,10 +318,75 @@ binary-arch: build install
 	dh_builddeb
 	# checking that nothing is left behind...
 	rm -f debian/tmp/etc/services # this should be ignored
-	@if [ $(DEB_HOST_ARCH) = hurd -o $(DEB_HOST_ARCH) = hurd-i386 -o $(DEB_HOST_ARCH) = hppa -o $(DEB_HOST_ARCH) = s390 -o $(DEB_HOST_ARCH) = sh ]; then \
-	    echo "Ignore any of the 'still existing files' listed below on this architecture."; \
+x:
+ifeq ($(some_arch_match),yes)
+	echo "Ignore any of the 'still existing files' listed below on this architecture."
+endif
+	if [ ! -z "`find debian/tmp ! -type d`" ]; then echo "The following files still exist in debian/tmp/:"; find debian/tmp ! -type d -ls; fi;
+
+# rules to patch the unpacked files in the source directory
+# ---------------------------------------------------------------------------
+# various rules to unpack addons and (un)apply patches.
+# 	- patch / apply-patches
+#	- unpatch / reverse-patches
+
+patchdir	= debian/patches
+
+# which patches should be applied?
+debian_patches = \
+	deb-build \
+	hisax-firmware \
+	ppdcapiplugin-dialmax \
+	capi20-pic \
+	capi20-soversion \
+	capiinit-conffile \
+	capiinit-manpage \
+	eicon-manpages \
+	eurofile-manpages \
+	rcapid-manpage \
+	isdnlog-diffs \
+	xisdnload-config \
+	ipppd-ms-chap \
+	vbox-vboxplay \
+	vbox-diffs \
+	vbox-autotools \
+	gcc-3.4-build-fixes \
+
+patch: patch-stamp
+
+patch-stamp: $(foreach p,$(debian_patches),patch-stamp-$(p))
+	echo ""; echo "Patches applied in this version:" > pxxx
+	for i in $(debian_patches); do \
+	  echo "" >> pxxx; echo "$$i:" >> pxxx; \
+	  sed -n 's/^# *DP: */  /p' $(patchdir)/$$i.dpatch >> pxxx; \
+	done
+	mv -f pxxx $@
+
+reverse-patches: unpatch
+unpatch:
+	for stamp in none `ls -1t patch-stamp-* 2>/dev/null`; do \
+	  case "$$stamp" in none|patched-stamp|patched-\*) continue; esac; \
+	  patch=`echo $$stamp | sed -e 's,patch-stamp-,,'`; \
+	  echo "trying to revert patch $$patch ..."; \
+	  if [ -x $(patchdir)/$$patch.dpatch ]; then true; else \
+	    chmod +x $(patchdir)/$$patch.dpatch; fi; \
+	  if $(patchdir)/$$patch.dpatch -unpatch; then \
+	    echo "reverted $$patch patch."; \
+	    rm -f $$stamp; \
+	  else \
+	    echo "error in reverting $$patch patch."; \
+	    exit 1; \
+	  fi; \
+	done
+	rm -f patch-stamp
+
+patch-stamp-%: $(patchdir)/%.dpatch
+	if [ -x $< ]; then true; else chmod +x $<; fi
+	if [ -f $@ ]; then \
+	  echo "$* patches already applied."; exit 1; \
 	fi
-	@if [ ! -z "`find debian/tmp ! -type d`" ]; then echo "The following files still exist in debian/tmp/:"; find debian/tmp ! -type d -ls; fi;
+	$< -patch
+	echo "$* patches applied." > $@
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install

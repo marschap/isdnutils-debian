@@ -12,16 +12,19 @@ export TOPDIR=$(shell pwd)
 export CAPIINC=$(TOPDIR)/../capi20
 export CAPILIB=$(TOPDIR)/../capi20
 export INSTALL=$(TOPDIR)/install-sh -c
+export INSTALLDATA=$(TOPDIR)/install-sh -c -o root -m 600
 export MKDIR=$(TOPDIR)/mkinstalldirs
 
 PPPSRCDIRS=/src/isdn/pppd
 
 ifeq ($(PPPVERSIONS),)
-PPPVERSIONS = 2.3.11 2.4.0 2.4.1 2.4.1b1 2.4.1b2
+PPPVERSIONS = 2.3.11 2.4.0 2.4.1 2.4.1b1 2.4.1b2 2.4.2b3 2.4.2
 endif
 
 PEERDIR=${DESTDIR}/etc/ppp/peers/isdn
+DRDSLDIR=${DESTDIR}/etc/drdsl
 PEERS= arcor otelo talkline avm avm-ml leased
+DRDSLFILES = adsl.conf
 
 ALL = capiplugin.so userpass.so
 
@@ -38,20 +41,31 @@ clean:
 	    echo $(MAKE) -C ppp-$$i PPPVERSION=$$i $@ ; \
 	    $(MAKE) -C ppp-$$i PPPVERSION=$$i $@ ; \
 	done
-	$(RM) comperr pversion pppd.h
+	$(RM) comperr pversion
 
 install-peers:
 	$(MKDIR) $(PEERDIR)
 	@for i in $(PEERS); do \
-		echo $(INSTALL) peers/$$i $(PEERDIR); \
-		$(INSTALL) peers/$$i $(PEERDIR); \
+		echo $(INSTALLDATA) peers/$$i $(PEERDIR); \
+		$(INSTALLDATA) peers/$$i $(PEERDIR); \
+	done
+
+install-drdsl:
+	$(MKDIR) $(DRDSLDIR)
+	@for i in $(DRDSLFILES); do \
+		if [ -f $(DRDSLDIR)/$$i ] ; then \
+		   echo $(DRDSLDIR)/$$i already exists ; \
+		else \
+		  echo $(INSTALLDATA) examples/$$i $(DRDSLDIR); \
+		  $(INSTALLDATA) examples/$$i $(DRDSLDIR); \
+		fi \
 	done
 
 install-man:
-	for i in $(DESTDIR)/usr/share/man $(DESTDIR)/usr/man; do \
+	for i in ${DESTDIR}/usr/share/man ${DESTDIR}/usr/man; do \
 		if [ -d $$i/man8 ] ; then \
-			echo $(INSTALL) capiplugin.8 $$i/man8; \
-			$(INSTALL) capiplugin.8 $$i/man8; \
+			echo $(INSTALLDATA) capiplugin.8 $$i/man8; \
+			$(INSTALLDATA) capiplugin.8 $$i/man8; \
 		fi ; \
 	done
 
@@ -61,6 +75,7 @@ install: pversion
 	    $(MAKE) -C ppp-$$i PPPVERSION=$$i $@ ; \
 	done
 	$(MAKE) install-peers
+	$(MAKE) install-drdsl
 	$(MAKE) install-man
 
 srcsetup:

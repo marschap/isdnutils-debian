@@ -1,0 +1,18 @@
+The debian isdnutils source package originated from the cvs.isdn4linux.de
+repository.
+
+However, over the past year or so, some parts have migrated to another CVS
+repository, namely cvs.isdn4linux.org. Those parts are the CAPI things:
+
+- capi20
+- capifax
+- capiinfo
+- rcapid
+
+For now, I have merged these from cvs.isdn4linux.org into the isdnutils
+source via the diff.  Perhaps at some stage, these will become their own
+source package...
+
+
+Paul Slootman
+2002-07-04

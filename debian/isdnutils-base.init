@@ -30,7 +30,7 @@ case "$1" in
 	case "$2" in
 	    ipppd)	if [ -s /usr/sbin/ipppd   ]; then start_ipppd;   fi;;
 	    isdnlog)	if [ -s /usr/sbin/isdnlog ]; then start_isdnlog; fi;;
-	    *)		echo " unknown service to start: $1"; exit 1;;
+	    *)		echo " unknown service to start: $2"; exit 1;;
 	esac
 	echo .
 	exit 0
@@ -48,7 +48,7 @@ case "$1" in
 	case "$2" in
 	    ipppd)	if [ -s /usr/sbin/ipppd   ]; then stop_ipppd;   fi;;
 	    isdnlog)	if [ -s /usr/sbin/isdnlog ]; then stop_isdnlog; fi;;
-	    *)		echo " unknown service to stop: $1"; exit 1;;
+	    *)		echo " unknown service to stop: $2"; exit 1;;
 	esac
 	echo .
 	exit 0

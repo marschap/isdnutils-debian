@@ -8,7 +8,11 @@
 
 # if package removed but not purged, also stop
 
-[ -x /usr/sbin/vboxgetty ] || exit 0
+[ -x /usr/sbin/vboxd ] || exit 0
+
+# If the expected log dir doesn't exist, quit also
+
+[ -d /var/log/vbox   ] || exit 0
 
 cd /var/log/vbox
 for LOG in vboxgetty-ttyI*.log 

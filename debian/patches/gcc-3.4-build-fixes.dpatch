@@ -1,0 +1,99 @@
+#! /bin/sh -e
+
+# DP: gcc-3.4 build fixes
+
+dir=
+if [ $# -eq 3 -a "$2" = '-d' ]; then
+    pdir="-d $3"
+    dir="$3/"
+elif [ $# -ne 1 ]; then
+    echo >&2 "usage: `basename $0`: -patch|-unpatch [-d <srcdir>]"
+    exit 1
+fi
+case "$1" in
+    -patch)
+        patch $pdir -f --no-backup-if-mismatch -p1 < $0
+        #cd ${dir}gcc && autoconf
+        ;;
+    -unpatch)
+        patch $pdir -f --no-backup-if-mismatch -R -p1 < $0
+        #rm ${dir}gcc/configure
+        ;;
+    *)
+	echo >&2 "usage: `basename $0`: -patch|-unpatch [-d <srcdir>]"
+        exit 1
+esac
+exit 0
+
+diff -urN ../tmp-orig/isdnutils-3.3.0.20040704/eicon/divautil/linload.c ./eicon/divautil/linload.c
+--- ../tmp-orig/isdnutils-3.3.0.20040704/eicon/divautil/linload.c	2000-12-02 22:39:42.000000000 +0100
++++ ./eicon/divautil/linload.c	2004-07-15 16:46:41.127177294 +0200
+@@ -197,7 +197,6 @@
+ 			case 6:
+ 				filename[strlen(filename)-1]='6';
+ 				break;
+-			default:
+ 		}
+ 	}
+ 
+diff -urN ../tmp-orig/isdnutils-3.3.0.20040704/isdnlog/isdnlog/processor.c ./isdnlog/isdnlog/processor.c
+--- ../tmp-orig/isdnutils-3.3.0.20040704/isdnlog/isdnlog/processor.c	2003-10-29 18:41:34.000000000 +0100
++++ ./isdnlog/isdnlog/processor.c	2004-07-15 16:42:37.691874900 +0200
+@@ -5564,7 +5564,7 @@
+     tei = BROADCAST; /* Wenn nach einer tei-Zeile keine hex:-Zeile kommt, tei ungueltig machen! */
+ 
+     if ((type == SETUP) && !replay) { /* fetch additional info from "/dev/isdninfo" */
+-      static void moreinfo(); /* soviel zu Objektorientiertem Denken ;-) */
++/*      static void moreinfo(); /* soviel zu Objektorientiertem Denken ;-) */
+       moreinfo();
+     } /* if */
+ 
+diff -urN ../tmp-orig/isdnutils-3.3.0.20040704/isdnlog/tools/cdb/cdbmake.c ./isdnlog/tools/cdb/cdbmake.c
+--- ../tmp-orig/isdnutils-3.3.0.20040704/isdnlog/tools/cdb/cdbmake.c	2002-01-31 20:59:44.000000000 +0100
++++ ./isdnlog/tools/cdb/cdbmake.c	2004-07-15 16:29:24.484967043 +0200
+@@ -3,8 +3,6 @@
+ #include "freecdbmake.h"
+ #include <unistd.h>
+ 
+-extern char *malloc();
+-
+ void diesys(why) char *why; { perror(why); exit(111); }
+ 
+ void writeerror() { diesys("cdbmake: fatal: unable to write"); }
+diff -urN ../tmp-orig/isdnutils-3.3.0.20040704/isdnlog/tools/rate.c ./isdnlog/tools/rate.c
+--- ../tmp-orig/isdnutils-3.3.0.20040704/isdnlog/tools/rate.c	2004-01-11 16:16:11.000000000 +0100
++++ ./isdnlog/tools/rate.c	2004-07-15 16:29:24.485966848 +0200
+@@ -1818,6 +1818,7 @@
+ 	  number=realloc(number, numbers*sizeof(int));
+ 	  number[numbers-1]=i;
+ 	skip:
++	  continue;
+ 	}
+ 
+ 	while (isblank(*s)) s++;
+@@ -2390,10 +2391,10 @@
+ 	  }
+ 	}
+ 	return UNKNOWN;
+-      done:
+       }
+     }
+   }
++done:
+ 
+   if (Rate->_zone<0 || Rate->_zone>=Provider[prefix].nZone) {
+     return UNKNOWN;
+diff -urN ../tmp-orig/isdnutils-3.3.0.20040704/lib/libtools.c ./lib/libtools.c
+--- ../tmp-orig/isdnutils-3.3.0.20040704/lib/libtools.c	1999-11-03 17:13:36.000000000 +0100
++++ ./lib/libtools.c	2004-07-15 16:29:24.486966654 +0200
+@@ -710,7 +710,6 @@
+ 				          break;
+ 				case 'r': _mode |= R_OK;
+ 				          break;
+-				default :
+ 			}
+ 		}
+ 
+
+
+

@@ -1,5 +1,5 @@
 .\" manual page [] for capiplugin 2.3
-.\" $Id: capiplugin.8,v 1.7 2002/02/28 17:18:52 calle Exp $
+.\" $Id: capiplugin.8,v 1.11 2004/07/27 18:06:54 armin Exp $
 .\" SH section heading
 .\" SS subsection heading
 .\" LP paragraph
@@ -228,6 +228,13 @@ Other possible options:
 .SH OPTIONS
 
 .TP
+.B avmadsl
+make an DSL connection with the Fritz!Card DSL controller.
+The parameters for the DSL connection will be loaded from
+file /etc/drdsl/adsl.conf. This file can be edited or will
+be created by the program drdsl.
+
+.TP
 .B cbdelay \fI<seconds>
 Number of seconds to wait before callback, when acting as
 dial-in server with callback. Default value is 2 seconds.
@@ -320,14 +327,12 @@ See option \fIdialmax\fR.
 phone number to dial to access an outside line. For example, \fInumberprefix 0\fR.
 
 .TP
-.B protocol \fIhdlc\fR | \fIx75\fR | \fIv42bis\fR | \fImodem\fR | \fIadslpppoe\fR
+.B protocol \fIhdlc\fR | \fIx75\fR | \fIv42bis\fR | \fImodem\fR | \fIanalogmodem\fR | \fIv110async\fR | \fIv120async\fR
 ISDN protocol to use. With \fIhdlc\fR and \fIadskpppoe\fR,
 the \fIsync\fR option must be added to the pppd.
-With \fIx75\fR, \fIv42bis\fR and \fImodem\fR, the \fIsync\fR option
-MUST NOT be enabled. Default value is \fIhdlc\fR.
-Not all controllers support \fIv42bis\fR and \fImodem\fR.
-\fIadslpppoe\fR is currently only supported by the second
-controller of the FRITZ!Card DSL.
+With \fIx75\fR, \fIv42bis\fR, \fImodem\fR, \fIv110async\fR and \fIv120async\fR
+the \fIsync\fR option MUST NOT be enabled. Default value is \fIhdlc\fR.
+Not all controllers support \fIv42bis\fR, \fImodem\fR and \fIv120async\fR.
 Use capiinfo(8) to view which features your controller supports.
 
 .TP
@@ -358,7 +363,7 @@ defaultroute
 name USERNAME
 .br
 plugin capiplugin.so
-.r
+.R
 msn MSN
 .br
 number PHONENUMBER
@@ -436,7 +441,7 @@ defaultroute
 name USERNAME
 .br
 plugin capiplugin.so
-.r
+.R
 msn MSN
 .br
 number PHONENUMBER
