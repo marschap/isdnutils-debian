@@ -3,8 +3,8 @@
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 DAEMON=/usr/sbin/capiinit
-NAME=isdnactivecards
-DESC='ISDN active cards'
+NAME=capiinit
+DESC='ISDN CAPI Cards'
 FLAGS="defaults"
 
 test -f $DAEMON || exit 0    # sanity check
@@ -13,6 +13,7 @@ set -e
 
 case "$1" in
   start)
+    grep -Evq '^ *$|^ *#' /etc/isdn/capi.conf || exit 0
     echo "Starting $DESC :"
     $DAEMON start
     echo 'Done.'

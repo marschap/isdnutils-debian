@@ -1,0 +1,72 @@
+#! /bin/sh -e
+
+# DP: search /usr/share/isdn/<kernel release> first for firmware.
+
+dir=
+if [ $# -eq 3 -a "$2" = '-d' ]; then
+    pdir="-d $3"
+    dir="$3/"
+elif [ $# -ne 1 ]; then
+    echo >&2 "usage: `basename $0`: -patch|-unpatch [-d <srcdir>]"
+    exit 1
+fi
+case "$1" in
+    -patch)
+        patch $pdir -f --no-backup-if-mismatch -p0 < $0
+        ;;
+    -unpatch)
+        patch $pdir -f --no-backup-if-mismatch -R -p0 < $0
+        ;;
+    *)
+	echo >&2 "usage: `basename $0`: -patch|-unpatch [-d <srcdir>]"
+        exit 1
+esac
+exit 0
+
+--- capiinit/capiinit.c~	2005-01-08 17:32:15.000000000 +0100
++++ capiinit/capiinit.c	2005-01-15 14:07:54.000000000 +0100
+@@ -83,6 +83,7 @@
+ #include <linux/capi.h>
+ #include <linux/kernelcapi.h>
+ #include <getopt.h>
++#include <sys/utsname.h>
+ 
+ #define MODPROBE	"/sbin/modprobe"
+ static char capidevnameold[] = "/dev/capi20";
+@@ -90,6 +91,7 @@
+ static char *capidevname = capidevnameold;
+ 
+ static char *firmwarepath[] = {
++	"/usr/share/isdn/release", /* replaced by kernel release */
+ 	"/usr/share/isdn",
+ 	"/usr/lib/isdn",
+ 	"/lib/isdn",
+@@ -131,6 +133,19 @@
+    return s;
+ }
+ 
++static int init_firmware_path(void)
++{
++   struct utsname uts;
++   char *path;
++
++   if (uname(&uts))
++      return 1;
++   path = (char *) malloc(strlen(firmwarepath[0]) + strlen(uts.release) + 1);
++   sprintf(path, "/usr/share/isdn/%s", uts.release);
++   firmwarepath[0] = path;
++   return 0;
++}
++
+ /* ---------------- load module -------------------------------------- */
+ 
+ static int is_module_loaded(char *module)
+@@ -1602,6 +1617,8 @@
+ 		}
+ 	}
+ 
++	init_firmware_path();
++
+  	if (optind == ac) {
+ 		return main_start(1, 0, 0);
+ 	} else if (optind+1 == ac) {

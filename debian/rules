@@ -15,7 +15,7 @@ DEB_HOST_ARCH		?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
 DEB_HOST_GNU_TYPE	?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 
 some_arch_match := no
-ifeq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH),hurd hppa s390 sh))
+ifeq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH),hurd s390 sh))
   some_arch_match := yes
 endif
 
@@ -93,7 +93,6 @@ build-stamp: patch-stamp auto-update-stamp
 	-rm -f ../linux
 
 	cp debian/isdnactivecards.files.all     debian/isdnactivecards.files
-	cp debian/isdnactivecards.conffiles.all debian/isdnactivecards.conffiles
 	# we need a .config file. Try isdnutils.config in parent directory first
 	# so that local choice can be preserved.
 	test -f ../isdnutils.config && cp ../isdnutils.config .config || \
@@ -109,13 +108,6 @@ endif
 	touch eurofile/configure
 
 	$(MAKE) subconfig
-
-ifneq ($(some_arch_match),yes)
-	$(MAKE) -C capi20
-	: # rebuild libcapi20dyn using -fPIC -DPIC.
-	rm -f capi20/capidyn.o capi20/libcapi20dyn.*
-	$(MAKE) -C capi20 CFLAGS="-fPIC -DPIC -g -O2"
-endif
 
 	$(MAKE)
 
@@ -144,7 +136,9 @@ clean:
 	: # remove updated autotools files
 	-find . -name config.sub -o -name config.guess | xargs rm -f
 	-find . -type l \
-	    \( -name install-sh -o -name mkinstalldirs -o -name missing \) \
+	    \( -name install-sh -o -name mkinstalldirs -o -name missing \
+	       -o -name compile -o -name depcomp \
+	    \) \
 		| xargs rm -f
 	-find . -type d -name autom4te.cache | xargs rm -rf
 
@@ -184,15 +178,6 @@ endif
 	    debian/tmp/usr/share/man/man5/vbox.5
 	install -m 0644 vbox/examples/vboxrc.example \
 	    debian/isdnvboxclient/usr/share/doc/isdnvboxclient/examples/vboxrc
-
-ifneq ($(some_arch_match),yes)
-#	gcc -shared -Wl,-soname -Wl,libcapi20-3.so.1 \
-#	    -o debian/tmp/usr/lib/libcapi20-3.so.1 \
-#	    capi20/.libs/capi20.o capi20/.libs/capifunc.o capi20/.libs/convert.o
-#	ln -sf libcapi20-3.so.1 debian/tmp/usr/lib/libcapi20-3.so
-#	ln -sf libcapi20-3.so debian/tmp/usr/lib/libcapi20.so
-#	cp debian/libcapi20.la debian/tmp/usr/lib/
-endif
 
 	dh_movefiles -s
 
@@ -255,8 +240,8 @@ endif
 #	dh_installpam
 	# override the "global" DH_OPTIONS=-a setting for one command
 ifneq ($(some_arch_match),yes)
-	env DH_OPTIONS='' dh_installinit --no-restart-on-upgrade \
-		--update-rcd-params='defaults 13 21' -pisdnactivecards
+	DH_OPTIONS='' dh_installinit -pcapiutils \
+		--no-restart-on-upgrade --update-rcd-params='defaults 13 21'
 endif
 	# Ok, for two commands
 	# No, for one command after all. Do this one by hand.
@@ -350,9 +335,9 @@ debian_patches = \
 	deb-build \
 	hisax-firmware \
 	ppdcapiplugin-dialmax \
-	capi20-pic \
 	capiinit-conffile \
 	capiinit-manpage \
+	capiinit-fwpath \
 	eicon-manpages \
 	eurofile-manpages \
 	rcapid-manpage \
@@ -362,10 +347,13 @@ debian_patches = \
 	vbox-vboxplay \
 	vbox-diffs \
 	vbox-autotools \
-	capifax-fix \
+	vbox-no-strict-aliasing \
 	capifax-manpages \
+	capi20-fix \
+	capi20-pic \
 	capi20-soname \
 	libtool \
+	imon-update \
 
 patch: patch-stamp
 

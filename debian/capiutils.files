@@ -1,0 +1,11 @@
+usr/bin/capifax
+usr/bin/capiinfo
+usr/sbin/avmcapictrl
+usr/sbin/capiinit
+usr/sbin/rcapid
+usr/sbin/capifaxrcvd
+usr/share/man/man1/capifax.1
+usr/share/man/man8/rcapid.8
+usr/share/man/man8/capiinit.8
+usr/share/man/man8/avmcapictrl.8
+usr/share/man/man8/capiinfo.8

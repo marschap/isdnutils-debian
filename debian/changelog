@@ -1,3 +1,33 @@
+isdnutils (1:3.6.2005-01-03-3) unstable; urgency=medium
+
+  * capiinit looks for firmware in /usr/share/isdn/`uname -r` first.
+  * update capiinit manpage.
+
+ -- Matthias Klose <doko@debian.org>  Sat, 15 Jan 2005 15:14:11 +0100
+
+isdnutils (1:3.6.2005-01-03-2) unstable; urgency=low
+
+  * Compile vbox using -fno-strict-aliasing (closes: #270336).
+  * /etc/isdn/capi.conf: Comment out all entries.
+
+ -- Matthias Klose <doko@debian.org>  Sat,  8 Jan 2005 17:13:18 +0100
+
+isdnutils (1:3.6.2005-01-03-1) unstable; urgency=low
+
+  * New CVS snapshot (2005-01-03).
+  * Fix imon segfault (Paul Slootman). Closes: #284389.
+
+ -- Matthias Klose <doko@debian.org>  Fri,  7 Jan 2005 05:51:13 +0100
+
+isdnutils (1:3.6.2004-12-19-0ubuntu1) hoary; urgency=low
+
+  * New CVS snapshot (2004-12-19).
+  * Split out capiutils package (closes: #108014).
+  * Apply patch to build using gcc-4.0 (closes: #286480).
+  * Add Italian debconf templates (closes: #286231).
+
+ -- Matthias Klose <m@klose.in-berlin.de>  Sun,  2 Jan 2005 23:16:05 +0100
+
 isdnutils (1:3.3.0.20041110-1) unstable; urgency=low
 
   * New CVS snapshot (20041110).

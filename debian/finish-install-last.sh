@@ -11,7 +11,7 @@
         # is installed into /etc/drdsl/ already:
         rm -f debian/pppdcapiplugin/usr/share/doc/pppdcapiplugin/examples/adsl.conf
 	chmod -x debian/pppdcapiplugin/etc/ppp/peers/isdn/*
-	install -m 0644 capiinit/capi.conf debian/isdnactivecards/etc/isdn/
+	install -m 0644 capiinit/capi.conf debian/capiutils/etc/isdn/
 	# ln -s ../isdnutils-doc/FAQ       debian/isdnutils-doc/usr/share/doc/isdnutils/
 	# ln -s ../isdnutils-doc/Mini-FAQ  debian/isdnutils-doc/usr/share/doc/isdnutils/
 	mkdir -p debian/isdneurofile/usr/share/doc/isdneurofile/scripts

@@ -1,0 +1,91 @@
+#! /bin/sh -e
+
+# DP: Fixes to compile with gcc-4.0
+
+dir=
+if [ $# -eq 3 -a "$2" = '-d' ]; then
+    pdir="-d $3"
+    dir="$3/"
+elif [ $# -ne 1 ]; then
+    echo >&2 "usage: `basename $0`: -patch|-unpatch [-d <srcdir>]"
+    exit 1
+fi
+case "$1" in
+    -patch)
+        patch $pdir -f --no-backup-if-mismatch -p1 < $0
+        ;;
+    -unpatch)
+        patch $pdir -f --no-backup-if-mismatch -R -p1 < $0
+        ;;
+    *)
+	echo >&2 "usage: `basename $0`: -patch|-unpatch [-d <srcdir>]"
+        exit 1
+esac
+exit 0
+
+diff -urN ../tmp-orig/isdnutils-3.3.0.20041110/eicon/eiconctrl.c ./eicon/eiconctrl.c
+--- ../tmp-orig/isdnutils-3.3.0.20041110/eicon/eiconctrl.c	2001-03-01 15:59:12.000000000 +0100
++++ ./eicon/eiconctrl.c	2004-12-20 14:31:02.093817304 +0100
+@@ -1970,7 +1970,7 @@
+ 				val = strtol(p, &q, 16);
+ 				p = q;
+ 				val = strtol(p, &q, 16);
+-				(unsigned short) *buffer = (unsigned short) val;
++				*((unsigned short*)buffer) = (unsigned short) val;
+ 				pos = 2;
+ 				while ((p != q) && (*q != 0)) {
+ 					p = q;
+Binary files ../tmp-orig/isdnutils-3.3.0.20041110/hisax/ISAR.BIN and ./hisax/ISAR.BIN differ
+diff -urN ../tmp-orig/isdnutils-3.3.0.20041110/hisax/hisaxctrl.c ./hisax/hisaxctrl.c
+--- ../tmp-orig/isdnutils-3.3.0.20041110/hisax/hisaxctrl.c	2000-06-29 19:38:26.000000000 +0200
++++ ./hisax/hisaxctrl.c	2004-12-20 14:29:40.367241632 +0100
+@@ -43,7 +43,8 @@
+ 		fprintf(stderr, "cannot open file %s\n", fname);
+ 		exit(-1);
+ 	}
+-	p = (int *) buffer = (unsigned char *) malloc(MAX_SIZE+4);
++	buffer = (unsigned char *) malloc(MAX_SIZE+4);
++	p = (int *) buffer;
+ 	if (!buffer) {
+ 		fprintf(stderr, "cannot get %d byte memory\n", MAX_SIZE+4);
+ 		exit(-1);
+diff -urN ../tmp-orig/isdnutils-3.3.0.20041110/ipppd/main.c ./ipppd/main.c
+--- ../tmp-orig/isdnutils-3.3.0.20041110/ipppd/main.c	2003-07-01 00:30:57.000000000 +0200
++++ ./ipppd/main.c	2004-12-20 14:31:37.836383608 +0100
+@@ -1044,10 +1044,10 @@
+ static char line[256];			/* line to be logged accumulated here */
+ static char *linep;
+ 
++static void pr_log __P((void *, char *, ...));
++
+ void log_packet(u_char *p,int len,char *prefix,int linkunit)
+ {
+-	static void pr_log __P((void *, char *, ...));
+-
+     int i, n;
+     u_short proto;
+     u_char x;
+diff -urN ../tmp-orig/isdnutils-3.3.0.20041110/isdnlog/tools/isdnrate.c ./isdnlog/tools/isdnrate.c
+--- ../tmp-orig/isdnutils-3.3.0.20041110/isdnlog/tools/isdnrate.c	2004-09-27 20:00:23.000000000 +0200
++++ ./isdnlog/tools/isdnrate.c	2004-12-20 14:27:35.201269752 +0100
+@@ -324,7 +324,7 @@
+ 
+ static void print_header(void);
+ 
+-static char *myname, *myshortname;
++char *myname, *myshortname;
+ static char options[] = "ab:c:d:f:h:i:l:op:r:st:v::x:CD::G:HLNP:O:S:TUVX::Z";
+ static char usage[] = "%s: usage: %s [ -%s ] Destination ...\n";
+ 
+@@ -333,7 +333,7 @@
+ static int usestat = 0;
+ static int duration = LCR_DURATION;
+ static time_t start;
+-static int day, month, year, hour, min, sec;
++int day, month, year, hour, min, sec;
+ static char ignore[MAXPROVIDER];
+ static char *fromarea = 0;
+ static char wanted_day;
+
+
+

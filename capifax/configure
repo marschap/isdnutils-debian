@@ -1321,6 +1321,35 @@ EOF
 fi
 
 
+echo $ac_n "checking for capi20 ALERT with sending complete""... $ac_c" 1>&6
+echo "configure:1326: checking for capi20 ALERT with sending complete" >&5
+cat > conftest.$ac_ext <<EOF
+#line 1328 "configure"
+#include "confdefs.h"
+#include <capiutils.h>
+int main() {
+_cmsg cm; ALERT_REQ(&cm, 1, 1, 1, NULL, NULL, NULL, NULL, NULL);
+; return 0; }
+EOF
+if { (eval echo configure:1335: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  
+    cat >> confdefs.h <<\EOF
+#define HAVE_ALERT_SENDING_COMPLETE 1
+EOF
+
+    echo "$ac_t""yes" 1>&6
+  
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  echo "$ac_t""no" 1>&6
+
+fi
+rm -f conftest*
+
+
 
 
 
