@@ -1,62 +1,43 @@
-#!/bin/sh
+#!/bin/bash -e
 
-echo "Checking for ISDN device inodes ... "
+/dev/MAKEDEV isdn-tty isdn-io isdn-ippp 
 
-DEV=/dev
-
-echo -n "... isdn/isdnctrl/ippp "
-if [ ! -c $DEV/isdn0 -o ! -c $DEV/isdnctrl -o ! -c $DEV/isdnctrl0 \
-	-o ! -c $DEV/ippp0 ]; then
-    echo -n "(creating..."
-    MAJ=45
-    MIN=0
-    rm -f $DEV/isdn? $DEV/isdn?? $DEV/isdnctrl* $DEV/ippp*
-    while [ $MIN -lt 64 ] ; do
-	mknod -m 600 $DEV/isdn$MIN c $MAJ $MIN
-	mknod -m 600 $DEV/isdnctrl$MIN c $MAJ `expr $MIN + 64`
-	mknod -m 600 $DEV/ippp$MIN c $MAJ `expr $MIN + 128`
-	MIN=`expr $MIN + 1`
-    done
-    ln -sf $DEV/isdnctrl0 $DEV/isdnctrl
-    echo "done)"
-else
-    echo "(exists)"
+if [ -f /var/log/isdn/calls ];
+then
+	mv /var/log/isdn/calls* /var/lib/isdn
 fi
 
-echo -n "... isdninfo "
-if [ ! -c $DEV/isdninfo ]; then
-    rm -f $DEV/isdninfo
-    mknod -m 444 $DEV/isdninfo c 45 255
-    echo "(created)"
-else
-    echo "(exists)"
+touch /var/lib/isdn/calls
+
+if [ -e /etc/suid.conf -a -x /usr/sbin/suidregister ]; then
+        suidregister -s isdnutils /usr/bin/vboxbeep root root 755
+        suidregister -s isdnutils /usr/X11R6/bin/xmonisdn root root 755
 fi
 
-echo -n "... ttyI "
-if [ ! -c $DEV/ttyI0 ]; then
-    MAJ=43
-    MIN=0
-    rm -f $DEV/ttyI*
-    while [ $MIN -lt 64 ] ; do
-	mknod -m 666 $DEV/ttyI$MIN c $MAJ $MIN
-	MIN=`expr $MIN + 1`
-    done
-    echo "(created)"
-else
-    echo "(exists)"
+if ! dpkg --compare-versions "$2" ">=" "2.1"; then
+	echo -n "
+Isdnutils have changed a lot. Now all configuration files are stored in
+/etc/isdn. Many programs have new names, new options and new
+configuration files. Old configuration files will not work in many
+cases. For more information look at /usr/doc/isdnutils in particular
+'README.debian' and 'CONFIG'.
+
+There is a program called 'isdnconfig' that will install example config
+files for you. Start this program now (y/n)? "
+	read answer
+	case $answer in
+		y*|Y*) isdnconfig;;
+	esac
 fi
 
-echo -n "... cui "
-if [ ! -c $DEV/cui0 ]; then
-    MAJ=44
-    MIN=0
-    rm -f $DEV/cui*
-    while [ $MIN -lt 64 ] ; do
-	    mknod -m 666 $DEV/cui$MIN c $MAJ $MIN
-	    MIN=`expr $MIN + 1`
-    done
-    echo "(created)"
-else
-    echo "(exists)"
-fi
+if ! dpkg --compare-versions "`uname -r`" ">=" "2.0.31" 
+then
+	echo "
+These isdnutils were compiled with kernel 2.0.31.
+You are running a kernel older than 2.0.31.
+This will not work. Please update your kernel to a newer version.
 
+Press Enter to continue 	[Return]"
+	read
+fi
+ 

@@ -1,1 +1,0 @@
-isdn_help_strings.de

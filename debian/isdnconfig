@@ -1,0 +1,270 @@
+#!/bin/bash
+
+# Configuration script for isdn4linux
+
+set -e -C
+
+EXAMPLES=/usr/doc/isdnutils/examples/default
+
+function search_files {
+	echo "Searching for existing configuration files..."
+	devices=""
+	for A in `ls $PREFIX.* 2>/dev/null`; do
+		test -e $A && devices="$devices ${A#*.}"
+	done
+	test -z "$devices" && devices=NONE
+	echo "Found : $devices"
+	echo ""
+}
+
+function no_create {
+	echo "No file created."
+	echo -n "Press [Enter] "
+	read
+}
+
+function create_warning {
+	echo "This file is only an example."
+	echo "You have to edit this file for it to work."
+	echo -n "Press [Enter] "
+	read
+}
+
+function config_main {
+	clear
+	echo -n "Isdnutils configuration
+=======================
+
+1	network devices
+2	synchronous ppp daemon
+3	modem emulation
+4	isdnlog configuration
+5	voice box configuration
+
+Q	Quit
+
+Your choice : "
+	read choice
+	case "$choice" in
+		1) config_net ;;
+		2) config_ppp ;;
+		3) config_modem ;;
+		4) config_isdnlog ;;
+		5) config_vbox ;;
+		q|Q) exit 0;;
+	esac
+}
+
+function config_net {
+	clear
+	echo "Isdnutils configuration network interfaces"
+	echo "======================= ------------------"
+	echo ""
+	PREFIX=/etc/isdn/device; search_files
+
+	echo -n "
+Devices should be named :
+ - rawip interface		isdn0 isdn1 ...
+ - synchronous ppp interface	ippp0 ippp1 ...
+
+Name for new interface  : "
+	read interface
+	if test -z "$interface"
+	then
+		no_create
+	else
+	    if test -c "/dev/$interface"
+	    then
+		cp -i $EXAMPLES/device.DEVICE /etc/isdn/device.$interface
+		echo "Installed new config file /etc/isdn/device.$interface ."
+		create_warning
+	    else
+		echo "Interface name not found."
+		echo -n "Press [Enter] "
+		read
+	    fi
+	fi
+}
+
+function config_ppp {
+	clear
+	echo "Isdnutils configuration synchronous ppp daemon"
+	echo "======================= ----------------------"
+	echo ""
+	PREFIX=/etc/isdn/ipppd; search_files
+
+	echo  -n "
+Normal setup : one ipppd for all devices: /dev/ippp0 /dev/ippp1 ...
+(will serve all ippp* network interfaces with a single config file)
+
+Special setup : one ipppd for each device: /dev/ippp0 /dev/ippp1 ...
+(you need to use pppbind on each network interface to select
+ which /dev/ippp* device will be used).
+ 
+Name for new configuration (ippp0 ippp1 ...) : "
+	read device
+	if test -z "$device"
+	then
+		no_create
+	else
+	    if test -c "/dev/$device"
+	    then
+		cp -i $EXAMPLES/ipppd.DEVICE /etc/isdn/ipppd.$device
+		echo "Installed new config file /etc/isdn/ipppd.$device ."
+		create_warning
+	    else
+		echo "Interface name not found."
+		echo -n "Press [Enter] "
+		read
+	    fi
+	fi
+}
+
+function config_modem {
+	if test -e /etc/isdn/iprofd.data
+	then
+		echo -n '
+Isdnutils configuration modem emulation
+======================= ---------------
+
+Data File for iprofd (/etc/isdn/iprofd.data) already created.
+If iprofd is running, you can save the settings of your modem emulation
+with any terminal program (e.g. minicom) with "AT&W".
+
+Press [Enter] '
+		read
+	else
+		touch /etc/isdn/iprofd.data
+		clear
+		echo "Isdnutils configuration modem emulation"
+		echo "======================= ---------------"
+		echo -n "
+Data File for iprofd (/etc/isdn/iprofd.data) installed.
+If iprofd is running, you can save the settings of your modem emulation
+with any terminal program (e.g. minicom) with \"AT&W\".
+
+Press [Enter] "
+		read
+	fi
+}
+
+function config_isdnlog {
+	clear
+	echo "Isdnutils configuration isdnlog"
+	echo "======================= -------"
+	echo ""
+	echo "Installing example configuration files ... "
+	INSTALL=false
+	for A in isdn.conf callerid.conf; do
+		if test -e /etc/isdn/$A
+		then
+			echo "$A	already installed. nothing to do."
+		else
+			cp -i $EXAMPLES/$A /etc/isdn/$A
+			echo "$A	installed."
+			INSTALL=true
+		fi
+	done
+	echo ""
+
+	PREFIX=/etc/isdn/isdnlog; search_files
+	
+	echo -n "You need one options file per isdn card.
+This file is named like the device it uses to get the data.
+isdnctrl0 isdnctrl2 ... 
+
+Name of the device : "
+	read device
+	if test -n "$device"
+	then
+	    if test -c "/dev/$device"
+	    then
+		cp -i $EXAMPLES/isdnlog.DEVICE /etc/isdn/isdnlog.$device
+		echo "Installed new config file /etc/isdn/isdnlog.$device ."
+		INSTALL=true
+	    else
+		echo "Device name not found."
+		echo -n "Press [Enter] "
+		read
+	    fi
+	fi
+	if $INSTALL
+	then
+		create_warning
+	else
+		no_create
+	fi
+}
+
+function config_vbox {
+	clear
+	echo "Isdnutils configuration vbox"
+	echo "======================= ----"
+	echo ""
+	echo "Installing example configuration files ... "
+	INSTALL=false
+	for A in vboxd.conf vboxgetty.conf; do
+		if test -e /etc/isdn/$A
+		then
+			echo "$A	already installed. nothing to do."
+		else
+			cp -i $EXAMPLES/$A /etc/isdn/$A
+			echo "$A	installed."
+			INSTALL=true
+		fi
+	done
+	if $INSTALL
+	then
+		create_warning
+		INSTALL=false
+	fi
+	echo ""
+	echo "You can run several vboxgetty with different MSN's."
+	echo "Edit /etc/inittab to start the vboxgetty, and edit "
+	echo "/etc/isdn/vboxgetty.conf to assign each MSN to a user."
+	echo "Each user needs his own spool directory."
+
+	echo "Searching for existing spool directories..."
+	users=
+	for A in `ls -d /var/spool/vbox/* 2> /dev/null`; do
+		test -e $A && users="$users `basename $A`"
+	done
+	test -z "$users" && users=NONE
+	echo "Found : $users"
+	echo ""
+
+	echo "I need the login name of the user (e.g. aj), not the full name."
+	echo -n "Create new spool directory for user : "
+	read user
+	if test -n "$user"
+	then
+		if grep "^$user:" /etc/passwd > /dev/null
+		then
+			mkdir /var/spool/vbox/$user
+			mkdir /var/spool/vbox/$user/messages
+			mkdir /var/spool/vbox/$user/incoming
+			cp -i $EXAMPLES/vbox.conf /var/spool/vbox/$user
+			cp -i $EXAMPLES/standard.tcl /var/spool/vbox/$user
+			cp -i $EXAMPLES/beep.msg /var/spool/vbox/$user/messages/
+			cp -i $EXAMPLES/standard.msg /var/spool/vbox/$user/messages/
+			echo "Installed new config file /var/spool/vbox/$user/vbox.conf"
+			echo "Installed new config file /var/spool/vbox/$user/standard.tcl"
+			echo "Installed default sound file /var/spool/vbox/$user/messages/beep.msg"
+			echo "Installed default sound file /var/spool/vbox/$user/messages/standard.msg"
+			chown -Rv $user.$user /var/spool/vbox/$user
+			INSTALL=true
+		else
+			echo "User $user doesn't exist."
+		fi
+	fi
+	if $INSTALL
+	then
+		create_warning
+	else
+		no_create
+	fi
+}
+
+while true; do
+	config_main
+done

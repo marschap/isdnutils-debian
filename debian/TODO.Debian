@@ -1,2 +1,0 @@
-- should this package install the device files?
-- ttyI device files should have mode 660 root.dialout

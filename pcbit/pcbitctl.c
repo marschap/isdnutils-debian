@@ -577,29 +577,15 @@ static int bitd_read(unsigned char* buf, int *len, int nlines, FILE* fp)
   for (i = 0; i < nlines; i++) {
     if (fgets(line, 80, fp) == NULL)            
       break;
-
     aux += strlen(line) - 1;
-
     line[strlen(line) - 1] = 0;
-
     for (j=1; line[j]; j+=2) {  
-
       sscanf(line + j, "%02x", &val);
-
       buf[(*len)++] = val;
     }
   }
-
 
   buf[0] = i;
   
   return aux;
 }
-
-
-
-
-
-
-
-

@@ -1,13 +1,19 @@
 Source: isdnutils
 Section: net
 Priority: extra
-Maintainer: Christian Schwarz <schwarz@debian.org>
-Standards-Version: 2.1.2.2
+Maintainer: Paul Slootman <paul@debian.org>
+Standards-Version: 2.3.0.1
+Distribution: bo-unstable
 
 Package: isdnutils
 Architecture: any
-Depends: libc5 (>= 5.4.0), ncurses3.0, libg++27, xlib6
-Suggests: isdnlog, vbox
-Description: ISDN utility programs
- The ISDN utility package includes tools to set up and control the kernel
- ISDN driver.
+Depends: ${shlibs:Depends}, makedev (>>1.6-10), suidmanager, netbase (>= 2.14), sox
+Suggests: ppp, tcpdump (>= 3.3.1a2-1)
+Replaces: vbox
+Conflicts: vbox, isdnlog, ipppd, xisdnutils
+Description: isdn utilities
+ This package includes everything you need to run ISDN: interface
+ controlling programs, an ISDN logging tool, a voice box program,
+ a synchronous PPP daemon, an ISDN load viewer, and much more.
+ .
+ This package will only run with 2.0.31 or 2.0.32 (and possibly higher) kernels.

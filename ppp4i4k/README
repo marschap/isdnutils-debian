@@ -1,5 +1,0 @@
-I have tested this ipppd version with Linux 2.0.0
-The example scripts expect, that you copy the new ipppd to
-/sbin/ .. else you will probably call an old version of the ipppd 
-The syncPPP.FAQ is a quick hack .. 
-

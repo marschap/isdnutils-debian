@@ -1,0 +1,135 @@
+Howto configure isdn4linux
+==========================
+
+the naming system
+-----------------
+/dev/ttyI0	isdn modem emulation device
+/dev/cui0	isdn modem emulation device : old form. don't use (obsolete).
+/dev/ippp0	synchrone ppp device
+ippp0		isdn network device. this name is used if you transfer
+		with syncppp encapsulation. you have to create the
+		connection to /dev/ippp0 (for the kernel it's only a
+		name without meaning).
+isdn0		isdn network device. this name is used with rawip
+		network connections.
+
+see also : ttyI(4) cui(4)
+	
+
+ISDN kernel modules
+-------------------
+If you compile your own kernel :
+ - don't use the teles driver. use HiSax instead.
+ - configure lilo to pass the right options to the kernel. 
+	i use in /etc/lilo.conf : append="hisax=3,2,10,0xd80,0,HiSax"  
+If you use modules (better in most cases - isdn is not always stable) :
+ - use modconf, select the modules "isdn" and "hisax" with the right
+   options. don't use the teles modules, use hisax instead.
+ - you can look what modconf did :
+   /etc/modules should have the lines 
+	isdn
+	hisax 
+   /etc/conf.modules :
+	options hisax type=3 protocol=2 io=0x180 irq=15      
+   if you want kerneld to load the modules, you don't need the
+   /etc/modules entry, but additional entries in /etc/conf.modules
+	alias ippp0 isdn
+	alias char-major-43 hisax
+	alias char-major-44 hisax
+	alias char-major-45 hisax
+
+see also : /usr/src/linux/Documentation/isdn/README.HiSax 
+	and other files in that directory (or where your kernel doc is).
+
+
+ISDNLOG
+-------
+
+isdnlog is a tool to keep a log of all ISDN calls. It also allows you
+to start specific programs upon certain events, such as an incoming
+call.
+
+One isdnlog may be started per ISDN card. The corresponding config file
+with a number of examples, which needs to be edited before isdnlog will
+be activated, is found in:
+
+    /etc/isdn/isdnlog.DEVICE
+
+DEVICE can be isdnctrl0, isdnctrl2, ...
+
+
+ISDN network device
+-------------------
+
+isdnconf will create example files with lots of comments, which need to
+be edited before the configuration will be used:
+
+    /etc/isdn/device.DEVICE
+
+DEVICE can be isdn0, isdn1 ... (used for rawip devices) 
+or ippp0, ippp1, ippp2 ... (used for ippp devices). 
+see also : isdnctrl(8) ifconfig(8) route(8)
+	isdnctrl help text (pppbind is not documented in the man page) 
+	and any book about unix networking for ifconfig/route details.
+
+
+ISDN ppp daemon
+---------------
+
+isdnconfig will create example files with lots of comments, which need to
+be edited before ipppd will be started:
+
+    /etc/isdn/ipppd.DEVICE
+
+DEVICE can be ippp0, ippp1 ...
+Note : there is no connection between the network device "ipppX" and the
+real device /dev/ipppX, unless you create a pppbind with isdnctrl.
+Default is not to create pppbinds and let one ipppd handle all
+connections. But if you need different configurations, create several
+files, and start several ipppd this way, and don't forget to bind every
+ipppX network interface to the right ipppd with pppbind.
+
+The ipppd does not support ioptions.<tty>. And this setup will neither
+read /etc/ppp/options nor ioptions. Put the whole configuration into
+/etc/isdn/ipppd.DEVICE ! 
+
+see also : ipppd(8)
+
+
+ISDN modem emulation
+--------------------
+
+With iprofd you can store your ttyI modem settings with AT&W as if it
+were a modem. isdnconf will create an empty file (or use "touch
+/etc/isdn/iprofd.data").
+
+see also : iprofd(8)
+
+
+ISDN ttyI devices
+-----------------
+
+You can use these devices with any program like normal modem devices
+ttyS (e.g. uucp, minicom, pppd). With pppd you can create asynchronous
+ppp connections (that's nonsence with isdn, but you can do that).
+
+The first two devices ttyI0 and ttyI1 belong to your first isdn card,
+the next two devices to the next card etc. And after that it starts
+again with the first card. If you only have one isdn card, all devices
+are used with that card. If you have two cards, the devices 0,1,4,5,8,9
+... are used by the first card, the devices 2,3,6,7,10,11 ... are used
+by the second card.
+
+A device is not bound to a channel. You can use several device at the
+same time (e.g. have vboxgetty waiting for incoming calls on 5 devices,
+and use two devices with minicom at the same time). 
+
+
+ISDN voice box
+--------------
+
+Edit /etc/inittab to activate vboxgetty. example for ttyI0 :
+
+    I0:2345:respawn:/usr/sbin/vboxgetty -d /dev/ttyI0 
+
+Also see the /var/spool/vbox/USER/vbox.conf file.

@@ -1,0 +1,27 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(ipppstats.c)
+AM_INIT_AUTOMAKE(ipppstats,2.1b1)
+
+AC_ARG_WITH(include,\
+        [  --with-include=DIR              add include (for kernel headers)],
+        [ CPPFLAGS="$CPPFLAGS -I$withval" ] )
+
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_INSTALL
+
+dnl Checks for libraries.
+
+dnl Checks for header files.
+AC_CHECK_HEADERS(fcntl.h sys/ioctl.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+
+dnl Checks for library functions.
+AC_PROG_GCC_TRADITIONAL
+AC_HEADER_STDC
+AC_TYPE_SIGNAL
+AC_CHECK_FUNCS(socket)
+
+AC_OUTPUT(Makefile)

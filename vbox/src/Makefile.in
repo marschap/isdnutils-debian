@@ -1,0 +1,387 @@
+# Makefile.in generated automatically by automake 1.2 from Makefile.am
+
+# Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy, distribute and modify it.
+
+
+SHELL = /bin/sh
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = true
+PRE_INSTALL = true
+POST_INSTALL = true
+NORMAL_UNINSTALL = true
+PRE_UNINSTALL = true
+POST_UNINSTALL = true
+CC = @CC@
+I4LCONFDIR = @I4LCONFDIR@
+LN_S = @LN_S@
+MAKEINFO = @MAKEINFO@
+NCLIB = @NCLIB@
+PACKAGE = @PACKAGE@
+RANLIB = @RANLIB@
+TCLLIB = @TCLLIB@
+VERDATE = @VERDATE@
+VERSION = @VERSION@
+
+AUTOMAKE_OPTIONS=foreign no-dependencies
+MAINTAINERCLEANFILES=Makefile.in config.h config.h.in stamp-h.in
+INCLUDES=-DGETTYRC=\"@I4LCONFDIR@/vboxgetty.conf\" \
+	-DVBOXDRC=\"@I4LCONFDIR@/vboxd.conf\" \
+	-DPLAY=\"${bindir}/vboxplay\" -DBINDIR=\"@bindir@\"
+
+noinst_LIBRARIES=libvbox.a
+libvbox_a_SOURCES=libvbox.c libvbox.h
+
+sbin_PROGRAMS=vboxgetty vboxd
+bin_PROGRAMS=vbox vboxconvert vboxctrl vboxbeep
+
+vboxgetty_SOURCES=vboxgetty.c vboxgetty.h init.c init.h log.c log.h \
+		perms.c perms.h lock.c lock.h streamio.c modem.c modem.h \
+		script.c script.h voice.c voice.h lists.c lists.h \
+		rcvbox.c rcvbox.h rcgetty.c rcgetty.h
+vboxgetty_LDADD=-lvbox -L. @TCLLIB@
+
+vbox_SOURCES=vbox.c streamio.c streamio.h
+vbox_LDADD=-lvbox -L. @NCLIB@
+
+vboxconvert_SOURCES=vboxconvert.c
+vboxconvert_LDADD=-lvbox -L.
+
+vboxctrl_SOURCES=vboxctrl.c vboxctrl.h
+vboxctrl_LDADD=-lvbox -L.
+
+vboxbeep_SOURCES=vboxbeep.c
+vboxbeep_LDADD=-lvbox -L.
+
+vboxd_SOURCES=vboxd.c vboxd.h streamio.c streamio.h
+vboxd_LDADD=-lvbox  -L.
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = config.h
+CONFIG_CLEAN_FILES = 
+LIBRARIES =  $(noinst_LIBRARIES)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I.
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+libvbox_a_LIBADD = 
+libvbox_a_OBJECTS =  libvbox.o
+AR = ar
+PROGRAMS =  $(bin_PROGRAMS) $(sbin_PROGRAMS)
+
+vbox_OBJECTS =  vbox.o streamio.o
+vbox_DEPENDENCIES = 
+vbox_LDFLAGS = 
+vboxconvert_OBJECTS =  vboxconvert.o
+vboxconvert_DEPENDENCIES = 
+vboxconvert_LDFLAGS = 
+vboxctrl_OBJECTS =  vboxctrl.o
+vboxctrl_DEPENDENCIES = 
+vboxctrl_LDFLAGS = 
+vboxbeep_OBJECTS =  vboxbeep.o
+vboxbeep_DEPENDENCIES = 
+vboxbeep_LDFLAGS = 
+vboxgetty_OBJECTS =  vboxgetty.o init.o log.o perms.o lock.o streamio.o \
+modem.o script.o voice.o lists.o rcvbox.o rcgetty.o
+vboxgetty_DEPENDENCIES = 
+vboxgetty_LDFLAGS = 
+vboxd_OBJECTS =  vboxd.o streamio.o
+vboxd_DEPENDENCIES = 
+vboxd_LDFLAGS = 
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+DIST_COMMON =  Makefile.am Makefile.in config.h.in stamp-h.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = tar
+GZIP = --best
+SOURCES = $(libvbox_a_SOURCES) $(vbox_SOURCES) $(vboxconvert_SOURCES) $(vboxctrl_SOURCES) $(vboxbeep_SOURCES) $(vboxgetty_SOURCES) $(vboxd_SOURCES)
+OBJECTS = $(libvbox_a_OBJECTS) $(vbox_OBJECTS) $(vboxconvert_OBJECTS) $(vboxctrl_OBJECTS) $(vboxbeep_OBJECTS) $(vboxgetty_OBJECTS) $(vboxd_OBJECTS)
+
+default: all
+
+.SUFFIXES:
+.SUFFIXES: .c .o
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --foreign src/Makefile
+
+Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+config.h: stamp-h
+stamp-h: $(srcdir)/config.h.in $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES= CONFIG_HEADERS=src/config.h \
+	     $(SHELL) ./config.status
+	@echo timestamp > stamp-h
+$(srcdir)/config.h.in: $(srcdir)/stamp-h.in
+$(srcdir)/stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOHEADER)
+	@echo timestamp > $(srcdir)/stamp-h.in
+
+mostlyclean-hdr:
+
+clean-hdr:
+
+distclean-hdr:
+	rm -f config.h
+
+maintainer-clean-hdr:
+
+mostlyclean-noinstLIBRARIES:
+
+clean-noinstLIBRARIES:
+	test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+
+distclean-noinstLIBRARIES:
+
+maintainer-clean-noinstLIBRARIES:
+
+.c.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	rm -f *.o core
+
+clean-compile:
+
+distclean-compile:
+	rm -f *.tab.c
+
+maintainer-clean-compile:
+
+libvbox.a: $(libvbox_a_OBJECTS) $(libvbox_a_DEPENDENCIES)
+	rm -f libvbox.a
+	$(AR) cru libvbox.a $(libvbox_a_OBJECTS) $(libvbox_a_LIBADD)
+	$(RANLIB) libvbox.a
+
+mostlyclean-binPROGRAMS:
+
+clean-binPROGRAMS:
+	test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+distclean-binPROGRAMS:
+
+maintainer-clean-binPROGRAMS:
+
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
+	     $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	$(NORMAL_UNINSTALL)
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(bindir)/`echo $$p|sed '$(transform)'`; \
+	done
+
+mostlyclean-sbinPROGRAMS:
+
+clean-sbinPROGRAMS:
+	test -z "$(sbin_PROGRAMS)" || rm -f $(sbin_PROGRAMS)
+
+distclean-sbinPROGRAMS:
+
+maintainer-clean-sbinPROGRAMS:
+
+install-sbinPROGRAMS: $(sbin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(sbindir)
+	@list='$(sbin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "  $(INSTALL_PROGRAM) $$p $(sbindir)/`echo $$p|sed '$(transform)'`"; \
+	     $(INSTALL_PROGRAM) $$p $(sbindir)/`echo $$p|sed '$(transform)'`; \
+	  else :; fi; \
+	done
+
+uninstall-sbinPROGRAMS:
+	$(NORMAL_UNINSTALL)
+	list='$(sbin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(sbindir)/`echo $$p|sed '$(transform)'`; \
+	done
+
+vbox: $(vbox_OBJECTS) $(vbox_DEPENDENCIES)
+	@rm -f vbox
+	$(LINK) $(vbox_LDFLAGS) $(vbox_OBJECTS) $(vbox_LDADD) $(LIBS)
+
+vboxconvert: $(vboxconvert_OBJECTS) $(vboxconvert_DEPENDENCIES)
+	@rm -f vboxconvert
+	$(LINK) $(vboxconvert_LDFLAGS) $(vboxconvert_OBJECTS) $(vboxconvert_LDADD) $(LIBS)
+
+vboxctrl: $(vboxctrl_OBJECTS) $(vboxctrl_DEPENDENCIES)
+	@rm -f vboxctrl
+	$(LINK) $(vboxctrl_LDFLAGS) $(vboxctrl_OBJECTS) $(vboxctrl_LDADD) $(LIBS)
+
+vboxbeep: $(vboxbeep_OBJECTS) $(vboxbeep_DEPENDENCIES)
+	@rm -f vboxbeep
+	$(LINK) $(vboxbeep_LDFLAGS) $(vboxbeep_OBJECTS) $(vboxbeep_LDADD) $(LIBS)
+
+vboxgetty: $(vboxgetty_OBJECTS) $(vboxgetty_DEPENDENCIES)
+	@rm -f vboxgetty
+	$(LINK) $(vboxgetty_LDFLAGS) $(vboxgetty_OBJECTS) $(vboxgetty_LDADD) $(LIBS)
+
+vboxd: $(vboxd_OBJECTS) $(vboxd_DEPENDENCIES)
+	@rm -f vboxd
+	$(LINK) $(vboxd_LDFLAGS) $(vboxd_OBJECTS) $(vboxd_LDADD) $(LIBS)
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES)
+	here=`pwd` && cd $(srcdir) && mkid -f$$here/ID $(SOURCES) $(HEADERS)
+
+TAGS:  $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES)
+	tags=; \
+	here=`pwd`; \
+	test -z "$(ETAGS_ARGS)config.h.in$(SOURCES)$(HEADERS)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags config.h.in $(SOURCES) $(HEADERS) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = src
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  test -f $(distdir)/$$file \
+	  || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	  || cp -p $$d/$$file $(distdir)/$$file; \
+	done
+info:
+dvi:
+check: all
+	$(MAKE)
+installcheck:
+install-exec: install-binPROGRAMS install-sbinPROGRAMS install-exec-local
+	@$(NORMAL_INSTALL)
+
+install-data: 
+	@$(NORMAL_INSTALL)
+
+install: install-exec install-data all
+	@:
+
+uninstall: uninstall-binPROGRAMS uninstall-sbinPROGRAMS
+
+all: Makefile $(LIBRARIES) $(PROGRAMS) config.h
+
+install-strip:
+	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
+installdirs:
+	$(mkinstalldirs)  $(bindir) $(sbindir)
+
+
+mostlyclean-generic:
+	test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+
+clean-generic:
+	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	rm -f Makefile $(DISTCLEANFILES)
+	rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+
+maintainer-clean-generic:
+	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+mostlyclean:  mostlyclean-hdr mostlyclean-noinstLIBRARIES \
+		mostlyclean-compile mostlyclean-binPROGRAMS \
+		mostlyclean-sbinPROGRAMS mostlyclean-tags \
+		mostlyclean-generic
+
+clean:  clean-hdr clean-noinstLIBRARIES clean-compile clean-binPROGRAMS \
+		clean-sbinPROGRAMS clean-tags clean-generic mostlyclean
+
+distclean:  distclean-hdr distclean-noinstLIBRARIES distclean-compile \
+		distclean-binPROGRAMS distclean-sbinPROGRAMS \
+		distclean-tags distclean-generic clean
+	rm -f config.status
+
+maintainer-clean:  maintainer-clean-hdr maintainer-clean-noinstLIBRARIES \
+		maintainer-clean-compile maintainer-clean-binPROGRAMS \
+		maintainer-clean-sbinPROGRAMS maintainer-clean-tags \
+		maintainer-clean-generic distclean
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+.PHONY: default mostlyclean-hdr distclean-hdr clean-hdr \
+maintainer-clean-hdr mostlyclean-noinstLIBRARIES \
+distclean-noinstLIBRARIES clean-noinstLIBRARIES \
+maintainer-clean-noinstLIBRARIES mostlyclean-compile distclean-compile \
+clean-compile maintainer-clean-compile mostlyclean-binPROGRAMS \
+distclean-binPROGRAMS clean-binPROGRAMS maintainer-clean-binPROGRAMS \
+uninstall-binPROGRAMS install-binPROGRAMS mostlyclean-sbinPROGRAMS \
+distclean-sbinPROGRAMS clean-sbinPROGRAMS maintainer-clean-sbinPROGRAMS \
+uninstall-sbinPROGRAMS install-sbinPROGRAMS tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info dvi \
+installcheck install-exec install-data install uninstall all \
+installdirs mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+install-exec-local:
+	ln ${bindir}/vboxconvert ${bindir}/autovbox
+	ln ${bindir}/vboxconvert ${bindir}/vboxtoau
+	ln ${bindir}/vboxconvert ${bindir}/rmdtovbox
+	ln ${bindir}/vboxconvert ${bindir}/vboxmode
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

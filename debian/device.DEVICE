@@ -1,0 +1,160 @@
+#!/bin/sh
+
+# REMOVE the next line once configuration is complete #########################
+echo "Warning! $0 not configured yet! Aborting..."; exit 1
+# REMOVE the above line once configuration is complete ########################
+
+# Get the device name
+set -e ; device=`basename $0`; device=${device#*.}
+#
+# Configuration (start)
+#
+case "$1" in
+start)
+
+# First you need to create the interface
+isdnctrl addif ${device}
+
+#	eaz name num
+# Set the EAZ (German 1TR6 protocol) or MSN (Euro-ISDN E-DSS1) for
+# interface "name" to "num". For an EAZ this is only one digit, for a
+# MSN "num" is the whole MSN.
+isdnctrl eaz ${device} EAZ
+
+#	addphone name out num
+# Set the phone number(s) of the remote site for the IP-interface
+# "name". More than one number can be set by calling isdnctrl addphone
+# repeatedly. If more than one number is set these will be tried one
+# after another. When using an german SPV-type connection, with a
+# ICN-card, the number has to be preceeded by a capital S.   
+isdnctrl addphone ${device} out NUM
+
+#	addphone name in num
+# Set the phone number(s) that the IP-interface "name" is supposed to
+# accept for incoming calls. If no num­ ber is given incoming calls are
+# disabled. More than one number can be set by calling isdnctrl addphone
+# repeatedly. Also wildcards can be used (see below). 
+isdnctrl addphone ${device} in NUM
+
+#	secure name on|off
+# Turns on or off the security feature for interface "name". If set to
+# on, incoming calls will only be accepted if the calling number has
+# been added to the access list with isdnctrl addphone name in. 
+isdnctrl secure ${device} on
+
+#	huptimeout name seconds
+# Set the hangup timeout for interface "name" to "seconds". If there
+# is inactivity (i.e. no traffic on the interface) for the given time
+# the driver automatically shuts down the connection. 
+#isdnctrl huptimeout ${device} NUM
+
+# 	dialmax name num
+# Set the number of dial atempts for interface "name" to "num". If
+# dialing, each phonenumber is tried this many times before giving up.
+#isdnctrl dialmax ${device} NUM
+
+#	ihup name on|off
+# Turn on or off the hangup timeout for incoming calls on interface name.
+#isdnctrl ihup ${device} on
+
+#	 encap name encapname
+# Set the encapsulation mode for interface "name". Possible modes for
+# encapname are: rawip ip cisco_h ethernet syncppp uihdlc 
+# (most people use rawip, ipppd or cisco_h)
+isdnctrl encap ${device} ENCAP
+
+#	l2_prot name protocol
+# Set the layer-2 protocol for interface "name". Possible values for
+# "protocol" are x75i, x75ui, x75bui and hdlc 
+isdnctrl l2_prot ${device} hdlc
+
+#	l3_prot name protocol
+# Set the layer-3 protocol for interface "name". At the moment only
+# trans is supported.  If protocol is omitted the current setting is
+# printed.   
+isdnctrl l3_prot ${device} trans
+
+#	verbose num
+# Set verbosity level to <num>. 
+# (2 shows the first package of every connection, that is very useful.)
+# WARNING: this is a global parameter, that affacts all isdn devices !
+isdnctrl verbose 2
+
+# CHARGEHUP FUNCTION
+
+#	chargehup name on|off
+# Turn on or off hangup before next charge info for interface name. This
+# can only be used if the ISDN provider transmits charge info during and
+# after the connection. If set to on, the driver will close the
+# connection just before the next charge info will  be received if the
+# interface is inactive. 
+#isdnctrl chargehup ${device} on
+
+#	chargeint name seconds
+# When "seconds" are given, the charge interval for the given interface
+# is set. This may be of use on ISDN lines with no chargeinfo or no
+# online chargeinfo. The connection will only be closed 2 seconds before
+# the end of the next charge interval and only, if huptime out seconds
+# of inactivity have been reached. If ihup is on, also incomming
+# connections are closed by this mechanism.
+#isdnctrl chargeint ${device} NUM
+
+# CALLBACK FUNCTION
+
+#	callback name off|in|out
+# Selects callback mode for interface "name". If call­ back mode is in,
+# then after getting an incoming call, a callback is triggered. If
+# callback mode is out , then this system does the initial call, then
+# waiting for callback of the remote machine. 
+#isdnctrl callbask ${device} MODE
+
+#	cbdelay name seconds
+# Set the callback delay for interface "name" to "seconds". If callback
+# mode for this interface is in, dialing is delayed the given time. If
+# the callback mode is out , after dialing out and waiting the given
+# time, a hangup is issued to free the line for the incoming callback
+# from the remote machine. This hangup-after-dial is disabled by setting
+# cbdelay  to 0.  
+#isdnctrl cbdelay ${device} SECONDS
+
+#	cbhup name on|off
+# Turns on or off Hangup (Reject) for interface "name" before starting
+# Callback. 
+#isdnctrl cbhup ${device} MODE
+
+#	OTHER OPTIONS
+
+# There are other options not used by most people.  You can insert these
+# options here. 
+
+# See also : isdnctrl(8), isdnctrl help text
+# pppbind is not yet documented in that manpage :-(
+
+#	 NETWORK SETUP
+
+# Network device setup as usual. 
+# See also : ifconfig(8) route(8) or any book about unix networking.
+
+ifconfig ${device} YOURIP pointopoint REMOTEIP metric 1
+route add -host REMOTEIP
+route add default ${device}                     
+
+#	Delete the interface
+;;
+stop)
+# Commands to undo the network stuff
+route del REMOTEIP
+route del default
+ifconfig $device down
+isdnctrl delif $device
+
+# the rest is generic, don't touch
+;;
+  *)
+    echo "Usage: $0 {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0
+ 

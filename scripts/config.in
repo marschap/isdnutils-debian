@@ -1,0 +1,78 @@
+mainmenu_name "isdn4k-utils Configuration"    
+
+mainmenu_option	next_comment
+comment 'Program selection'
+comment 'General stuff'
+bool 'Install generic pages' CONFIG_DOC
+bool 'Generate FAQ' CONFIG_FAQ                        
+bool 'isdnctrl' CONFIG_ISDNCTRL        
+bool 'iprofd' CONFIG_IPROFD        
+comment 'isdn card drivers'
+bool 'telesctrl and hisaxctrl' CONFIG_TELES
+bool 'icnctrl' CONFIG_ICN           
+bool 'pcbitctl' CONFIG_PCBIT
+bool 'avmcapictrl' CONFIG_AVM      
+comment 'experimental card drivers'
+bool 'loopctrl' CONFIG_LOOP   
+comment 'info programs'
+bool 'imon' CONFIG_IMON
+bool 'imontty' CONFIG_IMONTTY
+comment 'x11 info programs'
+bool 'xisdnload' CONFIG_XISDNLOAD 
+bool 'xmonisdn' CONFIG_XMONISDN 
+comment 'applications'
+bool 'ipppd' CONFIG_IPPPD           
+bool 'ipppstats' CONFIG_IPPPSTATS         
+bool 'isdnlog' CONFIG_ISDNLOG             
+bool 'vbox' CONFIG_VBOX         
+endmenu
+
+mainmenu_option	next_comment
+comment 'Compile Options'
+
+comment 'General options'
+bool 'Enable debug-option' CONFIG_DEBUG 
+string 'Kernel source' CONFIG_KERNEL
+
+comment 'Options for loopctrl package'
+string 'Sourcedir of isdnloop module' CONFIG_LOOPDIR 
+
+comment 'Options for xmonisdn package'
+string 'NetUP command' CONFIG_UPCMD 
+string 'NetDOWN command' CONFIG_DOWNCMD 
+ 
+comment 'Options for ipppd package'
+bool 'Support for MS chap secrets' CONFIG_MSCHAP 
+
+comment 'Options for vbox package'
+comment 'empty = search'
+string 'Directory with tcl lib files ' CONFIG_TCLLIB 
+string 'Directory with tcl include files' CONFIG_TCLINC 
+string 'Directory with ncurses lib files' CONFIG_NCLIB 
+string 'Directory with ncurses include files' CONFIG_NCINC 
+
+comment 'Options for isdnlog package'
+bool 'Support postgres95 SQL-Database' CONFIG_POSTGRES 
+string 'directory of postgres95' CONFIG_POSTGRESDIR 
+choice 'Country specific chargeinfo support' \
+        "DE CONFIG_CHARGE_DE \
+        NL CONFIG_CHARGE_NL \
+        CH CONFIG_CHARGE_CH" 
+choice 'Database for area codes' \
+        "Areacode CONFIG_LIB_AREACODE \
+        Avon CONFIG_LIB_AVON"
+endmenu
+
+mainmenu_option	next_comment
+comment 'Directory Layout'
+comment 'Installation'
+string 'General configuration directory' CONFIG_I4LCONFDIR
+string 'Toplevel directory (prefix)' CONFIG_PREFIX
+comment 'Generic values, can be empty'
+string 'User binaries ($prefix/bin)' CONFIG_BINDIR
+string 'Admin binaries ($prefix/sbin)' CONFIG_SBINDIR
+string 'Man pages ($prefix/man)' CONFIG_MANDIR                  
+string 'FAQ ($prefix/doc/isdn4k-utils/)' CONFIG_FAQDIR
+string 'Areacode/Avon data dir ($prefix/lib/isdn)' CONFIG_ALIBDIR
+endmenu
+

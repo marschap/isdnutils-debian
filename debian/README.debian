@@ -1,0 +1,101 @@
+isdnutils for DEBIAN
+--------------------
+
+ - tcltk script isdnmon was not included (obsoleted by isdnlog and isdnbutton).
+
+ - isdn callout devices (/dev/cui*) are not created, they are obsolete
+   and only left for compatibility. if you need them, run 
+   "makedev isdn-cu".
+
+ - new configuration : read CONFIG and use isdnconfig .
+
+ - please use the hisax device driver (kernel >= 2.0.30) and not the 
+   old, buggy and outdated teles device driver. Only use kernels 
+   with 2.0.30A isdn patch (applied in debian kernels >= 2.0.29/30-6)
+   incompatible with 2.0.31pre kernels ! you need a to recompile this
+   package.
+
+ - isdnbutton and xled/xvboxled were removed from upstream source, so
+   they are no longer included.
+
+ - /etc/services : add, if missing
+	isdnlog         20011/tcp                       # isdn logging system
+	isdnlog         20011/udp                       # isdn logging system
+	vboxd           20012/tcp                       # voice box system
+	vboxd           20012/udp                       # voice box system
+
+
+ - thanks a lot to Alexander Koch <efraim@argh.org> and Heiko
+   Schlittermann <heiko@lotte.sax.de> for testing and comments.
+
+ - isdnutils create all necessary devices for you: 
+   with old makedev versions prior 1.6-20 makedev will create
+   each 64 devices, new makedev only 8 : isdn* ttyI* ippp* isdnctrl*
+	and the two devices isdnctrl isdninfo
+
+about ipppd
+===========
+
+ - ipppd is not compiled with ms chap (microsoft chap extension).
+   you need this extension, if you want to connect to a win nt server,
+   and the option "accept only microsoft authentication" is enabled on that
+   server. i did not include this options, because it requires des (the
+   crypto algorithm), and us laws forbit to export software using des ...
+   (as far as i know ...)
+
+about isdnlog
+=============
+
+ - isdnlog is compiled for german isdn protocoll / charge int. If you
+   need swiss or netherland charge informations you will need to compile
+   isdnutils yourself. If it doesn't work : write an email and i will
+   compile it for you.
+ 
+ - isdnlog was modified to not examine COLP messages (some telekom
+   machines seem to be buggy and caused malfunctions).
+
+ - config files have change a lot. sorry, it will only work, if you
+   change the new config files.
+
+ - xisdn was not yet converted to new isdnlog format, so it's not
+   included.
+
+about xmonisdn and xisdnload
+============================
+
+ - xmonisdn is not suid for security reasons. you can change this with:
+   suid xmonisdn only available to users of group adm :
+	"suidregister /usr/X11R6/bin/xmonisdn root adm 4754" 
+   suid xmonisdn available to all users (maybe insecure !!!) :
+	"suidregister /usr/X11R6/bin/xmonisdn root root 4755" 
+   remove that suid flag :
+	"suidunregister /usr/X11R6/bin/xmonisdn"
+   xmonisdn will call the commands 
+	/etc/isdn/xmonisdn.up and /etc/isdn/xmonisdn.down
+ 
+ - you can run xmonisdn and xisdnload within you window manager. 
+   i did this with afterstep (will run without big changes in fvwm2/95) : 
+	*Wharf xisdnload nil  Swallow "xisdnload" xisdnload -nolabel \
+		-hl black -bg "#8e8a9e" -geometry 48x48-1-1 &
+	*Wharf xmonisdn nil  Swallow "xmonisdn" xmonisdn -geometry 48x48-1-1 &
+
+
+about vbox
+==========
+
+ - vboxbeep is not suid for security reasons. you can change this with:
+   suid vboxbeep only available to users of group adm :
+   "suidregister /usr/bin/vboxbeep root adm 4754" 
+   suid vboxbeep available to all users (maybe insecure !!!) :
+   "suidregister /usr/bin/vboxbeep root root 4755" 
+   remove that suid flag :
+   "suidunregister /usr/bin/vboxbeep"
+
+ - vboxplay needs sox to play messages
+
+ - if you are using nas, you will have to edit /usr/bin/vboxplay
+ 
+Originally:
+    Andreas Jellinghaus <aj@debian.org>  Tue, 10 Jun 1997 08:39:06 +0200
+Now taken over by:
+    Paul Slootman <paul@wurtel.demon.nl> Wed Dec  3 15:05:20 CET 1997

@@ -1,0 +1,17 @@
+vbox		default sound examples
+manpage		isdnconf isdnrep ipppd
+manpages	isdnctrl kennpt pppbind nicht
+manpages	examples hinzufügen
+examples	isdnlog vbox
+
+isdn/vbox : vboxd pidfile ?
+
+isdn bug 10730 : isdnlog and isdnrep have different output
+isdn bug 11384 : isdnlog verträgt "killall -HUP isdnlog" nicht.
+
+ipppd : password zeugs prüfen (shadow suite anschauen).
+isdnconfig aendern : keine *~ dateien finden
+isdnbutton, vboxled hinzufuegen
+isdnlog geht nicht im daemon mode
+dependencies ok ?
+icn firmware organisieren, lizenz prüfen, ab ins packet damit.
