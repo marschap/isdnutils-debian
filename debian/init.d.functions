@@ -39,7 +39,7 @@ NOT_CONFIGED='not configured yet'
 not_configured=''
 
 listdevices() {
-	DEVS=`find /etc/isdn -regex '/etc/isdn/device\.\(ippp\|isdn\)[0-9]+' -printf '%f\n'`
+	DEVS=`find /etc/isdn -regex '/etc/isdn/device\.\(ippp\|isdn\)[0-9][0-9]*' -printf '%f\n'`
 }
 
 # devices for which there is no config file (anymore)
@@ -49,7 +49,7 @@ listextradevices() {
 }
 
 listdaemons() {
-	DAEMONS=`find /etc/isdn -regex '/etc/isdn/ipppd\.ippp[0-9]+' -printf '%f\n'`
+	DAEMONS=`find /etc/isdn -regex '/etc/isdn/ipppd\.ippp[0-9][0-9]*' -printf '%f\n'`
 }
 
 list_unconfigured() {

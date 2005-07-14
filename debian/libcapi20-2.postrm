@@ -1,5 +1,5 @@
 #! /bin/sh
-# postrm script for libcapi20-2
+# postrm script for libcapi20-3
 
 set -e
 

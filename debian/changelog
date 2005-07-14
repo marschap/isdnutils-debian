@@ -1,3 +1,24 @@
+isdnutils (1:3.7.2005-07-09-1) unstable; urgency=low
+
+  * New upstream version.
+  * Change of libcapi20 soname (package name changes from libcapi20-2 to
+    libcapi20-3).
+  * Build against readline5.
+  * Update debian/patches.
+  * Apply gcc40 patches, instead of amd64 patches (closes: #302184).
+  * Blacklist the hisax and hisax_fcpcipnp drivers for discover as well.
+    Closes: #303734.
+  * Fix Makefile to correctly configure the eicon subdirectory.
+  * isdnlog-data: Install additional holiday files (closes: #311503).
+  * init.d.functions: Don't use extended regexp patterns in "find -regex".
+    Closes: #314712.
+  * Add debian/po/vi.po (closes: #312073).
+  * debian/po/de.po: Fix translations (closes: #314033).
+  * Add debian/po/cs.po (closes: #317573).
+  * Add support for ppc64 (closes: #300438).
+
+ -- Matthias Klose <doko@debian.org>  Thu, 14 Jul 2005 15:24:48 +0200
+
 isdnutils (1:3.6.2005-01-03-5) unstable; urgency=medium
 
   * Merge Ubuntu diffs:

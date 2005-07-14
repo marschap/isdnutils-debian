@@ -1,7 +1,21 @@
 /*
- * $Id: capi20.c,v 1.24 2004/12/15 14:27:54 calle Exp $
+ * $Id: capi20.c,v 1.27 2005/05/09 08:21:57 calle Exp $
  * 
  * $Log: capi20.c,v $
+ * Revision 1.27  2005/05/09 08:21:57  calle
+ * - get_buffer() now returns 0, if no buffer is available.
+ *
+ * Revision 1.26  2005/03/04 11:00:31  calle
+ * New functions: cleanup_buffers_for_ncci() and cleanup_buffers_for_plci()
+ * triggered by DISCONNECT_B3_RESP and DISCONNECT_IND to fix buffer leak.
+ *
+ * Revision 1.25  2005/02/21 17:37:06  keil
+ * libcapi20 version 3.0.0
+ *  - add SENDING COMPLETE in ALERT_REQ
+ *  - add Globalconfiguration to CONNECT_REQ/RESP and SELECT_B_PROTOCOL_REQ
+ *
+ * * NOTE: incompatible to 2.X.Y versions
+ *
  * Revision 1.24  2004/12/15 14:27:54  calle
  * Bugfix: returncode of get_buffer() is now checked.
  *
@@ -118,6 +132,8 @@
 #define CAPI_NCCI_GETUNIT	_IOR('C',0x27, unsigned)
 #endif
 
+#define SEND_BUFSIZ		(128+2048)
+
 static char capidevname[] = "/dev/capi20";
 static char capidevnamenew[] = "/dev/isdn/capi20";
 
@@ -194,6 +210,7 @@ struct recvbuffer {
    struct recvbuffer *next;
    unsigned int       datahandle;
    unsigned int       used;
+   unsigned int       ncci;
    unsigned char     *buf; /* 128 + MaxSizeB3 */
 };
 
@@ -235,6 +252,7 @@ static struct applinfo *alloc_buffers(unsigned MaxB3Connection,
    for (i=0; i < ap->maxbufs; i++) {
       ap->buffers[i].next = &ap->buffers[i+1];
       ap->buffers[i].used = 0;
+      ap->buffers[i].ncci = 0;
       ap->buffers[i].buf = ap->bufferstart+(recvbuffersize*i);
    }
    ap->lastfree = &ap->buffers[ap->maxbufs-1];
@@ -256,7 +274,8 @@ static unsigned char *get_buffer(unsigned applid, size_t *sizep, unsigned *handl
 
    assert(validapplid(applid));
    ap = applinfo[applid];
-   buf = ap->firstfree;
+   if ((buf = ap->firstfree) == 0)
+      return 0;
    ap->firstfree = buf->next;
    buf->next = 0;
    buf->used = 1;
@@ -266,7 +285,10 @@ static unsigned char *get_buffer(unsigned applid, size_t *sizep, unsigned *handl
    return buf->buf;
 }
 
-static void save_datahandle(unsigned char applid, unsigned offset, unsigned datahandle)
+static void save_datahandle(unsigned char applid,
+                            unsigned offset,
+			    unsigned datahandle,
+			    unsigned ncci)
 {
    struct applinfo *ap;
    struct recvbuffer *buf;
@@ -276,6 +298,7 @@ static void save_datahandle(unsigned char applid, unsigned offset, unsigned data
    assert(offset < ap->maxbufs);
    buf = ap->buffers+offset;
    buf->datahandle = datahandle;
+   buf->ncci = ncci;
 }
 
 static unsigned return_buffer(unsigned char applid, unsigned offset)
@@ -295,8 +318,45 @@ static unsigned return_buffer(unsigned char applid, unsigned offset)
    } else {
       ap->firstfree = ap->lastfree = buf;
    }
+   buf->used = 0;
+   buf->ncci = 0;
    assert(ap->nbufs-- > 0);
    return buf->datahandle;
+}
+
+static void cleanup_buffers_for_ncci(unsigned char applid, unsigned ncci)
+{
+   struct applinfo *ap;
+   unsigned i;
+	
+   assert(validapplid(applid));
+   ap = applinfo[applid];
+
+   for (i=0; i < ap->maxbufs; i++) {
+      if (ap->buffers[i].used) {
+         assert(ap->buffers[i].ncci != 0);
+	 if (ap->buffers[i].ncci == ncci)
+            return_buffer(applid, i);
+      }
+   }
+}
+
+static void cleanup_buffers_for_plci(unsigned char applid, unsigned plci)
+{
+   struct applinfo *ap;
+   unsigned i;
+	
+   assert(validapplid(applid));
+   ap = applinfo[applid];
+
+   for (i=0; i < ap->maxbufs; i++) {
+      if (ap->buffers[i].used) {
+         assert(ap->buffers[i].ncci != 0);
+	 if (ap->buffers[i].ncci & 0xffff == plci) {
+            return_buffer(applid, i);
+	 }
+      }
+   }
 }
 
 /* 
@@ -404,7 +464,7 @@ capi20_release (unsigned ApplID)
 unsigned
 capi20_put_message (unsigned ApplID, unsigned char *Msg)
 {
-    unsigned char sndbuf[128+2048];
+    unsigned char sndbuf[SEND_BUFSIZ];
     unsigned ret;
     int len = (Msg[0] | (Msg[1] << 8));
     int cmd = Msg[4];
@@ -441,6 +501,8 @@ capi20_put_message (unsigned ApplID, unsigned char *Msg)
               if (data != 0) dataptr = (void *)(unsigned long)data;
               else dataptr = Msg + len; /* Assume data after message */
 	  }
+ 	  if (len + datalen > SEND_BUFSIZ)
+             return CapiMsgOSResourceErr;
           memcpy(sndbuf+len, dataptr, datalen);
           len += datalen;
       } else if (subcmd == CAPI_RESP) {
@@ -448,8 +510,12 @@ capi20_put_message (unsigned ApplID, unsigned char *Msg)
 			 return_buffer(ApplID, CAPIMSG_U16(sndbuf, 12)));
       }
    }
-    ret = CapiNoError;
-    errno = 0;
+
+   if (cmd == CAPI_DISCONNECT_B3 && subcmd == CAPI_RESP)
+      cleanup_buffers_for_ncci(ApplID, CAPIMSG_U32(sndbuf, 8));   
+
+   ret = CapiNoError;
+   errno = 0;
 
     if ((rc = write(fd, sndbuf, len)) != len) {
         switch (errno) {
@@ -492,13 +558,14 @@ capi20_get_message (unsigned ApplID, unsigned char **Buf)
     fd = applid2fd(ApplID);
 
     if ((*Buf = rcvbuf = get_buffer(ApplID, &bufsiz, &offset)) == 0)
-        return CapiMsgOSResourceError;
+        return CapiMsgOSResourceErr;
 
     if ((rc = read(fd, rcvbuf, bufsiz)) > 0) {
 	CAPIMSG_SETAPPID(rcvbuf, ApplID); // workaround for old driver
         if (   CAPIMSG_COMMAND(rcvbuf) == CAPI_DATA_B3
 	    && CAPIMSG_SUBCOMMAND(rcvbuf) == CAPI_IND) {
-           save_datahandle(ApplID, offset, CAPIMSG_U16(rcvbuf, 18));
+           save_datahandle(ApplID, offset, CAPIMSG_U16(rcvbuf, 18),
+					   CAPIMSG_U32(rcvbuf, 8));
            capimsg_setu16(rcvbuf, 18, offset); /* patch datahandle */
            if (sizeof(void *) == 4) {
 	       u_int32_t data = (u_int32_t)rcvbuf + CAPIMSG_LEN(rcvbuf);
@@ -508,6 +575,7 @@ capi20_get_message (unsigned ApplID, unsigned char **Buf)
 	       rcvbuf[15] = (data >> 24) & 0xff;
            } else {
 	       u_int64_t data;
+	       ulong radr = (ulong)rcvbuf;
 	       if (CAPIMSG_LEN(rcvbuf) < 30) {
 		  /*
 		   * grr, 64bit arch, but no data64 included,
@@ -518,7 +586,7 @@ capi20_get_message (unsigned ApplID, unsigned char **Buf)
 	          rcvbuf[0] = 30;
 	          rcvbuf[1] = 0;
 	       }
-	       data = (u_int64_t)rcvbuf + CAPIMSG_LEN(rcvbuf);
+	       data = radr + CAPIMSG_LEN(rcvbuf);
 	       rcvbuf[12] = rcvbuf[13] = rcvbuf[14] = rcvbuf[15] = 0;
 	       rcvbuf[22] = data & 0xff;
 	       rcvbuf[23] = (data >> 8) & 0xff;
@@ -533,6 +601,9 @@ capi20_get_message (unsigned ApplID, unsigned char **Buf)
            return CapiNoError;
 	}
         return_buffer(ApplID, offset);
+        if (   CAPIMSG_COMMAND(rcvbuf) == CAPI_DISCONNECT
+	    && CAPIMSG_SUBCOMMAND(rcvbuf) == CAPI_IND)
+           cleanup_buffers_for_plci(ApplID, CAPIMSG_U32(rcvbuf, 8));   
         return CapiNoError;
     }
 

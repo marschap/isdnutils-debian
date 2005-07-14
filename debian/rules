@@ -28,7 +28,7 @@ auto-update-stamp: patch-stamp
 	done
 
 	@set -e; \
-	for d in capi20 capifax capiinfo capiinit rcapid; do \
+	for d in capifax capiinfo capiinit rcapid; do \
 	  echo "Regenerating autotools files in $$d ..."; \
 	  cd $$d; \
 	  echo "  aclocal"; aclocal; \
@@ -67,6 +67,14 @@ endif
 	  touch configure.in; \
 	  touch aclocal.m4; \
 	  touch configure; \
+	  cd ..; \
+	done
+
+	@set -e; \
+	for d in eicon; do \
+	  echo "Regenerating autotools files in $$d ..."; \
+	  cd $$d; \
+	  echo "  autoconf2.13"; autoconf2.13; \
 	  cd ..; \
 	done
 
@@ -159,6 +167,7 @@ install: build
 	dh_clean -k
 	dh_installdirs
 	# Install ALL dirs into tmp also. Unfortunately there's no easy way...
+	mkdir -p debian/tmp/sbin
 	sort -u debian/*.dirs > debian/tmp.dirs
 	dh_installdirs -Pdebian/tmp -pisdnutils `cat debian/tmp.dirs`
 	rm debian/tmp.dirs
@@ -166,6 +175,8 @@ install: build
 	# Add here commands to install the package into debian/tmp
 	# (the files get moved out by dh_movefiles later)
 	$(MAKE) install DESTDIR=`pwd`/debian/tmp
+
+	cp -p isdnlog/holiday-??.dat debian/tmp/usr/share/isdn/
 
 ifneq ($(some_arch_match),yes)
 	chmod +x debian/finish-install-first.sh
@@ -245,6 +256,9 @@ ifneq ($(some_arch_match),yes)
 	mkdir -p debian/capiutils/etc/hotplug/blacklist.d
 	cp -p debian/capiutils.blacklist \
 		debian/capiutils/etc/hotplug/blacklist.d/capiutils
+	mkdir -p debian/capiutils/etc/discover.d
+	sed 's/^/skip /' debian/capiutils.blacklist \
+		> debian/capiutils/etc/discover.d/capiutils
 endif
 	# Ok, for two commands
 	# No, for one command after all. Do this one by hand.
@@ -352,14 +366,13 @@ debian_patches = \
 	vbox-autotools \
 	vbox-no-strict-aliasing \
 	capifax-manpages \
-	capi20-fix \
-	capi20-pic \
 	capi20-soname \
 	libtool \
 	imon-update \
 	ppp-2.4.3 \
-	amd64-fixes \
+	gcc40-fixes \
 	vbox-little-endian \
+	toplevel-make \
 
 patch: patch-stamp
 

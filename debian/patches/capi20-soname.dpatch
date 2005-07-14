@@ -32,7 +32,7 @@ exit 0
  
  
 -#define LIBCAPI	"libcapi20.so"
-+#define LIBCAPI	"libcapi20.so.2"
++#define LIBCAPI	"libcapi20.so.3"
  static int loadlib(void);
  
  /* ---------------------------------------------------------------------- */

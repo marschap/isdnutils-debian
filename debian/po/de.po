@@ -376,7 +376,7 @@ msgstr ""
 #: ../isdnlog.templates:3
 #, fuzzy
 msgid " - country prefix   what is used to indicate an international number"
-msgstr " - Landesprefix     Wie wird eine internationale Nummer dargestellt."
+msgstr " - Landespräfix     Wie wird eine internationale Nummer dargestellt."
 
 #. Type: text
 #. Description
@@ -397,7 +397,7 @@ msgid ""
 " - areacode prefix  what is used to indicate an areacode,\n"
 "                    if applicable in your country. Usually a 0 ."
 msgstr ""
-" - Ortsprefix       Wie wird eine Außerorts-Nummer dargestellt,\n"
+" - Ortspräfix       Wie wird eine Außerorts-Nummer dargestellt,\n"
 "                    wenn verfügbar. Normalerweise 0"
 
 #. Type: text

@@ -1,5 +1,5 @@
 #! /bin/sh
-# postinst script for libcapi20-2
+# postinst script for libcapi20-3
 
 set -e
 

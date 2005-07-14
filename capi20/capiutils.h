@@ -204,6 +204,9 @@ typedef struct {
 	_cword FacilitySelector;
 	_cword Flags;
 	_cdword Function;
+#ifndef CAPI_LIBRARY_V2
+	_cstruct Globalconfiguration;
+#endif 
 	_cstruct HLC;
 	_cword Info;
 	_cstruct InfoElement;
@@ -218,6 +221,9 @@ typedef struct {
 	_cword Reason_B3;
 	_cword Reject;
 	_cstruct Useruserdata;
+#ifndef CAPI_LIBRARY_V2
+	_cstruct SendingComplete;
+#endif 
 	unsigned char *Data;
 
 	/* intern */
@@ -357,6 +363,10 @@ char *capi_message2str(_cbyte * msg);
 		 /* Data link layer parameter */
 #define CONNECT_REQ_B3CONFIGURATION(x) ((x)->B3configuration)
 		 /* Network layer parameter */
+#ifndef CAPI_LIBRARY_V2
+#define CONNECT_REQ_GLOBALCONFIGURATION(x) ((x)->Globalconfiguration)
+		 /* all layer parameter */
+#endif 
 #define CONNECT_REQ_BC(x) ((x)->BC)
 		 /* Bearer Capability */
 #define CONNECT_REQ_LLC(x) ((x)->LLC)
@@ -446,6 +456,10 @@ char *capi_message2str(_cbyte * msg);
 		 /* Data link layer parameter */
 #define CONNECT_RESP_B3CONFIGURATION(x) ((x)->B3configuration)
 		 /* Network layer parameter */
+#ifndef CAPI_LIBRARY_V2
+#define CONNECT_RESP_GLOBALCONFIGURATION(x) ((x)->Globalconfiguration)
+		 /* all layer parameter */
+#endif
 #define CONNECT_RESP_CONNECTEDNUMBER(x) ((x)->ConnectedNumber)
 		 /* Connected number */
 #define CONNECT_RESP_CONNECTEDSUBADDRESS(x) ((x)->ConnectedSubaddress)
@@ -812,6 +826,10 @@ char *capi_message2str(_cbyte * msg);
 		 /* Data link layer parameter */
 #define SELECT_B_PROTOCOL_REQ_B3CONFIGURATION(x) ((x)->B3configuration)
 		 /* Network layer parameter */
+#ifndef CAPI_LIBRARY_V2
+#define SELECT_B_PROTOCOL_REQ_GLOBALCONFIGURATION(x) ((x)->Globalconfiguration)
+		 /* all layer parameter */
+#endif
 #define SELECT_B_PROTOCOL_CONF_PLCI(x) ((x)->adr.adrPLCI)
 		 /* Physical Link Connection Identifier */
 #define SELECT_B_PROTOCOL_CONF_INFO(x) ((x)->Info)
@@ -918,7 +936,11 @@ unsigned ALERT_REQ (_cmsg *cmsg, _cword ApplId, _cword Messagenumber
 		,_cstruct BChannelinformation
 		,_cstruct Keypadfacility
 		,_cstruct Useruserdata
-                ,_cstruct Facilitydataarra);
+		,_cstruct Facilitydataarra
+#ifndef CAPI_LIBRARY_V2
+		,_cstruct SendingComplete
+#endif
+		);
 unsigned CONNECT_REQ (_cmsg *cmsg, _cword ApplId, _cword Messagenumber
 		,_cdword adr
 		,_cword CIPValue
@@ -932,13 +954,20 @@ unsigned CONNECT_REQ (_cmsg *cmsg, _cword ApplId, _cword Messagenumber
 		,_cstruct B1configuration
 		,_cstruct B2configuration
 		,_cstruct B3configuration
+#ifndef CAPI_LIBRARY_V2
+		,_cstruct Globalconfiguration
+#endif
 		,_cstruct BC
 		,_cstruct LLC
 		,_cstruct HLC
 		,_cstruct BChannelinformation
 		,_cstruct Keypadfacility
 		,_cstruct Useruserdata
-		,_cstruct Facilitydataarray);
+		,_cstruct Facilitydataarray
+#ifndef CAPI_LIBRARY_V2
+		,_cstruct SendingComplete
+#endif
+		);
 unsigned CONNECT_B3_REQ (_cmsg *cmsg, _cword ApplId, _cword Messagenumber
 		,_cdword adr
 		,_cstruct NCPI);
@@ -967,7 +996,11 @@ unsigned INFO_REQ (_cmsg *cmsg, _cword ApplId, _cword Messagenumber
 		,_cstruct BChannelinformation
 		,_cstruct Keypadfacility
 		,_cstruct Useruserdata
-		,_cstruct Facilitydataarray);
+		,_cstruct Facilitydataarray
+#ifndef CAPI_LIBRARY_V2
+		,_cstruct SendingComplete
+#endif
+		);
 unsigned LISTEN_REQ (_cmsg *cmsg, _cword ApplId, _cword Messagenumber
 		,_cdword adr
 		,_cdword InfoMask
@@ -991,7 +1024,11 @@ unsigned SELECT_B_PROTOCOL_REQ (_cmsg *cmsg, _cword ApplId, _cword Messagenumber
 		,_cword B3protocol
 		,_cstruct B1configuration
 		,_cstruct B2configuration
-		,_cstruct B3configuration);
+		,_cstruct B3configuration
+#ifndef CAPI_LIBRARY_V2
+		,_cstruct Globalconfiguration
+#endif
+		);
 unsigned CONNECT_RESP (_cmsg *cmsg, _cword ApplId, _cword Messagenumber
 		,_cdword adr
 		,_cword Reject
@@ -1001,6 +1038,9 @@ unsigned CONNECT_RESP (_cmsg *cmsg, _cword ApplId, _cword Messagenumber
 		,_cstruct B1configuration
 		,_cstruct B2configuration
 		,_cstruct B3configuration
+#ifndef CAPI_LIBRARY_V2
+		,_cstruct Globalconfiguration
+#endif
 		,_cstruct ConnectedNumber
 		,_cstruct ConnectedSubaddress
 		,_cstruct LLC
@@ -1066,7 +1106,11 @@ static inline void capi_fill_INFO_REQ(_cmsg * cmsg, _cword ApplId, _cword Messag
 				      _cstruct BChannelinformation,
 				      _cstruct Keypadfacility,
 				      _cstruct Useruserdata,
-				      _cstruct Facilitydataarray)
+				      _cstruct Facilitydataarray
+#ifndef CAPI_LIBRARY_V2
+				     ,_cstruct SendingComplete
+#endif
+				      )
 {
 	capi_cmsg_header(cmsg, ApplId, 0x08, 0x80, Messagenumber, adr);
 	cmsg->CalledPartyNumber = CalledPartyNumber;
@@ -1074,6 +1118,9 @@ static inline void capi_fill_INFO_REQ(_cmsg * cmsg, _cword ApplId, _cword Messag
 	cmsg->Keypadfacility = Keypadfacility;
 	cmsg->Useruserdata = Useruserdata;
 	cmsg->Facilitydataarray = Facilitydataarray;
+#ifndef CAPI_LIBRARY_V2
+	cmsg->SendingComplete = SendingComplete;
+#endif
 }
 
 static inline void capi_fill_LISTEN_REQ(_cmsg * cmsg, _cword ApplId, _cword Messagenumber,
@@ -1097,13 +1144,20 @@ static inline void capi_fill_ALERT_REQ(_cmsg * cmsg, _cword ApplId, _cword Messa
 				       _cstruct BChannelinformation,
 				       _cstruct Keypadfacility,
 				       _cstruct Useruserdata,
-				       _cstruct Facilitydataarray)
+				       _cstruct Facilitydataarray
+#ifndef CAPI_LIBRARY_V2
+				       ,_cstruct SendingComplete
+#endif
+				       )
 {
 	capi_cmsg_header(cmsg, ApplId, 0x01, 0x80, Messagenumber, adr);
 	cmsg->BChannelinformation = BChannelinformation;
 	cmsg->Keypadfacility = Keypadfacility;
 	cmsg->Useruserdata = Useruserdata;
 	cmsg->Facilitydataarray = Facilitydataarray;
+#ifndef CAPI_LIBRARY_V2
+	cmsg->SendingComplete = SendingComplete;
+#endif
 }
 
 static inline void capi_fill_CONNECT_REQ(_cmsg * cmsg, _cword ApplId, _cword Messagenumber,
@@ -1119,13 +1173,20 @@ static inline void capi_fill_CONNECT_REQ(_cmsg * cmsg, _cword ApplId, _cword Mes
 					 _cstruct B1configuration,
 					 _cstruct B2configuration,
 					 _cstruct B3configuration,
+#ifndef CAPI_LIBRARY_V2
+					 _cstruct Globalconfiguration,
+#endif
 					 _cstruct BC,
 					 _cstruct LLC,
 					 _cstruct HLC,
 					 _cstruct BChannelinformation,
 					 _cstruct Keypadfacility,
 					 _cstruct Useruserdata,
-					 _cstruct Facilitydataarray)
+					 _cstruct Facilitydataarray
+#ifndef CAPI_LIBRARY_V2
+					 ,_cstruct SendingComplete
+#endif
+					 )
 {
 
 	capi_cmsg_header(cmsg, ApplId, 0x02, 0x80, Messagenumber, adr);
@@ -1140,6 +1201,9 @@ static inline void capi_fill_CONNECT_REQ(_cmsg * cmsg, _cword ApplId, _cword Mes
 	cmsg->B1configuration = B1configuration;
 	cmsg->B2configuration = B2configuration;
 	cmsg->B3configuration = B3configuration;
+#ifndef CAPI_LIBRARY_V2
+	cmsg->Globalconfiguration = Globalconfiguration;
+#endif
 	cmsg->BC = BC;
 	cmsg->LLC = LLC;
 	cmsg->HLC = HLC;
@@ -1147,6 +1211,9 @@ static inline void capi_fill_CONNECT_REQ(_cmsg * cmsg, _cword ApplId, _cword Mes
 	cmsg->Keypadfacility = Keypadfacility;
 	cmsg->Useruserdata = Useruserdata;
 	cmsg->Facilitydataarray = Facilitydataarray;
+#ifndef CAPI_LIBRARY_V2
+	cmsg->SendingComplete = SendingComplete;
+#endif
 }
 
 static inline void capi_fill_DATA_B3_REQ(_cmsg * cmsg, _cword ApplId, _cword Messagenumber,
@@ -1177,6 +1244,9 @@ static inline void capi_fill_DISCONNECT_REQ(_cmsg * cmsg, _cword ApplId, _cword 
 	cmsg->Keypadfacility = Keypadfacility;
 	cmsg->Useruserdata = Useruserdata;
 	cmsg->Facilitydataarray = Facilitydataarray;
+#ifndef CAPI_LIBRARY_V2
+	cmsg->SendingComplete = NULL;
+#endif
 }
 
 static inline void capi_fill_DISCONNECT_B3_REQ(_cmsg * cmsg, _cword ApplId, _cword Messagenumber,
@@ -1219,7 +1289,11 @@ static inline void capi_fill_SELECT_B_PROTOCOL_REQ(_cmsg * cmsg, _cword ApplId, 
 						   _cword B3protocol,
 						_cstruct B1configuration,
 						_cstruct B2configuration,
-						_cstruct B3configuration)
+						_cstruct B3configuration
+#ifndef CAPI_LIBRARY_V2
+						,_cstruct Globalconfiguration
+#endif
+						)
 {
 
 	capi_cmsg_header(cmsg, ApplId, 0x41, 0x80, Messagenumber, adr);
@@ -1229,6 +1303,9 @@ static inline void capi_fill_SELECT_B_PROTOCOL_REQ(_cmsg * cmsg, _cword ApplId, 
 	cmsg->B1configuration = B1configuration;
 	cmsg->B2configuration = B2configuration;
 	cmsg->B3configuration = B3configuration;
+#ifndef CAPI_LIBRARY_V2
+	cmsg->Globalconfiguration = Globalconfiguration;
+#endif
 }
 
 static inline void capi_fill_CONNECT_RESP(_cmsg * cmsg, _cword ApplId, _cword Messagenumber,
@@ -1240,6 +1317,9 @@ static inline void capi_fill_CONNECT_RESP(_cmsg * cmsg, _cword ApplId, _cword Me
 					  _cstruct B1configuration,
 					  _cstruct B2configuration,
 					  _cstruct B3configuration,
+#ifndef CAPI_LIBRARY_V2
+					  _cstruct Globalconfiguration,
+#endif
 					  _cstruct ConnectedNumber,
 					  _cstruct ConnectedSubaddress,
 					  _cstruct LLC,
@@ -1256,6 +1336,9 @@ static inline void capi_fill_CONNECT_RESP(_cmsg * cmsg, _cword ApplId, _cword Me
 	cmsg->B1configuration = B1configuration;
 	cmsg->B2configuration = B2configuration;
 	cmsg->B3configuration = B3configuration;
+#ifndef CAPI_LIBRARY_V2
+	cmsg->Globalconfiguration = Globalconfiguration;
+#endif
 	cmsg->ConnectedNumber = ConnectedNumber;
 	cmsg->ConnectedSubaddress = ConnectedSubaddress;
 	cmsg->LLC = LLC;

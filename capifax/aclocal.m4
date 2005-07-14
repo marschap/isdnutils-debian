@@ -14,17 +14,30 @@ dnl PARTICULAR PURPOSE.
 # old capiutils.h missed the sending_complete parameter
 #
 #
-AC_DEFUN(CS_TEST_ALERT,
+AC_DEFUN([CS_TEST_ALERT],
 [AC_MSG_CHECKING([for capi20 ALERT with sending complete])
-AC_TRY_COMPILE([#include <capiutils.h>],
-  [_cmsg cm; ALERT_REQ(&cm, 1, 1, 1, NULL, NULL, NULL, NULL, NULL);],
-  [
-    AC_DEFINE([HAVE_ALERT_SENDING_COMPLETE],1,[we have SENDING_COMPLETE in ALERT_REQ])
-    AC_MSG_RESULT([yes])
-  ],
-  AC_MSG_RESULT([no])
-)
-]) dnl CS_TEST_ALERT
+  AC_TRY_COMPILE([#include <capiutils.h>],
+    [_cmsg cm; ALERT_REQ(&cm, 1, 1, 1, NULL, NULL, NULL, NULL, NULL);],
+    [
+      AC_DEFINE([HAVE_ALERT_SENDING_COMPLETE],1,[we have SENDING_COMPLETE in ALERT_REQ])
+      AC_MSG_RESULT([yes])
+    ],
+    [AC_MSG_RESULT([no])]
+)]) dnl CS_TEST_ALERT
+#
+# old capiutils.h missed the Globalconfiguration in BProtocol
+#
+#
+AC_DEFUN([CS_TEST_GLOBALCONFIG],
+[AC_MSG_CHECKING([for capi20 ALERT with sending complete])
+  AC_TRY_COMPILE([#include <capiutils.h>],
+    [_cmsg cm;void *p; p=CONNECT_REQ_GLOBALCONFIGURATION(&cm);],
+    [
+      AC_DEFINE([HAVE_GLOBALCONFIGURATION],1,[we have GLOBALCONFIGURATION in BProtocol])
+      AC_MSG_RESULT([yes])
+    ],
+  [AC_MSG_RESULT([no])]
+)]) dnl CS_TEST_ALERT
 
 # lib-prefix.m4 serial 4 (gettext-0.14.2)
 dnl Copyright (C) 2001-2005 Free Software Foundation, Inc.
@@ -180,13 +193,15 @@ AC_DEFUN([AC_LIB_WITH_FINAL_PREFIX],
   prefix="$acl_save_prefix"
 ])
 
-# lib-link.m4 serial 5 (gettext-0.14.2)
+# lib-link.m4 serial 6 (gettext-0.14.3)
 dnl Copyright (C) 2001-2005 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
 
 dnl From Bruno Haible.
+
+AC_PREREQ(2.50)
 
 dnl AC_LIB_LINKFLAGS(name [, dependencies]) searches for libname and
 dnl the libraries corresponding to explicit and implicit dependencies.
@@ -275,6 +290,8 @@ dnl libext, shlibext, hardcode_libdir_flag_spec, hardcode_libdir_separator,
 dnl hardcode_direct, hardcode_minus_L.
 AC_DEFUN([AC_LIB_RPATH],
 [
+  dnl Tell automake >= 1.10 to complain if config.rpath is missing.
+  m4_ifdef([AC_REQUIRE_AUX_FILE], [AC_REQUIRE_AUX_FILE([config.rpath])])
   AC_REQUIRE([AC_PROG_CC])                dnl we use $CC, $GCC, $LDFLAGS
   AC_REQUIRE([AC_LIB_PROG_LD])            dnl we use $LD, $with_gnu_ld
   AC_REQUIRE([AC_CANONICAL_HOST])         dnl we use $host
