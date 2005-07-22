@@ -292,8 +292,8 @@ endif
 	install -m 644 debian/pppdcapiplugin.lintian-overrides debian/pppdcapiplugin/usr/share/lintian/overrides/pppdcapiplugin
 	# - there's no -dev package, so shut up about the shlib symlink
 	# - No, I don't call ldconfig in an unsafe manner
-	install -d debian/libcapi20-2/usr/share/lintian/overrides
-	install -m 644 debian/libcapi20-2.lintian-overrides debian/libcapi20-2/usr/share/lintian/overrides/libcapi20-2
+	install -d debian/libcapi20-3/usr/share/lintian/overrides
+	install -m 644 debian/libcapi20-3.lintian-overrides debian/libcapi20-3/usr/share/lintian/overrides/libcapi20-3
 	# - not much chance of more processed with the name "vboxgetty", and start-stop-daemon won't work
 	# - db_input in postinst only in extreme situations
 	install -d debian/isdnvboxserver/usr/share/lintian/overrides
@@ -305,7 +305,7 @@ endif
 
 	dh_installchangelogs
 	rm -rf debian/libcapi20-dev/usr/share/doc/libcapi20-dev
-	ln -s libcapi20-2 debian/libcapi20-dev/usr/share/doc/libcapi20-dev
+	ln -s libcapi20-3 debian/libcapi20-dev/usr/share/doc/libcapi20-dev
 	dh_strip
 	dh_link
 	dh_compress
@@ -313,14 +313,14 @@ endif
 	dh_installdeb
 #	dh_makeshlibs
 #	dh_perl
-	dh_shlibdeps -L libcapi20-2 -l debian/libcapi20-2/usr/lib
+	dh_shlibdeps -L libcapi20-3 -l debian/libcapi20-3/usr/lib
 	for i in debian/*/DEBIAN/conffiles; do \
 	  [ -f $$i ] || continue; \
 	  sort -u $$i > $$i.sorted; mv $$i.sorted $$i; \
 	done
 	dh_gencontrol
 ##	# dont build isdnvboxclient on all architectures.
-##	for pkg in isdnutils isdnutils-xtools ipppd isdnlog isdnvbox isdnvboxserver libcapi20-2 isdnactivecards pppdcapiplugin isdneurofile; do \
+##	for pkg in isdnutils isdnutils-xtools ipppd isdnlog isdnvbox isdnvboxserver libcapi20-3 isdnactivecards pppdcapiplugin isdneurofile; do \
 ##	    dpkg-gencontrol -ldebian/changelog -isp -p$pkg -Tdebian/$pkg.substvars -Pdebian/$pkg; \
 ##	done
 ##	case $(DEB_HOST_ARCH) in \

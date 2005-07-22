@@ -87,8 +87,8 @@ msgid ""
 "connection to be the default gateway)."
 msgstr ""
 "Samozřejmě, někteří mají speciální požadavky a tak mohou zvolit jiné "
-"rozhraní, které pak debconf nastaví (např. pokud nechtějí toto použít "
-"jako výchozí bránu)."
+"rozhraní, které pak debconf nastaví (např. pokud nechtějí toto použít jako "
+"výchozí bránu)."
 
 #. Type: string
 #. Description
@@ -113,9 +113,8 @@ msgid ""
 "You can only give names starting with \"ippp\" followed by a number between "
 "0 and 63."
 msgstr ""
-"Můžete zadat pouze jména začínající na \"ippp\" následovaná číslem mezi 0 "
-"a 63."
-
+"Můžete zadat pouze jména začínající na \"ippp\" následovaná číslem mezi 0 a "
+"63."
 
 #. Type: string
 #. Default
@@ -146,8 +145,8 @@ msgid ""
 "Enter the telephone number here, including dialing prefixes, area codes, and "
 "so on. Enter the number without any spaces."
 msgstr ""
-"Zadejte zde telefonní číslo, včetně předvoleb, kódů oblasti a tak dále. Číslo "
-"zadejte bez jakýchkoliv mezer."
+"Zadejte zde telefonní číslo, včetně předvoleb, kódů oblasti a tak dále. "
+"Číslo zadejte bez jakýchkoliv mezer."
 
 #. Type: string
 #. Description
@@ -235,8 +234,8 @@ msgid ""
 "The password you give here will be entered into /etc/ppp/pap-secrets and /"
 "etc/ppp/chap-secrets together with the username."
 msgstr ""
-"Heslo, které zde zadáte, bude spolu s uživatelským jménem uloženo v "
-"/etc/ppp/pap-secrets a /etc/ppp/chap-secrets."
+"Heslo, které zde zadáte, bude spolu s uživatelským jménem uloženo v /etc/ppp/"
+"pap-secrets a /etc/ppp/chap-secrets."
 
 #. Type: note
 #. Description
@@ -314,9 +313,8 @@ msgstr ""
 "Stále existuje soubor /etc/ppp/ip-up.d/00-isdnutils, který je součástí "
 "starého balíčku isdnutils. Pokud jste někdy během konfigurace změnili tento "
 "soubor, můžete chtít provést odpovídající změny také v souboru 00-ipppd, "
-"který je novým souborem s konfigurací. Potom, prosím, smažte starý soubor "
-"00-isdnutils."
-
+"který je novým souborem s konfigurací. Potom, prosím, smažte starý soubor 00-"
+"isdnutils."
 
 #. Type: note
 #. Description
@@ -336,8 +334,8 @@ msgstr ""
 "Stále existuje soubor /etc/ppp/ip-down.d/99-isdnutils, který je součástí "
 "starého balíčku isdnutils. Pokud jste někdy během konfigurace změnili tento "
 "soubor, můžete chtít provést odpovídající změny také v souboru 99-ipppd, "
-"který je novým souborem s konfigurací. Potom, prosím, smažte starý soubor "
-"99-isdnutils."
+"který je novým souborem s konfigurací. Potom, prosím, smažte starý soubor 99-"
+"isdnutils."
 
 #. Type: note
 #. Description
@@ -409,8 +407,8 @@ msgid ""
 msgstr ""
 "Skript /etc/init.d/isdnutils běžel s chybami. Zkontrolujte prosím instalaci "
 "balíčku isdnutils-base a pokud to bude třeba, přeinstalujte jej. Možná také "
-"pomůže přesunutí /etc/init.d/isdnutils.dpkg-dist (pokud existuje) do "
-"/etc/init.d/isdnutils."
+"pomůže přesunutí /etc/init.d/isdnutils.dpkg-dist (pokud existuje) do /etc/"
+"init.d/isdnutils."
 
 #. Type: text
 #. Description
@@ -427,7 +425,8 @@ msgid ""
 "configured debconf with) of:"
 msgstr ""
 "Pro správnou funkci isdnlogu je potřeba provést několik nastavení. Zde jich "
-"je jen několik, nebo všechny (záleží na úrovni, na kterou máte nastaven debconf):"
+"je jen několik, nebo všechny (záleží na úrovni, na kterou máte nastaven "
+"debconf):"
 
 #. Type: text
 #. Description
@@ -481,8 +480,8 @@ msgid ""
 "before isdnlog can work properly, although that file is set up with "
 "reasonable defaults for most cases."
 msgstr ""
-"Po instalaci byste ještě měli pro správnou funkci isdnlogu upravit soubor "
-"/etc/isdn/isdnlog.isdnctrl0, třebaže je tento soubor nastaven na rozumné "
+"Po instalaci byste ještě měli pro správnou funkci isdnlogu upravit soubor /"
+"etc/isdn/isdnlog.isdnctrl0, třebaže je tento soubor nastaven na rozumné "
 "hodnoty vyhovující většině případů."
 
 #. Type: text
@@ -663,8 +662,8 @@ msgid ""
 "isdnlog-data libcapi20-3 isdnactivecards pppdcapiplugin isdneurofile"
 msgstr ""
 "Starý balíček isdnutils je nyní rozdělen na menší části: isdnutils ipppd "
-"isdnutils-xtools isdnutils-doc isdnvboxserver isdnvboxclient isdnlog "
-"isdnlog-data libcapi20-3 isdnactivecards pppdcapiplugin isdneurofile"
+"isdnutils-xtools isdnutils-doc isdnvboxserver isdnvboxclient isdnlog isdnlog-"
+"data libcapi20-3 isdnactivecards pppdcapiplugin isdneurofile"
 
 #. Type: note
 #. Description
@@ -742,8 +741,9 @@ msgid ""
 msgstr ""
 "Některé karty ISDN nemohou správně fungovat, dokud není natažen firmware. "
 "Typickým příkladem je Sedlbauer SpeedFax+ PCI nebo Siemens I-Surf, které "
-"potřebují načíst ISAR.BIN. (V tomto okamžiku o více zařízeních nevím.) Zvolte "
-"\"ISAR.BIN\", je-li třeba. Pokud nevíte o čem mluvím, zvolte \"žádný\"."
+"potřebují načíst ISAR.BIN. (V tomto okamžiku o více zařízeních nevím.) "
+"Zvolte \"ISAR.BIN\", je-li třeba. Pokud nevíte o čem mluvím, zvolte \"žádný"
+"\"."
 
 #. Type: string
 #. Description
@@ -760,8 +760,8 @@ msgid ""
 "have only one card, the obvious answer here is \"1\". If you have two cards "
 "which both have to be loaded with firmware, enter \"1,2\"."
 msgstr ""
-"Pokud máte více než jednu kartu, zadejte číslo karty (karet), u kterých se má "
-"načítat firmware, začněte od čísla 1, čísla oddělujte pomocí čárek. Pokud "
+"Pokud máte více než jednu kartu, zadejte číslo karty (karet), u kterých se "
+"má načítat firmware, začněte od čísla 1, čísla oddělujte pomocí čárek. Pokud "
 "máte pouze jednu kartu, pak je obvyklou odpovědí \"1\". Pokud máte 2 karty, "
 "u nichž obou chcete načíst firmware, pak zadejte \"1,2\"."
 
@@ -795,9 +795,9 @@ msgid ""
 "isdnvbox to see if any changes need to be preserved (e.g. in the /etc/cron."
 "weekly/isdnvboxserver script), and then delete the old script by hand."
 msgstr ""
-"Obvykle lze v tomto okamžiku starý skript smazat, ale vypadá to, že jste "
-"jej upravovali ručně. Podívejte se prosím na /etc/cron.weekly/isdnvbox, "
-"zda není potřeba zachovat nějaké změny (např. ve skriptu /etc/cron/weekly/"
+"Obvykle lze v tomto okamžiku starý skript smazat, ale vypadá to, že jste jej "
+"upravovali ručně. Podívejte se prosím na /etc/cron.weekly/isdnvbox, zda není "
+"potřeba zachovat nějaké změny (např. ve skriptu /etc/cron/weekly/"
 "isdnvboxserver) a poté starý skript ručně smažte."
 
 #. Type: note
@@ -837,9 +837,8 @@ msgid ""
 "the script in the past, please put those changes into the new script."
 msgstr ""
 "Když se balíčkovací systém zeptá, zda odstranit /etc/cron.weekly/"
-"isdnvboxserver, pak je doporučeno to udělat. Pokud jste "
-"v minulosti ve skriptu provedli nějaké změny, vložte prosím tyto změny i do "
-"nového skriptu."
+"isdnvboxserver, pak je doporučeno to udělat. Pokud jste v minulosti ve "
+"skriptu provedli nějaké změny, vložte prosím tyto změny i do nového skriptu."
 
 #. Type: string
 #. Description
@@ -906,8 +905,8 @@ msgid ""
 "calls without caller-ID) can be dumped into the answering machine after one "
 "ring.  See `man vbox.conf' for more info."
 msgstr ""
-"Jedno zvonění je okolo 5-ti sekund. Počet zvonění můžete pro určitá telefonní "
-"čísla  vyladit ručně. Např. obchodníci, jejichž číslo znáte, (nebo "
+"Jedno zvonění je okolo 5-ti sekund. Počet zvonění můžete pro určitá "
+"telefonní čísla  vyladit ručně. Např. obchodníci, jejichž číslo znáte, (nebo "
 "hovory bez identifikace), mohou být po jednom zvonění přepojeny na záznamník."
 "Pro více informací se podívejte na `man vbox.conf'."
 
@@ -944,8 +943,8 @@ msgid ""
 "`dialout' group."
 msgstr ""
 "vboxd se spouští s právy normálního (ne-rootovského) uživatele. Tím je "
-"obvykle vaše ne-rootovské přihlašovací jméno. Tento uživatel musí být "
-"členem skupiny `dialout'."
+"obvykle vaše ne-rootovské přihlašovací jméno. Tento uživatel musí být členem "
+"skupiny `dialout'."
 
 #. Type: text
 #. Description
@@ -987,7 +986,8 @@ msgstr "Zadejte zde heslo pro ${User}."
 #. Description
 #: ../isdnvboxserver.templates:61
 msgid "Please don't use ':' in it! The way it is stored cannot handle this."
-msgstr "Nepoužívejte prosím ':'! Způsob, jakým je tato informace uložena, to "
+msgstr ""
+"Nepoužívejte prosím ':'! Způsob, jakým je tato informace uložena, to "
 "nedokáže zpracovat."
 
 #. Type: note
@@ -1022,10 +1022,11 @@ msgid ""
 "any messages from there to the new directory (if any), and delete the old "
 "directories."
 msgstr ""
-"V systému existují adresáře `${OLDSPOOL1}' a `${OLDSPOOL2}' (nebudou již více "
-"používány ve standardní konfiguraci) a nový adresář spool `${NEWSPOOL}'. "
-"Staré adresáře nebudou více používány; přesuňte prosím jakékoliv soubory z "
-"těchto adresářů do nového (pokud existuje) a staré adresáře odstraňte."
+"V systému existují adresáře `${OLDSPOOL1}' a `${OLDSPOOL2}' (nebudou již "
+"více používány ve standardní konfiguraci) a nový adresář spool `"
+"${NEWSPOOL}'. Staré adresáře nebudou více používány; přesuňte prosím "
+"jakékoliv soubory z těchto adresářů do nového (pokud existuje) a staré "
+"adresáře odstraňte."
 
 #. Type: note
 #. Description
@@ -1042,8 +1043,8 @@ msgid ""
 "manually move any messages from there to the new directory (if any), and "
 "delete the old directory."
 msgstr ""
-"Existuje jak starý spool adresář `${OLDSPOOL}', tak nový spool adresář "
-"`${NEWSPOOL}' existují. Starý adresář nebude více používán; přesuňte prosím "
+"Existuje jak starý spool adresář `${OLDSPOOL}', tak nový spool adresář `"
+"${NEWSPOOL}' existují. Starý adresář nebude více používán; přesuňte prosím "
 "jakékoliv soubory, ze starého adresáře, do nového (pokud existuje) a starý "
 "adresář smažte."
 
@@ -1092,8 +1093,8 @@ msgid ""
 "The configuration file `${DIR}/.vbox.conf' has been created. See `man vbox."
 "conf' for information on changing this file."
 msgstr ""
-"Byl vytvořen konfigurační soubor `${DIR}/.vbox.conf'. Pro více informací "
-"o změně tohoto souboru se podívejte na `man vbox.conf'."
+"Byl vytvořen konfigurační soubor `${DIR}/.vbox.conf'. Pro více informací o "
+"změně tohoto souboru se podívejte na `man vbox.conf'."
 
 #. Type: note
 #. Description
@@ -1108,8 +1109,8 @@ msgid ""
 "The home directory `${DIR}' for user `${USER}' doesn't exist. This means "
 "that the file `${DIR}/.vbox.conf' cannot be created."
 msgstr ""
-"Neexistuje domovský adresář `${DIR}' pro uživatele `${USER}'. To znamená, "
-"že nemůže být vytvořen soubor `${DIR}/.vbox.conf'."
+"Neexistuje domovský adresář `${DIR}' pro uživatele `${USER}'. To znamená, že "
+"nemůže být vytvořen soubor `${DIR}/.vbox.conf'."
 
 #. Type: note
 #. Description
@@ -1125,9 +1126,9 @@ msgid ""
 "configuration with `dpkg-reconfigure isdnvboxserver' to enter another "
 "username, or after creating the user."
 msgstr ""
-"Uživatel `${USER}' ve vašem systému neexistuje! Pro zadání jiného "
-"uživatele opravte prosím nastavení pomocí `dpkg-reconfigure "
-"isdnvboxserver', nebo nejprve příslušného uživatele vytvořte. "
+"Uživatel `${USER}' ve vašem systému neexistuje! Pro zadání jiného uživatele "
+"opravte prosím nastavení pomocí `dpkg-reconfigure isdnvboxserver', nebo "
+"nejprve příslušného uživatele vytvořte. "
 
 #. Type: select
 #. Description
@@ -1176,9 +1177,9 @@ msgid ""
 "For optimal operation of vbox, a user `vbox' should be created, in group "
 "`dialout'. However, creating that user failed with the following error(s):"
 msgstr ""
-"Pro optimální funkci vboxu by měl být vytvořen uživatel `vbox', který "
-"patří do skupiny `dialout'. Bohužel, vytváření uživatele selhalo z "
-"následujícího důvodu:"
+"Pro optimální funkci vboxu by měl být vytvořen uživatel `vbox', který patří "
+"do skupiny `dialout'. Bohužel, vytváření uživatele selhalo z následujícího "
+"důvodu:"
 
 #. Type: note
 #. Description
