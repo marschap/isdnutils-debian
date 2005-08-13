@@ -4,7 +4,7 @@ Priority: extra
 Maintainer: Paul Slootman <paul@debian.org>
 Uploaders: Paul Slootman <paul@debian.org>, Matthias Klose <doko@debian.org>
 Standards-Version: 3.6.1
-Build-Depends: debhelper (>=4.1.16), bzip2, libncurses5-dev | libncurses-dev, xlibs-dev, tcl8.3-dev, linuxdoc-tools (>=0.9.20), groff, libtool, xutils, libxaw7-dev, libreadline5-dev | libreadline-dev, libpcap-dev, autotools-dev, automake1.4, automake1.6, autoconf2.13, autoconf, libssl-dev, psutils, linux-kernel-headers (>> 2.6.12.0-1)
+Build-Depends: debhelper (>=4.1.16), bzip2, libncurses5-dev | libncurses-dev, xlibs-dev (>= 6.8.2.dfsg.1-5), xutils (>= 6.8.2.dfsg.1-5), tcl8.3-dev, linuxdoc-tools (>=0.9.20), groff, libtool, libxaw7-dev, libreadline5-dev | libreadline-dev, libpcap-dev, autotools-dev, automake1.4, automake1.6, autoconf2.13, autoconf, libssl-dev, psutils, linux-kernel-headers (>= 2.6.13+0rc3-1)
 
 Package: isdnutils
 Priority: optional
@@ -20,9 +20,9 @@ Description: Most important ISDN-related packages and utilities
  The current version of isdnutils is split up into component packages, to make
  it easier to fine-tune what is installed; hardly anyone needs everything.
  However, it's not possible to automatically select what is needed 
- This is a transitional package to ease upgrading, and choosing this selects
- the most important new packages. After upgrading, this package can be safely
- removed.
+ This is a dependency package to ease installation, and choosing this selects
+ the most important new packages. After installation, this package can be
+ safely removed.
  .
  The component packages selected by this are:
   isdnutils-base   basic set of ISDN utilities.

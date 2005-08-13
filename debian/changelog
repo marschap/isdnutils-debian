@@ -1,9 +1,12 @@
-isdnutils (1:3.7.2005-07-09-1.1) unstable; urgency=low
+isdnutils (1:3.7.2005-07-09-2) unstable; urgency=low
 
-  * Non-maintainer upload
-  * Complete transition from libcapi20-2 to libcapi20-3 (closes: #318808)
+  * Fix typo in debian/rules (closes: #318808).
+  * Build-depend on xlibs-dev (>= 6.8.2.dfsg.1-5), xutils (>= 6.8.2.dfsg.1-5)
+    to avoid dependencies on selinux.
+  * Build-depend on linux-kernel-headers (>= 2.6.13+0rc3-1) to fix FRBFS.
+  * Adjust package description of isdnutils (closes: #308714).
 
- -- Lionel Elie Mamane <lmamane@debian.org>  Fri, 22 Jul 2005 17:38:29 +0200
+ -- Matthias Klose <doko@debian.org>  Sun, 14 Aug 2005 00:15:11 +0200
 
 isdnutils (1:3.7.2005-07-09-1) unstable; urgency=low
 
