@@ -19,6 +19,8 @@ ifeq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH),hurd s390 sh))
   some_arch_match := yes
 endif
 
+distribution := $(shell lsb_release -is)
+
 auto: auto-update-stamp
 auto-update: auto-update-stamp
 auto-update-stamp: patch-stamp
@@ -373,6 +375,10 @@ debian_patches = \
 	gcc40-fixes \
 	vbox-little-endian \
 	toplevel-make \
+
+ifeq ($(distribution),Ubuntu)
+  debian_patches += no-imake
+endif
 
 patch: patch-stamp
 

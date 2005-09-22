@@ -86,7 +86,7 @@ check_isdncards() {
 	elif [ -d /.dev/ ] && [ -e /proc/mounts ] && grep -qE '^[^ ]+ /\.dev' /proc/mounts; then
 	    # udev is running
 	    old_pwd=$(pwd)
-	    cd /dev && WRITE_ON_UDEV=1 ./MAKEDEV isdn
+	    cd /dev && WRITE_ON_UDEV=1 ./MAKEDEV isdnmodem isdnbri dcbri isdn-io isdn-tty isdn-ippp
 	    cd $old_pwd
 	    if [ -e /dev/isdninfo ]; then
 		ISDNINFO=/dev/isdninfo
