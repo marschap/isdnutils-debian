@@ -6,7 +6,7 @@ set -e
 case "$1" in
     remove)
         if [ -x /etc/init.d/isdnutils ]; then
-            invoke-rc.d isdnutils stop isdnlog
+            /etc/init.d/isdnutils stop isdnlog
         fi
         ;;
     upgrade|deconfigure)

@@ -19,6 +19,8 @@ ifeq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH),hurd s390 sh))
   some_arch_match := yes
 endif
 
+distribution := $(shell lsb_release -is)
+
 auto: auto-update-stamp
 auto-update: auto-update-stamp
 auto-update-stamp: patch-stamp
@@ -369,10 +371,14 @@ debian_patches = \
 	capi20-soname \
 	libtool \
 	imon-update \
-	ppp-2.4.4b1 \
 	gcc40-fixes \
+	ppp-2.4.4b1 \
 	vbox-little-endian \
 	toplevel-make \
+
+ifeq ($(distribution),Ubuntu)
+  debian_patches += no-imake
+endif
 
 patch: patch-stamp
 

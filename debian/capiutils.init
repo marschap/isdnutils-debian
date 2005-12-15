@@ -22,9 +22,10 @@ mkcapidev()
 
 mountcapifs()
 {
-  if [ -e /dev/.devfsd ]; then
+  if grep -q '/dev devfs rw' /proc/mounts; then
     return
   fi
+
   if ! grep -q 'capifs$' /proc/filesystems; then
     modprobe capifs
   fi

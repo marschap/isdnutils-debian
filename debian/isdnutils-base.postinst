@@ -104,7 +104,7 @@ EOF
 			fi
 		fi
                 # ignore errors from starting twice
-		invoke-rc.d isdnutils start 2>&1 | grep -v 'No such device' || true
+		/etc/init.d/isdnutils start 2>&1 | grep -v 'No such device' || true
 	    fi
 	else # not configured before
 		cat <<'EOF'
@@ -132,7 +132,7 @@ db_stop # grrrr
 update-rc.d isdnutils defaults >/dev/null
 if [ "$1" = "configure" ]; then
 	if [ -z "$2" -o "$2" = "<unknown>" ]; then
-		invoke-rc.d isdnutils start 2>&1 | grep -v 'No such device' || true
+		/etc/init.d/isdnutils start 2>&1 | grep -v 'No such device' || true
 	fi
 fi
 # End NOT automatically added section

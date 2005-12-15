@@ -1,20 +1,50 @@
-isdnutils (1:3.7.2005-07-09-2.1) unstable; urgency=low
+isdnutils (1:3.8.2005-12-06-0ubuntu1) dapper; urgency=low
 
-  * Non-maintainer upload (Faidon Liambotis and Marco d'Itri).
-  * Changed automake1.6 dependency to automake1.7. (Closes: #335124)
-  * Build pppdcapiplugin modules for ppp 2.4.4b1. (Closes: #344200)
-  * Changed libpcap-dev dependency to libpcap0.8-dev.
-  * Add debconf-2.0 alternative dependency for debconf. (Closes: #331866)
-  * Use invoke-rc.d in the postinst/preinst/prerm for all packages
-    (Closes: #339479).
-  * Detect udev by checking /dev/.udev/ instead of /.dev/
-    (Closes: #333476)
-  * MAKEDEV properly all ISDN devices.
-  * Create /dev/isdnctrl -> /dev/isdnctrl0 softlink.
-  * Detect devfs properly. (Closes: #335282)
-  * Updated the supported policy version.
+  * New upstream version.
+    - Remove fixes from gcc40-fixes applied upstream.
+  * Build-depend on libpcap0.8-dev.
+  * pppdcapiplugin: Drop support for ppp versions < 2.4.2.
+  * /etc/isdn/init.d.functions: More udev fixes (closes: #333476).
+  * isdneurofile postinst: Use invoke-rc.d to start the init script.
+    Closes: #339479.
+  * /etc/init.d/capiutils: Fix check for mounted devfs (closes: #335282).
+  * Depend on debconf-2.0 as an alternative (closes: #331866).
 
- -- Faidon Liambotis <faidon@cube.gr>  Fri, 23 Dec 2005 23:21:54 +0000
+ -- Matthias Klose <doko@ubuntu.com>  Thu, 15 Dec 2005 15:10:56 +0000
+
+isdnutils (1:3.7.2005-07-09-2kanotix1) unstable; urgency=low
+
+  * Added plugin for 2.4.4b1.
+  * Changed automake1.6 dep to automake1.7. Closes: #335124.
+
+ -- Joerg Schirottke <master@kanotix.com>  Mon,  5 Dec 2005 11:56:36 +0000
+
+isdnutils (1:3.7.2005-07-09-2ubuntu4) breezy; urgency=low
+
+  * Create more isdn device files on top of udev. Ubuntu #3156.
+
+ -- Matthias Klose <doko@ubuntu.com>  Thu, 22 Sep 2005 09:38:06 +0200
+
+isdnutils (1:3.7.2005-07-09-2ubuntu3) breezy; urgency=low
+
+  * Add new drivers to /etc/isdn/capi.conf (commented out).
+
+ -- Matthias Klose <doko@ubuntu.com>  Wed,  7 Sep 2005 12:14:17 +0200
+
+isdnutils (1:3.7.2005-07-09-2ubuntu2) breezy; urgency=low
+
+  * Don't link against libXp.
+
+ -- Matthias Klose <doko@ubuntu.com>  Mon, 15 Aug 2005 09:17:52 +0000
+
+isdnutils (1:3.7.2005-07-09-2ubuntu1) breezy; urgency=low
+
+  * Remove build dependency on xutils (xmkmf/imake), still broken in breezy.
+    Ubuntu 13117.
+  * Drop l-k-h build dependency, adjust version requirements for
+    xlibs-dev and xutils.
+
+ -- Matthias Klose <doko@ubuntu.com>  Mon, 15 Aug 2005 09:13:26 +0200
 
 isdnutils (1:3.7.2005-07-09-2) unstable; urgency=low
 
