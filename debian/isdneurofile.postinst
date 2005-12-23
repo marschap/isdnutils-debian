@@ -7,7 +7,7 @@ case "$1" in
     configure)
 	update-rc.d isdneurofile defaults >/dev/null
 	if [ -z "$2" -o "$2" = "<unknown>" ]; then
-		/etc/init.d/isdneurofile start
+		invoke-rc.d isdneurofile start
 	fi
 	;;
 

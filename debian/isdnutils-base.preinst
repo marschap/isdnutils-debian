@@ -48,7 +48,7 @@ case "$1" in
                            echo "        Either install ipppd, or remove the /etc/isdn/ipppd.* files"
                            echo "        and reinstall."
                            echo "Restarting the old isdnutils, which were probably stopped earlier..."
-                           /etc/init.d/isdnutils start
+                           invoke-rc.d isdnutils start
                         fi
                         exit 1
                      fi

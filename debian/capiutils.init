@@ -22,7 +22,7 @@ mkcapidev()
 
 mountcapifs()
 {
-  if ! grep -q 'devfs$' /proc/filesystems; then
+  if [ -e /dev/.devfsd ]; then
     return
   fi
   if ! grep -q 'capifs$' /proc/filesystems; then

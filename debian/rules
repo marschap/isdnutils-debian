@@ -19,8 +19,6 @@ ifeq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH),hurd s390 sh))
   some_arch_match := yes
 endif
 
-distribution := $(shell lsb_release -is)
-
 auto: auto-update-stamp
 auto-update: auto-update-stamp
 auto-update-stamp: patch-stamp
@@ -63,9 +61,9 @@ endif
 	for d in vbox; do \
 	  echo "Regenerating autotools files in $$d ..."; \
 	  cd $$d; \
-	  echo "  aclocal-1.6"; aclocal-1.6; \
+	  echo "  aclocal-1.7"; aclocal-1.7; \
 	  echo "  autoconf"; autoconf; \
-	  echo "  automake-1.6"; automake-1.6 -c --add-missing; \
+	  echo "  automake-1.7"; automake-1.7 -c --add-missing; \
 	  touch configure.in; \
 	  touch aclocal.m4; \
 	  touch configure; \
@@ -371,14 +369,10 @@ debian_patches = \
 	capi20-soname \
 	libtool \
 	imon-update \
-	ppp-2.4.3 \
+	ppp-2.4.4b1 \
 	gcc40-fixes \
 	vbox-little-endian \
 	toplevel-make \
-
-ifeq ($(distribution),Ubuntu)
-  debian_patches += no-imake
-endif
 
 patch: patch-stamp
 
