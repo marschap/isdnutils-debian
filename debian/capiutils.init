@@ -26,7 +26,7 @@ mountcapifs()
     return
   fi
 
-  if ! grep -q 'capifs$' /proc/filesystems; then
+  if [ -e /dev/.devfsd ]; then
     modprobe capifs
   fi
   if grep -q '^capifs /dev/capi ' /proc/mounts; then

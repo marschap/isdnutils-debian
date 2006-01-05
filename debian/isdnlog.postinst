@@ -166,7 +166,9 @@ case "$DOWHAT" in
         fi
 
 	if $somethingchanged; then
-            if [ -x /etc/init.d/isdnutils ]; then /etc/init.d/isdnutils $init isdnlog; fi
+            if [ -x /etc/init.d/isdnutils ]; then
+		invoke-rc.d isdnutils $init isdnlog
+	    fi
 	fi
         ;;
 

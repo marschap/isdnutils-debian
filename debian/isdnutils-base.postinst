@@ -78,7 +78,7 @@ EOF
 		cat <<'EOF'
 
 Isdnutils is now split into different packages for convenience to
-those that don't need or want all the parts installed (e.g. vbox).
+those that do not need or want all the parts installed (e.g. vbox).
 
 For more information about isdnutils look at /usr/share/doc/isdnutils;
 in particular 'README.Debian' and 'HOWTO.isdnutils'.
@@ -104,7 +104,7 @@ EOF
 			fi
 		fi
                 # ignore errors from starting twice
-		/etc/init.d/isdnutils start 2>&1 | grep -v 'No such device' || true
+		invoke-rc.d isdnutils start 2>&1 | grep -v 'No such device' || true
 	    fi
 	else # not configured before
 		cat <<'EOF'
@@ -132,7 +132,7 @@ db_stop # grrrr
 update-rc.d isdnutils defaults >/dev/null
 if [ "$1" = "configure" ]; then
 	if [ -z "$2" -o "$2" = "<unknown>" ]; then
-		/etc/init.d/isdnutils start 2>&1 | grep -v 'No such device' || true
+		invoke-rc.d isdnutils start 2>&1 | grep -v 'No such device' || true
 	fi
 fi
 # End NOT automatically added section

@@ -83,10 +83,11 @@ check_isdncards() {
 	    ISDNINFO=/dev/isdninfo
         elif [ -e /dev/isdn/isdninfo ]; then
 	    ISDNINFO=/dev/isdn/isdninfo
-	elif [ -d /dev/.static/dev ] && [ -e /proc/mounts ] && grep -qE '^[^ ]+ /\.dev' /proc/mounts; then
+	elif [ -d /dev/.udev/ ]; then
 	    # udev is running
 	    old_pwd=$(pwd)
-	    cd /dev && WRITE_ON_UDEV=1 ./MAKEDEV isdnmodem isdnbri dcbri isdn-io isdn-tty isdn-ippp
+	    cd /dev
+	    WRITE_ON_UDEV=1 ./MAKEDEV isdnmodem isdnbri dcbri isdn-io isdn-tty isdn-ippp
 	    if [ ! -e /dev/isdnctrl ]; then
 		cd /dev && ln -s isdnctrl0 isdnctrl
 	    fi
@@ -282,7 +283,7 @@ start_devices() {
             if [ ! -c /dev/$device -a ! -c /dev/isdn/$device ]; then
 		cd /dev
 		/bin/echo -e " (creating /dev/$device)\c"
-		/sbin/MAKEDEV $device || true
+		WRITE_ON_UDEV=1 ./MAKEDEV $device || true
 		cd /etc/isdn
 	    fi
 	    if [ `expr "$extraopts" : 'slave'` -eq 5 ]; then

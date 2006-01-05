@@ -1,3 +1,18 @@
+isdnutils (1:3.8.2005-12-06-2ubuntu1) dapper; urgency=low
+
+  * Build depend on imake instead of xmkmf.
+  * Build-depend on libxt-dev instead of xlibs-dev (closes: #345522).
+  * Merge some changes from unannounced NMU:
+    * Non-maintainer upload (Faidon Liambotis and Marco d'Itri).
+    * Use invoke-rc.d in the postinst/preinst/prerm for all packages
+      (Closes: #339479).
+    * Detect udev by checking /dev/.udev/ instead of /.dev/
+      (Closes: #333476)
+    * Create /dev/isdnctrl -> /dev/isdnctrl0 softlink.
+    * Detect devfs properly. (Closes: #335282)
+
+ -- Matthias Klose <doko@ubuntu.com>  Thu,  5 Jan 2006 23:22:13 +0000
+
 isdnutils (1:3.8.2005-12-06-2) unstable; urgency=low
 
   * Build-depend on xmkmf.
