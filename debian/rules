@@ -30,15 +30,6 @@ auto-update-stamp: patch-stamp
 	done
 
 	@set -e; \
-	for d in capi20; do \
-	  echo "Regenerating autotools files in $$d ..."; \
-	  cd $$d; \
-	  echo "  aclocal-1.8"; aclocal-1.8; \
-	  echo "  automake-1.8"; automake-1.8 --add-missing; \
-	  cd ..; \
-	done
-
-	@set -e; \
 	for d in capifax capiinfo capiinit rcapid; do \
 	  echo "Regenerating autotools files in $$d ..."; \
 	  cd $$d; \
@@ -264,9 +255,12 @@ endif
 ifneq ($(some_arch_match),yes)
 	DH_OPTIONS='' dh_installinit -pcapiutils \
 		--no-restart-on-upgrade --update-rcd-params='defaults 13 21'
-	mkdir -p debian/capiutils/etc/modprobe.d
+	mkdir -p debian/capiutils/etc/hotplug/blacklist.d
 	cp -p debian/capiutils.blacklist \
-		debian/capiutils/etc/modprobe.d/blacklist-capiutils
+		debian/capiutils/etc/hotplug/blacklist.d/capiutils
+	mkdir -p debian/capiutils/etc/discover.d
+	sed 's/^/skip /' debian/capiutils.blacklist \
+		> debian/capiutils/etc/discover.d/capiutils
 endif
 	# Ok, for two commands
 	# No, for one command after all. Do this one by hand.
