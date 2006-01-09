@@ -4,7 +4,7 @@ Priority: extra
 Maintainer: Paul Slootman <paul@debian.org>
 Uploaders: Paul Slootman <paul@debian.org>, Matthias Klose <doko@debian.org>
 Standards-Version: 3.6.2
-Build-Depends: debhelper (>=4.1.16), bzip2, libncurses5-dev | libncurses-dev, xutils | imake, tcl8.3-dev, linuxdoc-tools (>=0.9.20), groff, libtool, libxaw7-dev, libreadline5-dev | libreadline-dev, libpcap0.8-dev, autotools-dev, automake1.4, automake1.7, autoconf2.13, autoconf, libssl-dev, psutils, lsb-release
+Build-Depends: debhelper (>=4.1.16), bzip2, libncurses5-dev | libncurses-dev, xutils | imake, tcl8.3-dev, linuxdoc-tools (>=0.9.20), groff, libtool, libxaw7-dev, libreadline5-dev | libreadline-dev, libpcap0.8-dev, autotools-dev, automake1.4, automake1.7, automake1.8, autoconf2.13, autoconf, libssl-dev, psutils, lsb-release
 
 Package: isdnutils
 Priority: optional

@@ -117,7 +117,7 @@ EOF
 fi
 if [ -s /etc/isdn/vboxd.conf ]; then
     eval `perl -- - /etc/isdn/vboxd.conf <<'EOF'
-        while (<>) { last if m,^# Remove this comment if you don't want,; }
+        while (<>) { last if m,^# Remove this comment if you don.t want,; }
         # next line is the one
         if ($_ = <>) {
             m,^A:[^:]+:[^:]+:([^:]+):([^:]+):([^:]+),;

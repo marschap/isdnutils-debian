@@ -30,6 +30,15 @@ auto-update-stamp: patch-stamp
 	done
 
 	@set -e; \
+	for d in capi20; do \
+	  echo "Regenerating autotools files in $$d ..."; \
+	  cd $$d; \
+	  echo "  aclocal-1.8"; aclocal-1.8; \
+	  echo "  automake-1.8"; automake-1.8 --add-missing; \
+	  cd ..; \
+	done
+
+	@set -e; \
 	for d in capifax capiinfo capiinit rcapid; do \
 	  echo "Regenerating autotools files in $$d ..."; \
 	  cd $$d; \
