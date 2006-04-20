@@ -1,2 +1,2 @@
-hisax
-hisax_fcpcipnp
+blacklist hisax
+blacklist hisax_fcpcipnp
