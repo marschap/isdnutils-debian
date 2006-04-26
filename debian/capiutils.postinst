@@ -6,7 +6,7 @@ set -e
 case "$1" in
     configure)
 	rm -f /etc/hotplug/blacklist.d/capiutils 2>/dev/null
-	rmdir /etc/hotplug/blacklist.d 2>/dev/null
+	rmdir /etc/hotplug/blacklist.d 2>/dev/null || true
 
         cd /dev
         echo "Note: running MAKEDEV to create CAPI devices in /dev..."
