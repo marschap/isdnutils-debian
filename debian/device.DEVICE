@@ -113,6 +113,18 @@ start)
     else	isdnctrl addif ${device}
     fi
 
+    #	l2_prot name protocol
+    # Set the layer-2 protocol for interface "name". Possible values for
+    # "protocol" are x75i, x75ui, x75bui and hdlc
+    # (most people use hdlc)
+    isdnctrl l2_prot ${device} hdlc
+
+    #	l3_prot name protocol
+    # Set the layer-3 protocol for interface "name". At the moment only
+    # trans is supported.  If protocol is omitted the current setting is
+    # printed.
+    isdnctrl l3_prot ${device} trans
+
     #	eaz name num
     # Set the EAZ (German 1TR6 protocol) or MSN (Euro-ISDN E-DSS1) for
     # interface "name" to "num". For an EAZ this is only one digit, for a
@@ -176,18 +188,6 @@ start)
     # (most people use rawip, syncppp or cisco-h; syncppp is normal for
     # ISP's, rawip is normal for semi-fixed linux-linux connections)
     isdnctrl encap ${device} $ENCAP
-
-    #	l2_prot name protocol
-    # Set the layer-2 protocol for interface "name". Possible values for
-    # "protocol" are x75i, x75ui, x75bui and hdlc
-    # (most people use hdlc)
-    isdnctrl l2_prot ${device} hdlc
-
-    #	l3_prot name protocol
-    # Set the layer-3 protocol for interface "name". At the moment only
-    # trans is supported.  If protocol is omitted the current setting is
-    # printed.
-    isdnctrl l3_prot ${device} trans
 
     #	verbose num
     # Set verbosity level to <num>.

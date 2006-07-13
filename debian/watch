@@ -1,2 +1,3 @@
-version=2
-ftp://ftp.isdn4linux.de/pub/isdn4linux/CVS-Snapshots/isdn4k-utils-CVS-([-\d\.]*)\.tar\.bz2 2005-01-03
+version=3
+opts="dversionmangle=s/.*\.//,uversionmangle=s/-//g" \
+  ftp://ftp.isdn4linux.de/pub/isdn4linux/CVS-Snapshots/isdn4k-utils-CVS-([-\d\.]*)\.tar\.bz2

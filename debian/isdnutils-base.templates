@@ -1,6 +1,6 @@
 Template: isdnutils/no_ipppd_selected
 Type: note
-_Description: ISDNUTILS is now split up
+_Description: isdnutils is now split up
  The old isdnutils package is now split up into smaller parts: isdnutils
  ipppd isdnutils-xtools isdnutils-doc isdnvboxserver isdnvboxclient isdnlog
  isdnlog-data libcapi20-3 isdnactivecards pppdcapiplugin isdneurofile

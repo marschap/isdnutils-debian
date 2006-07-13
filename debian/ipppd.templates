@@ -8,7 +8,7 @@ _Description: ISP dialup config exists already
  If it doesn't work yet, and you want to try the automatic configuration,
  stop all ISDN processes (use "/etc/init.d/isdnutils stop"), remove the
  files mentioned above, and rerun the configuration with "dpkg-reconfigure
- ipppd".  After that, restart the ISDN processes: "/etc/init.d/isdnutils
+ ipppd". After that, restart the ISDN processes: "/etc/init.d/isdnutils
  start".
 
 Template: ipppd/whichif

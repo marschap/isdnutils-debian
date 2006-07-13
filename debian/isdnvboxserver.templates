@@ -25,7 +25,7 @@ _Description: After how many rings should vbox pick up the line?
  One ring is about 5 seconds. You can fine-tune the number of rings for
  certain phonenumbers manually, e.g. any salesmen you know the number of
  (or calls without caller-ID) can be dumped into the answering machine
- after one ring.  See `man vbox.conf' for more info.
+ after one ring. See `man vbox.conf' for more info.
 
 Template: isdnvboxserver/attachmsg
 Type: select
@@ -154,7 +154,7 @@ _Description: Device in inittab doesn't agree with devfs mode
 Template: isdnvboxserver/devfs_vboxgettyconf
 Type: note
 _Description: Device in vboxgetty.conf doesn't agree with devfs mode
- The device entry  in /etc/isdn/vboxgetty.conf uses a device name that does
+ The device entry in /etc/isdn/vboxgetty.conf uses a device name that does
  not correspond to the current devfs usage; either a devfs
  (/dev/isdn/ttyIxx) name is used in vboxgetty.conf while devfs is not
  mounted, or the non-devfs name is used while devfs is mounted.

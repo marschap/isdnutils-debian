@@ -19,7 +19,7 @@ _Description: Entering isdnlog configuration
  .
   - areacode         what your local areacode is (if applicable)
  .
- After installation, you will may have to edit /etc/isdn/isdnlog.isdnctrl0
+ After installation, you may have to edit /etc/isdn/isdnlog.isdnctrl0
  before isdnlog can work properly, although that file is set up with
  reasonable defaults for most cases.
  .

@@ -1,6 +1,6 @@
 #! /bin/sh -e
 
-# DP: Build modules for ppp 2.4.3 and 2.4.4b1
+# DP: Build modules for ppp 2.4.3, 2.4.4b1 and 2.4.4
 
 dir=
 if [ $# -eq 3 -a "$2" = '-d' ]; then
@@ -32,7 +32,7 @@ exit 0
  
  ifeq ($(PPPVERSIONS),)
 -PPPVERSIONS = 2.3.11 2.4.0 2.4.1 2.4.1b1 2.4.1b2 2.4.2b3 2.4.2 2.4.3
-+PPPVERSIONS = 2.4.2 2.4.3 2.4.4b1
++PPPVERSIONS = 2.4.2 2.4.3 2.4.4b1 2.4.4
  endif
  
  PEERDIR=${DESTDIR}/etc/ppp/peers/isdn
