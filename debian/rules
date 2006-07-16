@@ -15,7 +15,7 @@ DEB_HOST_ARCH		?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
 DEB_HOST_GNU_TYPE	?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 
 some_arch_match := no
-ifeq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH),hurd s390 sh))
+ifeq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH),hurd sh))
   some_arch_match := yes
 endif
 
