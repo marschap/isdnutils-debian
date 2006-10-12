@@ -1,3 +1,11 @@
+isdnutils (1:3.9.20060704-2.1) unstable; urgency=low
+
+  * NMU
+  * Move man page to /usr/share. Closes: #391696
+  * Improve line wrapping in menu files to avoid confusing linda.
+
+ -- Joey Hess <joeyh@debian.org>  Thu, 12 Oct 2006 16:05:19 -0400
+
 isdnutils (1:3.9.20060704-2) unstable; urgency=low
 
   * Build for s390.

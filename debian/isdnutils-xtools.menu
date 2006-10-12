@@ -1,11 +1,11 @@
-?package(isdnutils-xtools):needs="X11"\
-  section="Apps/Net"\
-  title="X11 ISDN Monitor"\
-  command="/usr/bin/xmonisdn"\
+?package(isdnutils-xtools):needs="X11" \
+  section="Apps/Net" \
+  title="X11 ISDN Monitor" \
+  command="/usr/bin/xmonisdn" \
   description="xmonisdn is an xbiff-like display of the state of the ISDN line."
-?package(isdnutils-xtools):needs="X11"\
-  section="Apps/Net"\
-  title="X11 ISDN Load"\
-  command="/usr/bin/xisdnload"\
+?package(isdnutils-xtools):needs="X11" \
+  section="Apps/Net" \
+  title="X11 ISDN Load" \
+  command="/usr/bin/xisdnload" \
   description="xisdnload shows a graphical display of the throughput, and the\
  background colour tells you whether there is a connection."
