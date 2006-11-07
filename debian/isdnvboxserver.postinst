@@ -91,7 +91,6 @@ fi
 #     fi
 #     db_go || true
 # fi
-VBOX_CONFFILE=
 if [ -s /etc/isdn/vboxgetty.conf ]; then
     # only use ttyI6
     eval `perl -- - /etc/isdn/vboxgetty.conf <<'EOF'
@@ -115,18 +114,6 @@ EOF
         db_go
     fi
 fi
-if [ -s /etc/isdn/vboxd.conf ]; then
-    eval `perl -- - /etc/isdn/vboxd.conf <<'EOF'
-        while (<>) { last if m,^# Remove this comment if you don.t want,; }
-        # next line is the one
-        if ($_ = <>) {
-            m,^A:[^:]+:[^:]+:([^:]+):([^:]+):([^:]+),;
-            print "VBOX_USERSPOOL=$3\n";
-            exit 0;
-        }
-EOF
-    `
-fi
 db_get isdnvboxserver/user || true
 VBOX_USER=`echo "$RET" | tr -d ' '`
 if [ ! -z "$VBOX_USER" ]; then
@@ -136,122 +123,11 @@ fi
 db_get isdnvboxserver/daemonuser || true
 VBOX_DUSER=`echo "$RET" | tr -d ' '`
 
-###################################
-# We have to clean up a big (potential) mess here.
-# There were different places where the spooldir could be:
-#
-# - /var/spool/vbox/${name of daemon user}
-# - /var/spool/vbox/${name of vboxd user}
-# - /var/spool/vbox/${something else?}
-#
-# I want to normalize this to just:
-#
-# - /var/spool/vbox/${name of ttyI device}
-#
-# which is more logical as multiple (vboxd) users can access the same
-# spool. Usually you'd want each vboxgetty process to write into its
-# own spool directory (if you want multiple MSNs into one spool, there's
-# a way of making one ttyI device listen to multiple MSNs and hence only
-# one vboxgetty)
-###################################
+if [ -z "$VBOX_SPOOL" ]; then
+    VBOX_SPOOL=/var/spool/vbox/ttyI6
+fi
 
-if [ ! -z "$VBOX_SPOOL" ]; then
-    # there's a value already in vboxgetty.conf
-    # normalize it to the name of the device that is listened to (ttyI6)
-    VBOX_SPOOLold="$VBOX_SPOOL"
-    # VBOX_SPOOL=`echo $VBOX_SPOOL | sed "s,/[^/]*\$,/$VBOX_USER,"`
-    VBOX_SPOOL=/var/spool/vbox/ttyI6
-else
-    VBOX_SPOOLold=/vvaarr/ssppooooll/vvbbooxx/doesntexist
-    VBOX_SPOOL=/var/spool/vbox/ttyI6
-fi
-# VBOX_SPOOL now contains the ttyI version
-# remember the names but make a silly name if they're not defined
-# (I don't really like this solution but, hey, it works...)
-VVBOX_SPOOLold="$VBOX_SPOOLold"
-if [ -z "$VVBOX_SPOOLold" ]; then
-    VVBOX_SPOOLold=/vvaarr/ssppooooll/vvbbooxx/doesntexist_1
-fi
-VVBOX_USERSPOOL="$VBOX_USERSPOOL"
-if [ -z "$VVBOX_USERSPOOL" ]; then
-    VVBOX_USERSPOOL=/vvaarr/ssppooooll/vvbbooxx/doesntexist_2
-fi
-# Now check if the value in the vboxgetty.conf file is different:
-if [ "$VBOX_SPOOL" != "$VBOX_SPOOLold" ]; then
-    # it's different...
-    # Check if both dirs exist. If the new one doesn't, we can simply
-    # rename the old one if necessary.
-    if [ ! -d "$VBOX_SPOOL" ]; then
-        # new dir doesn't exist
-        if [ -d "$VBOX_SPOOLold" ]; then
-            # old one does. So rename
-            mv "$VBOX_SPOOLold" "$VBOX_SPOOL" || echo "mv 1 failed"
-            db_subst isdnvboxserver/spoolrename OLDSPOOL "$VBOX_SPOOLold"
-            db_subst isdnvboxserver/spoolrename NEWSPOOL "$VBOX_SPOOL"
-            db_fset isdnvboxserver/spoolrename seen false
-            db_input high isdnvboxserver/spoolrename || true
-            db_go
-            # forget it ever existed
-            VVBOX_SPOOLold=/vvaarr/ssppooooll/vvbbooxx/doesntexist_1
-        # else create new one.
-        # But we might have to rename another one, so don't just yet.
-        fi
-    fi
-    if [ ! -d "$VBOX_SPOOL" ]; then
-        # new dir STILL doesn't exist
-        if [ -d "$VBOX_USERSPOOL" ]; then
-            # old (vboxd user) one does. So rename
-            mv "$VBOX_USERSPOOL" "$VBOX_SPOOL" || echo "mv 2 failed"
-            db_subst isdnvboxserver/spoolrename OLDSPOOL "$VBOX_USERSPOOL"
-            db_subst isdnvboxserver/spoolrename NEWSPOOL "$VBOX_SPOOL"
-            db_fset isdnvboxserver/spoolrename seen false
-            db_input high isdnvboxserver/spoolrename || true
-            db_go
-            # forget it ever existed
-            VBOX_USERSPOOL=/vvaarr/ssppooooll/vvbbooxx/doesntexist_2
-        else
-            # now we're free to create the new one
-            mkdir -p "$VBOX_SPOOL/incoming" "$VBOX_SPOOL/messages"
-            cp /usr/share/isdnvboxserver/default/standard.tcl "$VBOX_SPOOL/."
-            db_subst isdnvboxserver/spoolcreate NEWSPOOL "$VBOX_SPOOL"
-            db_input low  isdnvboxserver/spoolcreate || true
-            db_go
-        fi
-    fi
-    # The new dir should exist now, one way or another
-    if [ ! -d "$VBOX_SPOOL" ]; then
-        echo "$VBOX_SPOOL doesn't exist here!!!!! PANIC"
-        exit 1
-    fi
-    if [ -d "$VBOX_SPOOLold" ]; then
-        # the old dir and the new dir both exist
-        if [ -d "$VBOX_USERSPOOL" ]; then
-            # they ALL exist!
-            # use the remembered values!
-            db_subst isdnvboxserver/dup3spool OLDSPOOL1 "$VVBOX_SPOOLold"
-            db_subst isdnvboxserver/dup3spool OLDSPOOL2 "$VVBOX_SPOOLold"
-            db_subst isdnvboxserver/dup3spool NEWSPOOL "$VBOX_SPOOL"
-            db_fset isdnvboxserver/dup3spool seen false
-            db_input high isdnvboxserver/dup3spool || true
-            db_go
-        else
-            db_subst isdnvboxserver/dupspool OLDSPOOL "$VVBOX_SPOOLold"
-            db_subst isdnvboxserver/dupspool NEWSPOOL "$VBOX_SPOOL"
-            db_fset isdnvboxserver/dupspool seen false
-            db_input high isdnvboxserver/dupspool || true
-            db_go
-        fi
-    else
-        # the old userspool dir may also exist!
-        if [ -d "$VVBOX_USERSPOOL" ]; then
-            db_subst isdnvboxserver/dupspool OLDSPOOL "$VVBOX_USERSPOOL"
-            db_subst isdnvboxserver/dupspool NEWSPOOL "$VBOX_SPOOL"
-            db_fset isdnvboxserver/dupspool seen false
-            db_input high isdnvboxserver/dupspool || true
-            db_go
-        fi
-    fi
-elif [ ! -d "$VBOX_SPOOL" ]; then
+if [ ! -d "$VBOX_SPOOL" ]; then
     # on initial installation it won't exist, and "old" name == new name
     # so create it here if necessary
     mkdir -p "$VBOX_SPOOL/incoming" "$VBOX_SPOOL/messages"
@@ -272,13 +148,6 @@ fi
 # end of spooldir handling....
 ###################################
 
-#XXX notused
-#XXXif [ -z "$VBOX_CONFFILE" ]; then
-#XXX    if [ -s $VBOX_SPOOL/vbox.conf ]; then
-#XXX        VBOX_CONFFILE=$VBOX_SPOOL/vbox.conf
-#XXX    fi
-#XXXfi
-
 if [ ! -z "$VBOX_DUSER" ]; then
     VBOX_USERHOME=`getent passwd "$VBOX_DUSER" | cut -f6 -d:`
     if [ ! -z "$VBOX_USERHOME" ]; then
@@ -287,16 +156,9 @@ if [ ! -z "$VBOX_DUSER" ]; then
         fi
         if [ -d "$VBOX_USERHOME" ]; then
             if [ ! -s "$VBOX_USERHOME/.vbox.conf" ]; then
-                if [ ! -z "$VBOX_CONFFILE" -a -s "$VBOX_CONFFILE" ]; then
-                    mv "$VBOX_CONFFILE" "$VBOX_USERHOME/.vbox.conf" || echo "mv 3 failed"
-                    db_subst isdnvboxserver/vboxmoved OLD $VBOX_CONFFILE
-                    db_subst isdnvboxserver/vboxmoved DIR $VBOX_USERHOME
-                    db_input high isdnvboxserver/vboxmoved || true
-                else
-                    cp /usr/share/isdn/default/vbox.conf $VBOX_USERHOME/.vbox.conf   
-                    db_subst isdnvboxserver/vboxcreate DIR $VBOX_USERHOME
-                    db_input high isdnvboxserver/vboxcreate || true
-                fi
+                cp /usr/share/isdn/default/vbox.conf $VBOX_USERHOME/.vbox.conf
+                db_subst isdnvboxserver/vboxcreate DIR $VBOX_USERHOME
+                db_input high isdnvboxserver/vboxcreate || true
                 chown $VBOX_DUSER $VBOX_USERHOME/.vbox.conf
             fi
         else
@@ -310,9 +172,6 @@ if [ ! -z "$VBOX_DUSER" ]; then
         db_input high isdnvboxserver/vboxnouser || true
     fi
     db_go || true
-    #if [ -s $VBOX_USERHOME/.vbox.conf ]; then
-    #	: # edit rings etc.
-    #fi
     mv -f /etc/isdn/vboxgetty.conf /etc/isdn/vboxgetty.conf.bak || echo "mv 4 failed"
     perl -- - > /etc/isdn/vboxgetty.conf <<EOF
         open(STDIN, '/etc/isdn/vboxgetty.conf.bak');
@@ -324,8 +183,6 @@ if [ ! -z "$VBOX_DUSER" ]; then
             }
             s/^(\s+modeminit\s+.*&E)\s*\d*(.*)/\${1}$VBOX_MSN\${2}/;
             s/^(\s+user\s+)\S+(.*)/\${1}$VBOX_DUSER\${2}/;
-            s,^(\s+spooldir\s+).*$,\${1}$VBOX_SPOOL,;
-            s,^(\s+vboxconfig\s+).*$,\${1}$VBOX_USERHOME/.vbox.conf,;
             print;
         }
         print <>;

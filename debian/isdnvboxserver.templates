@@ -61,40 +61,11 @@ Type: password
 _Description: Enter the password for ${User} here.
  Please don't use ':' in it! The way it is stored cannot handle this.
 
-Template: isdnvboxserver/spoolrename
-Type: note
-_Description: spool directory renamed
- The spool directory `${OLDSPOOL}' has been renamed to `${NEWSPOOL}' for
- consistency's sake. This should have no other consequences.
-
-Template: isdnvboxserver/dup3spool
-Type: note
-_Description: two obsolete spool directories detected
- The directories `${OLDSPOOL1}' and `${OLDSPOOL2}' (which aren't used
- anymore in the standard configuration), and the new spool directory
- `${NEWSPOOL}' all exist. The old directories will no longer be used;
- please manually move any messages from there to the new directory (if
- any), and delete the old directories.
-
-Template: isdnvboxserver/dupspool
-Type: note
-_Description: two spool directories detected
- The old spool directory `${OLDSPOOL}' and the new spool directory
- `${NEWSPOOL}' both exist. The old directory will no longer be used; please
- manually move any messages from there to the new directory (if any), and
- delete the old directory.
-
 Template: isdnvboxserver/spoolcreate
 Type: note
 _Description: spool directory created
  The spool directory `${NEWSPOOL}' has been created, which is necessary for
  proper working of vbox.
-
-Template: isdnvboxserver/vboxmoved
-Type: note
-_Description: vbox config file moved
- The configuration file `${OLD}' has been moved to `${DIR}/.vbox.conf'. 
- See `man vbox.conf' for information on changing this file.
 
 Template: isdnvboxserver/vboxcreate
 Type: note

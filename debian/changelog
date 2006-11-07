@@ -1,3 +1,13 @@
+isdnutils (1:3.9.20060704-2.2) unstable; urgency=high
+
+  * Non-maintainer upload.
+  * High-urgency upload for RC bugfix.
+  * Don't set vboxconfig and spooldir settings in vboxgetty.conf,
+    because there are no provisions for honoring user changes to these 
+    settings, which is a policy violation.  Closes: #202488.
+
+ -- Steve Langasek <vorlon@debian.org>  Tue,  7 Nov 2006 00:18:58 -0800
+
 isdnutils (1:3.9.20060704-2.1) unstable; urgency=low
 
   * NMU
