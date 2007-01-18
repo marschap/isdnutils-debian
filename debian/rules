@@ -169,6 +169,8 @@ clean:
 	rm -f capiinit/stamp-h.in
 	rm -f vbox/src/stamp-h1
 
+	debconf-updatepo
+
 	dh_clean
 
 install: DH_OPTIONS=

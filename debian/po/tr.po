@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: isdnvboxserver\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-24 20:24+0200\n"
+"POT-Creation-Date: 2007-01-18 22:42+0100\n"
 "PO-Revision-Date: 2004-05-10 19:03+0300\n"
 "Last-Translator: Mehmet Türker <mturker@innova.com.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
@@ -16,13 +16,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:3
+#: ../ipppd.templates:1001
 msgid "ISP dialup config exists already"
 msgstr "ISS çevirmeli ağ yapılandırması zaten mevcut"
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:3
+#: ../ipppd.templates:1001
 msgid ""
 "The files device.${IPPP0} and ipppd.${IPPP0} already exist. Therefore the "
 "ipppd configuration phase won't touch anything there, as it looks like it's "
@@ -34,12 +34,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:3
+#: ../ipppd.templates:1001
+#, fuzzy
 msgid ""
 "If it doesn't work yet, and you want to try the automatic configuration, "
 "stop all ISDN processes (use \"/etc/init.d/isdnutils stop\"), remove the "
 "files mentioned above, and rerun the configuration with \"dpkg-reconfigure "
-"ipppd\".  After that, restart the ISDN processes: \"/etc/init.d/isdnutils "
+"ipppd\". After that, restart the ISDN processes: \"/etc/init.d/isdnutils "
 "start\"."
 msgstr ""
 "Eğer hâlâ çalışmıyorsa ve otomatik yapılandırmayı denemek istiyorsanız, "
@@ -50,19 +51,19 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:17
+#: ../ipppd.templates:2001
 msgid "Which interface should be configured?"
 msgstr "Hangi arayüz yapılandırılsın?"
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:17
+#: ../ipppd.templates:2001
 msgid "Which interface should debconf configure?"
 msgstr "Hangi arayüz debconf ile yapılandırılsın?"
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:17
+#: ../ipppd.templates:2001
 msgid ""
 "Most people will say \"ippp0\" here, as that is the default for a connection "
 "to an ISP. The default gateway will be ippp0."
@@ -72,7 +73,7 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:17
+#: ../ipppd.templates:2001
 msgid ""
 "However, some people have special requirements, and they may choose another "
 "interface that debconf will configure (e.g. because they don't want this "
@@ -84,7 +85,7 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:17
+#: ../ipppd.templates:2001
 msgid ""
 "Note that debconf will currently only configure at most one interface. Enter "
 "\"none\" if you do not want debconf to configure anything for ipppd."
@@ -95,13 +96,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:32
+#: ../ipppd.templates:3001
 msgid "wrong interface name"
 msgstr "yanlış arayüz adı"
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:32
+#: ../ipppd.templates:3001
 msgid ""
 "You can only give names starting with \"ippp\" followed by a number between "
 "0 and 63."
@@ -111,20 +112,20 @@ msgstr ""
 
 #. Type: string
 #. Default
-#: ../ipppd.templates:38
+#: ../ipppd.templates:4001
 msgid "manual"
 msgstr "elle"
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:39
+#: ../ipppd.templates:4002
 #, fuzzy
 msgid "What is your ISP's telephone number?"
 msgstr "ISS'nizin telefon numarası nedir?"
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:39
+#: ../ipppd.templates:4002
 #, fuzzy
 msgid ""
 "What telephone number(s) must be dialed in order to connect to your Internet "
@@ -133,7 +134,7 @@ msgstr "Internet'e bağlanmak için hangi numara çevrilmeli?"
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:39
+#: ../ipppd.templates:4002
 msgid ""
 "Enter the telephone number here, including dialing prefixes, area codes, and "
 "so on. Enter the number without any spaces."
@@ -141,7 +142,7 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:39
+#: ../ipppd.templates:4002
 msgid ""
 "You can enter multiple telephone numbers. If you do so then separate them "
 "with spaces."
@@ -149,7 +150,7 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:39
+#: ../ipppd.templates:4002
 #, fuzzy
 msgid ""
 "Enter the word \"manual\" or leave the field blank if you want to configure "
@@ -160,13 +161,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:55
+#: ../ipppd.templates:5001
 msgid "What is your local MSN?"
 msgstr "Yerel MSN'niz nedir?"
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:55
+#: ../ipppd.templates:5001
 msgid ""
 "When making a call with ISDN, the MSN (phone number) that is originating the "
 "call must be given in the call-setup message. While usually a wrong MSN will "
@@ -182,7 +183,7 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:55
+#: ../ipppd.templates:5001
 msgid ""
 "This may also be necessary if you want the costs to be registered to one "
 "particular MSN, in case you have more than one MSN and this is supported by "
@@ -194,13 +195,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:69
+#: ../ipppd.templates:6001
 msgid "What is the user name for logging into your ISP?"
 msgstr "ISS'nize oturum açmakta kullanılan kullanıcı adı:"
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:69
+#: ../ipppd.templates:6001
 msgid ""
 "Most (all?) ISPs need a user name and password for authenticating you as a "
 "valid user before allowing access. Enter the user name here. The password "
@@ -212,13 +213,13 @@ msgstr ""
 
 #. Type: password
 #. Description
-#: ../ipppd.templates:76
+#: ../ipppd.templates:7001
 msgid "What is the password for logging into your ISP?"
 msgstr "ISS'nize oturum açmakta kullanılan parola:"
 
 #. Type: password
 #. Description
-#: ../ipppd.templates:76
+#: ../ipppd.templates:7001
 msgid ""
 "The password you give here will be entered into /etc/ppp/pap-secrets and /"
 "etc/ppp/chap-secrets together with the username."
@@ -228,13 +229,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:82
+#: ../ipppd.templates:8001
 msgid "ISP user name already in pap-secrets"
 msgstr "ISS kullanıcı adı pap-secrets'ta mevcut"
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:82
+#: ../ipppd.templates:8001
 msgid ""
 "The user name you entered for logging into your ISP is already listed in "
 "the /etc/ppp/pap-secrets file. That's not a problem; the existing entry will "
@@ -247,13 +248,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:90
+#: ../ipppd.templates:9001
 msgid "ISP user name already in chap-secrets"
 msgstr "ISS kullanıcı adı chap-secrets'ta mevcut"
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:90
+#: ../ipppd.templates:9001
 msgid ""
 "The user name you entered for logging into your ISP is already listed in "
 "the /etc/ppp/chap-secrets file. That's not a problem; the existing entry "
@@ -266,13 +267,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:98
+#: ../ipppd.templates:10001
 msgid "ISP user name already in chap-secrets and pap-secrets"
 msgstr "ISS kullanıcı adı chap-secrets ve pap-secrets'ta mevcut"
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:98
+#: ../ipppd.templates:10001
 msgid ""
 "The user name you entered for logging into your ISP is already listed in the "
 "chap-secrets and pap-secrets files in /etc/ppp/. That's not a problem; the "
@@ -286,13 +287,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:106
+#: ../ipppd.templates:11001
 msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
 msgstr "/etc/ppp/ip-up.d/00-isdnutils hâlâ mevcut"
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:106
+#: ../ipppd.templates:11001
 msgid ""
 "The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package still "
 "exists. If you changed that file at some point, you may need to redo those "
@@ -306,13 +307,23 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:116
+#. Type: note
+#. Description
+#: ../ipppd.templates:11001 ../ipppd.templates:12001
+msgid "Until it is deleted, it will still be used! This may cause conflicts."
+msgstr ""
+"Bu dosya silinene kadar, hâlâ kullanılıyor olacak!  Bu durum karışıklıklara "
+"yol açabilir."
+
+#. Type: note
+#. Description
+#: ../ipppd.templates:12001
 msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
 msgstr "/etc/ppp/ip-down.d/99-isdnutils hâlâ mevcut"
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:116
+#: ../ipppd.templates:12001
 msgid ""
 "The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package "
 "still exists. If you changed that file at some point, you may need to redo "
@@ -326,21 +337,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:116
-msgid "Until it is deleted, it will still be used! This may cause conflicts."
-msgstr ""
-"Bu dosya silinene kadar, hâlâ kullanılıyor olacak!  Bu durum karışıklıklara "
-"yol açabilir."
-
-#. Type: note
-#. Description
-#: ../ipppd.templates:126
+#: ../ipppd.templates:13001
 msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
 msgstr "eski /etc/ppp/ip-up.d ve ip-down.d betikleri hâlâ mevcut"
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:126
+#: ../ipppd.templates:13001
 msgid ""
 "The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils files "
 "from the old isdnutils package still exist. If you changed those files at "
@@ -356,7 +359,7 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:126
+#: ../ipppd.templates:13001
 msgid ""
 "Until they are deleted, they will still be used! This may cause conflicts."
 msgstr ""
@@ -365,13 +368,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:137
+#: ../ipppd.templates:14001
 msgid "(re)start ipppd by hand"
 msgstr "ipppd'yi (tekrar) elle çalıştırın"
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:137
+#: ../ipppd.templates:14001
 msgid ""
 "There is no /etc/init.d/isdnutils on your system; hence you will have to "
 "stop and start any ipppd daemons by hand."
@@ -381,13 +384,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:143
+#: ../ipppd.templates:15001
 msgid "error running isdnutils init script"
 msgstr "isdnutils başlangıç betiğini çalıştırırken hata"
 
 #. Type: note
 #. Description
-#: ../ipppd.templates:143
+#: ../ipppd.templates:15001
 msgid ""
 "The /etc/init.d/isdnutils script ran with errors. Please check the "
 "installation of the isdnutils-base package; reinstall it if necessary. "
@@ -401,13 +404,13 @@ msgstr ""
 
 #. Type: text
 #. Description
-#: ../isdnlog.templates:3
+#: ../isdnlog.templates:1001
 msgid "Entering isdnlog configuration"
 msgstr "Isdnlog yapılandırmasına giriliyor"
 
 #. Type: text
 #. Description
-#: ../isdnlog.templates:3
+#: ../isdnlog.templates:1001
 msgid ""
 "For correct isdnlog functioning, isdnlog needs to be configured with a "
 "number of settings. These are some or all (depending on the level you have "
@@ -419,7 +422,7 @@ msgstr ""
 
 #. Type: text
 #. Description
-#: ../isdnlog.templates:3
+#: ../isdnlog.templates:1001
 msgid ""
 " - country          this is used for setting a number of defaults,\n"
 "                    e.g. what rate tables to use for calculating\n"
@@ -432,13 +435,13 @@ msgstr ""
 
 #. Type: text
 #. Description
-#: ../isdnlog.templates:3
+#: ../isdnlog.templates:1001
 msgid " - country prefix   what is used to indicate an international number"
 msgstr " - ülke öneki   uluslararası aramalar için gerekli önek"
 
 #. Type: text
 #. Description
-#: ../isdnlog.templates:3
+#: ../isdnlog.templates:1001
 msgid ""
 " - country code     the phone number for your country\n"
 "                    (e.g. 49 for Germany)"
@@ -448,7 +451,7 @@ msgstr ""
 
 #. Type: text
 #. Description
-#: ../isdnlog.templates:3
+#: ../isdnlog.templates:1001
 msgid ""
 " - areacode prefix  what is used to indicate an areacode,\n"
 "                    if applicable in your country. Usually a 0 ."
@@ -458,17 +461,18 @@ msgstr ""
 
 #. Type: text
 #. Description
-#: ../isdnlog.templates:3
+#: ../isdnlog.templates:1001
 msgid " - areacode         what your local areacode is (if applicable)"
 msgstr " - alankodu          yerel alan kodunuz (eğer kullanılıyorsa)"
 
 #. Type: text
 #. Description
-#: ../isdnlog.templates:3
+#: ../isdnlog.templates:1001
+#, fuzzy
 msgid ""
-"After installation, you will may have to edit /etc/isdn/isdnlog.isdnctrl0 "
-"before isdnlog can work properly, although that file is set up with "
-"reasonable defaults for most cases."
+"After installation, you may have to edit /etc/isdn/isdnlog.isdnctrl0 before "
+"isdnlog can work properly, although that file is set up with reasonable "
+"defaults for most cases."
 msgstr ""
 "Kurulumdan sonra, isdnlog'un düzgünce çalışabilmesi için /etc/isdn/isdnlog."
 "isdnctrl0 dosyasını düzenlemek zorunda kalabilirsiniz ki bu dosya çoğu "
@@ -476,7 +480,7 @@ msgstr ""
 
 #. Type: text
 #. Description
-#: ../isdnlog.templates:3
+#: ../isdnlog.templates:1001
 msgid ""
 "If you previously had /etc/isdn/isdnlog.isdnctrl0, that will be preserved."
 msgstr ""
@@ -484,67 +488,67 @@ msgstr ""
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:30
+#: ../isdnlog.templates:2001
 msgid "AT"
 msgstr "AT"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:30
+#: ../isdnlog.templates:2001
 msgid "CH"
 msgstr "CH"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:30
+#: ../isdnlog.templates:2001
 msgid "DE"
 msgstr "DE"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:30
+#: ../isdnlog.templates:2001
 msgid "ES"
 msgstr "ES"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:30
+#: ../isdnlog.templates:2001
 msgid "FR"
 msgstr "FR"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:30
+#: ../isdnlog.templates:2001
 msgid "LU"
 msgstr "LU"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:30
+#: ../isdnlog.templates:2001
 msgid "NL"
 msgstr "NL"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:30
+#: ../isdnlog.templates:2001
 msgid "NO"
 msgstr "NO"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:30
+#: ../isdnlog.templates:2001
 msgid "other"
 msgstr "diğer"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:32
+#: ../isdnlog.templates:2002
 msgid "What country is this system in?"
 msgstr "Bu sistem hangi ülkede?"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:32
+#: ../isdnlog.templates:2002
 msgid ""
 "This is used for setting a number of defaults, e.g. what rate tables to use "
 "for calculating the cost of a call."
@@ -554,13 +558,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:38
+#: ../isdnlog.templates:3001
 msgid "Enter the ISO two-letter code for your country"
 msgstr "Ülkeniz için kullanılan iki-harfli ISO kodunu giriniz"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:38
+#: ../isdnlog.templates:3001
 msgid ""
 "This can't really be used for setting any defaults, but maybe some day..."
 msgstr ""
@@ -569,7 +573,7 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:38
+#: ../isdnlog.templates:3001
 msgid ""
 "Note that you will probably have to edit /etc/isdn/isdn.conf before isdnlog "
 "will be able to work."
@@ -579,43 +583,43 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:47
+#: ../isdnlog.templates:4001
 msgid "What is used to indicate an international number?"
 msgstr "Uluslararası aramalarda kullanılan numara:"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:52
+#: ../isdnlog.templates:5001
 msgid "What is the countrycode for your country?"
 msgstr "Ülkenizin uluslararası kodu:"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:52
+#: ../isdnlog.templates:5001
 msgid "e.g. ${default_countrycode} for ${default_country}"
 msgstr "ör. ${default_countrycode} için ${default_country}"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:58
+#: ../isdnlog.templates:6001
 msgid "What is used to indicate an areacode, if applicable?"
 msgstr "Alan kodunu belirtmekte kullanılan numara (eğer gerekiyorsa):"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:62
+#: ../isdnlog.templates:7001
 msgid "What is your local areacode, if applicable?"
 msgstr "Yerel alan kodu (eğer gerekiyorsa):"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:68
+#: ../isdnlog.templates:8001
 msgid "Run isdnrate as a daemon?"
 msgstr "isdnrate bir arka süreç servis (daemon) olarak mı çalışsın?"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:68
+#: ../isdnlog.templates:8001
 msgid ""
 "isdnrate is a utility to calculate the costs of a connection to a given "
 "phone number, used e.g. for LCR systems to find the cheapest carrier on a "
@@ -630,7 +634,7 @@ msgstr ""
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:68
+#: ../isdnlog.templates:8001
 msgid ""
 "This is only for people with special requirements, such as those using the "
 "isdn2h323 package. Hence most people should say \"no\"."
@@ -640,13 +644,14 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnutils-base.templates:3
-msgid "ISDNUTILS is now split up"
+#: ../isdnutils-base.templates:1001
+#, fuzzy
+msgid "isdnutils is now split up"
 msgstr "ISDNUTILS şu an bölünmüş durumda"
 
 #. Type: note
 #. Description
-#: ../isdnutils-base.templates:3
+#: ../isdnutils-base.templates:1001
 msgid ""
 "The old isdnutils package is now split up into smaller parts: isdnutils "
 "ipppd isdnutils-xtools isdnutils-doc isdnvboxserver isdnvboxclient isdnlog "
@@ -658,7 +663,7 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnutils-base.templates:3
+#: ../isdnutils-base.templates:1001
 msgid ""
 "This allows you to better select what parts you want installed, almost no "
 "one needs everything. Unfortunately there's no way of automatically "
@@ -670,7 +675,7 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnutils-base.templates:3
+#: ../isdnutils-base.templates:1001
 msgid ""
 "You have ipppX interfaces configured, but you have not selected  ipppd to be "
 "installed. This can be dangerous (leaving you with no way of obtaining "
@@ -682,7 +687,7 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnutils-base.templates:3
+#: ../isdnutils-base.templates:1001
 msgid ""
 "If you really mean to not have ipppd, please remove the ipppd.* files from /"
 "etc/isdn/, stop any ipppX interfaces, and reinstall isdnutils."
@@ -693,7 +698,7 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnutils-base.templates:3
+#: ../isdnutils-base.templates:1001
 msgid ""
 "If you used dselect, please select (+) ipppd, and any of the other parts you "
 "might need (e.g. isdnlog, isdnvbox, isdnutils-xtools), although those should "
@@ -710,19 +715,19 @@ msgstr ""
 
 #. Type: select
 #. Choices
-#: ../isdnutils-base.templates:28
+#: ../isdnutils-base.templates:2001
 msgid "none, ISAR.BIN"
 msgstr "yok, ISAR.BIN"
 
 #. Type: select
 #. Description
-#: ../isdnutils-base.templates:30
+#: ../isdnutils-base.templates:2002
 msgid "Does firmware need to be loaded?"
 msgstr "Yerleşil'in yüklenmesi gerekiyor mu?"
 
 #. Type: select
 #. Description
-#: ../isdnutils-base.templates:30
+#: ../isdnutils-base.templates:2002
 msgid ""
 "Some ISDN cards can't function properly until firmware has been downloaded. "
 "Notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which need "
@@ -738,14 +743,14 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnutils-base.templates:39
+#: ../isdnutils-base.templates:3001
 msgid "Which ISDN card numbers have to be loaded with the firmware?"
 msgstr ""
 "Hangi ISDN kart numaraları yerleşil'le (firmware) beraber yüklenmek zorunda?"
 
 #. Type: string
 #. Description
-#: ../isdnutils-base.templates:39
+#: ../isdnutils-base.templates:3001
 msgid ""
 "If you have more than one card, enter the number of the card(s) that have to "
 "be loaded with the firmware, starting with 1, separated by commas. If you "
@@ -760,13 +765,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnutils-base.templates:47
+#: ../isdnutils-base.templates:4001
 msgid "You have an (old) isdnvbox cron.weekly script"
 msgstr "(Eski) bir haftalık isdnvbox cron betiğiniz var"
 
 #. Type: note
 #. Description
-#: ../isdnutils-base.templates:47
+#: ../isdnutils-base.templates:4001
 msgid ""
 "In early versions of isdnutils 3.1pre1b, when upgrading from 3.0 the /etc/"
 "cron.weekly/isdnutils script was renamed to isdnvbox. Unfortunately, when "
@@ -781,7 +786,7 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnutils-base.templates:47
+#: ../isdnutils-base.templates:4001
 msgid ""
 "Normally, at this point the old script could just be deleted, but it looks "
 "like you have edited the script manually. Please look at /etc/cron.weekly/"
@@ -796,7 +801,7 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnutils-base.templates:47
+#: ../isdnutils-base.templates:4001
 msgid ""
 "If you can't see anything that needs preserving, it is probably safe to "
 "delete it."
@@ -806,13 +811,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnutils-base.templates:65
+#: ../isdnutils-base.templates:5001
 msgid "/etc/cron.weekly/isdnutils renamed to isdnvboxserver"
 msgstr "/etc/cron.weekly/isdnutils isdnvboxserver olarak değiştirildi"
 
 #. Type: note
 #. Description
-#: ../isdnutils-base.templates:65
+#: ../isdnutils-base.templates:5001
 msgid ""
 "The existing /etc/cron.weekly/isdnutils script has been renamed to "
 "isdnvboxserver to fit the names of the splitted packages (in the old "
@@ -824,7 +829,7 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnutils-base.templates:65
+#: ../isdnutils-base.templates:5001
 msgid ""
 "When the packaging system asks whether to replace the /etc/cron.weekly/"
 "isdnvboxserver, it is recommended to do so. If you have made any changes to "
@@ -836,13 +841,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:4
+#: ../isdnvboxserver.templates:1001
 msgid "What number should vbox answer?"
 msgstr "Vbox hangi numaraya cevap vermeli?"
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:4
+#: ../isdnvboxserver.templates:1001
 msgid ""
 "Vbox must know what number to listen to. Depending on your country's ISDN "
 "system, this may or may not include the areacode. It is usually without the "
@@ -854,7 +859,7 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:4
+#: ../isdnvboxserver.templates:1001
 msgid ""
 "Enter `quit' (or leave it blank) if you want to configure by hand, not via "
 "debconf. Also enter `quit' if you already have an existing (working) vbox "
@@ -868,13 +873,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:16
+#: ../isdnvboxserver.templates:2001
 msgid "You've chosen not to use debconf for isdnvboxserver"
 msgstr "isdnvboxserver için debconf kullanımını seçmemişsiniz"
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:16
+#: ../isdnvboxserver.templates:2001
 msgid ""
 "If you change your mind, run \"dpkg-reconfigure isdnvboxserver\". To "
 "finalize isdnvboxserver, you need to ensure that vboxgetty is running from "
@@ -886,18 +891,19 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:24
+#: ../isdnvboxserver.templates:3001
 msgid "After how many rings should vbox pick up the line?"
 msgstr "Vbox, kaç çalınıştan sonra hattı alsın?"
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:24
+#: ../isdnvboxserver.templates:3001
+#, fuzzy
 msgid ""
 "One ring is about 5 seconds. You can fine-tune the number of rings for "
 "certain phonenumbers manually, e.g. any salesmen you know the number of (or "
 "calls without caller-ID) can be dumped into the answering machine after one "
-"ring.  See `man vbox.conf' for more info."
+"ring. See `man vbox.conf' for more info."
 msgstr ""
 "Bir çalış 5 saniye civarındadır.  Belirli telefon numaraları için çalma "
 "sayısına elle ince-ayar yapabilirsiniz.  Meselâ numarasını bildiğiniz "
@@ -907,13 +913,13 @@ msgstr ""
 
 #. Type: select
 #. Description
-#: ../isdnvboxserver.templates:34
+#: ../isdnvboxserver.templates:4001
 msgid "Should the message be attached to the email?"
 msgstr "İleti e-postaya eklenmeli mi?"
 
 #. Type: select
 #. Description
-#: ../isdnvboxserver.templates:34
+#: ../isdnvboxserver.templates:4001
 msgid ""
 "When a message is recorded, an email notification is sent. If that email "
 "should contain the message as an attachment, choose \"yes\" here. Note: the "
@@ -925,13 +931,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:42
+#: ../isdnvboxserver.templates:5001
 msgid "As what user should the answering machine run?"
 msgstr "Cevaplama makinesi hangi kullanıcı olarak çalışmalı?"
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:42
+#: ../isdnvboxserver.templates:5001
 msgid ""
 "vboxd runs with the privileges of a normal (non-root) user. This is "
 "typically your non-root login name. This user must be a member of the "
@@ -943,25 +949,25 @@ msgstr ""
 
 #. Type: text
 #. Description
-#: ../isdnvboxserver.templates:49
+#: ../isdnvboxserver.templates:6001
 msgid "The user ${Daemonuser} doesn't exist on the system."
 msgstr "Kullanıcı ${Daemonuser} sistemde mevcut değil."
 
 #. Type: text
 #. Description
-#: ../isdnvboxserver.templates:49
+#: ../isdnvboxserver.templates:6001
 msgid "Enter a valid user name here that's known to the system."
 msgstr "Sistemde bilinen geçerli bir kullanıcı adı giriniz."
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:54
+#: ../isdnvboxserver.templates:7001
 msgid "What username may connect to the vbox server?"
 msgstr "Hangi kullanıcı adı vbox sunucusuna bağlanabilsin?"
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:54
+#: ../isdnvboxserver.templates:7001
 msgid ""
 "To listen to messages using vbox (from the isdnvboxclient package), you need "
 "a username and password. Enter the username here. This does not have to be a "
@@ -973,82 +979,26 @@ msgstr ""
 
 #. Type: password
 #. Description
-#: ../isdnvboxserver.templates:61
+#: ../isdnvboxserver.templates:8001
 msgid "Enter the password for ${User} here."
 msgstr "${User} için parola girin."
 
 #. Type: password
 #. Description
-#: ../isdnvboxserver.templates:61
+#: ../isdnvboxserver.templates:8001
 msgid "Please don't use ':' in it! The way it is stored cannot handle this."
 msgstr ""
 "Lütfen ':' kullanmayın.  Kullanılan kayıt yöntemi bu karaktere izin vermiyor."
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:66
-msgid "spool directory renamed"
-msgstr "kuyruk dizininin ismi değiştirildi."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:66
-msgid ""
-"The spool directory `${OLDSPOOL}' has been renamed to `${NEWSPOOL}' for "
-"consistency's sake. This should have no other consequences."
-msgstr ""
-"Kuyruk dizini `${OLDSPOOL}` tutarlılık sağlamak için ${NEWSPOOL} olarak "
-"değiştirildi."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:72
-msgid "two obsolete spool directories detected"
-msgstr "iki adet eski (kullanılmayan) kuyruk dizini belirlendi"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:72
-msgid ""
-"The directories `${OLDSPOOL1}' and `${OLDSPOOL2}' (which aren't used anymore "
-"in the standard configuration), and the new spool directory `${NEWSPOOL}' "
-"all exist. The old directories will no longer be used; please manually move "
-"any messages from there to the new directory (if any), and delete the old "
-"directories."
-msgstr ""
-"(Standart yapılandırmada artık kullanılmayan) `${OLDSPOOL1}' ve `"
-"${OLDSPOOL2}' dizinleri ve yeni kuyruk dizini `${NEWSPOOL}' mevcut.  Eski "
-"dizinler artık kullanılmayacak; lütfen iletileri elle yeni dizinlere (eğer "
-"mevcutsa) taşıyın ve eski dizinleri silin."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:81
-msgid "two spool directories detected"
-msgstr "iki adet kuyruk dizini algılandı"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:81
-msgid ""
-"The old spool directory `${OLDSPOOL}' and the new spool directory `"
-"${NEWSPOOL}' both exist. The old directory will no longer be used; please "
-"manually move any messages from there to the new directory (if any), and "
-"delete the old directory."
-msgstr ""
-"Eski kuyruk dizini `${OLDSPOOL}' ve yeni kuyruk dizini `${NEWSPOOL}' "
-"mevcut.  Eski dizin artık kullanılmayacak; lütfen (eğer varsa) iletileri "
-"yeni dizine elle taşıyın ve eski dizini silin."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:89
+#: ../isdnvboxserver.templates:9001
 msgid "spool directory created"
 msgstr "kuyruk dizini yaratıldı"
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:89
+#: ../isdnvboxserver.templates:9001
 msgid ""
 "The spool directory `${NEWSPOOL}' has been created, which is necessary for "
 "proper working of vbox."
@@ -1058,29 +1008,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:95
-msgid "vbox config file moved"
-msgstr "Vbox yapılandırma dosyası taşındı"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:95
-msgid ""
-"The configuration file `${OLD}' has been moved to `${DIR}/.vbox.conf'.  See "
-"`man vbox.conf' for information on changing this file."
-msgstr ""
-"Yapılandırma dosyası `${OLD}', `${DIR}/.vbox.conf'a taşındı.  Bu dosyayı "
-"değiştirmek için `man vbox.conf' komutunu kullanın."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:101
+#: ../isdnvboxserver.templates:10001
 msgid "vbox config file created"
 msgstr "vbox yapılandırma dosyası yaratıldı"
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:101
+#: ../isdnvboxserver.templates:10001
 msgid ""
 "The configuration file `${DIR}/.vbox.conf' has been created. See `man vbox."
 "conf' for information on changing this file."
@@ -1090,13 +1024,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:107
+#: ../isdnvboxserver.templates:11001
 msgid "No home directory!"
 msgstr "Herhangi bir ev dizini yok!"
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:107
+#: ../isdnvboxserver.templates:11001
 msgid ""
 "The home directory `${DIR}' for user `${USER}' doesn't exist. This means "
 "that the file `${DIR}/.vbox.conf' cannot be created."
@@ -1106,13 +1040,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:113
+#: ../isdnvboxserver.templates:12001
 msgid "User doesn't exist!"
 msgstr "Kullanıcı mevcut değil!"
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:113
+#: ../isdnvboxserver.templates:12001
 msgid ""
 "The user `${USER}' doesn't exist on the system! Please rerun the "
 "configuration with `dpkg-reconfigure isdnvboxserver' to enter another "
@@ -1124,13 +1058,13 @@ msgstr ""
 
 #. Type: select
 #. Description
-#: ../isdnvboxserver.templates:122
+#: ../isdnvboxserver.templates:13001
 msgid "Should vboxgetty be enabled?"
 msgstr "Vboxgetty etkinleştirilmeli mi?"
 
 #. Type: select
 #. Description
-#: ../isdnvboxserver.templates:122
+#: ../isdnvboxserver.templates:13001
 msgid ""
 "vboxgetty is in /etc/inittab, but not yet enabled. Answering `yes' here will "
 "enable it once this package is fully configured. Choose `no' if you want to "
@@ -1142,13 +1076,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:129
+#: ../isdnvboxserver.templates:14001
 msgid "user `vbox' created"
 msgstr "`vbox' kullanıcısı yaratıldı"
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:129
+#: ../isdnvboxserver.templates:14001
 msgid ""
 "A user `vbox' was created, in group `dialout'. This is used as the ID that "
 "the vbox daemons run under."
@@ -1158,13 +1092,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:135
+#: ../isdnvboxserver.templates:15001
 msgid "Failed to create user `vbox'"
 msgstr "`vbox' kullanıcısı yaratılamadı"
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:135
+#: ../isdnvboxserver.templates:15001
 msgid ""
 "For optimal operation of vbox, a user `vbox' should be created, in group "
 "`dialout'. However, creating that user failed with the following error(s):"
@@ -1175,13 +1109,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:135
+#: ../isdnvboxserver.templates:15001
 msgid "${MSG}"
 msgstr "${MSG}"
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:135
+#: ../isdnvboxserver.templates:15001
 msgid ""
 "Please remedy this problem by hand, and then rerun the configuration with "
 "`dpkg-reconfigure isdnvboxserver'."
@@ -1191,13 +1125,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:146
+#: ../isdnvboxserver.templates:16001
 msgid "Device in inittab doesn't agree with devfs mode"
 msgstr "Inittab'daki aygıt, devfs kipiyle uyuşmuyor"
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:146
+#: ../isdnvboxserver.templates:16001
 msgid ""
 "The entry for vboxgetty in /etc/inittab uses a device name that does not "
 "correspond to the current devfs usage; either a devfs (/dev/isdn/ttyIxx) "
@@ -1211,15 +1145,24 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:156
+#. Type: note
+#. Description
+#: ../isdnvboxserver.templates:16001 ../isdnvboxserver.templates:17001
+msgid "You will have to fix this by hand."
+msgstr "Bunu elle düzeltmek zorundasınız."
+
+#. Type: note
+#. Description
+#: ../isdnvboxserver.templates:17001
 msgid "Device in vboxgetty.conf doesn't agree with devfs mode"
 msgstr "Vboxgetty.conf'taki donanım devfs kipiyle uyumlu değil"
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:156
+#: ../isdnvboxserver.templates:17001
+#, fuzzy
 msgid ""
-"The device entry  in /etc/isdn/vboxgetty.conf uses a device name that does "
+"The device entry in /etc/isdn/vboxgetty.conf uses a device name that does "
 "not correspond to the current devfs usage; either a devfs (/dev/isdn/ttyIxx) "
 "name is used in vboxgetty.conf while devfs is not mounted, or the non-devfs "
 "name is used while devfs is mounted."
@@ -1231,21 +1174,63 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:156
-msgid "You will have to fix this by hand."
-msgstr "Bunu elle düzeltmek zorundasınız."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:166
+#: ../isdnvboxserver.templates:18001
 msgid "isdnvboxserver is being configured."
 msgstr "Isdnvboxserver yapılandırılıyor."
 
 #. Type: note
 #. Description
-#: ../isdnvboxserver.templates:166
+#: ../isdnvboxserver.templates:18001
 msgid "Note to translators: no need to translate this, not shown to users."
 msgstr "Note to translators: no need to translate this, not shown to users."
+
+#~ msgid "spool directory renamed"
+#~ msgstr "kuyruk dizininin ismi değiştirildi."
+
+#~ msgid ""
+#~ "The spool directory `${OLDSPOOL}' has been renamed to `${NEWSPOOL}' for "
+#~ "consistency's sake. This should have no other consequences."
+#~ msgstr ""
+#~ "Kuyruk dizini `${OLDSPOOL}` tutarlılık sağlamak için ${NEWSPOOL} olarak "
+#~ "değiştirildi."
+
+#~ msgid "two obsolete spool directories detected"
+#~ msgstr "iki adet eski (kullanılmayan) kuyruk dizini belirlendi"
+
+#~ msgid ""
+#~ "The directories `${OLDSPOOL1}' and `${OLDSPOOL2}' (which aren't used "
+#~ "anymore in the standard configuration), and the new spool directory `"
+#~ "${NEWSPOOL}' all exist. The old directories will no longer be used; "
+#~ "please manually move any messages from there to the new directory (if "
+#~ "any), and delete the old directories."
+#~ msgstr ""
+#~ "(Standart yapılandırmada artık kullanılmayan) `${OLDSPOOL1}' ve `"
+#~ "${OLDSPOOL2}' dizinleri ve yeni kuyruk dizini `${NEWSPOOL}' mevcut.  Eski "
+#~ "dizinler artık kullanılmayacak; lütfen iletileri elle yeni dizinlere "
+#~ "(eğer mevcutsa) taşıyın ve eski dizinleri silin."
+
+#~ msgid "two spool directories detected"
+#~ msgstr "iki adet kuyruk dizini algılandı"
+
+#~ msgid ""
+#~ "The old spool directory `${OLDSPOOL}' and the new spool directory `"
+#~ "${NEWSPOOL}' both exist. The old directory will no longer be used; please "
+#~ "manually move any messages from there to the new directory (if any), and "
+#~ "delete the old directory."
+#~ msgstr ""
+#~ "Eski kuyruk dizini `${OLDSPOOL}' ve yeni kuyruk dizini `${NEWSPOOL}' "
+#~ "mevcut.  Eski dizin artık kullanılmayacak; lütfen (eğer varsa) iletileri "
+#~ "yeni dizine elle taşıyın ve eski dizini silin."
+
+#~ msgid "vbox config file moved"
+#~ msgstr "Vbox yapılandırma dosyası taşındı"
+
+#~ msgid ""
+#~ "The configuration file `${OLD}' has been moved to `${DIR}/.vbox.conf'.  "
+#~ "See `man vbox.conf' for information on changing this file."
+#~ msgstr ""
+#~ "Yapılandırma dosyası `${OLD}', `${DIR}/.vbox.conf'a taşındı.  Bu dosyayı "
+#~ "değiştirmek için `man vbox.conf' komutunu kullanın."
 
 #~ msgid ""
 #~ "This is the number complete with areacode, any necessary leading zeroes "
