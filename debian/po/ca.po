@@ -11,10 +11,9 @@
 #
 #    Developers do not need to manually edit POT or PO files.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: isdnutils\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-01-18 22:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"

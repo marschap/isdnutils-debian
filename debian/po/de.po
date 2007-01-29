@@ -492,7 +492,7 @@ msgid ""
 msgstr ""
 "Nach der Installation müssen Sie möglicherweise die Datei /etc/isdn/isdnlog."
 "isdnctrl0 anpassen, bevor isdnlog eingesetzt werden kann, obwohl diese Datei "
-"mit sinnvollen Voreinstellungen f r die meisten Szenarien ausgestattet ist."
+"mit sinnvollen Voreinstellungen f"
 
 #. Type: text
 #. Description
@@ -927,8 +927,8 @@ msgstr ""
 "Ein Klingeln dauert etwa 5 Sekunden. Sie können die Häufigkeit des Klingelns "
 "für bestimmte Telefonnummern manuell einstellen, z.B. können Anrufe von "
 "Ihnen bekannten Verkäufern (oder Anrufer ohne Anrufer-Kennung) nach "
-"einmaligem Klingeln vom Anrufbeantworter entgegengenommen "
-"werden. Lesen Sie »man vbox.conf« für weitere Informationen."
+"einmaligem Klingeln vom Anrufbeantworter entgegengenommen werden. Lesen Sie "
+"»man vbox.conf« für weitere Informationen."
 
 #. Type: select
 #. Description

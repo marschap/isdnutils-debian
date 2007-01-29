@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: isdnutils\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-01-18 22:42+0100\n"
-"PO-Revision-Date: 2004-10-28 23:42+0100\n"
+"PO-Revision-Date: 2007-01-22 21:29+0100\n"
 "Last-Translator: Bart Cornelis <cobaco@linux.be>\n"
 "Language-Team: debian-l10n-dutch <debian-l10n-dutch@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -44,7 +44,6 @@ msgstr ""
 #. Type: note
 #. Description
 #: ../ipppd.templates:1001
-#, fuzzy
 msgid ""
 "If it doesn't work yet, and you want to try the automatic configuration, "
 "stop all ISDN processes (use \"/etc/init.d/isdnutils stop\"), remove the "
@@ -52,12 +51,12 @@ msgid ""
 "ipppd\". After that, restart the ISDN processes: \"/etc/init.d/isdnutils "
 "start\"."
 msgstr ""
-"Wanneer dit nog niet werkt en u de automatische configuratie wilt gebruiken "
-"dient u alle ISDN-processen te stoppen (via het commando '/etc/init.d/"
-"isdnutils stop'), de bovengenoemde bestanden te verwijderen, vervolgens de "
-"configuratie opnieuw uit te voeren (via het commando 'dpkg-reconfigure "
-"ipppd'), en tenslotte de ISDN-processen te herstarten (via het commando '/"
-"etc/init.d/isdnutils start')."
+"Wanneer dit nog niet werkt, en u de automatische configuratie wilt "
+"gebruiken, dient u: alle ISDN-processen te stoppen (via het commando '/etc/"
+"init.d/isdnutils stop'), de bovengenoemde bestanden te verwijderen, "
+"vervolgens de configuratie opnieuw uit te voeren (via het commando 'dpkg-"
+"reconfigure ipppd'), en tenslotte de ISDN-processen te herstarten (via het "
+"commando '/etc/init.d/isdnutils start')."
 
 #. Type: string
 #. Description
@@ -486,14 +485,14 @@ msgstr " - netnummer       uw netnummer (indien van toepassing)"
 #. Type: text
 #. Description
 #: ../isdnlog.templates:1001
-#, fuzzy
 msgid ""
 "After installation, you may have to edit /etc/isdn/isdnlog.isdnctrl0 before "
 "isdnlog can work properly, although that file is set up with reasonable "
 "defaults for most cases."
 msgstr ""
-"Hoewel de gebruikte standaardwaarden in de meeste gevallen voldoen dient u "
-"na de installatie mogelijk /etc/isdn/isdnlog.isdnctrl0 aan te passen."
+"Hoewel de gebruikte standaardwaarden in de meeste gevallen voldoen, is het "
+"mogelijk dat u na de installatie /etc/isdn/isdnlog.isdnctrl0 moet aanpassen "
+"opdat isdnlog juist zo werken."
 
 #. Type: text
 #. Description
@@ -662,9 +661,8 @@ msgstr ""
 #. Type: note
 #. Description
 #: ../isdnutils-base.templates:1001
-#, fuzzy
 msgid "isdnutils is now split up"
-msgstr "ISDNUTILS is nu opgedeeld"
+msgstr "isdnutils is nu opgedeeld"
 
 #. Type: note
 #. Description
@@ -915,18 +913,17 @@ msgstr "Na hoe veel keer rinkelen dient vbox op te nemen?"
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:3001
-#, fuzzy
 msgid ""
 "One ring is about 5 seconds. You can fine-tune the number of rings for "
 "certain phonenumbers manually, e.g. any salesmen you know the number of (or "
 "calls without caller-ID) can be dumped into the answering machine after one "
 "ring. See `man vbox.conf' for more info."
 msgstr ""
-"Een rinkeling duurt ongeveer 5 seconden. U kunt het aantal keren rinkelen "
-"voor bepaalde telefoonnummers handmatig instellen zodat deze eerder of later "
-"opgenomen worden; (b.v. om oproepen zonder nummerweergave direkt door vbox "
-"af te laten handelen, aangezien die meestal verkopers zijn). Zie `man vbox."
-"conf' voor meer informatie."
+"Een maal overgaan duurt ongeveer 5 seconden. U kunt het aantal keren dat de "
+"telefoon overgaat voor bepaalde telefoonnummers handmatig instellen zodat "
+"deze eerder of later opgenomen worden; (b.v. om oproepen zonder "
+"nummerweergave, of nummers van verkopers waarvan u het nummer weet direct "
+"door vbox af te laten handelen). Zie `man vbox.conf' voor meer informatie."
 
 #. Type: select
 #. Description
@@ -1179,18 +1176,16 @@ msgstr "Apparaat in vboxgetty.conf komt niet overeen met de devfs modus"
 #. Type: note
 #. Description
 #: ../isdnvboxserver.templates:17001
-#, fuzzy
 msgid ""
 "The device entry in /etc/isdn/vboxgetty.conf uses a device name that does "
 "not correspond to the current devfs usage; either a devfs (/dev/isdn/ttyIxx) "
 "name is used in vboxgetty.conf while devfs is not mounted, or the non-devfs "
 "name is used while devfs is mounted."
 msgstr ""
-"De ingang voor vboxgetty in /etc/isdn/vboxgetty.conf maakt gebruik van een "
-"apparaatnaam die niet overeenkomt met huidig devfs gebruik; of er wordt een "
-"devfs (/dev/isdn/ttylxx) naam gebruikt in inittab zonder dat devfs "
-"aangekoppeld is, of er wordt een niet-devfs naam gebruikt terwijl devfs "
-"aangekoppeld is. "
+"De ingang in /etc/isdn/vboxgetty.conf maakt gebruik van een apparaatnaam die "
+"niet overeenkomt met huidig devfs-gebruik; er wordt of een devfs-naam (/dev/"
+"isdn/ttylxx) gebruikt in inittab terwijl devfs niet aangekoppeld is, of er "
+"wordt een niet-devfs-naam gebruikt terwijl devfs wel aangekoppeld is. "
 
 #. Type: note
 #. Description

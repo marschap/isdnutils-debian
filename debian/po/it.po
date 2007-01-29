@@ -1,14 +1,14 @@
 # Italian (it) translation of isdnutils po-debconf
-# Copyright (C) 2006 Software in the Public Interest
+# Copyright (C) 2007 Software in the Public Interest
 # This file is distributed under the same license as the isdnutils package.
-# Luca Monducci <luca.mo@tiscali.it>, 2004-2006.
+# Luca Monducci <luca.mo@tiscali.it>, 2004-2007.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: isdnutils 1:3.8.2005-12-06-4 debconf templates\n"
+"Project-Id-Version: isdnutils 1:3.9.20060704-2.5 italian debconf templates\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-01-18 22:42+0100\n"
-"PO-Revision-Date: 2004-12-18 12:34+0100\n"
+"PO-Revision-Date: 2007-01-29 09:02+0100\n"
 "Last-Translator: Luca Monducci <luca.mo@tiscali.it>\n"
 "Language-Team: Italian <debian-l10n-italian@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -36,7 +36,6 @@ msgstr ""
 #. Type: note
 #. Description
 #: ../ipppd.templates:1001
-#, fuzzy
 msgid ""
 "If it doesn't work yet, and you want to try the automatic configuration, "
 "stop all ISDN processes (use \"/etc/init.d/isdnutils stop\"), remove the "
@@ -471,16 +470,15 @@ msgstr " - codice del distretto     codice del proprio distretto (se usato)"
 #. Type: text
 #. Description
 #: ../isdnlog.templates:1001
-#, fuzzy
 msgid ""
 "After installation, you may have to edit /etc/isdn/isdnlog.isdnctrl0 before "
 "isdnlog can work properly, although that file is set up with reasonable "
 "defaults for most cases."
 msgstr ""
 "Dopo l'installazione potrebbe essere necessario modificare /etc/isdn/isdnlog."
-"isdnctrl0 per far funzionare correttamente isdnlog nonostante che il file "
-"sia impostato con dei parametri che dovrebbero essere adatti per la maggior "
-"parte dei casi."
+"isdnctrl0 per far funzionare correttamente isdnlog, nonostante che il file "
+"sia impostato con valori predefiniti che dovrebbero essere adatti per la "
+"maggior parte dei casi."
 
 #. Type: text
 #. Description
@@ -650,9 +648,8 @@ msgstr ""
 #. Type: note
 #. Description
 #: ../isdnutils-base.templates:1001
-#, fuzzy
 msgid "isdnutils is now split up"
-msgstr "Adesso ISDNUTILS è stato suddiviso"
+msgstr "isndutils è stato diviso"
 
 #. Type: note
 #. Description
@@ -901,7 +898,6 @@ msgstr "Dopo quanti squilli vbox deve rispondere alla chiamata?"
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:3001
-#, fuzzy
 msgid ""
 "One ring is about 5 seconds. You can fine-tune the number of rings for "
 "certain phonenumbers manually, e.g. any salesmen you know the number of (or "
@@ -909,8 +905,8 @@ msgid ""
 "ring. See `man vbox.conf' for more info."
 msgstr ""
 "Uno squillo dura circa 5 secondi. Si può aggiustare manualmente il numero di "
-"squilli per determinati numeri di telefono (p.e. tutti gli agenti di vendita "
-"dei quali si conosce il numero o le chiamate senza caller-ID possono essere "
+"squilli per determinati numeri di telefono p.e. tutti i commerciali dei "
+"quali si conosce il numero (o le chiamate senza caller-ID) possono essere "
 "inviate al risponditore dopo un solo squillo). Vedere «man vbox.conf» per "
 "ulteriori informazioni."
 
@@ -1162,17 +1158,16 @@ msgstr "Il device in vboxgetty.conf non corrisponde con la modalità devfs"
 #. Type: note
 #. Description
 #: ../isdnvboxserver.templates:17001
-#, fuzzy
 msgid ""
 "The device entry in /etc/isdn/vboxgetty.conf uses a device name that does "
 "not correspond to the current devfs usage; either a devfs (/dev/isdn/ttyIxx) "
 "name is used in vboxgetty.conf while devfs is not mounted, or the non-devfs "
 "name is used while devfs is mounted."
 msgstr ""
-"Il valore per device in /etc/isdn/vboxgetty.conf usa un device che non "
-"corrisponde con l'attuale modalità devfs; un nome devfs (/dev/isdn/ttyIxx) è "
-"usato in vboxgetty.conf ma devfs non è stato montato oppure è usato un nome "
-"non-devfs ma è montato devfs."
+"Il valore per device in /etc/isdn/vboxgetty.conf usa un nome di device che "
+"non corrisponde con l'attuale uso di devfs; un nome devfs (/dev/isdn/"
+"ttyIxx) è usato in vboxgetty.conf ma devfs non è stato montato oppure è "
+"usato un nome non-devfs ma è montato devfs."
 
 #. Type: note
 #. Description
@@ -1185,54 +1180,3 @@ msgstr "Configurazione di isdnvboxserver in corso."
 #: ../isdnvboxserver.templates:18001
 msgid "Note to translators: no need to translate this, not shown to users."
 msgstr "Note to translators: no need to translate this, not shown to users."
-
-#~ msgid "spool directory renamed"
-#~ msgstr "rinominata la directory di spool"
-
-#~ msgid ""
-#~ "The spool directory `${OLDSPOOL}' has been renamed to `${NEWSPOOL}' for "
-#~ "consistency's sake. This should have no other consequences."
-#~ msgstr ""
-#~ "La directory di spool «${OLDSPOOL}» è stata rinominata in «${NEWSPOOL}» "
-#~ "per motivi di consistenza. Questo non dovrebbe avere nessuna conseguenza."
-
-#~ msgid "two obsolete spool directories detected"
-#~ msgstr "rilevate due vecchie directory di spool"
-
-#~ msgid ""
-#~ "The directories `${OLDSPOOL1}' and `${OLDSPOOL2}' (which aren't used "
-#~ "anymore in the standard configuration), and the new spool directory `"
-#~ "${NEWSPOOL}' all exist. The old directories will no longer be used; "
-#~ "please manually move any messages from there to the new directory (if "
-#~ "any), and delete the old directories."
-#~ msgstr ""
-#~ "Sono presenti sia le directory «${OLDSPOOL1}» e «${OLDSPOOL2}» (non più "
-#~ "usate nella configurazione standard) che la nuova directory di spool "
-#~ "«${NEWSPOOL}». Le vecchie directory non sono più usate, spostare "
-#~ "manualmente tutti i messaggi (se presenti) dalle vecchie alla nuova "
-#~ "directory e poi rimuovere le vecchie directory."
-
-#~ msgid "two spool directories detected"
-#~ msgstr "rilevate due directory di spool"
-
-#~ msgid ""
-#~ "The old spool directory `${OLDSPOOL}' and the new spool directory `"
-#~ "${NEWSPOOL}' both exist. The old directory will no longer be used; please "
-#~ "manually move any messages from there to the new directory (if any), and "
-#~ "delete the old directory."
-#~ msgstr ""
-#~ "Esistono sia la vecchia directory di spool «${OLDSPOOL}» che la nuova "
-#~ "directory di spool «${NEWSPOOL}». La vecchia directory non è più usata, "
-#~ "spostare manualmente tutti i messaggi (se presenti) dalla vecchia alla "
-#~ "nuova directory e rimuovere la vecchia directory."
-
-#~ msgid "vbox config file moved"
-#~ msgstr "spostato il file di configurazione di vbox"
-
-#~ msgid ""
-#~ "The configuration file `${OLD}' has been moved to `${DIR}/.vbox.conf'.  "
-#~ "See `man vbox.conf' for information on changing this file."
-#~ msgstr ""
-#~ "Il file di configurazione «${OLD}» è stato spostato in «${DIR}/.vbox."
-#~ "conf», vedere «man vbox.conf» per le informazioni su come modificare "
-#~ "questo file."

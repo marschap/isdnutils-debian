@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: isdnutils 1:3.6.2005-01-03-5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-01-18 22:42+0100\n"
-"PO-Revision-Date: 2005-07-09 17:37+0200\n"
+"PO-Revision-Date: 2007-01-28 13:03+0100\n"
 "Last-Translator: Martin Sin <martin.sin@seznam.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -43,19 +43,13 @@ msgstr ""
 #. Type: note
 #. Description
 #: ../ipppd.templates:1001
-#, fuzzy
 msgid ""
 "If it doesn't work yet, and you want to try the automatic configuration, "
 "stop all ISDN processes (use \"/etc/init.d/isdnutils stop\"), remove the "
 "files mentioned above, and rerun the configuration with \"dpkg-reconfigure "
 "ipppd\". After that, restart the ISDN processes: \"/etc/init.d/isdnutils "
 "start\"."
-msgstr ""
-"Pokud to dosud nefungovalo a vy si přejete vyzkoušet automatickou "
-"konfiguraci, pak zastavte všechny procesy ISDN (použijte \"/etc/init.d/"
-"isdnutils  stop\"), odstraňte výše uvedené soubory a znovu spusťte "
-"konfiguraci pomocí \"dpkg-reconfigure ipppd\". Poté restartujte procesy "
-"ISDN: \"/etc/init.d/isdnutils start \"."
+msgstr "ještě"
 
 #. Type: string
 #. Description
@@ -478,7 +472,6 @@ msgstr " - kód oblasti      je vaším místním kódem oblasti (je-li použite
 #. Type: text
 #. Description
 #: ../isdnlog.templates:1001
-#, fuzzy
 msgid ""
 "After installation, you may have to edit /etc/isdn/isdnlog.isdnctrl0 before "
 "isdnlog can work properly, although that file is set up with reasonable "
@@ -654,9 +647,8 @@ msgstr ""
 #. Type: note
 #. Description
 #: ../isdnutils-base.templates:1001
-#, fuzzy
 msgid "isdnutils is now split up"
-msgstr "ISDNUTILS jsou nyní rozděleny"
+msgstr "isdnutils jsou nyní rozděleny"
 
 #. Type: note
 #. Description
@@ -904,14 +896,13 @@ msgstr "Po kolika zazvověních má vbox zvednout linku?"
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:3001
-#, fuzzy
 msgid ""
 "One ring is about 5 seconds. You can fine-tune the number of rings for "
 "certain phonenumbers manually, e.g. any salesmen you know the number of (or "
 "calls without caller-ID) can be dumped into the answering machine after one "
 "ring. See `man vbox.conf' for more info."
 msgstr ""
-"Jedno zvonění je okolo 5-ti sekund. Počet zvonění můžete pro určitá "
+"Jedno zvonění je okolo 5 sekund. Počet zvonění můžete pro určitá "
 "telefonní čísla  vyladit ručně. Např. obchodníci, jejichž číslo znáte, (nebo "
 "hovory bez identifikace), mohou být po jednom zvonění přepojeny na záznamník."
 "Pro více informací se podívejte na `man vbox.conf'."
@@ -1166,7 +1157,6 @@ msgstr "Zařízení ve vboxgetty.conf nesouhlasí s módem devfs"
 #. Type: note
 #. Description
 #: ../isdnvboxserver.templates:17001
-#, fuzzy
 msgid ""
 "The device entry in /etc/isdn/vboxgetty.conf uses a device name that does "
 "not correspond to the current devfs usage; either a devfs (/dev/isdn/ttyIxx) "
@@ -1175,8 +1165,8 @@ msgid ""
 msgstr ""
 "Údaj o zařízení v /etc/isdn/vboxgetty.conf používá jméno zařízení, které "
 "neodpovídá současnému nastavení devfs; buď bylo jméno devfs (/dev/isdn/"
-"ttyIxx) použito ve vboxgetty.conf ještě před připojením devfs, nebo je jméno "
-"použito něčím jiným, ještě před připojením devfs."
+"ttyIxx) použito ve vboxgetty.conf ještě před připojením devfs, nebo je toto "
+"jméno použito ještě před připojením devfs."
 
 #. Type: note
 #. Description

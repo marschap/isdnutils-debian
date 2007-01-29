@@ -1,3 +1,22 @@
+isdnutils (1:3.9.20060704-2.5) unstable; urgency=low
+
+  * Non-maintainer upload to fix remaining l10n issues.
+  * Debconf translations:
+    - Czech updated. Closes: #408761
+    - Dutch updated. Closes: #408074
+    - Italian updated 
+    - Turkish updated 
+
+ -- Christian Perrier <bubulle@debian.org>  Mon, 29 Jan 2007 10:06:33 +0100
+
+isdnutils (1:3.9.20060704-2.4) unstable; urgency=low
+
+  * Non-maintainer upload to fix a few more l10n issues.
+  * Debconf translations:
+    - Dutch updated. Closes: #408074
+
+ -- Christian Perrier <bubulle@debian.org>  Sun, 28 Jan 2007 11:55:13 +0100
+
 isdnutils (1:3.9.20060704-2.3) unstable; urgency=low
 
   * Non-maintainer upload to fix longstanding debconf and l10n issues
