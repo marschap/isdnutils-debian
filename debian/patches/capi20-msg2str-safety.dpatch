@@ -1,0 +1,58 @@
+#! /bin/sh -e
+
+# DP: Prevent buffer overflow in capi20_{cmsg,message}2str.
+# DP: Add warning that they are not thread-safe.
+
+dir=
+if [ $# -eq 3 -a "$2" = '-d' ]; then
+    pdir="-d $3"
+    dir="$3/"
+elif [ $# -ne 1 ]; then
+    echo >&2 "usage: `basename $0`: -patch|-unpatch [-d <srcdir>]"
+    exit 1
+fi
+case "$1" in
+    -patch)
+        patch $pdir -f --no-backup-if-mismatch -p0 < $0
+        ;;
+    -unpatch)
+        patch $pdir -f --no-backup-if-mismatch -R -p0 < $0
+        ;;
+    *)
+	echo >&2 "usage: `basename $0`: -patch|-unpatch [-d <srcdir>]"
+        exit 1
+esac
+exit 0
+
+--- capi20/capiutils.h~	2005-03-08 07:26:47.000000000 +0000
++++ capi20/capiutils.h	2007-02-17 20:22:48.000000000 +0000
+@@ -308,6 +308,10 @@
+ #define capi20_cmd2str	capi_cmd2str
+ char *capi_cmd2str(_cbyte cmd, _cbyte subcmd);
+ 
++/*
++ * WARNING: The following two functions use a single static buffer and
++ * are not thread-safe.
++ */
+ #define capi20_cmsg2str	capi_cmsg2str
+ char *capi_cmsg2str(_cmsg * cmsg);
+ 
+--- capi20/convert.c~	2005-05-09 09:23:01.000000000 +0100
++++ capi20/convert.c	2007-02-17 20:34:17.000000000 +0000
+@@ -894,10 +894,14 @@
+ static void bufprint(char *fmt,...)
+ {
+ 	va_list f;
++	size_t space = buf + sizeof(buf) - p, len;
+ 	va_start(f, fmt);
+-	vsprintf(p, fmt, f);
++	len = vsnprintf(p, space, fmt, f);
+ 	va_end(f);
+-	p += strlen(p);
++	if (len < space - 1)
++		p += len;
++	else
++		p += space - 1;
+ }
+ 
+ static void printstructlen(_cbyte * m, unsigned len)

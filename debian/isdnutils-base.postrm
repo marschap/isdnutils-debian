@@ -3,16 +3,6 @@
 
 set -e
 
-. /usr/share/debconf/confmodule  # despite the #DEBHELPER thing below,
-                                 # this needs to be done here anyway.
-                                 # <frustration>
-                                 # Joey Hess sucks, at the least when it comes
-                                 # to giving assistance in using his tools, as
-                                 # well as not being able to document his
-                                 # stuff in any useful way for non-telepathic
-                                 # people.
-                                 # </frustration>
-
 case "$1" in
        purge)
 	 rmdir /etc/isdn 2>/dev/null || true

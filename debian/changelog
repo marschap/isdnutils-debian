@@ -1,3 +1,18 @@
+isdnutils (1:3.9.20060704-3) unstable; urgency=high
+
+  * Fix critical bug, potential buffer overflow in capi_cmsg2str, patch from
+    Ben Hutchings.  closes:#408530
+  * Acknowledge NMUs. closes:#392690
+  * Galician debconf translated added. closes:#412516
+  * Vietnamese updated. closes:#409039
+  * Use invoke-rc.d instead of directly calling the init script in
+    isdnutils-base.prerm. closes:#396301
+  * Remove the explicit sourcing of /usr/share/debconf/confmodule in
+    isdnutils-base.postrm, as now the debhelper thing works properly.
+    closes:#388610
+
+ -- Paul Slootman <paul@debian.org>  Tue, 27 Feb 2007 16:48:24 +0100
+
 isdnutils (1:3.9.20060704-2.5) unstable; urgency=low
 
   * Non-maintainer upload to fix remaining l10n issues.

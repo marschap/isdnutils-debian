@@ -329,6 +329,8 @@ endif
 #	dh_makeshlibs
 #	dh_perl
 	dh_shlibdeps -L libcapi20-3 -l debian/libcapi20-3/usr/lib
+	# there's already a versioned depends in the control file for libcapi20-3
+	perl -i -pe 's/, libcapi20-3//' debian/capiutils.substvars
 	for i in debian/*/DEBIAN/conffiles; do \
 	  [ -f $$i ] || continue; \
 	  sort -u $$i > $$i.sorted; mv $$i.sorted $$i; \
@@ -388,6 +390,7 @@ debian_patches = \
 	ppp-2.4.4b1 \
 	vbox-little-endian \
 	toplevel-make \
+	capi20-msg2str-safety \
 
 ifeq ($(distribution),Ubuntu)
   debian_patches += no-imake
