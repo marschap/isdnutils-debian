@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: isdnutils 1:3.9.20060704-2.5 italian debconf templates\n"
-"Report-Msgid-Bugs-To: ubuntu-devel-discuss@lists.ubuntu.com\n"
-"POT-Creation-Date: 2007-03-07 19:38+0100\n"
+"Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
+"POT-Creation-Date: 2008-01-12 10:05+0000\n"
 "PO-Revision-Date: 2007-01-29 09:02+0100\n"
 "Last-Translator: Luca Monducci <luca.mo@tiscali.it>\n"
 "Language-Team: Italian <debian-l10n-italian@lists.debian.org>\n"
@@ -105,8 +105,8 @@ msgid ""
 "You can only give names starting with \"ippp\" followed by a number between "
 "0 and 63."
 msgstr ""
-"Si possono inserire solo nomi che iniziano con «ippp» seguito da un numero "
-"da 0 a 63."
+"Si possono inserire solo nomi che iniziano con «ippp» seguito da un numero da "
+"0 a 63."
 
 #. Type: string
 #. Default
@@ -709,10 +709,10 @@ msgid ""
 msgstr ""
 "Se si è usato dselect, selezionare (+) ipppd e gli altri pacchetti di cui si "
 "ha bisogno (p.e. isdnlog, isdnvbox, isdnutils-xtools), oltre a quelli che "
-"sono stati selezionati automaticamente. Se si è usato apt-get, usare «apt-"
-"get install isdnutils ipppd isdnlog ...», potrebbe essere necessario usare "
-"prima «apt-get -f install» per configurare qualsiasi altro pacchetto che sia "
-"già stato estratto ma non ancora configurato."
+"sono stati selezionati automaticamente. Se si è usato apt-get, usare «apt-get "
+"install isdnutils ipppd isdnlog ...», potrebbe essere necessario usare prima "
+"«apt-get -f install» per configurare qualsiasi altro pacchetto che sia già "
+"stato estratto ma non ancora configurato."
 
 #. Type: select
 #. Choices
@@ -925,8 +925,8 @@ msgid ""
 "attachment can be large!"
 msgstr ""
 "Una volta registrato un messaggio viene inviata una email di notifica. Se "
-"questa email deve avere come allegato il messaggio scegliere «sì». Notare "
-"che l'allegato può essere molto grande."
+"questa email deve avere come allegato il messaggio scegliere «sì». Notare che "
+"l'allegato può essere molto grande."
 
 #. Type: string
 #. Description
@@ -1001,8 +1001,8 @@ msgid ""
 "The spool directory `${NEWSPOOL}' has been created, which is necessary for "
 "proper working of vbox."
 msgstr ""
-"La directory di spool «${NEWSPOOL}», necessaria per il corretto "
-"funzionamento di vbox, è stata creata."
+"La directory di spool «${NEWSPOOL}», necessaria per il corretto funzionamento "
+"di vbox, è stata creata."
 
 #. Type: note
 #. Description
@@ -1017,8 +1017,8 @@ msgid ""
 "The configuration file `${DIR}/.vbox.conf' has been created. See `man vbox."
 "conf' for information on changing this file."
 msgstr ""
-"Il file di configurazione «${DIR}/.vbox.conf» è stato creato, vedere «man "
-"vbox.conf» per le informazioni su come modificare questo file."
+"Il file di configurazione «${DIR}/.vbox.conf» è stato creato, vedere «man vbox."
+"conf» per le informazioni su come modificare questo file."
 
 #. Type: note
 #. Description
@@ -1033,8 +1033,8 @@ msgid ""
 "The home directory `${DIR}' for user `${USER}' doesn't exist. This means "
 "that the file `${DIR}/.vbox.conf' cannot be created."
 msgstr ""
-"La home directory «${DIR}» per l'utente «${USER}» non esiste, questo "
-"comporta che il file «${DIR}/.vbox.cond» non possa essere creato."
+"La home directory «${DIR}» per l'utente «${USER}» non esiste, questo comporta "
+"che il file «${DIR}/.vbox.cond» non possa essere creato."
 
 #. Type: note
 #. Description
@@ -1118,8 +1118,8 @@ msgid ""
 "Please remedy this problem by hand, and then rerun the configuration with "
 "`dpkg-reconfigure isdnvboxserver'."
 msgstr ""
-"Correggere manualmente questo problema e ripetere la configurazione con "
-"«dpkg-reconfigure isdnvboxserver»."
+"Correggere manualmente questo problema e ripetere la configurazione con «dpkg-"
+"reconfigure isdnvboxserver»."
 
 #. Type: note
 #. Description

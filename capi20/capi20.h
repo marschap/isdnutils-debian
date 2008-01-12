@@ -20,6 +20,7 @@
 #ifndef __CAPI20_H__
 #define __CAPI20_H__
 
+#include <stddef.h>
 #include <sys/time.h>
 
 #ifdef __cplusplus

@@ -1,12 +1,12 @@
 # Vietnamese Translation for isdnutils.
 # Copyright © 2007 Free Software Foundation, Inc.
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2007.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: isdnutils 1:3.9.20060704-2.5\n"
-"Report-Msgid-Bugs-To: ubuntu-devel-discuss@lists.ubuntu.com\n"
-"POT-Creation-Date: 2007-03-07 19:38+0100\n"
+"Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
+"POT-Creation-Date: 2008-01-12 10:05+0000\n"
 "PO-Revision-Date: 2007-01-30 22:13+1030\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
@@ -29,9 +29,9 @@ msgid ""
 "ipppd configuration phase won't touch anything there, as it looks like it's "
 "already been configured."
 msgstr ""
-"Hai tập tin « device.${IPPP0} » và « ipppd.${IPPP0} » đã có. Vì vậy, giai "
-"đoạn cấu hình ipppd này sẽ không sửa đổi gì trong hai tập tin này, có vẻ là "
-"nó đã được cấu hình."
+"Hai tập tin « device.${IPPP0} » và « ipppd.${IPPP0} » đã có. Vì vậy, giai đoạn "
+"cấu hình ipppd này sẽ không sửa đổi gì trong hai tập tin này, có vẻ là nó đã "
+"được cấu hình."
 
 #. Type: note
 #. Description
@@ -46,8 +46,8 @@ msgid ""
 msgstr ""
 "Nếu nó chưa hoạt động được, và bạn muốn thử tự động cấu hình, hãy ngừng mọi "
 "tiến trình (bằng lệnh « etc/init.d/isdnutils stop »), gỡ bỏ hai tập tin nói "
-"trên, và chạy lại việc cấu hình bằng lệnh « dpkg-reconfigure ipppd ». Sau "
-"đó, hãy khởi chạy lại những tiến trình ISDN: « /etc/init.d/isdnutils start »."
+"trên, và chạy lại việc cấu hình bằng lệnh « dpkg-reconfigure ipppd ». Sau đó, "
+"hãy khởi chạy lại những tiến trình ISDN: « /etc/init.d/isdnutils start »."
 
 #. Type: string
 #. Description
@@ -155,8 +155,7 @@ msgid ""
 "Enter the word \"manual\" or leave the field blank if you want to configure "
 "the connection manually."
 msgstr ""
-"Muốn tự cấu hình sự kết nối thì hãy nhập « bằng tay » hoặc bỏ trường này "
-"rỗng."
+"Muốn tự cấu hình sự kết nối thì hãy nhập « bằng tay » hoặc bỏ trường này rỗng."
 
 #. Type: string
 #. Description
@@ -243,8 +242,8 @@ msgid ""
 "inserted."
 msgstr ""
 "Bạn đã nhập một tên người dùng để đăng nhập vào ISP mà tồn tại trong tập tin "
-"« /etc/ppp/pap-secrets ». Không có sao, mục nhập tồn tại sẽ bị ghi chú đè, "
-"và mục nhập mới chứa thông tin bạn mới nhập sẽ được chèn."
+"« /etc/ppp/pap-secrets ». Không có sao, mục nhập tồn tại sẽ bị ghi chú đè, và "
+"mục nhập mới chứa thông tin bạn mới nhập sẽ được chèn."
 
 #. Type: note
 #. Description
@@ -302,8 +301,8 @@ msgid ""
 msgstr ""
 "Tập tin « /etc/ppp/ip-up.d/00-isdnutils » bắt nguồn từ gói isdnutils cũ vẫn "
 "còn tồn tại. Nếu bạn đã thay đổi tập tin đó vào lúc nào, bạn có thể cần phải "
-"làm lại các thay đổi đó trong tập tin « 00-ipppd » (tên mới). Sau đó, hãy "
-"xoá tập tin « 00-isdnutils » cũ."
+"làm lại các thay đổi đó trong tập tin « 00-ipppd » (tên mới). Sau đó, hãy xoá "
+"tập tin « 00-isdnutils » cũ."
 
 #. Type: note
 #. Description
@@ -330,8 +329,8 @@ msgid ""
 msgstr ""
 "Tập tin « /etc/ppp/ip-up.d/99-isdnutils » bắt nguồn từ gói isdnutils cũ vẫn "
 "còn tồn tại. Nếu bạn đã thay đổi tập tin đó vào lúc nào, bạn có thể cần phải "
-"làm lại các thay đổi đó trong tập tin « 99-ipppd » (tên mới). Sau đó, hãy "
-"xoá tập tin « 99-isdnutils » cũ."
+"làm lại các thay đổi đó trong tập tin « 99-ipppd » (tên mới). Sau đó, hãy xoá "
+"tập tin « 99-isdnutils » cũ."
 
 #. Type: note
 #. Description
@@ -349,11 +348,11 @@ msgid ""
 "files (which are the new names). After that, please delete the old 00-"
 "isdnutils and 99-isdnutils files."
 msgstr ""
-"Tập tin « /etc/ppp/ip-up.d/00-isdnutils » và « /etc/ppp/ip-down.d/99-"
-"isdnutils » bắt nguồn từ gói isdnutils cũ vẫn còn tồn tại. Nếu bạn đã thay "
-"đổi tập tin đó vào lúc nào, bạn có thể cần phải làm lại các thay đổi đó "
-"trong tập tin « 00-ipppd » và « 99-ippd » (các tên mới). Sau đó, hãy xoá tập "
-"tin « 00-isdnutils » và « 99-isdnutils » cũ."
+"Tập tin « /etc/ppp/ip-up.d/00-isdnutils » và « /etc/ppp/ip-down.d/99-isdnutils "
+"» bắt nguồn từ gói isdnutils cũ vẫn còn tồn tại. Nếu bạn đã thay đổi tập tin "
+"đó vào lúc nào, bạn có thể cần phải làm lại các thay đổi đó trong tập tin « "
+"00-ipppd » và « 99-ippd » (các tên mới). Sau đó, hãy xoá tập tin « 00-"
+"isdnutils » và « 99-isdnutils » cũ."
 
 #. Type: note
 #. Description
@@ -717,9 +716,9 @@ msgid ""
 "isdnutils ipppd isdnlog ...'; you may need to run 'apt-get -f install' first "
 "to configure any other packages that were unpacked but not yet configured."
 msgstr ""
-"Bạn đã sử dụng • dselect • thì hãy chọn (đánh dấu cộng +) gói « ipppd» và "
-"các phần khác cần thiết (v.d. isdnlog, isdnvbox, isdnutils-xtools), dù các "
-"gói đó nên tự động được chọn .\n"
+"Bạn đã sử dụng • dselect • thì hãy chọn (đánh dấu cộng +) gói « ipppd» và các "
+"phần khác cần thiết (v.d. isdnlog, isdnvbox, isdnutils-xtools), dù các gói "
+"đó nên tự động được chọn .\n"
 "\n"
 "Còn nếu bạn đã sử dụng • apt-get •, hãy chạy lệnh:\n"
 "« apt-get install isdnutils ipppd isdnlog ... » (install: cài đặt)\n"
@@ -751,8 +750,8 @@ msgstr ""
 "Một số thẻ ISDN không thể hoạt động cho đúng cho nếu bạn chưa tải phần vững "
 "(firmware) về hệ thống. Một thí dụ quan trọng là thể kiểu Sedlbauer SpeedFax"
 "+ PCI hay Siemens I-Surf, mà cần ISAR.BIN được nạp. (Lúc này chưa biết thí "
-"dụ khác nào.) Hãy chọn « ISAR.BIN » nếu cần thiết. Nếu bạn không hiểu câu "
-"hỏi này, hãy chọn « không có ». "
+"dụ khác nào.) Hãy chọn « ISAR.BIN » nếu cần thiết. Nếu bạn không hiểu câu hỏi "
+"này, hãy chọn « không có ». "
 
 #. Type: string
 #. Description
@@ -771,8 +770,7 @@ msgid ""
 msgstr ""
 "Bạn có nhiều thẻ ISDN thì hãy nhập số hiệu của các thẻ cần nạp cùng với phần "
 "vững, bắt đầu từ số 1, định giới bằng dấu phẩy. Chỉ có một thẻ thì trả lời "
-"là « 1 ». Có hai thẻ đều cần phải được nạp cùng với phần vững thì nhập « 1,2 "
-"»."
+"là « 1 ». Có hai thẻ đều cần phải được nạp cùng với phần vững thì nhập « 1,2 »."
 
 #. Type: note
 #. Description
@@ -824,8 +822,8 @@ msgstr ""
 #: ../isdnutils-base.templates:5001
 msgid "/etc/cron.weekly/isdnutils renamed to isdnvboxserver"
 msgstr ""
-"Tập tin « /etc/cron.weekly/isdnutils » đã được thay tên thành « "
-"isdnvboxserver »"
+"Tập tin « /etc/cron.weekly/isdnutils » đã được thay tên thành « isdnvboxserver "
+"»"
 
 #. Type: note
 #. Description
@@ -877,10 +875,10 @@ msgid ""
 "configuration from the time when this was still part of isdnutils (unless "
 "you want to create a new configuration)."
 msgstr ""
-"Hãy nhập « quit » (thoát), hay bỏ rỗng, nếu bạn muốn tự cấu hình giá trị "
-"này, không phải cấu hình thông qua debconf. Cũng hãy nhập « quit » nếu bạn "
-"có một cấu hình vbox hoạt động tồn tại bắt nguồn từ bản cài đặt isdnutils "
-"trước (trừ bạn muốn tạo cấu hình mới)."
+"Hãy nhập « quit » (thoát), hay bỏ rỗng, nếu bạn muốn tự cấu hình giá trị này, "
+"không phải cấu hình thông qua debconf. Cũng hãy nhập « quit » nếu bạn có một "
+"cấu hình vbox hoạt động tồn tại bắt nguồn từ bản cài đặt isdnutils trước "
+"(trừ bạn muốn tạo cấu hình mới)."
 
 #. Type: note
 #. Description
@@ -1034,8 +1032,8 @@ msgid ""
 "The configuration file `${DIR}/.vbox.conf' has been created. See `man vbox."
 "conf' for information on changing this file."
 msgstr ""
-"Tập tin cấu hình « ${DIR}/.vbox.conf » đã được tạo. Xem trang hướng dẫn « "
-"man vbox.conf » để tìm thông tin về phương pháp sửa đổi tập tin này."
+"Tập tin cấu hình « ${DIR}/.vbox.conf » đã được tạo. Xem trang hướng dẫn « man "
+"vbox.conf » để tìm thông tin về phương pháp sửa đổi tập tin này."
 
 #. Type: note
 #. Description
@@ -1085,9 +1083,9 @@ msgid ""
 "enable it once this package is fully configured. Choose `no' if you want to "
 "tweak it manually."
 msgstr ""
-"vboxgetty nằm trong « /etc/inittab » nhưng chưa hoạt động. Trả lời « có » "
-"tại đây sẽ hiệu lực nó một khi gói này đã được cấu hình đầy đủ. Còn chọn « "
-"không » nếu bạn muốn tự điều chỉnh nó."
+"vboxgetty nằm trong « /etc/inittab » nhưng chưa hoạt động. Trả lời « có » tại "
+"đây sẽ hiệu lực nó một khi gói này đã được cấu hình đầy đủ. Còn chọn « không "
+"» nếu bạn muốn tự điều chỉnh nó."
 
 #. Type: note
 #. Description
@@ -1153,10 +1151,10 @@ msgid ""
 "name is used in inittab while devfs is not mounted, or the non-devfs name is "
 "used while devfs is mounted."
 msgstr ""
-"Mục nhập cho « vboxgetty » trong « /etc/inittab » dùng một tên thiết bị "
-"không tương ứng với cách sử dụng « devfs » hiện thời: hoặc một tên « devfs "
-"» (/dev/isdn/ttyIxx) được dùng trong « inittab » khi chưa gắn kết « devfs », "
-"hoặc tên khác « devfs » được dùng khi « devfs » được gắn kết."
+"Mục nhập cho « vboxgetty » trong « /etc/inittab » dùng một tên thiết bị không "
+"tương ứng với cách sử dụng « devfs » hiện thời: hoặc một tên « devfs » (/dev/"
+"isdn/ttyIxx) được dùng trong « inittab » khi chưa gắn kết « devfs », hoặc tên "
+"khác « devfs » được dùng khi « devfs » được gắn kết."
 
 #. Type: note
 #. Description
@@ -1183,9 +1181,9 @@ msgid ""
 "name is used while devfs is mounted."
 msgstr ""
 "Mục nhập thiết bị trong « /etc/isdn/vboxgetty.conf » dùng một tên thiết bị "
-"không tương ứng với cách sử dụng « devfs » hiện thời: hoặc có một tên « "
-"devfs » (/dev/isdn/ttyIxx) được dùng trong « vboxgetty.conf » khi chưa gắn "
-"kết « devfs », hoặc tên khác « devfs » được dùng khi « devfs » được gắn kết."
+"không tương ứng với cách sử dụng « devfs » hiện thời: hoặc có một tên « devfs "
+"» (/dev/isdn/ttyIxx) được dùng trong « vboxgetty.conf » khi chưa gắn kết « "
+"devfs », hoặc tên khác « devfs » được dùng khi « devfs » được gắn kết."
 
 #. Type: note
 #. Description
@@ -1219,10 +1217,10 @@ msgstr "Không cần phải dịch điều nào?"
 #~ "please manually move any messages from there to the new directory (if "
 #~ "any), and delete the old directories."
 #~ msgstr ""
-#~ "Hai thư mục ống chỉ cũ « ${OLDSPOOL1} » và « ${OLDSPOOL2} » vẫn còn tồn "
-#~ "tại cùng với thư mục mới « ${NEWSPOOL} ». Hai thư mục cũ sẽ không còn "
-#~ "được dùng lại: hãy tự di chuyển thông điệp nào từ đó sang thư mục mới "
-#~ "(nếu có), và xoá các thư mục cũ."
+#~ "Hai thư mục ống chỉ cũ « ${OLDSPOOL1} » và « ${OLDSPOOL2} » vẫn còn tồn tại "
+#~ "cùng với thư mục mới « ${NEWSPOOL} ». Hai thư mục cũ sẽ không còn được "
+#~ "dùng lại: hãy tự di chuyển thông điệp nào từ đó sang thư mục mới (nếu "
+#~ "có), và xoá các thư mục cũ."
 
 #~ msgid "two spool directories detected"
 #~ msgstr "hai thư mục ống chỉ được phát hiện"

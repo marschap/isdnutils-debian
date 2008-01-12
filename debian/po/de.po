@@ -1,13 +1,13 @@
 # German translation of isdnutils.
 # Copyright (C) 2006 Free Software Foundation, Inc.
 # Mathias Klein <ma_klein@gmx.de>, 2006.
-# 
-# 
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: isdnutils 3.8\n"
-"Report-Msgid-Bugs-To: ubuntu-devel-discuss@lists.ubuntu.com\n"
-"POT-Creation-Date: 2007-03-07 19:38+0100\n"
+"Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
+"POT-Creation-Date: 2008-01-12 10:05+0000\n"
 "PO-Revision-Date: 2006-01-09 23:04+0100\n"
 "Last-Translator: Mathias Klein <ma_klein@gmx.de>\n"
 "Language-Team: Deutsch <debian-l10n-german@lists.debian.org>\n"
@@ -108,8 +108,8 @@ msgid ""
 "You can only give names starting with \"ippp\" followed by a number between "
 "0 and 63."
 msgstr ""
-"Sie können nur Namen angeben, die mit »ippp« beginnen und auf eine Nummer "
-"von 0 bis 63 enden."
+"Sie können nur Namen angeben, die mit »ippp« beginnen und auf eine Nummer von "
+"0 bis 63 enden."
 
 #. Type: string
 #. Default
@@ -904,10 +904,10 @@ msgid ""
 "finalize isdnvboxserver, you need to ensure that vboxgetty is running from "
 "inittab, and that vboxd will run out of inetd."
 msgstr ""
-"Sollten Sie Ihre Meinung ändern, lassen Sie »dpkg-reconfigure "
-"isdnvboxserver« laufen. Um die Einrichtung von isdnvboxserver abzuschließen, "
-"müssen Sie sicherstellen, dass vboxgetty aus inittab heraus läuft und dass "
-"vboxd von inetd gestartet wird."
+"Sollten Sie Ihre Meinung ändern, lassen Sie »dpkg-reconfigure isdnvboxserver« "
+"laufen. Um die Einrichtung von isdnvboxserver abzuschließen, müssen Sie "
+"sicherstellen, dass vboxgetty aus inittab heraus läuft und dass vboxd von "
+"inetd gestartet wird."
 
 #. Type: string
 #. Description
@@ -1058,8 +1058,8 @@ msgid ""
 "The home directory `${DIR}' for user `${USER}' doesn't exist. This means "
 "that the file `${DIR}/.vbox.conf' cannot be created."
 msgstr ""
-"Das Home-Verzeichnis »${DIR}« für den Benutzer »${USER}« existiert nicht. "
-"Das bedeutet, dass die Datei »${DIR}/.vbox.conf« nicht erstellt werden kann."
+"Das Home-Verzeichnis »${DIR}« für den Benutzer »${USER}« existiert nicht. Das "
+"bedeutet, dass die Datei »${DIR}/.vbox.conf« nicht erstellt werden kann."
 
 #. Type: note
 #. Description
@@ -1254,6 +1254,6 @@ msgstr "Note to translators: no need to translate this, not shown to users."
 #~ "The configuration file `${OLD}' has been moved to `${DIR}/.vbox.conf'.  "
 #~ "See `man vbox.conf' for information on changing this file."
 #~ msgstr ""
-#~ "Die Konfigurationsdatei »${OLD}« wurde nach »${DIR}/.vbox.conf« "
-#~ "verschoben. Lesen Sie »man vbox.conf« für Informationen, wie Änderungen "
-#~ "an dieser Datei vorgenommen werden."
+#~ "Die Konfigurationsdatei »${OLD}« wurde nach »${DIR}/.vbox.conf« verschoben. "
+#~ "Lesen Sie »man vbox.conf« für Informationen, wie Änderungen an dieser "
+#~ "Datei vorgenommen werden."
