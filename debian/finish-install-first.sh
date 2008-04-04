@@ -63,9 +63,6 @@
 	install -m 0644 debian/README.HiSax  debian/isdnutils-base/usr/share/doc/isdnutils-base/
 	install -m 0644 debian/README.source debian/isdnutils-base/usr/share/doc/isdnutils-base/
 	install -m 0444 debian/ioptions      debian/ipppd/etc/ppp/
-	install -m 0644 debian/doc-base-isdn4linux-FAQ-de  debian/isdnutils-doc/usr/share/doc-base/isdn4linux-FAQ-de
-	install -m 0644 debian/doc-base-isdn4linux-FAQ-en  debian/isdnutils-doc/usr/share/doc-base/isdn4linux-FAQ-en
-	install -m 0644 debian/doc-base-isdn4linux-MiniFAQ debian/isdnutils-doc/usr/share/doc-base/isdn4linux-MiniFAQ
 	install -m 0644 isdnlog/rate-*.dat                 debian/isdnlog-data/usr/share/isdn/
 	install -m 0644 isdnlog/zone-*.cdb                 debian/isdnlog-data/usr/share/isdn/
 	install -m 0644 debian/isdnlog-data-README	   debian/isdnlog-data/usr/share/doc/isdnlog-data/README

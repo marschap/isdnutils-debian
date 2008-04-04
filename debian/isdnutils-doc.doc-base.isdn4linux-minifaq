@@ -1,8 +1,8 @@
-Document: isdn4linux-MiniFAQ
+Document: isdn4linux-minifaq
 Title: isdn4linux MiniFAQ
 Author: many
-Abstract: The quickstart FAQ for isdn4linux (german and english).
-Section: Apps/Net
+Abstract: The quickstart FAQ for isdn4linux (German and English).
+Section: Network/Communication
 
 Format: HTML
 Index: /usr/share/doc/isdnutils-doc/Mini-FAQ/isdn-faq.html
@@ -10,3 +10,4 @@ Files: /usr/share/doc/isdnutils-doc/Mini-FAQ/*.html
 
 Format: text
 Index: /usr/share/doc/isdnutils-doc/Mini-FAQ/isdn-faq.txt.gz
+Files: /usr/share/doc/isdnutils-doc/Mini-FAQ/isdn-faq.txt.gz

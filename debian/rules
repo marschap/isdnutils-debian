@@ -391,6 +391,7 @@ debian_patches = \
 	vbox-little-endian \
 	toplevel-make \
 	capi20-msg2str-safety \
+	lsb-init-script \
 
 ifeq ($(distribution),Ubuntu)
   debian_patches += no-imake
