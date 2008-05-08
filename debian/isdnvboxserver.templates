@@ -11,13 +11,6 @@ _Description: What number should vbox answer?
  configuration from the time when this was still part of isdnutils (unless
  you want to create a new configuration).
 
-Template: isdnvboxserver/doityourself
-Type: note
-_Description: You've chosen not to use debconf for isdnvboxserver
- If you change your mind, run "dpkg-reconfigure isdnvboxserver". To
- finalize isdnvboxserver, you need to ensure that vboxgetty is running from
- inittab, and that vboxd will run out of inetd.
-
 Template: isdnvboxserver/rings
 Type: string
 Default: 4
@@ -61,26 +54,14 @@ Type: password
 _Description: Enter the password for ${User} here.
  Please don't use ':' in it! The way it is stored cannot handle this.
 
-Template: isdnvboxserver/spoolcreate
-Type: note
-_Description: spool directory created
- The spool directory `${NEWSPOOL}' has been created, which is necessary for
- proper working of vbox.
-
-Template: isdnvboxserver/vboxcreate
-Type: note
-_Description: vbox config file created
- The configuration file `${DIR}/.vbox.conf' has been created. See `man
- vbox.conf' for information on changing this file.
-
 Template: isdnvboxserver/vboxnodir
-Type: note
+Type: error
 _Description: No home directory!
  The home directory `${DIR}' for user `${USER}' doesn't exist. This means
  that the file `${DIR}/.vbox.conf' cannot be created.
 
 Template: isdnvboxserver/vboxnouser
-Type: note
+Type: error
 _Description: User doesn't exist!
  The user `${USER}' doesn't exist on the system! Please rerun the
  configuration with `dpkg-reconfigure isdnvboxserver' to enter another
@@ -95,25 +76,8 @@ _Description: Should vboxgetty be enabled?
  will enable it once this package is fully configured. Choose `no' if you
  want to tweak it manually.
 
-Template: isdnvboxserver/adduserdone
-Type: note
-_Description: user `vbox' created
- A user `vbox' was created, in group `dialout'. This is used as the ID that
- the vbox daemons run under.
-
-Template: isdnvboxserver/adduserfailed
-Type: note
-_Description: Failed to create user `vbox'
- For optimal operation of vbox, a user `vbox' should be created, in group
- `dialout'. However, creating that user failed with the following error(s):
- .
- ${MSG}
- .
- Please remedy this problem by hand, and then rerun the configuration with
- `dpkg-reconfigure isdnvboxserver'.
-
 Template: isdnvboxserver/devfs_inittab
-Type: note
+Type: error
 _Description: Device in inittab doesn't agree with devfs mode
  The entry for vboxgetty in /etc/inittab uses a device name that does not
  correspond to the current devfs usage; either a devfs (/dev/isdn/ttyIxx)
@@ -123,7 +87,7 @@ _Description: Device in inittab doesn't agree with devfs mode
  You will have to fix this by hand.
 
 Template: isdnvboxserver/devfs_vboxgettyconf
-Type: note
+Type: error
 _Description: Device in vboxgetty.conf doesn't agree with devfs mode
  The device entry in /etc/isdn/vboxgetty.conf uses a device name that does
  not correspond to the current devfs usage; either a devfs
@@ -134,5 +98,5 @@ _Description: Device in vboxgetty.conf doesn't agree with devfs mode
 
 Template: isdnvboxserver/dummy
 Type: note
-_Description: isdnvboxserver is being configured.
+Description: for internal use
  Note to translators: no need to translate this, not shown to users.

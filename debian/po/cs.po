@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: isdnutils 1:3.6.2005-01-03-5\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
-"POT-Creation-Date: 2008-01-12 10:05+0000\n"
+"POT-Creation-Date: 2008-04-16 18:20+0200\n"
 "PO-Revision-Date: 2007-01-28 13:03+0100\n"
 "Last-Translator: Martin Sin <martin.sin@seznam.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
@@ -23,13 +23,13 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:1001
 msgid "ISP dialup config exists already"
 msgstr "Konfigurační soubor vytáčeného připojení již existuje"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:1001
 msgid ""
@@ -40,7 +40,7 @@ msgstr ""
 "Soubory device.${IPPP0} a ipppd.${IPPP0} již existují. Proto konfigurační "
 "část ipppd nebude nic měnit. Zdá se, že je vše nastaveno."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:1001
 msgid ""
@@ -95,13 +95,13 @@ msgstr ""
 "Pamatujte, že debconf běžně nastaví pouze jedno rozhraní. Zadejte \"none\", "
 "pokud si nepřejete ipppd nastavovat pomocí debconfu."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:3001
 msgid "wrong interface name"
 msgstr "špatný název rozhraní"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:3001
 msgid ""
@@ -112,20 +112,14 @@ msgstr ""
 "63."
 
 #. Type: string
-#. Default
-#: ../ipppd.templates:4001
-msgid "manual"
-msgstr "ručně"
-
-#. Type: string
 #. Description
-#: ../ipppd.templates:4002
+#: ../ipppd.templates:4001
 msgid "What is your ISP's telephone number?"
 msgstr "Jaké je telefonní číslo vašeho poskytovatele připojení?"
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4002
+#: ../ipppd.templates:4001
 msgid ""
 "What telephone number(s) must be dialed in order to connect to your Internet "
 "service provider (ISP)?"
@@ -135,7 +129,7 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4002
+#: ../ipppd.templates:4001
 msgid ""
 "Enter the telephone number here, including dialing prefixes, area codes, and "
 "so on. Enter the number without any spaces."
@@ -145,7 +139,7 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4002
+#: ../ipppd.templates:4001
 msgid ""
 "You can enter multiple telephone numbers. If you do so then separate them "
 "with spaces."
@@ -155,7 +149,7 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4002
+#: ../ipppd.templates:4001
 msgid ""
 "Enter the word \"manual\" or leave the field blank if you want to configure "
 "the connection manually."
@@ -232,13 +226,13 @@ msgstr ""
 "Heslo, které zde zadáte, bude spolu s uživatelským jménem uloženo v /etc/ppp/"
 "pap-secrets a /etc/ppp/chap-secrets."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:8001
 msgid "ISP user name already in pap-secrets"
 msgstr "Uživatelské jméno ISP je již v pap-secrets uloženo"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:8001
 msgid ""
@@ -251,13 +245,13 @@ msgstr ""
 "souboru /etc/ppp/pap-secrets uvedeno. To není žádný problém; existující "
 "položka bude zakomentována a nová položka, kterou zadáte, vložena."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:9001
 msgid "ISP user name already in chap-secrets"
 msgstr "Uživatelské jméno ISP je již v chap-secrets uloženo"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:9001
 msgid ""
@@ -270,13 +264,13 @@ msgstr ""
 "souboru /etc/ppp/chap-secrets uvedeno. To není žádný probém; existující "
 "položka bude zakomentována a nová položka, kterou zadáte, vložena."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:10001
 msgid "ISP user name already in chap-secrets and pap-secrets"
 msgstr "Uživatelské jméno ISP je již v chap-secrets a pap-secrets uloženo"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:10001
 msgid ""
@@ -290,13 +284,13 @@ msgstr ""
 "žádný problém; existující položky budou zakomentovány a nová položka, kterou "
 "zadáte, bude vložena."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:11001
 msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
 msgstr "/etc/ppp/ip-up.d/00-isdnutils dosud existuje"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:11001
 msgid ""
@@ -311,22 +305,22 @@ msgstr ""
 "který je novým souborem s konfigurací. Potom, prosím, smažte starý soubor 00-"
 "isdnutils."
 
-#. Type: note
+#. Type: error
 #. Description
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:11001 ../ipppd.templates:12001
 msgid "Until it is deleted, it will still be used! This may cause conflicts."
 msgstr ""
 "Soubor bude používán, dokud nebude odstraněn! To může způsobit konflikty."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:12001
 msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
 msgstr "/etc/ppp/ip-down.d/99-isdnutils dosud existuje"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:12001
 msgid ""
@@ -341,13 +335,13 @@ msgstr ""
 "který je novým souborem s konfigurací. Potom, prosím, smažte starý soubor 99-"
 "isdnutils."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:13001
 msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
 msgstr "dosud existují staré skripty /etc/ppp/ip-up.d a ip-down.d"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:13001
 msgid ""
@@ -363,7 +357,7 @@ msgstr ""
 "souborech 00-ipppd a 99-ipppd (které jsou novými konfiguračními soubory). "
 "Potom prosím smažte staré soubory 00-isdnutils a 99-isdnutils."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:13001
 msgid ""
@@ -371,13 +365,13 @@ msgid ""
 msgstr ""
 "Soubory budou používány, dokud je nesmažete! To může způsobit konflikty."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:14001
 msgid "(re)start ipppd by hand"
 msgstr "restartovat (spustit) ipppd ručně"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:14001
 msgid ""
@@ -387,13 +381,13 @@ msgstr ""
 "Ve vašem systému není soubor /etc/init.d/isdnutils; takže budete muset "
 "zastavovat a spouštět daemony ipppd ručně."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:15001
 msgid "error running isdnutils init script"
 msgstr "chyba při spuštění inicializačního skriptu isdnutils"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:15001
 msgid ""
@@ -407,151 +401,69 @@ msgstr ""
 "pomůže přesunutí /etc/init.d/isdnutils.dpkg-dist (pokud existuje) do /etc/"
 "init.d/isdnutils."
 
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid "Entering isdnlog configuration"
-msgstr "Vstupujete do konfigurace isdnlogu"
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid ""
-"For correct isdnlog functioning, isdnlog needs to be configured with a "
-"number of settings. These are some or all (depending on the level you have "
-"configured debconf with) of:"
-msgstr ""
-"Pro správnou funkci isdnlogu je potřeba provést několik nastavení. Zde jich "
-"je jen několik, nebo všechny (záleží na úrovni, na kterou máte nastaven "
-"debconf):"
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid ""
-" - country          this is used for setting a number of defaults,\n"
-"                    e.g. what rate tables to use for calculating\n"
-"                    the cost of a call."
-msgstr ""
-" - stát          se používá pro nastavení výchozích hodnot,\n"
-"                 např. pro cenové tabulky, které se používají\n"
-"                 pro výpočet nákladů za volání."
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid " - country prefix   what is used to indicate an international number"
-msgstr " - prefix státu  se používá pro určení mezinárodního čísla"
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid ""
-" - country code     the phone number for your country\n"
-"                    (e.g. 49 for Germany)"
-msgstr ""
-" - kód státu    telefonní číslo vašeho státu\n"
-"                (např. 42 pro Českou republiku)"
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid ""
-" - areacode prefix  what is used to indicate an areacode,\n"
-"                    if applicable in your country. Usually a 0 ."
-msgstr ""
-" - prefix kódu oblasti  se používá pro určení kódu oblasti,\n"
-"                        pokud se ve vaší zemi používá. Obvykle 0 ."
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid " - areacode         what your local areacode is (if applicable)"
-msgstr " - kód oblasti      je vaším místním kódem oblasti (je-li použitelný)"
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid ""
-"After installation, you may have to edit /etc/isdn/isdnlog.isdnctrl0 before "
-"isdnlog can work properly, although that file is set up with reasonable "
-"defaults for most cases."
-msgstr ""
-"Po instalaci byste ještě měli pro správnou funkci isdnlogu upravit soubor /"
-"etc/isdn/isdnlog.isdnctrl0, třebaže je tento soubor nastaven na rozumné "
-"hodnoty vyhovující většině případů."
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid ""
-"If you previously had /etc/isdn/isdnlog.isdnctrl0, that will be preserved."
-msgstr ""
-"Pokud jste již měli soubor /etc/isdn/isdnlog.isdnctrl0, tak bude zachován."
-
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "AT"
 msgstr "AT"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "CH"
 msgstr "CH"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "DE"
 msgstr "DE"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "ES"
 msgstr "ES"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "FR"
 msgstr "FR"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "LU"
 msgstr "LU"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "NL"
 msgstr "NL"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "NO"
 msgstr "NO"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "other"
 msgstr "jiný"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:2002
+#: ../isdnlog.templates:1002
 msgid "What country is this system in?"
 msgstr "Jaký je kód země vašeho systému?"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:2002
+#: ../isdnlog.templates:1002
 msgid ""
 "This is used for setting a number of defaults, e.g. what rate tables to use "
 "for calculating the cost of a call."
@@ -561,13 +473,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:3001
+#: ../isdnlog.templates:2001
 msgid "Enter the ISO two-letter code for your country"
 msgstr "Zadejte dvoupísmenný ISO kód vaší země"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:3001
+#: ../isdnlog.templates:2001
 msgid ""
 "This can't really be used for setting any defaults, but maybe some day..."
 msgstr ""
@@ -576,7 +488,7 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:3001
+#: ../isdnlog.templates:2001
 msgid ""
 "Note that you will probably have to edit /etc/isdn/isdn.conf before isdnlog "
 "will be able to work."
@@ -586,43 +498,43 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:4001
+#: ../isdnlog.templates:3001
 msgid "What is used to indicate an international number?"
 msgstr "Co se používá pro určení mezinárodního čísla?"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:5001
+#: ../isdnlog.templates:4001
 msgid "What is the countrycode for your country?"
 msgstr "Jaký je kód oblasti vaší země?"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:5001
+#: ../isdnlog.templates:4001
 msgid "e.g. ${default_countrycode} for ${default_country}"
 msgstr "např. ${default_countrycode} pro ${default_country}"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:6001
+#: ../isdnlog.templates:5001
 msgid "What is used to indicate an areacode, if applicable?"
 msgstr "Co se používá pro určení kódu oblasti, je-li použitelné?"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:7001
+#: ../isdnlog.templates:6001
 msgid "What is your local areacode, if applicable?"
 msgstr "Jaký je váš místní kód oblasti, je-li použitelný?"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:8001
+#: ../isdnlog.templates:7001
 msgid "Run isdnrate as a daemon?"
 msgstr "Spustit isdnrate jako daemon?"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:8001
+#: ../isdnlog.templates:7001
 msgid ""
 "isdnrate is a utility to calculate the costs of a connection to a given "
 "phone number, used e.g. for LCR systems to find the cheapest carrier on a "
@@ -636,7 +548,7 @@ msgstr ""
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:8001
+#: ../isdnlog.templates:7001
 msgid ""
 "This is only for people with special requirements, such as those using the "
 "isdn2h323 package. Hence most people should say \"no\"."
@@ -644,91 +556,21 @@ msgstr ""
 "Toto je pouze pro lidi mající speciální požadavky, jako ti, kteří používají "
 "balíček isdn2h323. Proto zde většina lidí odpovídá \"ne\"."
 
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:1001
-msgid "isdnutils is now split up"
-msgstr "isdnutils jsou nyní rozděleny"
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:1001
-msgid ""
-"The old isdnutils package is now split up into smaller parts: isdnutils "
-"ipppd isdnutils-xtools isdnutils-doc isdnvboxserver isdnvboxclient isdnlog "
-"isdnlog-data libcapi20-3 isdnactivecards pppdcapiplugin isdneurofile"
-msgstr ""
-"Starý balíček isdnutils je nyní rozdělen na menší části: isdnutils ipppd "
-"isdnutils-xtools isdnutils-doc isdnvboxserver isdnvboxclient isdnlog isdnlog-"
-"data libcapi20-3 isdnactivecards pppdcapiplugin isdneurofile"
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:1001
-msgid ""
-"This allows you to better select what parts you want installed, almost no "
-"one needs everything. Unfortunately there's no way of automatically "
-"selecting those parts you need."
-msgstr ""
-"Toto rozdělení umožňuje při instalaci přesnější vybrání jednotlivých částí, "
-"protože snad nikdo nepotřebuje vše. Bohužel, neexistuje způsob automatického "
-"výběru těch částí, které potřebujete."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:1001
-msgid ""
-"You have ipppX interfaces configured, but you have not selected  ipppd to be "
-"installed. This can be dangerous (leaving you with no way of obtaining "
-"ipppd), so aborting the installation of this new isdnutils."
-msgstr ""
-"Máte nastavena rozhraní ipppX, ale nezvolili jste instalaci ipppd. To může "
-"být nebezpečné (nechat vás bez nainstalovaného ipppd), takže ruším instalaci "
-"tohoto nového balíčku isdnutils."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:1001
-msgid ""
-"If you really mean to not have ipppd, please remove the ipppd.* files from /"
-"etc/isdn/, stop any ipppX interfaces, and reinstall isdnutils."
-msgstr ""
-"Pokud si skutečně přejete instalaci bez ipppd, odstraňte prosím soubory "
-"ipppd.* z adresáře /etc/isdn/, zastavte všechna rozhraní ipppX a "
-"přeinstalujte isdnutils."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:1001
-msgid ""
-"If you used dselect, please select (+) ipppd, and any of the other parts you "
-"might need (e.g. isdnlog, isdnvbox, isdnutils-xtools), although those should "
-"have been selected automatically. If you used apt-get, use 'apt-get install "
-"isdnutils ipppd isdnlog ...'; you may need to run 'apt-get -f install' first "
-"to configure any other packages that were unpacked but not yet configured."
-msgstr ""
-"Pokud používáte dselect, zvolte prosím (+) ipppd a všechny další potřebné "
-"balíčky (např. isdnlog, isdnvbox, isdnutils-xtools), i když tyto by se měly "
-"vybrat automaticky. Pokud používáte apt-get, použijte 'apt-get install "
-"isdnutils ipppd isdnlog ...'; možná budete muset nejprve spustit 'apt-get -f "
-"install' pro nastavení balíčků, které byly rozbaleny, ale ještě nejsou "
-"nastaveny."
-
 #. Type: select
 #. Choices
-#: ../isdnutils-base.templates:2001
+#: ../isdnutils-base.templates:1001
 msgid "none, ISAR.BIN"
 msgstr "žádný, ISAR.BIN"
 
 #. Type: select
 #. Description
-#: ../isdnutils-base.templates:2002
+#: ../isdnutils-base.templates:1002
 msgid "Does firmware need to be loaded?"
 msgstr "Musí být firmware načten?"
 
 #. Type: select
 #. Description
-#: ../isdnutils-base.templates:2002
+#: ../isdnutils-base.templates:1002
 msgid ""
 "Some ISDN cards can't function properly until firmware has been downloaded. "
 "Notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which need "
@@ -744,13 +586,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnutils-base.templates:3001
+#: ../isdnutils-base.templates:2001
 msgid "Which ISDN card numbers have to be loaded with the firmware?"
 msgstr "Která označení ISDN karet mají být načtena s firmwarem?"
 
 #. Type: string
 #. Description
-#: ../isdnutils-base.templates:3001
+#: ../isdnutils-base.templates:2001
 msgid ""
 "If you have more than one card, enter the number of the card(s) that have to "
 "be loaded with the firmware, starting with 1, separated by commas. If you "
@@ -761,81 +603,6 @@ msgstr ""
 "má načítat firmware, začněte od čísla 1, čísla oddělujte pomocí čárek. Pokud "
 "máte pouze jednu kartu, pak je obvyklou odpovědí \"1\". Pokud máte 2 karty, "
 "u nichž obou chcete načíst firmware, pak zadejte \"1,2\"."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:4001
-msgid "You have an (old) isdnvbox cron.weekly script"
-msgstr "V cron.weekly jsem nalezl (starý) skript isdnvbox "
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:4001
-msgid ""
-"In early versions of isdnutils 3.1pre1b, when upgrading from 3.0 the /etc/"
-"cron.weekly/isdnutils script was renamed to isdnvbox. Unfortunately, when "
-"isdnvbox was split up into isdnvboxserver and isdnvboxclient, the existing "
-"cron script was not renamed. This can lead to two scripts existing."
-msgstr ""
-"Oproti předchozím verzím isdnutils 3.1pre1b, byl přejmenován skript /etc/"
-"cron.weekly/isdnutils na isdnvbox (týká se aktualizace z verze 3.0). "
-"Bohužel, když byl isdnvbox rozdělen na isdnvboxserver a isdnvboxclient, byl "
-"přejmenován i stávající skript cronu. To může vést ke vzniku dvou současně "
-"existujících skriptů."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:4001
-msgid ""
-"Normally, at this point the old script could just be deleted, but it looks "
-"like you have edited the script manually. Please look at /etc/cron.weekly/"
-"isdnvbox to see if any changes need to be preserved (e.g. in the /etc/cron."
-"weekly/isdnvboxserver script), and then delete the old script by hand."
-msgstr ""
-"Obvykle lze v tomto okamžiku starý skript smazat, ale vypadá to, že jste jej "
-"upravovali ručně. Podívejte se prosím na /etc/cron.weekly/isdnvbox, zda není "
-"potřeba zachovat nějaké změny (např. ve skriptu /etc/cron/weekly/"
-"isdnvboxserver) a poté starý skript ručně smažte."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:4001
-msgid ""
-"If you can't see anything that needs preserving, it is probably safe to "
-"delete it."
-msgstr ""
-"Pokud nenaleznete nic, co by potřebovalo zachovat, pak je pravděpodobně "
-"bezpečné soubor smazat."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:5001
-msgid "/etc/cron.weekly/isdnutils renamed to isdnvboxserver"
-msgstr "/etc/cron.weekly/isdnutils byl přejmenován na isdnvboxserver"
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:5001
-msgid ""
-"The existing /etc/cron.weekly/isdnutils script has been renamed to "
-"isdnvboxserver to fit the names of the splitted packages (in the old "
-"version, the script only handled isdnvbox things)."
-msgstr ""
-"Stávající soubor /etc/cron.weekly/isdnutils byl z důvodu zachování jmen "
-"rozdělených balíčků přejmenován na isdnvboxserver. (Ve starší verzi se tento "
-"skript staral pouze o věci spojené s isdnvboxem.)"
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:5001
-msgid ""
-"When the packaging system asks whether to replace the /etc/cron.weekly/"
-"isdnvboxserver, it is recommended to do so. If you have made any changes to "
-"the script in the past, please put those changes into the new script."
-msgstr ""
-"Když se balíčkovací systém zeptá, zda odstranit /etc/cron.weekly/"
-"isdnvboxserver, pak je doporučeno to udělat. Pokud jste v minulosti ve "
-"skriptu provedli nějaké změny, vložte prosím tyto změny i do nového skriptu."
 
 #. Type: string
 #. Description
@@ -869,33 +636,15 @@ msgstr ""
 "konfiguraci vboxu z časů, kdy byl ještě součástí isdnutils (ledaže byste si "
 "přáli vytvořit novou konfiguraci)."
 
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:2001
-msgid "You've chosen not to use debconf for isdnvboxserver"
-msgstr "Zvolili jste nepoužívat debconf pro isdnvboxserver"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:2001
-msgid ""
-"If you change your mind, run \"dpkg-reconfigure isdnvboxserver\". To "
-"finalize isdnvboxserver, you need to ensure that vboxgetty is running from "
-"inittab, and that vboxd will run out of inetd."
-msgstr ""
-"Pokud změníte názor, spusťte \"dpkg-reconfigure isdnvboxserver\". Pro "
-"dokončení instalace isdnvboxserveru potřebujete zajistit, aby se vboxgetty "
-"spouštěl prostřednictvím inittabu a také, aby se vboxd spuštěl z inetd."
-
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:3001
+#: ../isdnvboxserver.templates:2001
 msgid "After how many rings should vbox pick up the line?"
 msgstr "Po kolika zazvověních má vbox zvednout linku?"
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:3001
+#: ../isdnvboxserver.templates:2001
 msgid ""
 "One ring is about 5 seconds. You can fine-tune the number of rings for "
 "certain phonenumbers manually, e.g. any salesmen you know the number of (or "
@@ -909,13 +658,13 @@ msgstr ""
 
 #. Type: select
 #. Description
-#: ../isdnvboxserver.templates:4001
+#: ../isdnvboxserver.templates:3001
 msgid "Should the message be attached to the email?"
 msgstr "Má být zpráva připojena k emailu?"
 
 #. Type: select
 #. Description
-#: ../isdnvboxserver.templates:4001
+#: ../isdnvboxserver.templates:3001
 msgid ""
 "When a message is recorded, an email notification is sent. If that email "
 "should contain the message as an attachment, choose \"yes\" here. Note: the "
@@ -927,13 +676,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:5001
+#: ../isdnvboxserver.templates:4001
 msgid "As what user should the answering machine run?"
 msgstr "Pod kterým uživatelem se má spustit záznamník?"
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:5001
+#: ../isdnvboxserver.templates:4001
 msgid ""
 "vboxd runs with the privileges of a normal (non-root) user. This is "
 "typically your non-root login name. This user must be a member of the "
@@ -945,25 +694,25 @@ msgstr ""
 
 #. Type: text
 #. Description
-#: ../isdnvboxserver.templates:6001
+#: ../isdnvboxserver.templates:5001
 msgid "The user ${Daemonuser} doesn't exist on the system."
 msgstr "Uživatel ${Daemonuser} v tomto systému neexistuje."
 
 #. Type: text
 #. Description
-#: ../isdnvboxserver.templates:6001
+#: ../isdnvboxserver.templates:5001
 msgid "Enter a valid user name here that's known to the system."
 msgstr "Zadejte platné uživatelské jméno, které je známo systému."
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:7001
+#: ../isdnvboxserver.templates:6001
 msgid "What username may connect to the vbox server?"
 msgstr "Který uživatel se může připojit k vbox serveru?"
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:7001
+#: ../isdnvboxserver.templates:6001
 msgid ""
 "To listen to messages using vbox (from the isdnvboxclient package), you need "
 "a username and password. Enter the username here. This does not have to be a "
@@ -975,59 +724,27 @@ msgstr ""
 
 #. Type: password
 #. Description
-#: ../isdnvboxserver.templates:8001
+#: ../isdnvboxserver.templates:7001
 msgid "Enter the password for ${User} here."
 msgstr "Zadejte zde heslo pro ${User}."
 
 #. Type: password
 #. Description
-#: ../isdnvboxserver.templates:8001
+#: ../isdnvboxserver.templates:7001
 msgid "Please don't use ':' in it! The way it is stored cannot handle this."
 msgstr ""
 "Nepoužívejte prosím ':'! Způsob, jakým je tato informace uložena, to "
 "nedokáže zpracovat."
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:9001
-msgid "spool directory created"
-msgstr "vytvořen adresář spool"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:9001
-msgid ""
-"The spool directory `${NEWSPOOL}' has been created, which is necessary for "
-"proper working of vbox."
-msgstr ""
-"Vytvořen spool adresář `${NEWSPOOL}', tento adresář je nutný pro správnou "
-"funkci vboxu."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:10001
-msgid "vbox config file created"
-msgstr "vytvořen konfigurační souboru vboxu"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:10001
-msgid ""
-"The configuration file `${DIR}/.vbox.conf' has been created. See `man vbox."
-"conf' for information on changing this file."
-msgstr ""
-"Byl vytvořen konfigurační soubor `${DIR}/.vbox.conf'. Pro více informací o "
-"změně tohoto souboru se podívejte na `man vbox.conf'."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:11001
+#: ../isdnvboxserver.templates:8001
 msgid "No home directory!"
 msgstr "Domovský adresář neexistuje!"
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:11001
+#: ../isdnvboxserver.templates:8001
 msgid ""
 "The home directory `${DIR}' for user `${USER}' doesn't exist. This means "
 "that the file `${DIR}/.vbox.conf' cannot be created."
@@ -1035,15 +752,15 @@ msgstr ""
 "Neexistuje domovský adresář `${DIR}' pro uživatele `${USER}'. To znamená, že "
 "nemůže být vytvořen soubor `${DIR}/.vbox.conf'."
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:12001
+#: ../isdnvboxserver.templates:9001
 msgid "User doesn't exist!"
 msgstr "Uživatel neexistuje!"
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:12001
+#: ../isdnvboxserver.templates:9001
 msgid ""
 "The user `${USER}' doesn't exist on the system! Please rerun the "
 "configuration with `dpkg-reconfigure isdnvboxserver' to enter another "
@@ -1055,13 +772,13 @@ msgstr ""
 
 #. Type: select
 #. Description
-#: ../isdnvboxserver.templates:13001
+#: ../isdnvboxserver.templates:10001
 msgid "Should vboxgetty be enabled?"
 msgstr "Má být vboxgetty povolen?"
 
 #. Type: select
 #. Description
-#: ../isdnvboxserver.templates:13001
+#: ../isdnvboxserver.templates:10001
 msgid ""
 "vboxgetty is in /etc/inittab, but not yet enabled. Answering `yes' here will "
 "enable it once this package is fully configured. Choose `no' if you want to "
@@ -1071,64 +788,15 @@ msgstr ""
 "`ano', pak bude povolen jakmile bude balíček plně nastaven. Zvolte `ne', "
 "pokud si to přejete nastavit ručně."
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:14001
-msgid "user `vbox' created"
-msgstr "vytvořen uživatel `vbox'"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:14001
-msgid ""
-"A user `vbox' was created, in group `dialout'. This is used as the ID that "
-"the vbox daemons run under."
-msgstr ""
-"Byl vytvořen uživatel `vbox' patřící do skupiny `dialout'. Pod tímto "
-"uživatelem bude vbox spuštěn."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:15001
-msgid "Failed to create user `vbox'"
-msgstr "Vytvoření uživatele `vbox' selhalo"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:15001
-msgid ""
-"For optimal operation of vbox, a user `vbox' should be created, in group "
-"`dialout'. However, creating that user failed with the following error(s):"
-msgstr ""
-"Pro optimální funkci vboxu by měl být vytvořen uživatel `vbox', který patří "
-"do skupiny `dialout'. Bohužel, vytváření uživatele selhalo z následujícího "
-"důvodu:"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:15001
-msgid "${MSG}"
-msgstr "${MSG}"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:15001
-msgid ""
-"Please remedy this problem by hand, and then rerun the configuration with "
-"`dpkg-reconfigure isdnvboxserver'."
-msgstr ""
-"Napravte prosím tento problém ručně a pak se vraťte zpět ke konfiguraci "
-"pomocí `dpkg-reconfigure isdnvboxserver'."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:16001
+#: ../isdnvboxserver.templates:11001
 msgid "Device in inittab doesn't agree with devfs mode"
 msgstr "Zařízení v inittabu nesouhlasí s módem devfs"
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:16001
+#: ../isdnvboxserver.templates:11001
 msgid ""
 "The entry for vboxgetty in /etc/inittab uses a device name that does not "
 "correspond to the current devfs usage; either a devfs (/dev/isdn/ttyIxx) "
@@ -1140,23 +808,23 @@ msgstr ""
 "inittabu ještě před připojením devfs, nebo je jméno použito nečím jiným, "
 "ještě před připojením devfs."
 
-#. Type: note
+#. Type: error
 #. Description
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:16001 ../isdnvboxserver.templates:17001
+#: ../isdnvboxserver.templates:11001 ../isdnvboxserver.templates:12001
 msgid "You will have to fix this by hand."
 msgstr "Měli byste to opravit ručně."
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:17001
+#: ../isdnvboxserver.templates:12001
 msgid "Device in vboxgetty.conf doesn't agree with devfs mode"
 msgstr "Zařízení ve vboxgetty.conf nesouhlasí s módem devfs"
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:17001
+#: ../isdnvboxserver.templates:12001
 msgid ""
 "The device entry in /etc/isdn/vboxgetty.conf uses a device name that does "
 "not correspond to the current devfs usage; either a devfs (/dev/isdn/ttyIxx) "
@@ -1168,18 +836,247 @@ msgstr ""
 "ttyIxx) použito ve vboxgetty.conf ještě před připojením devfs, nebo je toto "
 "jméno použito ještě před připojením devfs."
 
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:18001
-msgid "isdnvboxserver is being configured."
-msgstr "Nastavuji isdnvboxserver."
+#~ msgid "manual"
+#~ msgstr "ručně"
 
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:18001
-msgid "Note to translators: no need to translate this, not shown to users."
-msgstr ""
-"Poznámka pro překladatele: není třeba překládat, ale jinak kazí statistiku."
+#~ msgid "Entering isdnlog configuration"
+#~ msgstr "Vstupujete do konfigurace isdnlogu"
+
+#~ msgid ""
+#~ "For correct isdnlog functioning, isdnlog needs to be configured with a "
+#~ "number of settings. These are some or all (depending on the level you "
+#~ "have configured debconf with) of:"
+#~ msgstr ""
+#~ "Pro správnou funkci isdnlogu je potřeba provést několik nastavení. Zde "
+#~ "jich je jen několik, nebo všechny (záleží na úrovni, na kterou máte "
+#~ "nastaven debconf):"
+
+#~ msgid ""
+#~ " - country          this is used for setting a number of defaults,\n"
+#~ "                    e.g. what rate tables to use for calculating\n"
+#~ "                    the cost of a call."
+#~ msgstr ""
+#~ " - stát          se používá pro nastavení výchozích hodnot,\n"
+#~ "                 např. pro cenové tabulky, které se používají\n"
+#~ "                 pro výpočet nákladů za volání."
+
+#~ msgid " - country prefix   what is used to indicate an international number"
+#~ msgstr " - prefix státu  se používá pro určení mezinárodního čísla"
+
+#~ msgid ""
+#~ " - country code     the phone number for your country\n"
+#~ "                    (e.g. 49 for Germany)"
+#~ msgstr ""
+#~ " - kód státu    telefonní číslo vašeho státu\n"
+#~ "                (např. 42 pro Českou republiku)"
+
+#~ msgid ""
+#~ " - areacode prefix  what is used to indicate an areacode,\n"
+#~ "                    if applicable in your country. Usually a 0 ."
+#~ msgstr ""
+#~ " - prefix kódu oblasti  se používá pro určení kódu oblasti,\n"
+#~ "                        pokud se ve vaší zemi používá. Obvykle 0 ."
+
+#~ msgid " - areacode         what your local areacode is (if applicable)"
+#~ msgstr ""
+#~ " - kód oblasti      je vaším místním kódem oblasti (je-li použitelný)"
+
+#~ msgid ""
+#~ "After installation, you may have to edit /etc/isdn/isdnlog.isdnctrl0 "
+#~ "before isdnlog can work properly, although that file is set up with "
+#~ "reasonable defaults for most cases."
+#~ msgstr ""
+#~ "Po instalaci byste ještě měli pro správnou funkci isdnlogu upravit "
+#~ "soubor /etc/isdn/isdnlog.isdnctrl0, třebaže je tento soubor nastaven na "
+#~ "rozumné hodnoty vyhovující většině případů."
+
+#~ msgid ""
+#~ "If you previously had /etc/isdn/isdnlog.isdnctrl0, that will be preserved."
+#~ msgstr ""
+#~ "Pokud jste již měli soubor /etc/isdn/isdnlog.isdnctrl0, tak bude zachován."
+
+#~ msgid "isdnutils is now split up"
+#~ msgstr "isdnutils jsou nyní rozděleny"
+
+#~ msgid ""
+#~ "The old isdnutils package is now split up into smaller parts: isdnutils "
+#~ "ipppd isdnutils-xtools isdnutils-doc isdnvboxserver isdnvboxclient "
+#~ "isdnlog isdnlog-data libcapi20-3 isdnactivecards pppdcapiplugin "
+#~ "isdneurofile"
+#~ msgstr ""
+#~ "Starý balíček isdnutils je nyní rozdělen na menší části: isdnutils ipppd "
+#~ "isdnutils-xtools isdnutils-doc isdnvboxserver isdnvboxclient isdnlog "
+#~ "isdnlog-data libcapi20-3 isdnactivecards pppdcapiplugin isdneurofile"
+
+#~ msgid ""
+#~ "This allows you to better select what parts you want installed, almost no "
+#~ "one needs everything. Unfortunately there's no way of automatically "
+#~ "selecting those parts you need."
+#~ msgstr ""
+#~ "Toto rozdělení umožňuje při instalaci přesnější vybrání jednotlivých "
+#~ "částí, protože snad nikdo nepotřebuje vše. Bohužel, neexistuje způsob "
+#~ "automatického výběru těch částí, které potřebujete."
+
+#~ msgid ""
+#~ "You have ipppX interfaces configured, but you have not selected  ipppd to "
+#~ "be installed. This can be dangerous (leaving you with no way of obtaining "
+#~ "ipppd), so aborting the installation of this new isdnutils."
+#~ msgstr ""
+#~ "Máte nastavena rozhraní ipppX, ale nezvolili jste instalaci ipppd. To "
+#~ "může být nebezpečné (nechat vás bez nainstalovaného ipppd), takže ruším "
+#~ "instalaci tohoto nového balíčku isdnutils."
+
+#~ msgid ""
+#~ "If you really mean to not have ipppd, please remove the ipppd.* files "
+#~ "from /etc/isdn/, stop any ipppX interfaces, and reinstall isdnutils."
+#~ msgstr ""
+#~ "Pokud si skutečně přejete instalaci bez ipppd, odstraňte prosím soubory "
+#~ "ipppd.* z adresáře /etc/isdn/, zastavte všechna rozhraní ipppX a "
+#~ "přeinstalujte isdnutils."
+
+#~ msgid ""
+#~ "If you used dselect, please select (+) ipppd, and any of the other parts "
+#~ "you might need (e.g. isdnlog, isdnvbox, isdnutils-xtools), although those "
+#~ "should have been selected automatically. If you used apt-get, use 'apt-"
+#~ "get install isdnutils ipppd isdnlog ...'; you may need to run 'apt-get -f "
+#~ "install' first to configure any other packages that were unpacked but not "
+#~ "yet configured."
+#~ msgstr ""
+#~ "Pokud používáte dselect, zvolte prosím (+) ipppd a všechny další potřebné "
+#~ "balíčky (např. isdnlog, isdnvbox, isdnutils-xtools), i když tyto by se "
+#~ "měly vybrat automaticky. Pokud používáte apt-get, použijte 'apt-get "
+#~ "install isdnutils ipppd isdnlog ...'; možná budete muset nejprve spustit "
+#~ "'apt-get -f install' pro nastavení balíčků, které byly rozbaleny, ale "
+#~ "ještě nejsou nastaveny."
+
+#~ msgid "You have an (old) isdnvbox cron.weekly script"
+#~ msgstr "V cron.weekly jsem nalezl (starý) skript isdnvbox "
+
+#~ msgid ""
+#~ "In early versions of isdnutils 3.1pre1b, when upgrading from 3.0 the /etc/"
+#~ "cron.weekly/isdnutils script was renamed to isdnvbox. Unfortunately, when "
+#~ "isdnvbox was split up into isdnvboxserver and isdnvboxclient, the "
+#~ "existing cron script was not renamed. This can lead to two scripts "
+#~ "existing."
+#~ msgstr ""
+#~ "Oproti předchozím verzím isdnutils 3.1pre1b, byl přejmenován skript /etc/"
+#~ "cron.weekly/isdnutils na isdnvbox (týká se aktualizace z verze 3.0). "
+#~ "Bohužel, když byl isdnvbox rozdělen na isdnvboxserver a isdnvboxclient, "
+#~ "byl přejmenován i stávající skript cronu. To může vést ke vzniku dvou "
+#~ "současně existujících skriptů."
+
+#~ msgid ""
+#~ "Normally, at this point the old script could just be deleted, but it "
+#~ "looks like you have edited the script manually. Please look at /etc/cron."
+#~ "weekly/isdnvbox to see if any changes need to be preserved (e.g. in the /"
+#~ "etc/cron.weekly/isdnvboxserver script), and then delete the old script by "
+#~ "hand."
+#~ msgstr ""
+#~ "Obvykle lze v tomto okamžiku starý skript smazat, ale vypadá to, že jste "
+#~ "jej upravovali ručně. Podívejte se prosím na /etc/cron.weekly/isdnvbox, "
+#~ "zda není potřeba zachovat nějaké změny (např. ve skriptu /etc/cron/weekly/"
+#~ "isdnvboxserver) a poté starý skript ručně smažte."
+
+#~ msgid ""
+#~ "If you can't see anything that needs preserving, it is probably safe to "
+#~ "delete it."
+#~ msgstr ""
+#~ "Pokud nenaleznete nic, co by potřebovalo zachovat, pak je pravděpodobně "
+#~ "bezpečné soubor smazat."
+
+#~ msgid "/etc/cron.weekly/isdnutils renamed to isdnvboxserver"
+#~ msgstr "/etc/cron.weekly/isdnutils byl přejmenován na isdnvboxserver"
+
+#~ msgid ""
+#~ "The existing /etc/cron.weekly/isdnutils script has been renamed to "
+#~ "isdnvboxserver to fit the names of the splitted packages (in the old "
+#~ "version, the script only handled isdnvbox things)."
+#~ msgstr ""
+#~ "Stávající soubor /etc/cron.weekly/isdnutils byl z důvodu zachování jmen "
+#~ "rozdělených balíčků přejmenován na isdnvboxserver. (Ve starší verzi se "
+#~ "tento skript staral pouze o věci spojené s isdnvboxem.)"
+
+#~ msgid ""
+#~ "When the packaging system asks whether to replace the /etc/cron.weekly/"
+#~ "isdnvboxserver, it is recommended to do so. If you have made any changes "
+#~ "to the script in the past, please put those changes into the new script."
+#~ msgstr ""
+#~ "Když se balíčkovací systém zeptá, zda odstranit /etc/cron.weekly/"
+#~ "isdnvboxserver, pak je doporučeno to udělat. Pokud jste v minulosti ve "
+#~ "skriptu provedli nějaké změny, vložte prosím tyto změny i do nového "
+#~ "skriptu."
+
+#~ msgid "You've chosen not to use debconf for isdnvboxserver"
+#~ msgstr "Zvolili jste nepoužívat debconf pro isdnvboxserver"
+
+#~ msgid ""
+#~ "If you change your mind, run \"dpkg-reconfigure isdnvboxserver\". To "
+#~ "finalize isdnvboxserver, you need to ensure that vboxgetty is running "
+#~ "from inittab, and that vboxd will run out of inetd."
+#~ msgstr ""
+#~ "Pokud změníte názor, spusťte \"dpkg-reconfigure isdnvboxserver\". Pro "
+#~ "dokončení instalace isdnvboxserveru potřebujete zajistit, aby se "
+#~ "vboxgetty spouštěl prostřednictvím inittabu a také, aby se vboxd spuštěl "
+#~ "z inetd."
+
+#~ msgid "spool directory created"
+#~ msgstr "vytvořen adresář spool"
+
+#~ msgid ""
+#~ "The spool directory `${NEWSPOOL}' has been created, which is necessary "
+#~ "for proper working of vbox."
+#~ msgstr ""
+#~ "Vytvořen spool adresář `${NEWSPOOL}', tento adresář je nutný pro správnou "
+#~ "funkci vboxu."
+
+#~ msgid "vbox config file created"
+#~ msgstr "vytvořen konfigurační souboru vboxu"
+
+#~ msgid ""
+#~ "The configuration file `${DIR}/.vbox.conf' has been created. See `man "
+#~ "vbox.conf' for information on changing this file."
+#~ msgstr ""
+#~ "Byl vytvořen konfigurační soubor `${DIR}/.vbox.conf'. Pro více informací "
+#~ "o změně tohoto souboru se podívejte na `man vbox.conf'."
+
+#~ msgid "user `vbox' created"
+#~ msgstr "vytvořen uživatel `vbox'"
+
+#~ msgid ""
+#~ "A user `vbox' was created, in group `dialout'. This is used as the ID "
+#~ "that the vbox daemons run under."
+#~ msgstr ""
+#~ "Byl vytvořen uživatel `vbox' patřící do skupiny `dialout'. Pod tímto "
+#~ "uživatelem bude vbox spuštěn."
+
+#~ msgid "Failed to create user `vbox'"
+#~ msgstr "Vytvoření uživatele `vbox' selhalo"
+
+#~ msgid ""
+#~ "For optimal operation of vbox, a user `vbox' should be created, in group "
+#~ "`dialout'. However, creating that user failed with the following error(s):"
+#~ msgstr ""
+#~ "Pro optimální funkci vboxu by měl být vytvořen uživatel `vbox', který "
+#~ "patří do skupiny `dialout'. Bohužel, vytváření uživatele selhalo z "
+#~ "následujícího důvodu:"
+
+#~ msgid "${MSG}"
+#~ msgstr "${MSG}"
+
+#~ msgid ""
+#~ "Please remedy this problem by hand, and then rerun the configuration with "
+#~ "`dpkg-reconfigure isdnvboxserver'."
+#~ msgstr ""
+#~ "Napravte prosím tento problém ručně a pak se vraťte zpět ke konfiguraci "
+#~ "pomocí `dpkg-reconfigure isdnvboxserver'."
+
+#~ msgid "isdnvboxserver is being configured."
+#~ msgstr "Nastavuji isdnvboxserver."
+
+#~ msgid "Note to translators: no need to translate this, not shown to users."
+#~ msgstr ""
+#~ "Poznámka pro překladatele: není třeba překládat, ale jinak kazí "
+#~ "statistiku."
 
 #~ msgid "spool directory renamed"
 #~ msgstr "adresář spool byl přejmenován"

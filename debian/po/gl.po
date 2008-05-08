@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: isdnutils\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
-"POT-Creation-Date: 2008-01-12 10:05+0000\n"
+"POT-Creation-Date: 2008-04-16 18:20+0200\n"
 "PO-Revision-Date: 2007-02-26 16:37+0100\n"
 "Last-Translator: Jacobo Tarrio <jtarrio@debian.org>\n"
 "Language-Team: Galician <proxecto@trasno.net>\n"
@@ -14,13 +14,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:1001
 msgid "ISP dialup config exists already"
 msgstr "Xa existe a configuración dun provedor de Internet"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:1001
 msgid ""
@@ -32,7 +32,7 @@ msgstr ""
 "de configuración de ipppd non ha tocar nada diso, xa que semella que xa está "
 "configurado."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:1001
 msgid ""
@@ -93,13 +93,13 @@ msgstr ""
 "Teña en conta que debconf só ha configurar unha interface. Introduza \"none"
 "\" se non quere que debconf configure nada para ipppd."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:3001
 msgid "wrong interface name"
 msgstr "Nome de interface incorrecto"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:3001
 msgid ""
@@ -110,20 +110,14 @@ msgstr ""
 "entre 0 e 63."
 
 #. Type: string
-#. Default
-#: ../ipppd.templates:4001
-msgid "manual"
-msgstr "manual"
-
-#. Type: string
 #. Description
-#: ../ipppd.templates:4002
+#: ../ipppd.templates:4001
 msgid "What is your ISP's telephone number?"
 msgstr "¿Cal é o número de teléfono do seu provedor de Internet?"
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4002
+#: ../ipppd.templates:4001
 msgid ""
 "What telephone number(s) must be dialed in order to connect to your Internet "
 "service provider (ISP)?"
@@ -133,7 +127,7 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4002
+#: ../ipppd.templates:4001
 msgid ""
 "Enter the telephone number here, including dialing prefixes, area codes, and "
 "so on. Enter the number without any spaces."
@@ -143,7 +137,7 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4002
+#: ../ipppd.templates:4001
 msgid ""
 "You can enter multiple telephone numbers. If you do so then separate them "
 "with spaces."
@@ -153,7 +147,7 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4002
+#: ../ipppd.templates:4001
 msgid ""
 "Enter the word \"manual\" or leave the field blank if you want to configure "
 "the connection manually."
@@ -229,13 +223,13 @@ msgstr ""
 "O contrasinal que introduza aquí hase gravar nos ficheiros /etc/ppp/pap-"
 "secrets e /etc/ppp/chap-secrets xunto co nome de usuario."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:8001
 msgid "ISP user name already in pap-secrets"
 msgstr "O nome de usuario do provedor de Internet xa está en pap-secrets"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:8001
 msgid ""
@@ -249,13 +243,13 @@ msgstr ""
 "existente hase comentar, e hase engadir unha nova entrada cos datos que "
 "acaba de introducir."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:9001
 msgid "ISP user name already in chap-secrets"
 msgstr "O nome de usuario do provedor de Internet xa está en chap-secrets"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:9001
 msgid ""
@@ -269,7 +263,7 @@ msgstr ""
 "existente hase comentar, e hase engadir unha nova entrada cos datos que "
 "acaba de introducir."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:10001
 msgid "ISP user name already in chap-secrets and pap-secrets"
@@ -277,7 +271,7 @@ msgstr ""
 "O nome de usuario do provedor de Internet xa está en chap-secrets e pap-"
 "secrets"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:10001
 msgid ""
@@ -291,13 +285,13 @@ msgstr ""
 "problema; as entradas existentes hanse comentar, e hanse engadir novas "
 "entrada cos datos que acaba de introducir."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:11001
 msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
 msgstr "Aínda existe /etc/ppp/ip-up.d/00-isdnutils"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:11001
 msgid ""
@@ -311,21 +305,21 @@ msgstr ""
 "cambios no ficheiro 00-ipppd (que é o novo nome). Despois de facelo, elimine "
 "o ficheiro 00-isdnutils antigo."
 
-#. Type: note
+#. Type: error
 #. Description
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:11001 ../ipppd.templates:12001
 msgid "Until it is deleted, it will still be used! This may cause conflicts."
 msgstr "Ha seguir empregándose ata que o borre. Isto pode causar conflictos."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:12001
 msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
 msgstr "Aínda existe /etc/ppp/ip-down.d/99-isdnutils"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:12001
 msgid ""
@@ -339,13 +333,13 @@ msgstr ""
 "cambios no ficheiro 99-ipppd (que é o novo nome). Despois de facelo, elimine "
 "o ficheiro 99-isdnutils antigo."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:13001
 msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
 msgstr "Aínda existen scripts antigos en /etc/ppp/ip-up.d e ip-down.d"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:13001
 msgid ""
@@ -361,20 +355,20 @@ msgstr ""
 "ipppd (que son os novos nomes). Despois de facelo, elimine os ficheiro 00-"
 "isdnutils e 99-isdnutils antigos."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:13001
 msgid ""
 "Until they are deleted, they will still be used! This may cause conflicts."
 msgstr "Han seguir empregándose ata que os borre. Isto pode causar conflictos."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:14001
 msgid "(re)start ipppd by hand"
 msgstr "(Re)inicie ipppd á man"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:14001
 msgid ""
@@ -384,13 +378,13 @@ msgstr ""
 "Non existe o ficheiro /etc/init.d/isdnutils no seu sistema; polo tanto, ha "
 "ter que deter e iniciar os servizos ipppd á man."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:15001
 msgid "error running isdnutils init script"
 msgstr "Erro ao executar o script de inicio de isdnutils"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:15001
 msgid ""
@@ -404,156 +398,69 @@ msgstr ""
 "init.d/isdnutils.dpkg-dist (se existe) a /etc/init.d/isdnutils pode "
 "funcionar."
 
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid "Entering isdnlog configuration"
-msgstr "A introducir a configuración de isdnlog"
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid ""
-"For correct isdnlog functioning, isdnlog needs to be configured with a "
-"number of settings. These are some or all (depending on the level you have "
-"configured debconf with) of:"
-msgstr ""
-"Para que isdnlog funcione correctamente, hai que configurar algunhas cousas "
-"en isdnlog. Estas son todas ou algunas (dependendo do nivel co que teña "
-"configurado debconf) destas:"
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid ""
-" - country          this is used for setting a number of defaults,\n"
-"                    e.g. what rate tables to use for calculating\n"
-"                    the cost of a call."
-msgstr ""
-" - país\n"
-"           emprégase para establecer varios valores por defecto, coma\n"
-"           as táboas de tarifas a empregar para calcular o custo dunha\n"
-"           chamada."
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid " - country prefix   what is used to indicate an international number"
-msgstr ""
-" - prefixo de chamada internacional\n"
-"           que prefixo se usa para indicar un número internacional"
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid ""
-" - country code     the phone number for your country\n"
-"                    (e.g. 49 for Germany)"
-msgstr ""
-" - código do país\n"
-"           o código telefónico do país (por exemplo, 34 para España)"
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid ""
-" - areacode prefix  what is used to indicate an areacode,\n"
-"                    if applicable in your country. Usually a 0 ."
-msgstr ""
-" - prefixo de chamada a outra área\n"
-"           o código que se emprega para indicar que se vai marcar o prefixo\n"
-"           doutra área telefónica, se é necesario. Adoita ser un 0."
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid " - areacode         what your local areacode is (if applicable)"
-msgstr ""
-" - prefixo\n"
-"           o prefixo da súa área (se ten prefixo)"
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid ""
-"After installation, you may have to edit /etc/isdn/isdnlog.isdnctrl0 before "
-"isdnlog can work properly, although that file is set up with reasonable "
-"defaults for most cases."
-msgstr ""
-"Trala instalación pode ter que editar /etc/isdn/isdnlog.isdnctrl0 para que "
-"isdnlog funcione correctamente, aínda que ese ficheiro está configurado dun "
-"xeito razonable na maioría dos casos."
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid ""
-"If you previously had /etc/isdn/isdnlog.isdnctrl0, that will be preserved."
-msgstr "Se xa tiña un ficheiro /etc/isdn/isdnlog.isdnctrl0, hase conservar."
-
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "AT"
 msgstr "Austria"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "CH"
 msgstr "Suíza"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "DE"
 msgstr "Alemaña"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "ES"
 msgstr "España"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "FR"
 msgstr "Francia"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "LU"
 msgstr "Luxemburgo"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "NL"
 msgstr "Países Baixos"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "NO"
 msgstr "Noruega"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "other"
 msgstr "outro"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:2002
+#: ../isdnlog.templates:1002
 msgid "What country is this system in?"
 msgstr "¿En que país está este sistema?"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:2002
+#: ../isdnlog.templates:1002
 msgid ""
 "This is used for setting a number of defaults, e.g. what rate tables to use "
 "for calculating the cost of a call."
@@ -563,13 +470,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:3001
+#: ../isdnlog.templates:2001
 msgid "Enter the ISO two-letter code for your country"
 msgstr "Introduza o código ISO de dúas letras do seu país"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:3001
+#: ../isdnlog.templates:2001
 msgid ""
 "This can't really be used for setting any defaults, but maybe some day..."
 msgstr ""
@@ -578,7 +485,7 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:3001
+#: ../isdnlog.templates:2001
 msgid ""
 "Note that you will probably have to edit /etc/isdn/isdn.conf before isdnlog "
 "will be able to work."
@@ -588,44 +495,44 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:4001
+#: ../isdnlog.templates:3001
 msgid "What is used to indicate an international number?"
 msgstr "¿Que prefixo se emprega para indicar un número internacional?"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:5001
+#: ../isdnlog.templates:4001
 msgid "What is the countrycode for your country?"
 msgstr "¿Cal é o código do seu país?"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:5001
+#: ../isdnlog.templates:4001
 msgid "e.g. ${default_countrycode} for ${default_country}"
 msgstr "por exemplo, ${default_countrycode} para ${default_country}"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:6001
+#: ../isdnlog.templates:5001
 msgid "What is used to indicate an areacode, if applicable?"
 msgstr ""
 "¿Que se emprega para indicar que se vai marcar un prefixo, se fai falla?"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:7001
+#: ../isdnlog.templates:6001
 msgid "What is your local areacode, if applicable?"
 msgstr "¿Cal é o seu prefixo, se ten un?"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:8001
+#: ../isdnlog.templates:7001
 msgid "Run isdnrate as a daemon?"
 msgstr "¿Executar isdnrate coma servizo?"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:8001
+#: ../isdnlog.templates:7001
 msgid ""
 "isdnrate is a utility to calculate the costs of a connection to a given "
 "phone number, used e.g. for LCR systems to find the cheapest carrier on a "
@@ -639,7 +546,7 @@ msgstr ""
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:8001
+#: ../isdnlog.templates:7001
 msgid ""
 "This is only for people with special requirements, such as those using the "
 "isdn2h323 package. Hence most people should say \"no\"."
@@ -647,90 +554,21 @@ msgstr ""
 "Só é útil para xente con necesidades especiais, coma os que empreguen o "
 "paquete isdn2h323. Polo tanto, a maioría da xente respostaría \"non\"."
 
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:1001
-msgid "isdnutils is now split up"
-msgstr "Agora isdnutils está dividido"
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:1001
-msgid ""
-"The old isdnutils package is now split up into smaller parts: isdnutils "
-"ipppd isdnutils-xtools isdnutils-doc isdnvboxserver isdnvboxclient isdnlog "
-"isdnlog-data libcapi20-3 isdnactivecards pppdcapiplugin isdneurofile"
-msgstr ""
-"O antigo paquete isdnutils agora está dividido en partes máis pequenas: "
-"isdnutils ipppd isdnutils-xtools isdnutils-doc isdnvboxserver isdnvboxclient "
-"isdnlog isdnlog-data libcapi20-3 isdnactivecards pppdcapiplugin isdneurofile"
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:1001
-msgid ""
-"This allows you to better select what parts you want installed, almost no "
-"one needs everything. Unfortunately there's no way of automatically "
-"selecting those parts you need."
-msgstr ""
-"Isto permítelle escoller mellor as partes que quere instalar; case ninguén "
-"precisa de todo. Lamentablemente, non hai maneira de escoller "
-"automaticamente as partes das que precisa."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:1001
-msgid ""
-"You have ipppX interfaces configured, but you have not selected  ipppd to be "
-"installed. This can be dangerous (leaving you with no way of obtaining "
-"ipppd), so aborting the installation of this new isdnutils."
-msgstr ""
-"Ten configuradas interfaces ipppX, pero non seleccionou ipppd para a súa "
-"instalación. Isto pode ser perigoso (pode deixalo sen unha maneira de obter "
-"ipppd), polo que se aborta a instalación deste novo isdnutils."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:1001
-msgid ""
-"If you really mean to not have ipppd, please remove the ipppd.* files from /"
-"etc/isdn/, stop any ipppX interfaces, and reinstall isdnutils."
-msgstr ""
-"Se non quere ter ipppd, elimine os ficheiros ipppd.* de /etc/isdn/, deteña "
-"as interfaces ipppX e reinstale isdnutils."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:1001
-msgid ""
-"If you used dselect, please select (+) ipppd, and any of the other parts you "
-"might need (e.g. isdnlog, isdnvbox, isdnutils-xtools), although those should "
-"have been selected automatically. If you used apt-get, use 'apt-get install "
-"isdnutils ipppd isdnlog ...'; you may need to run 'apt-get -f install' first "
-"to configure any other packages that were unpacked but not yet configured."
-msgstr ""
-"Se empregou dselect, seleccione (+) ipppd e as demáis partes das que precise "
-"(coma, por exemplo, isdnlog, isdnvbox, isdnutils-xtools), aínda que xa "
-"debían quedar seleccionadas automaticamente. Se empregou apt-get, execute "
-"\"apt-get install isdnutils ipppd isdnlog ...\"; ha ter que executar \"apt-"
-"get -f install\" antes para configurar os paquetes que estean descomprimidos "
-"pero aínda non estean configurados."
-
 #. Type: select
 #. Choices
-#: ../isdnutils-base.templates:2001
+#: ../isdnutils-base.templates:1001
 msgid "none, ISAR.BIN"
 msgstr "ningún, ISAR.BIN"
 
 #. Type: select
 #. Description
-#: ../isdnutils-base.templates:2002
+#: ../isdnutils-base.templates:1002
 msgid "Does firmware need to be loaded?"
 msgstr "¿Hai que cargar algún firmware?"
 
 #. Type: select
 #. Description
-#: ../isdnutils-base.templates:2002
+#: ../isdnutils-base.templates:1002
 msgid ""
 "Some ISDN cards can't function properly until firmware has been downloaded. "
 "Notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which need "
@@ -746,13 +584,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnutils-base.templates:3001
+#: ../isdnutils-base.templates:2001
 msgid "Which ISDN card numbers have to be loaded with the firmware?"
 msgstr "¿Que números de tarxeta ISDN hai que cargar co firmware?"
 
 #. Type: string
 #. Description
-#: ../isdnutils-base.templates:3001
+#: ../isdnutils-base.templates:2001
 msgid ""
 "If you have more than one card, enter the number of the card(s) that have to "
 "be loaded with the firmware, starting with 1, separated by commas. If you "
@@ -763,79 +601,6 @@ msgstr ""
 "se cargar co firmware, comezando por 1, separados por comas. Se só ten unha "
 "tarxeta, a resposta obvia é \"1\". Se ten dúas tarxetas e hai que cargar "
 "firmware para ámbalas dúas, escriba \"1,2\"."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:4001
-msgid "You have an (old) isdnvbox cron.weekly script"
-msgstr "Ten un script (antigo) de cron.weekly de isdnvbox"
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:4001
-msgid ""
-"In early versions of isdnutils 3.1pre1b, when upgrading from 3.0 the /etc/"
-"cron.weekly/isdnutils script was renamed to isdnvbox. Unfortunately, when "
-"isdnvbox was split up into isdnvboxserver and isdnvboxclient, the existing "
-"cron script was not renamed. This can lead to two scripts existing."
-msgstr ""
-"En versións antigas de isdnutils 3.1pre1b, ao actualizar de 3.0 cambiouse o "
-"nome do script /etc/cron.weekly/isdnutils a isdnvbox. Lamentablemente, cando "
-"se dividiu isdnvbox en isdnvboxserver e isdnvboxclient, non se lle cambiou o "
-"nome ao script de cron existente. Isto pode facer que existan dous scripts."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:4001
-msgid ""
-"Normally, at this point the old script could just be deleted, but it looks "
-"like you have edited the script manually. Please look at /etc/cron.weekly/"
-"isdnvbox to see if any changes need to be preserved (e.g. in the /etc/cron."
-"weekly/isdnvboxserver script), and then delete the old script by hand."
-msgstr ""
-"Normalmente poderíase borrar o script antigo, pero semella que modificou o "
-"script manualmente. Consulte /etc/cron.weekly/isdnvbox para ver se ten que "
-"conservar algún cambio (por exemplo, no script /etc/cron.weekly/"
-"isdnvboxserver) e despois borre o script antigo á man."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:4001
-msgid ""
-"If you can't see anything that needs preserving, it is probably safe to "
-"delete it."
-msgstr ""
-"Se non ve nada que teña que conservar, probablemente sexa seguro borralo."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:5001
-msgid "/etc/cron.weekly/isdnutils renamed to isdnvboxserver"
-msgstr "Cambiouse o nome de /etc/cron.weekly/isdnutils a isdnvboxserver"
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:5001
-msgid ""
-"The existing /etc/cron.weekly/isdnutils script has been renamed to "
-"isdnvboxserver to fit the names of the splitted packages (in the old "
-"version, the script only handled isdnvbox things)."
-msgstr ""
-"Cambiouse o nome do script /etc/cron.weekly/isdnutils existente a "
-"isdnvboxserver para adaptalo aos nomes dos paquetes divididos (na versión "
-"antiga, o script só xestionaba cousas de isdnvbox)."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:5001
-msgid ""
-"When the packaging system asks whether to replace the /etc/cron.weekly/"
-"isdnvboxserver, it is recommended to do so. If you have made any changes to "
-"the script in the past, please put those changes into the new script."
-msgstr ""
-"Cando o sistema de paquetes lle pregunte se quere substituír o ficheiro /etc/"
-"cron.weekly/isdnvboxserver, recoméndase que o faga. Se fixo algunha "
-"modificación no script no pasado, faga tamén eses cambios no novo script."
 
 #. Type: string
 #. Description
@@ -869,33 +634,15 @@ msgstr ""
 "(funcional) de vbox do tempo en que aínda formaba parte de isdnutils (a "
 "menos que queira crear unha nova configuración)."
 
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:2001
-msgid "You've chosen not to use debconf for isdnvboxserver"
-msgstr "Decidiu non empregar debconf para isdnvboxserver"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:2001
-msgid ""
-"If you change your mind, run \"dpkg-reconfigure isdnvboxserver\". To "
-"finalize isdnvboxserver, you need to ensure that vboxgetty is running from "
-"inittab, and that vboxd will run out of inetd."
-msgstr ""
-"Se cambia de opinión, execute \"dpkg-reconfigure isdnvboxserver\". Para "
-"rematar isdnvboxserver, ha ter que se asegurar de que vboxgetty se estea a "
-"executar desde o inittab, e de que vboxd se execute desde inetd."
-
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:3001
+#: ../isdnvboxserver.templates:2001
 msgid "After how many rings should vbox pick up the line?"
 msgstr "¿Despois de cantos timbres debe contestar vbox?"
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:3001
+#: ../isdnvboxserver.templates:2001
 msgid ""
 "One ring is about 5 seconds. You can fine-tune the number of rings for "
 "certain phonenumbers manually, e.g. any salesmen you know the number of (or "
@@ -910,13 +657,13 @@ msgstr ""
 
 #. Type: select
 #. Description
-#: ../isdnvboxserver.templates:4001
+#: ../isdnvboxserver.templates:3001
 msgid "Should the message be attached to the email?"
 msgstr "¿Debe anexarse a mensaxe ao email?"
 
 #. Type: select
 #. Description
-#: ../isdnvboxserver.templates:4001
+#: ../isdnvboxserver.templates:3001
 msgid ""
 "When a message is recorded, an email notification is sent. If that email "
 "should contain the message as an attachment, choose \"yes\" here. Note: the "
@@ -928,13 +675,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:5001
+#: ../isdnvboxserver.templates:4001
 msgid "As what user should the answering machine run?"
 msgstr "¿Con que usuario debe executarse o contestador automático?"
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:5001
+#: ../isdnvboxserver.templates:4001
 msgid ""
 "vboxd runs with the privileges of a normal (non-root) user. This is "
 "typically your non-root login name. This user must be a member of the "
@@ -946,25 +693,25 @@ msgstr ""
 
 #. Type: text
 #. Description
-#: ../isdnvboxserver.templates:6001
+#: ../isdnvboxserver.templates:5001
 msgid "The user ${Daemonuser} doesn't exist on the system."
 msgstr "O usuario ${Daemonuser} non existe no sistema."
 
 #. Type: text
 #. Description
-#: ../isdnvboxserver.templates:6001
+#: ../isdnvboxserver.templates:5001
 msgid "Enter a valid user name here that's known to the system."
 msgstr "Introduza un nome de usuario válido que exista no sistema."
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:7001
+#: ../isdnvboxserver.templates:6001
 msgid "What username may connect to the vbox server?"
 msgstr "¿Que usuario se pode conectar ao servidor vbox?"
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:7001
+#: ../isdnvboxserver.templates:6001
 msgid ""
 "To listen to messages using vbox (from the isdnvboxclient package), you need "
 "a username and password. Enter the username here. This does not have to be a "
@@ -976,59 +723,27 @@ msgstr ""
 
 #. Type: password
 #. Description
-#: ../isdnvboxserver.templates:8001
+#: ../isdnvboxserver.templates:7001
 msgid "Enter the password for ${User} here."
 msgstr "Introduza o contrasinal para ${User}."
 
 #. Type: password
 #. Description
-#: ../isdnvboxserver.templates:8001
+#: ../isdnvboxserver.templates:7001
 msgid "Please don't use ':' in it! The way it is stored cannot handle this."
 msgstr ""
 "Non empregue o carácter \":\" nel. Polo xeito en que se grava non se pode "
 "manexar."
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:9001
-msgid "spool directory created"
-msgstr "Creouse o directorio de traballo"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:9001
-msgid ""
-"The spool directory `${NEWSPOOL}' has been created, which is necessary for "
-"proper working of vbox."
-msgstr ""
-"Creouse o directorio de traballo \"${NEWSPOOL}\", que é necesario para que "
-"vbox funcione correctamente."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:10001
-msgid "vbox config file created"
-msgstr "Creouse o ficheiro de configuración de vbox"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:10001
-msgid ""
-"The configuration file `${DIR}/.vbox.conf' has been created. See `man vbox."
-"conf' for information on changing this file."
-msgstr ""
-"Creouse o ficheiro de configuración \"${DIR}/.vbox.conf\". Consulte \"man "
-"vbox.conf\" para máis información sobre como modificar ese ficheiro."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:11001
+#: ../isdnvboxserver.templates:8001
 msgid "No home directory!"
 msgstr "Non existe o directorio inicial"
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:11001
+#: ../isdnvboxserver.templates:8001
 msgid ""
 "The home directory `${DIR}' for user `${USER}' doesn't exist. This means "
 "that the file `${DIR}/.vbox.conf' cannot be created."
@@ -1036,15 +751,15 @@ msgstr ""
 "O directorio inicial \"${DIR}\" do usuario \"${USER}\" non existe. Isto "
 "significa que non se pode crear o ficheiro \"${DIR}/.vbox.conf\"."
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:12001
+#: ../isdnvboxserver.templates:9001
 msgid "User doesn't exist!"
 msgstr "O usuario non existe"
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:12001
+#: ../isdnvboxserver.templates:9001
 msgid ""
 "The user `${USER}' doesn't exist on the system! Please rerun the "
 "configuration with `dpkg-reconfigure isdnvboxserver' to enter another "
@@ -1056,13 +771,13 @@ msgstr ""
 
 #. Type: select
 #. Description
-#: ../isdnvboxserver.templates:13001
+#: ../isdnvboxserver.templates:10001
 msgid "Should vboxgetty be enabled?"
 msgstr "¿Debería activarse vboxgetty?"
 
 #. Type: select
 #. Description
-#: ../isdnvboxserver.templates:13001
+#: ../isdnvboxserver.templates:10001
 msgid ""
 "vboxgetty is in /etc/inittab, but not yet enabled. Answering `yes' here will "
 "enable it once this package is fully configured. Choose `no' if you want to "
@@ -1072,64 +787,15 @@ msgstr ""
 "\"si\" ha activarse despois de configurar completamente este paquete. "
 "Resposte \"non\" se quere axustalo manualmente."
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:14001
-msgid "user `vbox' created"
-msgstr "Creouse o usuario \"vbox\""
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:14001
-msgid ""
-"A user `vbox' was created, in group `dialout'. This is used as the ID that "
-"the vbox daemons run under."
-msgstr ""
-"Creouse un usuario \"vbox\" no grupo \"dialout\". Este usuario emprégase "
-"coma ID baixo o que se executan os servizos vbox."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:15001
-msgid "Failed to create user `vbox'"
-msgstr "Non se puido crear o usuario \"vbox\""
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:15001
-msgid ""
-"For optimal operation of vbox, a user `vbox' should be created, in group "
-"`dialout'. However, creating that user failed with the following error(s):"
-msgstr ""
-"Para o óptimo funcionamento de vbox hai que crear un usuario \"vbox\" no "
-"grupo \"dialout\". Nembargantes, a creación dese usuario fallou cos "
-"seguintes erros:"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:15001
-msgid "${MSG}"
-msgstr "${MSG}"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:15001
-msgid ""
-"Please remedy this problem by hand, and then rerun the configuration with "
-"`dpkg-reconfigure isdnvboxserver'."
-msgstr ""
-"Arranxe este problema á man e volva executar a configuración mediante \"dpkg-"
-"reconfigure isdnvboxserver\"."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:16001
+#: ../isdnvboxserver.templates:11001
 msgid "Device in inittab doesn't agree with devfs mode"
 msgstr "O dispositivo de inittab non encaixa co modo devfs"
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:16001
+#: ../isdnvboxserver.templates:11001
 msgid ""
 "The entry for vboxgetty in /etc/inittab uses a device name that does not "
 "correspond to the current devfs usage; either a devfs (/dev/isdn/ttyIxx) "
@@ -1141,23 +807,23 @@ msgstr ""
 "nome devfs (/dev/isdn/ttyIxx) no inittab sen ter devfs montado, ou está a "
 "empregar un nome que non é de devfs con devfs montado."
 
-#. Type: note
+#. Type: error
 #. Description
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:16001 ../isdnvboxserver.templates:17001
+#: ../isdnvboxserver.templates:11001 ../isdnvboxserver.templates:12001
 msgid "You will have to fix this by hand."
 msgstr "Ha ter que arranxalo á man."
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:17001
+#: ../isdnvboxserver.templates:12001
 msgid "Device in vboxgetty.conf doesn't agree with devfs mode"
 msgstr "O dispositivo de vboxgetty.conf non encaixa co modo devfs"
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:17001
+#: ../isdnvboxserver.templates:12001
 msgid ""
 "The device entry in /etc/isdn/vboxgetty.conf uses a device name that does "
 "not correspond to the current devfs usage; either a devfs (/dev/isdn/ttyIxx) "
@@ -1169,14 +835,244 @@ msgstr ""
 "a empregar un nome devfs (/dev/isdn/ttyIxx) en vboxgetty.conf sen ter devfs "
 "montado, ou está a empregar un nome que non é de devfs con devfs montado."
 
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:18001
-msgid "isdnvboxserver is being configured."
-msgstr "Estase a configurar isdnvboxserver."
+#~ msgid "manual"
+#~ msgstr "manual"
 
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:18001
-msgid "Note to translators: no need to translate this, not shown to users."
-msgstr "Isto non debía aparecer na pantalla."
+#~ msgid "Entering isdnlog configuration"
+#~ msgstr "A introducir a configuración de isdnlog"
+
+#~ msgid ""
+#~ "For correct isdnlog functioning, isdnlog needs to be configured with a "
+#~ "number of settings. These are some or all (depending on the level you "
+#~ "have configured debconf with) of:"
+#~ msgstr ""
+#~ "Para que isdnlog funcione correctamente, hai que configurar algunhas "
+#~ "cousas en isdnlog. Estas son todas ou algunas (dependendo do nivel co que "
+#~ "teña configurado debconf) destas:"
+
+#~ msgid ""
+#~ " - country          this is used for setting a number of defaults,\n"
+#~ "                    e.g. what rate tables to use for calculating\n"
+#~ "                    the cost of a call."
+#~ msgstr ""
+#~ " - país\n"
+#~ "           emprégase para establecer varios valores por defecto, coma\n"
+#~ "           as táboas de tarifas a empregar para calcular o custo dunha\n"
+#~ "           chamada."
+
+#~ msgid " - country prefix   what is used to indicate an international number"
+#~ msgstr ""
+#~ " - prefixo de chamada internacional\n"
+#~ "           que prefixo se usa para indicar un número internacional"
+
+#~ msgid ""
+#~ " - country code     the phone number for your country\n"
+#~ "                    (e.g. 49 for Germany)"
+#~ msgstr ""
+#~ " - código do país\n"
+#~ "           o código telefónico do país (por exemplo, 34 para España)"
+
+#~ msgid ""
+#~ " - areacode prefix  what is used to indicate an areacode,\n"
+#~ "                    if applicable in your country. Usually a 0 ."
+#~ msgstr ""
+#~ " - prefixo de chamada a outra área\n"
+#~ "           o código que se emprega para indicar que se vai marcar o "
+#~ "prefixo\n"
+#~ "           doutra área telefónica, se é necesario. Adoita ser un 0."
+
+#~ msgid " - areacode         what your local areacode is (if applicable)"
+#~ msgstr ""
+#~ " - prefixo\n"
+#~ "           o prefixo da súa área (se ten prefixo)"
+
+#~ msgid ""
+#~ "After installation, you may have to edit /etc/isdn/isdnlog.isdnctrl0 "
+#~ "before isdnlog can work properly, although that file is set up with "
+#~ "reasonable defaults for most cases."
+#~ msgstr ""
+#~ "Trala instalación pode ter que editar /etc/isdn/isdnlog.isdnctrl0 para "
+#~ "que isdnlog funcione correctamente, aínda que ese ficheiro está "
+#~ "configurado dun xeito razonable na maioría dos casos."
+
+#~ msgid ""
+#~ "If you previously had /etc/isdn/isdnlog.isdnctrl0, that will be preserved."
+#~ msgstr "Se xa tiña un ficheiro /etc/isdn/isdnlog.isdnctrl0, hase conservar."
+
+#~ msgid "isdnutils is now split up"
+#~ msgstr "Agora isdnutils está dividido"
+
+#~ msgid ""
+#~ "The old isdnutils package is now split up into smaller parts: isdnutils "
+#~ "ipppd isdnutils-xtools isdnutils-doc isdnvboxserver isdnvboxclient "
+#~ "isdnlog isdnlog-data libcapi20-3 isdnactivecards pppdcapiplugin "
+#~ "isdneurofile"
+#~ msgstr ""
+#~ "O antigo paquete isdnutils agora está dividido en partes máis pequenas: "
+#~ "isdnutils ipppd isdnutils-xtools isdnutils-doc isdnvboxserver "
+#~ "isdnvboxclient isdnlog isdnlog-data libcapi20-3 isdnactivecards "
+#~ "pppdcapiplugin isdneurofile"
+
+#~ msgid ""
+#~ "This allows you to better select what parts you want installed, almost no "
+#~ "one needs everything. Unfortunately there's no way of automatically "
+#~ "selecting those parts you need."
+#~ msgstr ""
+#~ "Isto permítelle escoller mellor as partes que quere instalar; case "
+#~ "ninguén precisa de todo. Lamentablemente, non hai maneira de escoller "
+#~ "automaticamente as partes das que precisa."
+
+#~ msgid ""
+#~ "You have ipppX interfaces configured, but you have not selected  ipppd to "
+#~ "be installed. This can be dangerous (leaving you with no way of obtaining "
+#~ "ipppd), so aborting the installation of this new isdnutils."
+#~ msgstr ""
+#~ "Ten configuradas interfaces ipppX, pero non seleccionou ipppd para a súa "
+#~ "instalación. Isto pode ser perigoso (pode deixalo sen unha maneira de "
+#~ "obter ipppd), polo que se aborta a instalación deste novo isdnutils."
+
+#~ msgid ""
+#~ "If you really mean to not have ipppd, please remove the ipppd.* files "
+#~ "from /etc/isdn/, stop any ipppX interfaces, and reinstall isdnutils."
+#~ msgstr ""
+#~ "Se non quere ter ipppd, elimine os ficheiros ipppd.* de /etc/isdn/, "
+#~ "deteña as interfaces ipppX e reinstale isdnutils."
+
+#~ msgid ""
+#~ "If you used dselect, please select (+) ipppd, and any of the other parts "
+#~ "you might need (e.g. isdnlog, isdnvbox, isdnutils-xtools), although those "
+#~ "should have been selected automatically. If you used apt-get, use 'apt-"
+#~ "get install isdnutils ipppd isdnlog ...'; you may need to run 'apt-get -f "
+#~ "install' first to configure any other packages that were unpacked but not "
+#~ "yet configured."
+#~ msgstr ""
+#~ "Se empregou dselect, seleccione (+) ipppd e as demáis partes das que "
+#~ "precise (coma, por exemplo, isdnlog, isdnvbox, isdnutils-xtools), aínda "
+#~ "que xa debían quedar seleccionadas automaticamente. Se empregou apt-get, "
+#~ "execute \"apt-get install isdnutils ipppd isdnlog ...\"; ha ter que "
+#~ "executar \"apt-get -f install\" antes para configurar os paquetes que "
+#~ "estean descomprimidos pero aínda non estean configurados."
+
+#~ msgid "You have an (old) isdnvbox cron.weekly script"
+#~ msgstr "Ten un script (antigo) de cron.weekly de isdnvbox"
+
+#~ msgid ""
+#~ "In early versions of isdnutils 3.1pre1b, when upgrading from 3.0 the /etc/"
+#~ "cron.weekly/isdnutils script was renamed to isdnvbox. Unfortunately, when "
+#~ "isdnvbox was split up into isdnvboxserver and isdnvboxclient, the "
+#~ "existing cron script was not renamed. This can lead to two scripts "
+#~ "existing."
+#~ msgstr ""
+#~ "En versións antigas de isdnutils 3.1pre1b, ao actualizar de 3.0 cambiouse "
+#~ "o nome do script /etc/cron.weekly/isdnutils a isdnvbox. Lamentablemente, "
+#~ "cando se dividiu isdnvbox en isdnvboxserver e isdnvboxclient, non se lle "
+#~ "cambiou o nome ao script de cron existente. Isto pode facer que existan "
+#~ "dous scripts."
+
+#~ msgid ""
+#~ "Normally, at this point the old script could just be deleted, but it "
+#~ "looks like you have edited the script manually. Please look at /etc/cron."
+#~ "weekly/isdnvbox to see if any changes need to be preserved (e.g. in the /"
+#~ "etc/cron.weekly/isdnvboxserver script), and then delete the old script by "
+#~ "hand."
+#~ msgstr ""
+#~ "Normalmente poderíase borrar o script antigo, pero semella que modificou "
+#~ "o script manualmente. Consulte /etc/cron.weekly/isdnvbox para ver se ten "
+#~ "que conservar algún cambio (por exemplo, no script /etc/cron.weekly/"
+#~ "isdnvboxserver) e despois borre o script antigo á man."
+
+#~ msgid ""
+#~ "If you can't see anything that needs preserving, it is probably safe to "
+#~ "delete it."
+#~ msgstr ""
+#~ "Se non ve nada que teña que conservar, probablemente sexa seguro borralo."
+
+#~ msgid "/etc/cron.weekly/isdnutils renamed to isdnvboxserver"
+#~ msgstr "Cambiouse o nome de /etc/cron.weekly/isdnutils a isdnvboxserver"
+
+#~ msgid ""
+#~ "The existing /etc/cron.weekly/isdnutils script has been renamed to "
+#~ "isdnvboxserver to fit the names of the splitted packages (in the old "
+#~ "version, the script only handled isdnvbox things)."
+#~ msgstr ""
+#~ "Cambiouse o nome do script /etc/cron.weekly/isdnutils existente a "
+#~ "isdnvboxserver para adaptalo aos nomes dos paquetes divididos (na versión "
+#~ "antiga, o script só xestionaba cousas de isdnvbox)."
+
+#~ msgid ""
+#~ "When the packaging system asks whether to replace the /etc/cron.weekly/"
+#~ "isdnvboxserver, it is recommended to do so. If you have made any changes "
+#~ "to the script in the past, please put those changes into the new script."
+#~ msgstr ""
+#~ "Cando o sistema de paquetes lle pregunte se quere substituír o ficheiro /"
+#~ "etc/cron.weekly/isdnvboxserver, recoméndase que o faga. Se fixo algunha "
+#~ "modificación no script no pasado, faga tamén eses cambios no novo script."
+
+#~ msgid "You've chosen not to use debconf for isdnvboxserver"
+#~ msgstr "Decidiu non empregar debconf para isdnvboxserver"
+
+#~ msgid ""
+#~ "If you change your mind, run \"dpkg-reconfigure isdnvboxserver\". To "
+#~ "finalize isdnvboxserver, you need to ensure that vboxgetty is running "
+#~ "from inittab, and that vboxd will run out of inetd."
+#~ msgstr ""
+#~ "Se cambia de opinión, execute \"dpkg-reconfigure isdnvboxserver\". Para "
+#~ "rematar isdnvboxserver, ha ter que se asegurar de que vboxgetty se estea "
+#~ "a executar desde o inittab, e de que vboxd se execute desde inetd."
+
+#~ msgid "spool directory created"
+#~ msgstr "Creouse o directorio de traballo"
+
+#~ msgid ""
+#~ "The spool directory `${NEWSPOOL}' has been created, which is necessary "
+#~ "for proper working of vbox."
+#~ msgstr ""
+#~ "Creouse o directorio de traballo \"${NEWSPOOL}\", que é necesario para "
+#~ "que vbox funcione correctamente."
+
+#~ msgid "vbox config file created"
+#~ msgstr "Creouse o ficheiro de configuración de vbox"
+
+#~ msgid ""
+#~ "The configuration file `${DIR}/.vbox.conf' has been created. See `man "
+#~ "vbox.conf' for information on changing this file."
+#~ msgstr ""
+#~ "Creouse o ficheiro de configuración \"${DIR}/.vbox.conf\". Consulte \"man "
+#~ "vbox.conf\" para máis información sobre como modificar ese ficheiro."
+
+#~ msgid "user `vbox' created"
+#~ msgstr "Creouse o usuario \"vbox\""
+
+#~ msgid ""
+#~ "A user `vbox' was created, in group `dialout'. This is used as the ID "
+#~ "that the vbox daemons run under."
+#~ msgstr ""
+#~ "Creouse un usuario \"vbox\" no grupo \"dialout\". Este usuario emprégase "
+#~ "coma ID baixo o que se executan os servizos vbox."
+
+#~ msgid "Failed to create user `vbox'"
+#~ msgstr "Non se puido crear o usuario \"vbox\""
+
+#~ msgid ""
+#~ "For optimal operation of vbox, a user `vbox' should be created, in group "
+#~ "`dialout'. However, creating that user failed with the following error(s):"
+#~ msgstr ""
+#~ "Para o óptimo funcionamento de vbox hai que crear un usuario \"vbox\" no "
+#~ "grupo \"dialout\". Nembargantes, a creación dese usuario fallou cos "
+#~ "seguintes erros:"
+
+#~ msgid "${MSG}"
+#~ msgstr "${MSG}"
+
+#~ msgid ""
+#~ "Please remedy this problem by hand, and then rerun the configuration with "
+#~ "`dpkg-reconfigure isdnvboxserver'."
+#~ msgstr ""
+#~ "Arranxe este problema á man e volva executar a configuración mediante "
+#~ "\"dpkg-reconfigure isdnvboxserver\"."
+
+#~ msgid "isdnvboxserver is being configured."
+#~ msgstr "Estase a configurar isdnvboxserver."
+
+#~ msgid "Note to translators: no need to translate this, not shown to users."
+#~ msgstr "Isto non debía aparecer na pantalla."

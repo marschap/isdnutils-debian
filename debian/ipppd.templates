@@ -1,5 +1,5 @@
 Template: ipppd/ispwontdoit
-Type: note
+Type: error
 _Description: ISP dialup config exists already
  The files device.${IPPP0} and ipppd.${IPPP0} already exist. Therefore the
  ipppd configuration phase won't touch anything there, as it looks like
@@ -28,14 +28,14 @@ _Description: Which interface should be configured?
  Enter "none" if you do not want debconf to configure anything for ipppd.
 
 Template: ipppd/wrongif
-Type: note
+Type: error
 _Description: wrong interface name
  You can only give names starting with "ippp" followed by a number between
  0 and 63.
 
 Template: ipppd/ispphone
 Type: string
-_Default: manual
+Default: manual
 _Description: What is your ISP's telephone number?
  What telephone number(s) must be dialed in order to connect
  to your Internet service provider (ISP)?
@@ -78,7 +78,7 @@ _Description: What is the password for logging into your ISP?
  /etc/ppp/chap-secrets together with the username.
 
 Template: ipppd/isploginpapalreadythere
-Type: note
+Type: error
 _Description: ISP user name already in pap-secrets
  The user name you entered for logging into your ISP is already listed in
  the /etc/ppp/pap-secrets file. That's not a problem; the existing entry
@@ -86,7 +86,7 @@ _Description: ISP user name already in pap-secrets
  be inserted.
 
 Template: ipppd/isploginchapalreadythere
-Type: note
+Type: error
 _Description: ISP user name already in chap-secrets
  The user name you entered for logging into your ISP is already listed in
  the /etc/ppp/chap-secrets file. That's not a problem; the existing entry
@@ -94,7 +94,7 @@ _Description: ISP user name already in chap-secrets
  be inserted.
 
 Template: ipppd/isploginpapchapalreadythere
-Type: note
+Type: error
 _Description: ISP user name already in chap-secrets and pap-secrets
  The user name you entered for logging into your ISP is already listed in
  the chap-secrets and pap-secrets files in /etc/ppp/. That's not a problem;
@@ -102,7 +102,7 @@ _Description: ISP user name already in chap-secrets and pap-secrets
  you just entered will be inserted.
 
 Template: ipppd/oldipup
-Type: note
+Type: error
 _Description: /etc/ppp/ip-up.d/00-isdnutils still exists
  The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package
  still exists. If you changed that file at some point, you may need to redo
@@ -112,7 +112,7 @@ _Description: /etc/ppp/ip-up.d/00-isdnutils still exists
  Until it is deleted, it will still be used! This may cause conflicts.
 
 Template: ipppd/oldipdown
-Type: note
+Type: error
 _Description: /etc/ppp/ip-down.d/99-isdnutils still exists
  The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package
  still exists. If you changed that file at some point, you may need to redo
@@ -122,7 +122,7 @@ _Description: /etc/ppp/ip-down.d/99-isdnutils still exists
  Until it is deleted, it will still be used! This may cause conflicts.
 
 Template: ipppd/oldipupdown
-Type: note
+Type: error
 _Description: old /etc/ppp/ip-up.d and ip-down.d scripts still exist
  The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils
  files from the old isdnutils package still exist. If you changed those
@@ -133,13 +133,13 @@ _Description: old /etc/ppp/ip-up.d and ip-down.d scripts still exist
  Until they are deleted, they will still be used! This may cause conflicts.
 
 Template: ipppd/noisdnutilsinit
-Type: note
+Type: error
 _Description: (re)start ipppd by hand
  There is no /etc/init.d/isdnutils on your system; hence you will have to
  stop and start any ipppd daemons by hand.
 
 Template: ipppd/isdnutilsinitbad
-Type: note
+Type: error
 _Description: error running isdnutils init script
  The /etc/init.d/isdnutils script ran with errors. Please check the
  installation of the isdnutils-base package; reinstall it if necessary.

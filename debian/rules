@@ -33,8 +33,8 @@ auto-update-stamp: patch-stamp
 	for d in capi20; do \
 	  echo "Regenerating autotools files in $$d ..."; \
 	  cd $$d; \
-	  echo "  aclocal-1.8"; aclocal-1.8; \
-	  echo "  automake-1.8"; automake-1.8 --add-missing; \
+	  echo "  aclocal-1.9"; aclocal-1.9; \
+	  echo "  automake-1.9"; automake-1.9 --add-missing; \
 	  cd ..; \
 	done
 
@@ -143,7 +143,7 @@ clean:
 	dh_testroot
 	rm -f build-stamp auto-update-stamp
 
-	-$(MAKE) distclean
+	[ ! -f Makefile ] || $(MAKE) distclean
 	rm -f isdnlog/client/config.cache \
 		isdnlog/client/config.status isdnlog/client/config.log
 	#-rm -f vbox/examples/beep.msg.example
@@ -160,8 +160,11 @@ clean:
 	    \) \
 		| xargs rm -f
 	-find . -type d -name autom4te.cache | xargs rm -rf
+	-find . -type d -name config.cache | xargs rm -rf
+	-find . -type d -name config.log | xargs rm -rf
+	-find . -type d -name config.status | xargs rm -rf
 
-	-$(MAKE) distclean
+	[ ! -f Makefile ] || $(MAKE) distclean
 
 	debian/rules unpatch
 

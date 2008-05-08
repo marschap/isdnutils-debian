@@ -1,3 +1,60 @@
+isdnutils (1:3.9.20060704-3.4) unstable; urgency=low
+
+  * Non-maintainer upload to fix pending l10n issues.
+  * Debconf translations:
+    - Portuguese. Closes: #414384
+    - Vietnamese. Closes: #478149
+    - Finnish. Closes: #478554
+    - Basque. Closes: #479521
+    - Russian. Closes: #480030
+  * [Lintian] No longer ignore errors from "make clean"
+  * [Lintian] Make the packages binNMUable by replacing ${Source-Version}
+    appropriately
+  * [Lintian] Unmark ipppd/ispphone default value for translation
+  * [Lintian] Remove configure-generated files in the clean target
+  * [Lintian] No longer install an empty usr/include directory
+    for libcapi20-3
+  * [Lintian] No longer install an empty usr/bin and usr/share/man/man1/
+    directory for isdnactivecards
+  * [Lintian] make the isdnvboxserver package depends on
+    "openbsd-inetd | inet-superserver" as it uses update-inetd in its
+    maintainer script(s)
+  * [Lintian] Properly spell "Debian" in packages' descriptions
+  * [Lintian] Change menu entries to the "Applications/Network/Monitoring"
+    section (new menu policy)
+  * [Lintian] Properly phrase the description synopsis for isdnactivecards
+  * [Lintian] Remove debconf abuse:
+    - isdnvboxserver/doityourself
+    - isdnvboxserver/spoolcreate
+    - isdnvboxserver/vboxcreate
+    - isdnvboxserver/adduserdone (that one wasn't even used)
+    - isdnvboxserver/adduserfailed (that one wasn't even used)
+    - isdnlog/intro
+  * [Lintian] Turn some others into "error" type:
+    - isdnvboxserver/vboxnodir
+    - isdnvboxserver/vboxnouser
+    - isdnvboxserver/devfs_inittab
+    - isdnvboxserver/devfs_vboxgettyconf
+    - ipppd/ispwontdoit
+    - ipppd/wrongif
+    - ipppd/isploginpapalreadythere
+    - ipppd/isploginchapalreadythere
+    - ipppd/isploginpapchapalreadythere
+    - ipppd/oldipup
+    - ipppd/oldipdown
+    - ipppd/oldipupdown
+    - ipppd/noisdnutilsinit
+    - ipppd/isdnutilsinitbad
+  * [Lintian] Unmark one template that's for internal use only
+    (isdnvboxserver/dummy)
+  * [Lintian] Remove pointless preinst script for isdnutils-base
+  * Drop a lot of upgrade code from prehistoric versions. That means removing
+    isdnutils-base and the relevant templates
+  * debian/control, debian/rules: Use automake 1.9 instead of automake
+    1.8. (Closes: #474076). Thanks to Eric Dorland for the patch
+
+ -- Christian Perrier <bubulle@debian.org>  Thu, 08 May 2008 08:22:41 +0200
+
 isdnutils (1:3.9.20060704-3.3) unstable; urgency=medium
 
   * Non-maintainer upload.

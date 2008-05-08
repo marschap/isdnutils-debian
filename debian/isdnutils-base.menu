@@ -1,5 +1,5 @@
 ?package(isdnutils-base):needs="text" \
-  section="Apps/System" \
+  section="Applications/Network/Monitoring" \
   title="ISDN Monitor" \
   command="/usr/bin/imon" \
   description="A curses-based program to display the status of all ISDN lines"

@@ -1,27 +1,28 @@
 # Vietnamese Translation for isdnutils.
-# Copyright © 2007 Free Software Foundation, Inc.
-# Clytie Siddall <clytie@riverland.net.au>, 2005-2007.
+# Copyright © 2008 Free Software Foundation, Inc.
+# Clytie Siddall <clytie@riverland.net.au>, 2005-2008.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: isdnutils 1:3.9.20060704-2.5\n"
+"Project-Id-Version: isdnutils 1:3.9.20060704-3.5\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
-"POT-Creation-Date: 2008-01-12 10:05+0000\n"
-"PO-Revision-Date: 2007-01-30 22:13+1030\n"
+"POT-Creation-Date: 2008-04-16 18:20+0200\n"
+"PO-Revision-Date: 2008-04-27 23:44+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: LocFactoryEditor 1.7b3\n"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:1001
 msgid "ISP dialup config exists already"
-msgstr "Cấu hình quay số cho nhà cung cấp dịch vụ Mạng đã có."
+msgstr "Đã có cấu hình quay số cho nhà cung cấp dịch vụ Internet (ISP)."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:1001
 msgid ""
@@ -33,10 +34,9 @@ msgstr ""
 "cấu hình ipppd này sẽ không sửa đổi gì trong hai tập tin này, có vẻ là nó đã "
 "được cấu hình."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:1001
-#, fuzzy
 msgid ""
 "If it doesn't work yet, and you want to try the automatic configuration, "
 "stop all ISDN processes (use \"/etc/init.d/isdnutils stop\"), remove the "
@@ -44,10 +44,11 @@ msgid ""
 "ipppd\". After that, restart the ISDN processes: \"/etc/init.d/isdnutils "
 "start\"."
 msgstr ""
-"Nếu nó chưa hoạt động được, và bạn muốn thử tự động cấu hình, hãy ngừng mọi "
-"tiến trình (bằng lệnh « etc/init.d/isdnutils stop »), gỡ bỏ hai tập tin nói "
-"trên, và chạy lại việc cấu hình bằng lệnh « dpkg-reconfigure ipppd ». Sau đó, "
-"hãy khởi chạy lại những tiến trình ISDN: « /etc/init.d/isdnutils start »."
+"Nếu nó chưa hoạt động được, và bạn muốn thử tự động cấu hình, hãy dừng chạy "
+"mọi tiến trình ISDN (bằng lệnh « etc/init.d/isdnutils stop »), gỡ bỏ hai tập "
+"tin nói trên, và chạy lại việc cấu hình bằng lệnh « dpkg-reconfigure ipppd ». "
+"Sau đó, hãy khởi chạy lại những tiến trình ISDN: « /etc/init.d/isdnutils "
+"start »."
 
 #. Type: string
 #. Description
@@ -69,7 +70,7 @@ msgid ""
 "to an ISP. The default gateway will be ippp0."
 msgstr ""
 "Phần lớn người sẽ nói « ippp0 » ở đây, vì nó là giá trị mặc định để kết nối "
-"đến nhà cung cấp dịch vụ Mạng (ISP).  Cổng ra mặc định là « ippp0 »."
+"đến nhà cung cấp dịch vụ Internet (ISP).  Cổng ra mặc định là « ippp0 »."
 
 #. Type: string
 #. Description
@@ -93,13 +94,13 @@ msgstr ""
 "Ghi chú rằng hiện thời debconf sẽ cấu hình nhiều nhất một giao diện. Hãy "
 "nhập « không có » nếu bạn không muốn debconf cấu hình gì cho ipppd."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:3001
 msgid "wrong interface name"
 msgstr "sai tên giao diện"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:3001
 msgid ""
@@ -109,30 +110,24 @@ msgstr ""
 "Bạn có thể nhập chỉ tên bắt đầu với « ippp » có một số giữa 0 và 63 theo sau."
 
 #. Type: string
-#. Default
+#. Description
 #: ../ipppd.templates:4001
-msgid "manual"
-msgstr "bằng tay"
-
-#. Type: string
-#. Description
-#: ../ipppd.templates:4002
 msgid "What is your ISP's telephone number?"
-msgstr "Nhà cung cấp dịch vụ Mạng của bạn có số điện thoại nào?"
+msgstr "Nhà cung cấp dịch vụ Internet của bạn có số điện thoại nào?"
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4002
+#: ../ipppd.templates:4001
 msgid ""
 "What telephone number(s) must be dialed in order to connect to your Internet "
 "service provider (ISP)?"
 msgstr ""
-"Để kết nối đến nhà cung cấp dịch vụ Mạng (ISP) của bạn cần quay số điện "
+"Để kết nối đến nhà cung cấp dịch vụ Internet (ISP) của bạn cần quay số điện "
 "thoại nào?"
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4002
+#: ../ipppd.templates:4001
 msgid ""
 "Enter the telephone number here, including dialing prefixes, area codes, and "
 "so on. Enter the number without any spaces."
@@ -142,7 +137,7 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4002
+#: ../ipppd.templates:4001
 msgid ""
 "You can enter multiple telephone numbers. If you do so then separate them "
 "with spaces."
@@ -150,7 +145,7 @@ msgstr "Bạn có thể nhập nhiều số điện thoại, định giới bằ
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4002
+#: ../ipppd.templates:4001
 msgid ""
 "Enter the word \"manual\" or leave the field blank if you want to configure "
 "the connection manually."
@@ -226,13 +221,13 @@ msgstr ""
 "Mật khẩu bạn nhập vào đây sẽ được nhập vào tập tin « /etc/ppp/pap-secrets » "
 "và « etc/ppp/chap-secrets » cùng với tên người dùng."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:8001
 msgid "ISP user name already in pap-secrets"
 msgstr "Tên người dùng ISP đã có trong « pap-secrets »"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:8001
 msgid ""
@@ -245,13 +240,13 @@ msgstr ""
 "« /etc/ppp/pap-secrets ». Không có sao, mục nhập tồn tại sẽ bị ghi chú đè, và "
 "mục nhập mới chứa thông tin bạn mới nhập sẽ được chèn."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:9001
 msgid "ISP user name already in chap-secrets"
 msgstr "Tên người dùng ISP đã có trong « chap-secrets »"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:9001
 msgid ""
@@ -264,13 +259,13 @@ msgstr ""
 "« /etc/ppp/chap-secrets ». Không có sao, mục nhập tồn tại sẽ bị ghi chú đè, "
 "và mục nhập mới chứa thông tin bạn mới nhập sẽ được chèn."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:10001
 msgid "ISP user name already in chap-secrets and pap-secrets"
 msgstr "Tên người dùng ISP đã có trong « chap-secrets » và « pap-secrets »"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:10001
 msgid ""
@@ -284,13 +279,13 @@ msgstr ""
 "sao, những mục nhập tồn tại sẽ bị ghi chú đè, và những mục nhập mới chứa "
 "thông tin bạn mới nhập sẽ được chèn."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:11001
 msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
 msgstr "«/etc/ppp/ip-up.d/00-isdnutils » vẫn còn tồn tại"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:11001
 msgid ""
@@ -304,21 +299,21 @@ msgstr ""
 "làm lại các thay đổi đó trong tập tin « 00-ipppd » (tên mới). Sau đó, hãy xoá "
 "tập tin « 00-isdnutils » cũ."
 
-#. Type: note
+#. Type: error
 #. Description
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:11001 ../ipppd.templates:12001
 msgid "Until it is deleted, it will still be used! This may cause conflicts."
 msgstr "Không xoá nó thì nó vẫn còn được dùng, mà có thể gây ra sự xung đột."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:12001
 msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
 msgstr "« /etc/ppp/ip-down.d/99-isdnutils » vẫn còn tồn tại"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:12001
 msgid ""
@@ -332,13 +327,13 @@ msgstr ""
 "làm lại các thay đổi đó trong tập tin « 99-ipppd » (tên mới). Sau đó, hãy xoá "
 "tập tin « 99-isdnutils » cũ."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:13001
 msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
 msgstr "Văn lệnh « /etc/ppp/ip-up.d » và « ip-down.d » vẫn còn tồn tại"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:13001
 msgid ""
@@ -354,7 +349,7 @@ msgstr ""
 "00-ipppd » và « 99-ippd » (các tên mới). Sau đó, hãy xoá tập tin « 00-"
 "isdnutils » và « 99-isdnutils » cũ."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:13001
 msgid ""
@@ -362,13 +357,13 @@ msgid ""
 msgstr ""
 "Không xoá chúng thì chúng vẫn còn được dùng, mà có thể gây ra sự xung đột."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:14001
 msgid "(re)start ipppd by hand"
 msgstr "Tự khởi chạy (lại) ipppd"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:14001
 msgid ""
@@ -378,13 +373,13 @@ msgstr ""
 "Không có tập tin « /etc/init.d/isdnutils » trong hệ thống này nên bạn sẽ cần "
 "phải tự ngừng và tự khởi chạy trình nền (dæmon) ippd nào."
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:15001
 msgid "error running isdnutils init script"
 msgstr "gặp lỗi khi chạy văn lệnh khởi động isdnutils"
 
-#. Type: note
+#. Type: error
 #. Description
 #: ../ipppd.templates:15001
 msgid ""
@@ -398,158 +393,69 @@ msgstr ""
 "việc di chuyển tập tin « /etc/init.d/isdnutils.dpkg-dist » (nếu còn có) sang "
 "« /etc/init.d/isdnutils » sẽ cũng có ích."
 
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid "Entering isdnlog configuration"
-msgstr "Cách nhập cấu hình isdnlog"
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid ""
-"For correct isdnlog functioning, isdnlog needs to be configured with a "
-"number of settings. These are some or all (depending on the level you have "
-"configured debconf with) of:"
-msgstr ""
-"Để hoạt động được, isdnlog cần phải được cấu hình với một số thiết lập "
-"riêng. Phụ thuộc vào cấp cấu hình debconf bạn đã chọn, những thiết lập này "
-"có thể là:"
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid ""
-" - country          this is used for setting a number of defaults,\n"
-"                    e.g. what rate tables to use for calculating\n"
-"                    the cost of a call."
-msgstr ""
-"• country\t\t(quốc gia)\n"
-"\tThiết lập này được dùng để đặt một số giá trị mặc định,\n"
-"\tv.d. những bảng giá nào cần dùng để tính giá điện thoại."
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid " - country prefix   what is used to indicate an international number"
-msgstr ""
-"• country prefix\t(tiền tố quốc gia)\n"
-"\tđể ngụ ý số điện thoại nước ngoài"
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid ""
-" - country code     the phone number for your country\n"
-"                    (e.g. 49 for Germany)"
-msgstr ""
-"• country code\t(mã quốc gia)\n"
-"\tmã điện thoại cho quốc gia của bạn\n"
-"\t(v.d. 84 cho Việt Nam)"
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid ""
-" - areacode prefix  what is used to indicate an areacode,\n"
-"                    if applicable in your country. Usually a 0 ."
-msgstr ""
-"• areacode prefix\t\t(tiền tố mã vùng)\n"
-"\tđể ngụ ý mã vùng, nếu có trong quốc gia của bạn\n"
-"\t(thường 0)"
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid " - areacode         what your local areacode is (if applicable)"
-msgstr ""
-"• areacode\t\t(mã vùng)\n"
-"\tmã vùng của chỗ bạn, nếu có (v.d. 804 cho Hà Nội)"
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-#, fuzzy
-msgid ""
-"After installation, you may have to edit /etc/isdn/isdnlog.isdnctrl0 before "
-"isdnlog can work properly, although that file is set up with reasonable "
-"defaults for most cases."
-msgstr ""
-"Sau khi cài đặt xong thì có lẽ bạn cũng cần phải sửa đổi tập tin « /etc/isdn/"
-"isdnlog.isdnctrl0 » để isdnlog có thể hoạt động được, dù tập tin đó đã được "
-"thiết lập với các giá trị mặc định có ích cho phần lớn trường hợp."
-
-#. Type: text
-#. Description
-#: ../isdnlog.templates:1001
-msgid ""
-"If you previously had /etc/isdn/isdnlog.isdnctrl0, that will be preserved."
-msgstr ""
-"Nếu bạn đã có tập tin « /etc/isdn/isdnlog.isdnctrl0 », nó sẽ được bảo tồn."
-
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "AT"
 msgstr "AT"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "CH"
 msgstr "CH"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "DE"
 msgstr "DE"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "ES"
 msgstr "ES"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "FR"
 msgstr "FR"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "LU"
 msgstr "LU"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "NL"
 msgstr "NL"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "NO"
 msgstr "NO"
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:2001
+#: ../isdnlog.templates:1001
 msgid "other"
 msgstr "khác"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:2002
+#: ../isdnlog.templates:1002
 msgid "What country is this system in?"
 msgstr "Hệ thống này nằm trong quốc gia nào?"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:2002
+#: ../isdnlog.templates:1002
 msgid ""
 "This is used for setting a number of defaults, e.g. what rate tables to use "
 "for calculating the cost of a call."
@@ -559,13 +465,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:3001
+#: ../isdnlog.templates:2001
 msgid "Enter the ISO two-letter code for your country"
 msgstr "Hãy nhập mã hai chữ ISO cho quốc gian của bạn (v.d. VN cho Việt Nam)."
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:3001
+#: ../isdnlog.templates:2001
 msgid ""
 "This can't really be used for setting any defaults, but maybe some day..."
 msgstr ""
@@ -574,7 +480,7 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:3001
+#: ../isdnlog.templates:2001
 msgid ""
 "Note that you will probably have to edit /etc/isdn/isdn.conf before isdnlog "
 "will be able to work."
@@ -584,43 +490,43 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:4001
+#: ../isdnlog.templates:3001
 msgid "What is used to indicate an international number?"
 msgstr "Để ngụ ý một số nước ngoài, chỗ của bạn dùng ký tự nào?"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:5001
+#: ../isdnlog.templates:4001
 msgid "What is the countrycode for your country?"
 msgstr "Chỗ của bạn có số riêng nào?"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:5001
+#: ../isdnlog.templates:4001
 msgid "e.g. ${default_countrycode} for ${default_country}"
 msgstr "v.d. ${default_countrycode} cho ${default_country}"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:6001
+#: ../isdnlog.templates:5001
 msgid "What is used to indicate an areacode, if applicable?"
 msgstr "Nếu thích hợp, để ngụ ý mã vùng chỗ của bạn dùng ký tự nào?"
 
 #. Type: string
 #. Description
-#: ../isdnlog.templates:7001
+#: ../isdnlog.templates:6001
 msgid "What is your local areacode, if applicable?"
 msgstr "Nếu thích hợp, chỗ của bạn có số vùng địa phương nào?"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:8001
+#: ../isdnlog.templates:7001
 msgid "Run isdnrate as a daemon?"
 msgstr "Bạn có muốn chạy trình isdnrate (giá isdn) như là trình nền không?"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:8001
+#: ../isdnlog.templates:7001
 msgid ""
 "isdnrate is a utility to calculate the costs of a connection to a given "
 "phone number, used e.g. for LCR systems to find the cheapest carrier on a "
@@ -634,7 +540,7 @@ msgstr ""
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:8001
+#: ../isdnlog.templates:7001
 msgid ""
 "This is only for people with special requirements, such as those using the "
 "isdn2h323 package. Hence most people should say \"no\"."
@@ -642,104 +548,21 @@ msgstr ""
 "Tùy chọn này chỉ cho người có như cầu đặc biệt, v.d. những người sử dụng gói "
 "« isdn2h323 ». Vì vậy, phần lớn người nên nói « không » tại đây."
 
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:1001
-#, fuzzy
-msgid "isdnutils is now split up"
-msgstr "ISDNUTILS đã được chia ra"
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:1001
-msgid ""
-"The old isdnutils package is now split up into smaller parts: isdnutils "
-"ipppd isdnutils-xtools isdnutils-doc isdnvboxserver isdnvboxclient isdnlog "
-"isdnlog-data libcapi20-3 isdnactivecards pppdcapiplugin isdneurofile"
-msgstr ""
-"Gói idsnutils cũ đã được chia ra một số phần nhỏ hơn:\n"
-"• ipppd\n"
-"• isdnactivecards\n"
-"• isdneurofile\n"
-"• isdnlog\n"
-"• isdnlog-data\n"
-"• isdnutils\n"
-"• isdnutils-doc\n"
-"• isdnutils-xtools\n"
-"• isdnvboxclient\n"
-"• isdnvboxserver\n"
-"• libcapi20-3\n"
-"• pppdcapiplugin"
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:1001
-msgid ""
-"This allows you to better select what parts you want installed, almost no "
-"one needs everything. Unfortunately there's no way of automatically "
-"selecting those parts you need."
-msgstr ""
-"Cấu trúc này cho phép bạn chọn những phần cần cài đặt: rất ít người cần cài "
-"đặt tất cả. Tiếc là chưa có phương pháp tự động chọn những phần cần thiết "
-"cho mỗi người dùng."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:1001
-msgid ""
-"You have ipppX interfaces configured, but you have not selected  ipppd to be "
-"installed. This can be dangerous (leaving you with no way of obtaining "
-"ipppd), so aborting the installation of this new isdnutils."
-msgstr ""
-"Bạn có giao diện kiểu ipppX được cấu hình, nhưng chưa chọn cài đặt gói "
-"ipppd. Trường hợp có thể nguy hiểm (không có phương pháp lấy ipppd) nên hủy "
-"bỏ việc cài đặt gói isdnutils mới này."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:1001
-msgid ""
-"If you really mean to not have ipppd, please remove the ipppd.* files from /"
-"etc/isdn/, stop any ipppX interfaces, and reinstall isdnutils."
-msgstr ""
-"Nếu bạn thật sự không muốn sử dụng ipppd, hãy gỡ bỏ các tập tin « ipppd.* » "
-"ra thư mục « /etc/isdn/ », ngừng giao diện ipppX nào, và cài đặt lại gói "
-"isdnutils."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:1001
-msgid ""
-"If you used dselect, please select (+) ipppd, and any of the other parts you "
-"might need (e.g. isdnlog, isdnvbox, isdnutils-xtools), although those should "
-"have been selected automatically. If you used apt-get, use 'apt-get install "
-"isdnutils ipppd isdnlog ...'; you may need to run 'apt-get -f install' first "
-"to configure any other packages that were unpacked but not yet configured."
-msgstr ""
-"Bạn đã sử dụng • dselect • thì hãy chọn (đánh dấu cộng +) gói « ipppd» và các "
-"phần khác cần thiết (v.d. isdnlog, isdnvbox, isdnutils-xtools), dù các gói "
-"đó nên tự động được chọn .\n"
-"\n"
-"Còn nếu bạn đã sử dụng • apt-get •, hãy chạy lệnh:\n"
-"« apt-get install isdnutils ipppd isdnlog ... » (install: cài đặt)\n"
-"Có lẽ trước tiên bạn cần phải chạy lệnh « apt-get -f install », để cấu hình "
-"gói khác nào đã được giải nén nhưng chưa được cấu hình."
-
 #. Type: select
 #. Choices
-#: ../isdnutils-base.templates:2001
+#: ../isdnutils-base.templates:1001
 msgid "none, ISAR.BIN"
 msgstr "không có, ISAR.BIN"
 
 #. Type: select
 #. Description
-#: ../isdnutils-base.templates:2002
+#: ../isdnutils-base.templates:1002
 msgid "Does firmware need to be loaded?"
 msgstr "Có phần vững nào cần nạp không?"
 
 #. Type: select
 #. Description
-#: ../isdnutils-base.templates:2002
+#: ../isdnutils-base.templates:1002
 msgid ""
 "Some ISDN cards can't function properly until firmware has been downloaded. "
 "Notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which need "
@@ -755,13 +578,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnutils-base.templates:3001
+#: ../isdnutils-base.templates:2001
 msgid "Which ISDN card numbers have to be loaded with the firmware?"
 msgstr "Cùng với phần vững này, cần phải nạp những số hiệu thẻ ISDN nào?"
 
 #. Type: string
 #. Description
-#: ../isdnutils-base.templates:3001
+#: ../isdnutils-base.templates:2001
 msgid ""
 "If you have more than one card, enter the number of the card(s) that have to "
 "be loaded with the firmware, starting with 1, separated by commas. If you "
@@ -771,83 +594,6 @@ msgstr ""
 "Bạn có nhiều thẻ ISDN thì hãy nhập số hiệu của các thẻ cần nạp cùng với phần "
 "vững, bắt đầu từ số 1, định giới bằng dấu phẩy. Chỉ có một thẻ thì trả lời "
 "là « 1 ». Có hai thẻ đều cần phải được nạp cùng với phần vững thì nhập « 1,2 »."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:4001
-msgid "You have an (old) isdnvbox cron.weekly script"
-msgstr "Bạn có một văn lệnh hàng tuần (cron.weekly) kiểu isdnvbox cũ."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:4001
-msgid ""
-"In early versions of isdnutils 3.1pre1b, when upgrading from 3.0 the /etc/"
-"cron.weekly/isdnutils script was renamed to isdnvbox. Unfortunately, when "
-"isdnvbox was split up into isdnvboxserver and isdnvboxclient, the existing "
-"cron script was not renamed. This can lead to two scripts existing."
-msgstr ""
-"Trong các phiên bản cũ của isdnutils 3.1pre1b, khi nâng cấp từ phiên bản 3.0 "
-"văn lệnh « /etc/cron.weekly/isdnutils » có tên được thay đổi sang « isdnvbox "
-"». Tiếc là khi gói « isdnvbox » được chia ra hai gói « isdnvboxserver » và « "
-"isdnvboxclient », văn lệnh định thời (cron) tồn tại chưa nhận tên mới. Tình "
-"trạng này có thể đưa tới trường hợp có hai văn lệnh riêng."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:4001
-msgid ""
-"Normally, at this point the old script could just be deleted, but it looks "
-"like you have edited the script manually. Please look at /etc/cron.weekly/"
-"isdnvbox to see if any changes need to be preserved (e.g. in the /etc/cron."
-"weekly/isdnvboxserver script), and then delete the old script by hand."
-msgstr ""
-"Bình thường, vào lúc này văn lệnh cũ đơn giản có thể được xoá, nhưng có vẻ "
-"là bạn đã tự sửa đổi văn lệnh cũ này. Hãy xem tập tin « /etc/cron.weekly/"
-"isdnvbox » và quyết định nếu thay đổi nào cần được bảo tồn (v.d. trong văn "
-"lệnh « /etc/cron.weekly/isdnvboxserver », rồi tự xoá văn lệnh cũ."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:4001
-msgid ""
-"If you can't see anything that needs preserving, it is probably safe to "
-"delete it."
-msgstr ""
-"Kạn không thể xem điều nào cần bảo tồn thì rất có thể xóa nó một cách an "
-"toàn."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:5001
-msgid "/etc/cron.weekly/isdnutils renamed to isdnvboxserver"
-msgstr ""
-"Tập tin « /etc/cron.weekly/isdnutils » đã được thay tên thành « isdnvboxserver "
-"»"
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:5001
-msgid ""
-"The existing /etc/cron.weekly/isdnutils script has been renamed to "
-"isdnvboxserver to fit the names of the splitted packages (in the old "
-"version, the script only handled isdnvbox things)."
-msgstr ""
-"Văn lệnh « /etc/cron.weekly/isdnutils » tồn tại đã nhận tên mới « "
-"isdnvboxserver » để khớp với tên của những gói đã chia ra (trong phiên bản "
-"cũ, văn lệnh này chỉ quản lý điều của « isdnvbox »)."
-
-#. Type: note
-#. Description
-#: ../isdnutils-base.templates:5001
-msgid ""
-"When the packaging system asks whether to replace the /etc/cron.weekly/"
-"isdnvboxserver, it is recommended to do so. If you have made any changes to "
-"the script in the past, please put those changes into the new script."
-msgstr ""
-"Khi hệ thống đóng gói hỏi nếu bạn muốn thay thế tập tin « /etc/cron.weekly/"
-"isdnvboxserver », khuyên bạn làm như thế. Nếu bạn đã sửa đổi văn lệnh này "
-"bằng bất cứ cách nào, hãy chèn những thay đổi đó vào văn lệnh mới."
 
 #. Type: string
 #. Description
@@ -880,36 +626,15 @@ msgstr ""
 "cấu hình vbox hoạt động tồn tại bắt nguồn từ bản cài đặt isdnutils trước "
 "(trừ bạn muốn tạo cấu hình mới)."
 
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:2001
-msgid "You've chosen not to use debconf for isdnvboxserver"
-msgstr "Bạn đã không chọn sử dụng debconf cho isdnvboxserver."
-
-# I hope all these names make sense to the user: they don't do anything for me. :( / Mong muốn các tên chương trình này có nghĩa cho người dùng, tôi không hiểu. :(
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:2001
-msgid ""
-"If you change your mind, run \"dpkg-reconfigure isdnvboxserver\". To "
-"finalize isdnvboxserver, you need to ensure that vboxgetty is running from "
-"inittab, and that vboxd will run out of inetd."
-msgstr ""
-"Bạn thay đổi ý kiến về sau thì hãy chạy lệnh:\n"
-"« dpkg-reconfigure isdnvboxserver »\n"
-"Để cấu hình xong « isdnvboxserver », bạn cần phải kiểm tra xem tiến trình « "
-"vboxgetty » đang chạy từ « inittab », và « vboxd » sẽ chạy từ « inetd »."
-
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:3001
+#: ../isdnvboxserver.templates:2001
 msgid "After how many rings should vbox pick up the line?"
 msgstr "Vbox nên lấy gọi sau chuông điện thoại đã réo mấy lần?"
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:3001
-#, fuzzy
+#: ../isdnvboxserver.templates:2001
 msgid ""
 "One ring is about 5 seconds. You can fine-tune the number of rings for "
 "certain phonenumbers manually, e.g. any salesmen you know the number of (or "
@@ -917,22 +642,20 @@ msgid ""
 "ring. See `man vbox.conf' for more info."
 msgstr ""
 "Chuông điện thoại có réo một lần trong khoảng năm giây. Vậy bạn có thể tự "
-"điều hưởng tinh tổng số lần réo cho số điện thoại nào đó. Lấy thí dụ, nếu "
-"bạn không muốn nói chuyện với một người khác nào đó, và biết số điện thoại "
-"của ta, vbox có thể đổ mọi cuộc gọi kiểu đó vào máy trả lời sau khi chuông "
-"điện thoại réo chỉ một lần. Cũng hữu ích để tránh người không cung cấp thông "
-"tin nhận diện người gọi (caller-ID). Xem trang hướng dẫn (man vbox.conf) để "
-"tìm thông tin thêm."
+"điều hưởng tinh tổng số lần réo cho số điện thoại nào đó. Ví dụ, sau một lần "
+"réo bạn có thể đổ vào máy trả lời bất kỳ người bán hàng có số điện thoại đã "
+"biết, hoặc mọi cuộc gọi không có mã số người gọi (CID). Xem « man vbox.conf » "
+"để tìm thêm thông tin."
 
 #. Type: select
 #. Description
-#: ../isdnvboxserver.templates:4001
+#: ../isdnvboxserver.templates:3001
 msgid "Should the message be attached to the email?"
 msgstr "Thông điệp nên được đính kèm thư điện tử không?"
 
 #. Type: select
 #. Description
-#: ../isdnvboxserver.templates:4001
+#: ../isdnvboxserver.templates:3001
 msgid ""
 "When a message is recorded, an email notification is sent. If that email "
 "should contain the message as an attachment, choose \"yes\" here. Note: the "
@@ -943,13 +666,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:5001
+#: ../isdnvboxserver.templates:4001
 msgid "As what user should the answering machine run?"
 msgstr "Máy trả lời nên chạy với tư cách người dùng nào?"
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:5001
+#: ../isdnvboxserver.templates:4001
 msgid ""
 "vboxd runs with the privileges of a normal (non-root) user. This is "
 "typically your non-root login name. This user must be a member of the "
@@ -961,25 +684,25 @@ msgstr ""
 
 #. Type: text
 #. Description
-#: ../isdnvboxserver.templates:6001
+#: ../isdnvboxserver.templates:5001
 msgid "The user ${Daemonuser} doesn't exist on the system."
 msgstr "Không có người dùng ${Daemonuser} trong hệ thống này."
 
 #. Type: text
 #. Description
-#: ../isdnvboxserver.templates:6001
+#: ../isdnvboxserver.templates:5001
 msgid "Enter a valid user name here that's known to the system."
 msgstr "Hãy nhập một người dùng hợp lệ được biết trên hệ thống này."
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:7001
+#: ../isdnvboxserver.templates:6001
 msgid "What username may connect to the vbox server?"
 msgstr "Tên người dùng nào có thể kết nối đến máy phục vụ vbox?"
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:7001
+#: ../isdnvboxserver.templates:6001
 msgid ""
 "To listen to messages using vbox (from the isdnvboxclient package), you need "
 "a username and password. Enter the username here. This does not have to be a "
@@ -991,59 +714,27 @@ msgstr ""
 
 #. Type: password
 #. Description
-#: ../isdnvboxserver.templates:8001
+#: ../isdnvboxserver.templates:7001
 msgid "Enter the password for ${User} here."
 msgstr "Nhập vào đây mật khẩu cho ${User}."
 
 #. Type: password
 #. Description
-#: ../isdnvboxserver.templates:8001
+#: ../isdnvboxserver.templates:7001
 msgid "Please don't use ':' in it! The way it is stored cannot handle this."
 msgstr ""
 "Không cho phép sử dụng dấu hai chấm trong mật khẩu : phương pháp cất giữ "
 "không thể chấp nhận."
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:9001
-msgid "spool directory created"
-msgstr "thư mục ống chỉ đã được tạo"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:9001
-msgid ""
-"The spool directory `${NEWSPOOL}' has been created, which is necessary for "
-"proper working of vbox."
-msgstr ""
-"Thư mục ống chỉ «${NEWSPOOL}» đã được tạo, vì nó cần thiết để vbox hoạt động "
-"được."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:10001
-msgid "vbox config file created"
-msgstr "tập tin cấu hình vbox đã được tạo"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:10001
-msgid ""
-"The configuration file `${DIR}/.vbox.conf' has been created. See `man vbox."
-"conf' for information on changing this file."
-msgstr ""
-"Tập tin cấu hình « ${DIR}/.vbox.conf » đã được tạo. Xem trang hướng dẫn « man "
-"vbox.conf » để tìm thông tin về phương pháp sửa đổi tập tin này."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:11001
+#: ../isdnvboxserver.templates:8001
 msgid "No home directory!"
 msgstr "Không có thư mục chính !"
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:11001
+#: ../isdnvboxserver.templates:8001
 msgid ""
 "The home directory `${DIR}' for user `${USER}' doesn't exist. This means "
 "that the file `${DIR}/.vbox.conf' cannot be created."
@@ -1051,15 +742,15 @@ msgstr ""
 "Thư mục chính « ${DIR} » cho người dùng « ${USER} » không tồn tại nên không "
 "thể tạo tập tin « ${DIR}/.vbox.conf »."
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:12001
+#: ../isdnvboxserver.templates:9001
 msgid "User doesn't exist!"
 msgstr "Không có người dùng đó !"
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:12001
+#: ../isdnvboxserver.templates:9001
 msgid ""
 "The user `${USER}' doesn't exist on the system! Please rerun the "
 "configuration with `dpkg-reconfigure isdnvboxserver' to enter another "
@@ -1071,13 +762,13 @@ msgstr ""
 
 #. Type: select
 #. Description
-#: ../isdnvboxserver.templates:13001
+#: ../isdnvboxserver.templates:10001
 msgid "Should vboxgetty be enabled?"
 msgstr "Có nên hiệu lực vboxgetty không?"
 
 #. Type: select
 #. Description
-#: ../isdnvboxserver.templates:13001
+#: ../isdnvboxserver.templates:10001
 msgid ""
 "vboxgetty is in /etc/inittab, but not yet enabled. Answering `yes' here will "
 "enable it once this package is fully configured. Choose `no' if you want to "
@@ -1087,64 +778,15 @@ msgstr ""
 "đây sẽ hiệu lực nó một khi gói này đã được cấu hình đầy đủ. Còn chọn « không "
 "» nếu bạn muốn tự điều chỉnh nó."
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:14001
-msgid "user `vbox' created"
-msgstr "người dùng « vbox » đã được tạo"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:14001
-msgid ""
-"A user `vbox' was created, in group `dialout'. This is used as the ID that "
-"the vbox daemons run under."
-msgstr ""
-"Người dùng « vbox » đã được tạo trong nhóm « dialout » (quay số đi ra). Giá "
-"trị này được dùng như là thông tin nhận diện dưới đó các trình nền vbox chạy."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:15001
-msgid "Failed to create user `vbox'"
-msgstr "Lỗi tạo người dùng « vbox »"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:15001
-msgid ""
-"For optimal operation of vbox, a user `vbox' should be created, in group "
-"`dialout'. However, creating that user failed with the following error(s):"
-msgstr ""
-"Để thao tác vbox một cách tốt nhất, một người dùng « vbox » nên được tạo "
-"trong nhóm « dialout ». Tuy nhiên, việc tạo người dùng đó bị lỗi:"
-
-# Variable: don't translate / Biến: đừng dịch
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:15001
-msgid "${MSG}"
-msgstr "${MSG}"
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:15001
-msgid ""
-"Please remedy this problem by hand, and then rerun the configuration with "
-"`dpkg-reconfigure isdnvboxserver'."
-msgstr ""
-"Hãy tự sửa chữa vấn đề này, rồi chạy lại cấu hình bằng lệnh « dpkg-"
-"reconfigure isdnvboxserver »."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:16001
+#: ../isdnvboxserver.templates:11001
 msgid "Device in inittab doesn't agree with devfs mode"
 msgstr "Thiết bị trong « inittab » không khớp với chế độ « devfs »"
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:16001
+#: ../isdnvboxserver.templates:11001
 msgid ""
 "The entry for vboxgetty in /etc/inittab uses a device name that does not "
 "correspond to the current devfs usage; either a devfs (/dev/isdn/ttyIxx) "
@@ -1156,24 +798,23 @@ msgstr ""
 "isdn/ttyIxx) được dùng trong « inittab » khi chưa gắn kết « devfs », hoặc tên "
 "khác « devfs » được dùng khi « devfs » được gắn kết."
 
-#. Type: note
+#. Type: error
 #. Description
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:16001 ../isdnvboxserver.templates:17001
+#: ../isdnvboxserver.templates:11001 ../isdnvboxserver.templates:12001
 msgid "You will have to fix this by hand."
 msgstr "Bạn sẽ phải tự sửa đó."
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:17001
+#: ../isdnvboxserver.templates:12001
 msgid "Device in vboxgetty.conf doesn't agree with devfs mode"
 msgstr "Thiết bị trong « vboxgetty»  không khớp với chế độ « devfs »"
 
-#. Type: note
+#. Type: error
 #. Description
-#: ../isdnvboxserver.templates:17001
-#, fuzzy
+#: ../isdnvboxserver.templates:12001
 msgid ""
 "The device entry in /etc/isdn/vboxgetty.conf uses a device name that does "
 "not correspond to the current devfs usage; either a devfs (/dev/isdn/ttyIxx) "
@@ -1184,64 +825,3 @@ msgstr ""
 "không tương ứng với cách sử dụng « devfs » hiện thời: hoặc có một tên « devfs "
 "» (/dev/isdn/ttyIxx) được dùng trong « vboxgetty.conf » khi chưa gắn kết « "
 "devfs », hoặc tên khác « devfs » được dùng khi « devfs » được gắn kết."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:18001
-msgid "isdnvboxserver is being configured."
-msgstr "« isdnvboxserver » đang được cấu hình."
-
-#. Type: note
-#. Description
-#: ../isdnvboxserver.templates:18001
-msgid "Note to translators: no need to translate this, not shown to users."
-msgstr "Không cần phải dịch điều nào?"
-
-#~ msgid "spool directory renamed"
-#~ msgstr "thư mục ống chỉ đã nhận tên mới"
-
-#~ msgid ""
-#~ "The spool directory `${OLDSPOOL}' has been renamed to `${NEWSPOOL}' for "
-#~ "consistency's sake. This should have no other consequences."
-#~ msgstr ""
-#~ "Thư mục ống chỉ « ${OLDSPOOL} » đã được thay tên thành « ${NEWSPOOL} » để "
-#~ "thống nhất. Không nên có kết quả khác."
-
-#~ msgid "two obsolete spool directories detected"
-#~ msgstr "hai thư mục ống chỉ quá cũ được phát hiện"
-
-#~ msgid ""
-#~ "The directories `${OLDSPOOL1}' and `${OLDSPOOL2}' (which aren't used "
-#~ "anymore in the standard configuration), and the new spool directory `"
-#~ "${NEWSPOOL}' all exist. The old directories will no longer be used; "
-#~ "please manually move any messages from there to the new directory (if "
-#~ "any), and delete the old directories."
-#~ msgstr ""
-#~ "Hai thư mục ống chỉ cũ « ${OLDSPOOL1} » và « ${OLDSPOOL2} » vẫn còn tồn tại "
-#~ "cùng với thư mục mới « ${NEWSPOOL} ». Hai thư mục cũ sẽ không còn được "
-#~ "dùng lại: hãy tự di chuyển thông điệp nào từ đó sang thư mục mới (nếu "
-#~ "có), và xoá các thư mục cũ."
-
-#~ msgid "two spool directories detected"
-#~ msgstr "hai thư mục ống chỉ được phát hiện"
-
-#~ msgid ""
-#~ "The old spool directory `${OLDSPOOL}' and the new spool directory `"
-#~ "${NEWSPOOL}' both exist. The old directory will no longer be used; please "
-#~ "manually move any messages from there to the new directory (if any), and "
-#~ "delete the old directory."
-#~ msgstr ""
-#~ "Thư mục ống chỉ cũ « ${OLDSPOOL} » vẫn còn tồn tại cùng với thư mục mới « "
-#~ "${NEWSPOOL} ». Thư mục cũ sẽ không còn được dùng lại: hãy tự di chuyển "
-#~ "thông điệp nào từ đó sang thư mục mới (nếu có), và xoá thư mục cũ."
-
-#~ msgid "vbox config file moved"
-#~ msgstr "tập tin cấu hình vbox đã được di chuyển"
-
-#~ msgid ""
-#~ "The configuration file `${OLD}' has been moved to `${DIR}/.vbox.conf'.  "
-#~ "See `man vbox.conf' for information on changing this file."
-#~ msgstr ""
-#~ "Tập tin cấu hình « ${OLD} » đã được di chuyển sang « ${DIR}/.vbox.conf ». "
-#~ "Xem trang hướng dẫn « man vbox.conf » để tìm thông tin về phương pháp sửa "
-#~ "đổi tập tin này."

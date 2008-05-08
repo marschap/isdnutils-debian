@@ -1,25 +1,23 @@
-# Italian (it) translation of isdnutils po-debconf
-# Copyright (C) 2007 Software in the Public Interest
-# This file is distributed under the same license as the isdnutils package.
-# Luca Monducci <luca.mo@tiscali.it>, 2004-2007.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: isdnutils 1:3.9.20060704-2.5 italian debconf templates\n"
+"Project-Id-Version: isdnutils\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
 "POT-Creation-Date: 2008-04-16 18:20+0200\n"
-"PO-Revision-Date: 2007-01-29 09:02+0100\n"
-"Last-Translator: Luca Monducci <luca.mo@tiscali.it>\n"
-"Language-Team: Italian <debian-l10n-italian@lists.debian.org>\n"
+"PO-Revision-Date: 2008-04-29 21:38+0200\n"
+"Last-Translator: Esko Arajärvi <edu@iki.fi>\n"
+"Language-Team: Finnish <debian-l10n-finnish@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: Finnish\n"
+"X-Poedit-Country: FINLAND\n"
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:1001
 msgid "ISP dialup config exists already"
-msgstr "Configurazione della connessione a un ISP gi� esistente"
+msgstr "ISP:n soittosarja-asetukset ovat jo olemassa"
 
 #. Type: error
 #. Description
@@ -29,9 +27,9 @@ msgid ""
 "ipppd configuration phase won't touch anything there, as it looks like it's "
 "already been configured."
 msgstr ""
-"I file device.${IPPP0} e ipppd.${IPPP0} esistono gi�. Di conseguenza la fase "
-"di configurazione di ipppd li lascer� intoccati dato che sembrano essere gi� "
-"configurati."
+"Tiedostot device.${IPPP0} ja ipppd.${IPPP0} ovat jo olemassa. Niinpä ipppd "
+"ei koske näihin tehdessään asetuksia, koska näyttää siltä, että asetukset "
+"ovat jo olemassa."
 
 #. Type: error
 #. Description
@@ -43,22 +41,23 @@ msgid ""
 "ipppd\". After that, restart the ISDN processes: \"/etc/init.d/isdnutils "
 "start\"."
 msgstr ""
-"Se non funzionano e si vuole provare la configurazione automatica, fermare "
-"tutti i processi ISDN (usare �/etc/init.d/isdnutils stop�), rimuovere i file "
-"menzionati in precedenza e ripetere la configurazione con �dpkg-reconfigure "
-"ipppd�. Poi riavviare i processi ISDN con �/etc/init.d/isdnutils start�."
+"Jos ne eivät toimi ja halutaan käyttää automaattisia asetuksia, tulee kaikki "
+"ISDN-prosessit pysäyttää (komennolla ”/etc/init.d/isdnutils stop”), yllä "
+"mainitut tiedostot poistaa ja tehdä asetukset uudelleen komennolla ”dpkg-"
+"reconfigure ipppd”. Tämän jälkeen ISDN-prosessit voidaan käynnistää "
+"uudelleen komennolla ”/etc/init.d/isdnutils start”."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:2001
 msgid "Which interface should be configured?"
-msgstr "Quale interfaccia configurare?"
+msgstr "Asetettava liitäntä:"
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:2001
 msgid "Which interface should debconf configure?"
-msgstr "Quale interfaccia configurare con debconf?"
+msgstr "Anna liitäntä, jonka asetukset debconfin tulisi tehdä."
 
 #. Type: string
 #. Description
@@ -67,8 +66,8 @@ msgid ""
 "Most people will say \"ippp0\" here, as that is the default for a connection "
 "to an ISP. The default gateway will be ippp0."
 msgstr ""
-"La maggior parte delle persone inserir� �ippp0�, che il valore corretto per "
-"una connessione a un ISP. Il default gateway sar� ippp0."
+"Useimmiten ”ippp0” on oikea arvo, koska se on oletusarvo otettaessa yhteyttä "
+"ISP:hen. Oletusyhdyskäytävä tulee olemaan ippp0."
 
 #. Type: string
 #. Description
@@ -78,9 +77,8 @@ msgid ""
 "interface that debconf will configure (e.g. because they don't want this "
 "connection to be the default gateway)."
 msgstr ""
-"Comunque chi ha particolari necessit� pu� scegliere di configurare con "
-"debconf un'interfaccia diversa (p.e. perch� non si vuole usare questa "
-"connessione come default gateway)."
+"Jotkut saattavat kuitenkin haluta valita jonkin toisen liitännän (eli tämän "
+"liitännän ei haluta olevan oletusyhdyskäytävä)."
 
 #. Type: string
 #. Description
@@ -89,14 +87,14 @@ msgid ""
 "Note that debconf will currently only configure at most one interface. Enter "
 "\"none\" if you do not want debconf to configure anything for ipppd."
 msgstr ""
-"Notare che debconf configura al massimo una interfaccia. Inserire �nessuno� "
-"per evitare che debconf configuri ipppd."
+"Nykyisellään debconf tekee enintään yhden liitännän asetukset. Jos debconfin "
+"ei haluta tekevän mitään asetuksia ipppd:lle, syötä ”none”."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:3001
 msgid "wrong interface name"
-msgstr "nome dell'interfaccia errato"
+msgstr "Virheellinen liitännän nimi"
 
 #. Type: error
 #. Description
@@ -105,14 +103,14 @@ msgid ""
 "You can only give names starting with \"ippp\" followed by a number between "
 "0 and 63."
 msgstr ""
-"Si possono inserire solo nomi che iniziano con �ippp� seguito da un numero da "
-"0 a 63."
+"Kelvolliset liitännän nimet koostuvat merkkijonosta ”ippp” ja väliltä 0-63 "
+"olevasta numerosta."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:4001
 msgid "What is your ISP's telephone number?"
-msgstr "Qual � il numero telefonico del proprio ISP?"
+msgstr "ISP:n puhelinnumero:"
 
 #. Type: string
 #. Description
@@ -121,8 +119,8 @@ msgid ""
 "What telephone number(s) must be dialed in order to connect to your Internet "
 "service provider (ISP)?"
 msgstr ""
-"Quale numero comporre per connettersi al proprio Internet Service Provider "
-"(ISP)?"
+"Anna puhelinnumero, johon soittamalla voidaan ottaa yhteys "
+"palveluntarjoajaan (ISP)."
 
 #. Type: string
 #. Description
@@ -131,8 +129,8 @@ msgid ""
 "Enter the telephone number here, including dialing prefixes, area codes, and "
 "so on. Enter the number without any spaces."
 msgstr ""
-"Inserire il numero di telefono, compresi i prefissi di composizione, gli "
-"indicativi di localit� e cos� via, ma senza inserire spazi."
+"Syötä puhelinnumero tähän sisältäen mahdolliset etuliitteet, suuntanumerot "
+"ja niin edelleen. Syötä numero ilman välilyöntejä."
 
 #. Type: string
 #. Description
@@ -141,8 +139,8 @@ msgid ""
 "You can enter multiple telephone numbers. If you do so then separate them "
 "with spaces."
 msgstr ""
-"Si possono inserire pi� numeri di telefono. Per farlo separarli con degli "
-"spazi."
+"Tähän voidaan syöttää useampia puhelinnumeroita. Ne tulee erottaa toisistaan "
+"välilyönnein."
 
 #. Type: string
 #. Description
@@ -151,14 +149,14 @@ msgid ""
 "Enter the word \"manual\" or leave the field blank if you want to configure "
 "the connection manually."
 msgstr ""
-"Inserire la parola �manuale� o lasciare vuoto il campo se si vuole "
-"configurare manualmente la connessione."
+"Syötä sana ”manual” tai jätä kenttä tyhjäksi, jos yhteyden asetukset "
+"halutaan tehdä käsin."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:5001
 msgid "What is your local MSN?"
-msgstr "Qual � il proprio MSN locale?"
+msgstr "Paikallinen MSN:"
 
 #. Type: string
 #. Description
@@ -170,12 +168,10 @@ msgid ""
 "MSN (often the extension number in this case) will cause the call-setup to "
 "fail. So, it is best to enter the correct local MSN here."
 msgstr ""
-"Quando si fa una chiamata con ISDN, l'MSN (numero di telefono) che d� "
-"origine alla chiamata deve essere passato nel messaggio di call-setup. Di "
-"solito un MSN sbagliato viene sostituito dal MSN principale della linea ISDN "
-"ma, nel caso particolare di un centralino, un MSN sbagliato (spesso il "
-"numero di estensione) comporta il fallimento del call-setup. Quindi � meglio "
-"inserire l'MSN corretto."
+"Soitettaessa ISDN:llä täytyy yhteydenotossa antaa MSN (puhelinnumero), josta "
+"puhelu tulee. Vaikka yleensä väärä MSN korvataan ISDN-linjan pää-MSN:llä, "
+"erityisesti PABX:ssä virheellinen MSN aiheuttaa sen, että yhteydenotto "
+"epäonnistuu. Tästä syystä on tässä parasta antaa oikea paikallinen MSN."
 
 #. Type: string
 #. Description
@@ -185,15 +181,15 @@ msgid ""
 "particular MSN, in case you have more than one MSN and this is supported by "
 "your telco."
 msgstr ""
-"Ci� potrebbe anche essere necessario se si vogliono registrare i costi di un "
-"particolare MSN, nel caso si abbia pi� di un MSN e questo servizio sia "
-"supportato dal proprio gestore telefonico."
+"Tämä saattaa myös olla tarpeen, jos käytössä on useampia MSN:iä ja "
+"kustannukset halutaan rekisteröidä jollekin tietylle MSN:lle ja puhelinyhtiö "
+"tätä tukee."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:6001
 msgid "What is the user name for logging into your ISP?"
-msgstr "Qual � il nome utente per la connessione al proprio ISP?"
+msgstr "Käyttäjätunnus, jolla kirjaudutaan palveluntarjoajalle:"
 
 #. Type: string
 #. Description
@@ -203,15 +199,15 @@ msgid ""
 "valid user before allowing access. Enter the user name here. The password "
 "will be asked for next."
 msgstr ""
-"La maggior parte (tutti?) degli ISP necessitano di un nome utente e di una "
-"password per autenticare l'utente che richiede l'accesso. Inserire ora il "
-"nome utente, la password verr� chiesta successivamente."
+"Useimmat (kaikki?) ISP:t vaativat käyttäjätunnuksen ja salasanan käyttäjien "
+"tunnistamiseen ennen kuin yhteydenotto sallitaan. Syötä käyttäjätunnus "
+"tähän. Salasanaa kysytään seuraavaksi."
 
 #. Type: password
 #. Description
 #: ../ipppd.templates:7001
 msgid "What is the password for logging into your ISP?"
-msgstr "Qual � la password per la connessione al prorpio ISP?"
+msgstr "Salasana, jolla kirjaudutaan palveluntarjoajalle:"
 
 #. Type: password
 #. Description
@@ -220,14 +216,14 @@ msgid ""
 "The password you give here will be entered into /etc/ppp/pap-secrets and /"
 "etc/ppp/chap-secrets together with the username."
 msgstr ""
-"La password e il nome utente forniti verranno inseriti in /etc/ppp/pap-"
-"secrets e /etc/ppp/chap-secrets."
+"Tässä annettu salasana tallennetaan käyttäjätunnuksen kanssa tiedostoihin /"
+"etc/ppp/pap-secrets ja /etc/ppp/chap-secrets."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:8001
 msgid "ISP user name already in pap-secrets"
-msgstr "Nome utente per l'ISP gi� presente in pap-secrets"
+msgstr "ISP-käyttäjätunnus on jo tiedostossa pap-secrets"
 
 #. Type: error
 #. Description
@@ -238,15 +234,15 @@ msgid ""
 "be commented out, and a new entry with the data you just entered will be "
 "inserted."
 msgstr ""
-"Il nome utente indicato per la connessione all'ISP � gi� presente nel file /"
-"etc/ppp/pap-secrets. Non � un problema il valore esistente verr� commentato "
-"e verr� inserita una nuova riga con il valore appena inserito."
+"Käyttäjätunnus, joka annettiin ISP:lle kirjautumista varten on jo listattu "
+"tiedostossa /etc/ppp/pap-secrets. Tämä ei ole ongelma. Olemassa oleva tietue "
+"kommentoidaan pois ja uusi, juuri annetut tiedot sisältävä tietue lisätään."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:9001
 msgid "ISP user name already in chap-secrets"
-msgstr "Nome utente per l'ISP gi� presente in chap-secrets"
+msgstr "ISP-käyttäjätunnus on jo tiedostossa chap-secrets"
 
 #. Type: error
 #. Description
@@ -257,15 +253,16 @@ msgid ""
 "will be commented out, and a new entry with the data you just entered will "
 "be inserted."
 msgstr ""
-"Il nome utente indicato per la connessione all'ISP � gi� presente nel file /"
-"etc/ppp/chap-secrets. Non � un problema il valore esistente verr� commentato "
-"e verr� inserita una nuova riga con il valore appena inserito."
+"Käyttäjätunnus, joka annettiin ISP:lle kirjautumista varten on jo listattu "
+"tiedostossa /etc/ppp/chap-secrets. Tämä ei ole ongelma. Olemassa oleva "
+"tietue kommentoidaan pois ja uusi, juuri annetut tiedot sisältävä tietue "
+"lisätään."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:10001
 msgid "ISP user name already in chap-secrets and pap-secrets"
-msgstr "Nome utente per l'ISP gi� presente in pap-secrets e chap-secrets"
+msgstr "ISP-käyttäjätunnus on jo tiedostoissa chap-secrets ja pap-secrets"
 
 #. Type: error
 #. Description
@@ -276,16 +273,16 @@ msgid ""
 "existing entries will be commented out, and new entries with the data you "
 "just entered will be inserted."
 msgstr ""
-"Il nome utente indicato per la connessione all'ISP � gi� presente nei file "
-"chap-secrets e pap-secrets in /etc/ppp. Non � un problema i valori esistenti "
-"verranno commentati e verranno inserite delle nuove righe con i valori "
-"appena inseriti."
+"Käyttäjätunnus, joka annettiin ISP:lle kirjautumista varten on jo listattu "
+"hakemistossa /etc/ppp olevissa tiedostoissa chap-secrets ja pap-secrets. "
+"Tämä ei ole ongelma. Olemassa olevat tietueet kommentoidaan pois ja uudet, "
+"juuri annetut tiedot sisältävät tietueet lisätään."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:11001
 msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
-msgstr "/etc/ppp/ip-up.d/00-isdnutils esiste ancora"
+msgstr "Tiedosto /etc/ppp/ip-up.d/00-isdnutils on edelleen olemassa"
 
 #. Type: error
 #. Description
@@ -296,10 +293,10 @@ msgid ""
 "changes in the 00-ipppd file (which is the new name). After that, please "
 "delete the old 00-isdnutils file."
 msgstr ""
-"Il file /etc/ppp/ip-up.d/00-isdnutils appartenente al vecchio pacchetto "
-"isdnutils esiste ancora. Se in passato si � modificato questo file potrebbe "
-"essere necessario ripetere le medesime modifiche in 00-ipppd (il nuovo nome "
-"del file). Poi cancellare il file 00-isdnutils."
+"Vanhan isdnutils-paketin tiedosto /etc/ppp/ip-up.d/00-isdnutils on edelleen "
+"olemassa. Jos kyseistä tiedostoa on muokattu, muokkaukset täytyy ehkä tehdä "
+"uudelleen tiedostoon 00-ipppd (joka on uusi versio). Tiedosto 00-isdnutils "
+"tulisi tämän jälkeen poistaa."
 
 #. Type: error
 #. Description
@@ -308,14 +305,13 @@ msgstr ""
 #: ../ipppd.templates:11001 ../ipppd.templates:12001
 msgid "Until it is deleted, it will still be used! This may cause conflicts."
 msgstr ""
-"Sar� usato fino a quando non sar� rimosso! Questo potrebbero creare dei "
-"conflitti."
+"Vanhaa käytetään kunnes se poistetaan! Tämä saattaa aiheuttaa ristiriitoja."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:12001
 msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
-msgstr "/etc/ppp/ip-down.d/99-isdnutils esiste ancora"
+msgstr "Tiedosto /etc/ppp/ip-down.d/99-isdnutils on edelleen olemassa"
 
 #. Type: error
 #. Description
@@ -326,16 +322,16 @@ msgid ""
 "those changes in the 99-ipppd file (which is the new name). After that, "
 "please delete the old 99-isdnutils file."
 msgstr ""
-"Il file /etc/ppp/ip-down.d/99-isdnutils appartenente al vecchio pacchetto "
-"isdnutils esiste ancora. Se in passato si � modificato questo file potrebbe "
-"essere necessario ripetere le medesime modifiche a 99-ipppd (il nuovo nome "
-"del file). Poi cancellare il file 99-isdnutils."
+"Vanhan isdnutils-paketin tiedosto /etc/ppp/ip-down.d/99-isdnutils on "
+"edelleen olemassa. Jos kyseistä tiedostoa on muokattu, muokkaukset täytyy "
+"ehkä tehdä uudelleen tiedostoon 99-ipppd (joka on uusi versio). Tiedosto 99-"
+"isdnutils tulisi tämän jälkeen poistaa."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:13001
 msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
-msgstr "i vecchi script /etc/ppp/ip-up.d e /etc/ppp/ip-down.d esistono ancora"
+msgstr "Vanhat tiedostot /etc/ppp/ip-up.d ja ip-down.d ovat edelleen olemassa"
 
 #. Type: error
 #. Description
@@ -347,11 +343,11 @@ msgid ""
 "files (which are the new names). After that, please delete the old 00-"
 "isdnutils and 99-isdnutils files."
 msgstr ""
-"I file /etc/ppp/ip-up.d/00-isdnutils e /etc/ppp/ip-down.d/99-isdnutils "
-"appartenenti al vecchio pacchetto isdnutils esistono ancora. Se in passato "
-"si � modificato questi file potrebbe essere necessario ripetere le medesime "
-"modifiche a 00-ipppd e 99-ipppd (il nuovi nomi dei file). Poi cancellare i "
-"file 00-isdnutils e 99-isdnutils."
+"Vanhan isdnutils-paketin tiedostot /etc/ppp/ip-up.d/00-isdnutils  ja /etc/"
+"ppp/ip-down.d/99-isdnutils ovat edelleen olemassa. Jos kyseisiä tiedostoja "
+"on muokattu, muokkaukset täytyy ehkä tehdä uudelleen tiedostoihin 00-ipppd "
+"ja 99-ipppd (jotka ovat uudet versiot). Tiedostot 00-isdnutils ja 99-"
+"isdnutils tulisi tämän jälkeen poistaa."
 
 #. Type: error
 #. Description
@@ -359,14 +355,13 @@ msgstr ""
 msgid ""
 "Until they are deleted, they will still be used! This may cause conflicts."
 msgstr ""
-"Saranno usati fino a quando non saranno rimossi! Questi potrebbero creare "
-"dei conflitti."
+"Vanhoja käytetään kunnes ne poistetaan! Tämä saattaa aiheuttaa ristiriitoja."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:14001
 msgid "(re)start ipppd by hand"
-msgstr "(ri)avviare ipppd manualmente"
+msgstr "käynnistä ipppd (uudelleen) käsin"
 
 #. Type: error
 #. Description
@@ -375,14 +370,14 @@ msgid ""
 "There is no /etc/init.d/isdnutils on your system; hence you will have to "
 "stop and start any ipppd daemons by hand."
 msgstr ""
-"Nel sistema non esiste /etc/init.disdnutils; quindi i demoni ipppd devono "
-"essere fermati e avviati manualmente."
+"Järjestelmässä ei ole tiedostoa /etc/init.d/isdnutils. Niinpä kaikki ipppd-"
+"taustaohjelmat tulee pysäyttää ja käynnistää uudelleen käsin."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:15001
 msgid "error running isdnutils init script"
-msgstr "errore nell'eseguire lo script init di isdnutils"
+msgstr "Virhe ajettaessa isdnutils-alustuskomentosarjaa"
 
 #. Type: error
 #. Description
@@ -393,70 +388,70 @@ msgid ""
 "Perhaps moving /etc/init.d/isdnutils.dpkg-dist (if it exists) to /etc/init.d/"
 "isdnutils will also help."
 msgstr ""
-"L'esecuzione dello script /etc/init.d/isdnutils ha prodotto degli errori, "
-"controllare l'installazione del pacchetto isdnutils-base; se necessario "
-"ripeterne l'installazione. Provare a spostare /etc/init.d/isdnutils.dpkg-"
-"dist (se esiste) in /etc/init.d/isdnutils."
+"Komentosarjan /etc/init.d/isdn ajo aiheutti virheitä. Tarkista paketin "
+"isdnutils-base asennus ja asenna se uudelleen tarvittaessa. Jos tiedosto /"
+"etc/init.d/isdnutils.dpkg-dist on olemassa, sen siirtäminen nimelle /etc/"
+"init.d/isdnutils saattaa auttaa."
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:1001
 msgid "AT"
-msgstr "AT"
+msgstr "Australia"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:1001
 msgid "CH"
-msgstr "CH"
+msgstr "Taiwan"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:1001
 msgid "DE"
-msgstr "DE"
+msgstr "Saksa"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:1001
 msgid "ES"
-msgstr "ES"
+msgstr "Espanja"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:1001
 msgid "FR"
-msgstr "FR"
+msgstr "Ranska"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:1001
 msgid "LU"
-msgstr "LU"
+msgstr "Luxemburg"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:1001
 msgid "NL"
-msgstr "NL"
+msgstr "Alankomaat"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:1001
 msgid "NO"
-msgstr "NO"
+msgstr "Norja"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:1001
 msgid "other"
-msgstr "altro"
+msgstr "muu"
 
 #. Type: select
 #. Description
 #: ../isdnlog.templates:1002
 msgid "What country is this system in?"
-msgstr "In quale paese si trova il sistema?"
+msgstr "Valitse maa, jossa järjestelmä on:"
 
 #. Type: select
 #. Description
@@ -465,14 +460,14 @@ msgid ""
 "This is used for setting a number of defaults, e.g. what rate tables to use "
 "for calculating the cost of a call."
 msgstr ""
-"Questo valore � usato per impostare alcuni dei valori predefiniti (p.e. "
-"quale tabella delle tariffe usare per il calcolo del costo di una chiamata)."
+"Tätä käytetään useiden oletusarvojen asettamiseen, esimerkiksi puheluiden "
+"hintojen laskemiseen käytettävän hinnaston valitsemiseen."
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:2001
 msgid "Enter the ISO two-letter code for your country"
-msgstr "Inserire il codice ISO a due lettere del proprio paese"
+msgstr "Maan kaksikirjaiminen ISO-koodi:"
 
 #. Type: string
 #. Description
@@ -480,8 +475,8 @@ msgstr "Inserire il codice ISO a due lettere del proprio paese"
 msgid ""
 "This can't really be used for setting any defaults, but maybe some day..."
 msgstr ""
-"Questo valore non � realmente usato per preimpostare dei valori, ma forse un "
-"giorno..."
+"Tätä ei oikeasti voida käyttää minkään oletusarvojen asettamiseen, mutta "
+"ehkä joskus..."
 
 #. Type: string
 #. Description
@@ -490,44 +485,44 @@ msgid ""
 "Note that you will probably have to edit /etc/isdn/isdn.conf before isdnlog "
 "will be able to work."
 msgstr ""
-"Probabilmente � necessario modificare /etc/isdn/isdn.conf per far funzionare "
-"correttamente isdnlog."
+"Tiedostoa /etc/isdn/isdn.conf tulee luultavasti muokata ennen kuin isdnlog "
+"voi toimia."
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:3001
 msgid "What is used to indicate an international number?"
-msgstr "Cosa si usa per indicare un numero internazionale?"
+msgstr "Kansainvälisen numeron etuliite:"
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:4001
 msgid "What is the countrycode for your country?"
-msgstr "Qual � il prefisso internazionale del proprio paese?"
+msgstr "Maan maakoodi:"
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:4001
 msgid "e.g. ${default_countrycode} for ${default_country}"
-msgstr "p.e. ${default_countrycode} per ${default_country}"
+msgstr "Esimerkiksi ${default_countrycode} maalle {default_country}"
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:5001
 msgid "What is used to indicate an areacode, if applicable?"
-msgstr "Cosa si usa per indicare il codice di un distretto (se usato)?"
+msgstr "Aluekoodin etuliite, jos tarpeen:"
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:6001
 msgid "What is your local areacode, if applicable?"
-msgstr "Qual � il codice del proprio distretto (se usato)?"
+msgstr "Paikallinen aluekoodi, jos tarpeen:"
 
 #. Type: select
 #. Description
 #: ../isdnlog.templates:7001
 msgid "Run isdnrate as a daemon?"
-msgstr "Eseguire come isdnrate come demone?"
+msgstr "Tulisiko ohjelmaa isdnrate ajaa taustaohjelmana?"
 
 #. Type: select
 #. Description
@@ -538,11 +533,11 @@ msgid ""
 "call-by-call basis. Having it run as a daemon speeds things up as then it "
 "only has to load all the data just once."
 msgstr ""
-"isdnrate � una utilit� per calcolare il costo di una connessione a un certo "
-"numero telefonico usata, per esempio, nei sistemi LCR per scegliere "
-"l'operatore meno costoso per una chiamata. Se eseguita come demone le "
-"operazioni sono velocizzate poich� i dati devono essere caricati una volta "
-"sola."
+"isdnrate on työkalu, jolla voidaan laskea annettuun puhelinnumeroon otetun "
+"yhteyden kustannukset. Sitä käytetään esimerkiksi LCR-järjestelmissä "
+"halvimman yhteyden löytämiseen soittokohtaisesti. Sen ajaminen "
+"taustaohjelmana nopeuttaa asioita, koska tällöin tiedot tarvitsee ladata "
+"vain kerran."
 
 #. Type: select
 #. Description
@@ -551,21 +546,20 @@ msgid ""
 "This is only for people with special requirements, such as those using the "
 "isdn2h323 package. Hence most people should say \"no\"."
 msgstr ""
-"Questo � destinato unicamente agli utenti con particolari necessit� come "
-"quelli del pacchetto isdn2h323, la maggior parte degli utenti dovrebbe "
-"rifiutare."
+"Tätä tarvitaan vain erityistilanteissa, esimerkiksi paketin isdn2h323 "
+"käyttöön. Useimmiten tätä ei tulisi valita."
 
 #. Type: select
 #. Choices
 #: ../isdnutils-base.templates:1001
 msgid "none, ISAR.BIN"
-msgstr "nessuno, ISAR.BIN"
+msgstr "ei mitään, ISAR.BIN"
 
 #. Type: select
 #. Description
 #: ../isdnutils-base.templates:1002
 msgid "Does firmware need to be loaded?"
-msgstr "Quale firmware � necessario caricare?"
+msgstr "Ladattavat laiteohjelmistot:"
 
 #. Type: select
 #. Description
@@ -577,17 +571,17 @@ msgid ""
 "\"ISAR.BIN\" if this is necessary. If you don't know what I'm talking about, "
 "choose \"none\"."
 msgstr ""
-"Alcune schede ISDN non funzionano correttamente se non sono caricate con il "
-"firmware. Per esempio le Sedlbauer SpeedFax+ PCI o le Siemens I-Surf "
-"necessitano di caricare ISAR.BIN (al momento non si conoscono altre schede). "
-"Scegliere �ISAR.BIN� se necessario. Se non si ha idea di cosa si stia "
-"parlando scegliere �nessuno�."
+"Eräät ISDN-kortit eivät toimi oikein ennen kuin laitekohtaiset ajurit on "
+"ladattu. Esimerkkejä tällaisista ovat Sedlbauer SpeedFax+ PCI ja Siemens I-"
+"Surf, jotka vaativat tiedoston ISAR.BIN olevan ladattuna (muita ei tunneta "
+"tällä hetkellä). Valitse ”ISAR.BIN”, jos tarpeen. Jos olet epävarma, valitse "
+"”ei mitään”."
 
 #. Type: string
 #. Description
 #: ../isdnutils-base.templates:2001
 msgid "Which ISDN card numbers have to be loaded with the firmware?"
-msgstr "Quali schede ISDN devono essere caricate con il firmware?"
+msgstr "Ladatun laiteajurin vaativan ISDN-kortin numero:"
 
 #. Type: string
 #. Description
@@ -598,17 +592,16 @@ msgid ""
 "have only one card, the obvious answer here is \"1\". If you have two cards "
 "which both have to be loaded with firmware, enter \"1,2\"."
 msgstr ""
-"Se sono presenti pi� di una scheda, inserire il numero della scheda/e che "
-"deve essere caricata con il firmware iniziando da 1 e separando i valori con "
-"delle virgole. Se si possiede solo una scheda la risposta a questa domanda � "
-"ovviamente �1�, se si possiedono due schede ed entrambe devono essere "
-"caricate con il firmware inserire �1,2�."
+"Jos käytössä on useampi kortti, anna pilkuilla eroteltuina niiden korttien "
+"numerot, jotka vaativat ladatun laiteajurin. Numerointi alkaa ykkösestä. Jos "
+"käytössä on vain yksi kortti, ilmiselvä vastaus on ”1”. Jos käytössä on "
+"kaksi korttia, jotka molemmat vaativat laiteajurin, syötä ”1,2”."
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:1001
 msgid "What number should vbox answer?"
-msgstr "A quale numero deve rispondere vbox?"
+msgstr "Numero, johon vboxin tulisi vastata:"
 
 #. Type: string
 #. Description
@@ -618,9 +611,9 @@ msgid ""
 "system, this may or may not include the areacode. It is usually without the "
 "leading 0."
 msgstr ""
-"Vbox deve sapere su quale numero � in ascolto. In base al sistema ISDN del "
-"proprio paese il numero pu� o non pu� comprendere il prefisso (solitamente "
-"senza lo 0 iniziale)."
+"Vboxin tulee tietää numero, jota kuunnella. Maan ISDN-järjestelmästä "
+"riippuen tämä saattaa sisältää aluekoodin. Se annetaan yleensä ilman alussa "
+"olevaa nollaa."
 
 #. Type: string
 #. Description
@@ -631,16 +624,16 @@ msgid ""
 "configuration from the time when this was still part of isdnutils (unless "
 "you want to create a new configuration)."
 msgstr ""
-"Inserire �quit� (o lasciarlo vuoto) se si vuole fare una configurazione "
-"manuale (cio� non usando debconf) oppure se si ha gi� una configurazione "
-"funzionante di vbox fatta in passato quando questo pacchetto era parte di "
-"isdnutils (a meno che non si voglia creare una nuova configurazione)."
+"Syötä ”quit” (tai jätä kenttä tyhjäksi), jos asetukset halutaan tehdä käsin, "
+"eikä debconfilla. Syötä ”quit” myös, jos toimivat vbox-asetukset ovat jo "
+"olemassa ajalta, jolloin tämä paketti oli vielä paketin isdnutils osa (eikä "
+"nyt haluta luoda uusia asetuksia)."
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:2001
 msgid "After how many rings should vbox pick up the line?"
-msgstr "Dopo quanti squilli vbox deve rispondere alla chiamata?"
+msgstr "Soittojen määrä ennen vboxin vastausta:"
 
 #. Type: string
 #. Description
@@ -651,17 +644,16 @@ msgid ""
 "calls without caller-ID) can be dumped into the answering machine after one "
 "ring. See `man vbox.conf' for more info."
 msgstr ""
-"Uno squillo dura circa 5 secondi. Si pu� aggiustare manualmente il numero di "
-"squilli per determinati numeri di telefono p.e. tutti i commerciali dei "
-"quali si conosce il numero (o le chiamate senza caller-ID) possono essere "
-"inviate al risponditore dopo un solo squillo). Vedere �man vbox.conf� per "
-"ulteriori informazioni."
+"Yksi soitto kestää yleensä noin 5 sekuntia. Soittojen lukumäärää voidaan "
+"säätää numerokohtaisesti käsin, esimerkiksi tunnetut myyntimiehet (tai "
+"soitot ilman soittaja-ID:tä) voidaan ohjata vastaajaan yhden pirinän "
+"jälkeen. Lisätietoja löytyy man-ohjesivulta komennolla ”man vbox.conf”."
 
 #. Type: select
 #. Description
 #: ../isdnvboxserver.templates:3001
 msgid "Should the message be attached to the email?"
-msgstr "Allegare il messaggio alla email?"
+msgstr "Tulisiko viesti lähettää sähköpostin liitteenä?"
 
 #. Type: select
 #. Description
@@ -671,15 +663,15 @@ msgid ""
 "should contain the message as an attachment, choose \"yes\" here. Note: the "
 "attachment can be large!"
 msgstr ""
-"Una volta registrato un messaggio viene inviata una email di notifica. Se "
-"questa email deve avere come allegato il messaggio scegliere �s�. Notare che "
-"l'allegato pu� essere molto grande."
+"Kun viesti tallennetaan, lähetetään sähköpostiin ilmoitus. Jos tämä "
+"valitaan, viesti sisällytetään ilmoitukseen liitteenä. Huomautus: Liite voi "
+"olla suuri!"
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:4001
 msgid "As what user should the answering machine run?"
-msgstr "Quale utente deve eseguire il risponditore?"
+msgstr "Käyttäjätunnus, jolla vastaajaa ajetaan:"
 
 #. Type: string
 #. Description
@@ -689,27 +681,27 @@ msgid ""
 "typically your non-root login name. This user must be a member of the "
 "`dialout' group."
 msgstr ""
-"vboxd � eseguito con i privilegi di un utente normale (non-root). Questo � "
-"di solito l'utente che si usa normalmente. Questo utente deve essere membro "
-"del gruppo �dialout�."
+"Ohjelmaa vboxd ajetaan tavallisen käyttäjän oikeuksilla. Tämä on yleensä oma "
+"tavallinen käyttäjätunnuksesi. Tämän käyttäjän täytyy olla ryhmän ”dialout” "
+"jäsen."
 
 #. Type: text
 #. Description
 #: ../isdnvboxserver.templates:5001
 msgid "The user ${Daemonuser} doesn't exist on the system."
-msgstr "L'utente ${Daemonuser} non esiste nel sistema."
+msgstr "Käyttäjää ”${Daemonuser}” ei ole olemassa."
 
 #. Type: text
 #. Description
 #: ../isdnvboxserver.templates:5001
 msgid "Enter a valid user name here that's known to the system."
-msgstr "Inserire un nome utente valido e conosciuto dal sistema."
+msgstr "Anna validi käyttäjätunnus, joka on olemassa järjestelmässä."
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:6001
 msgid "What username may connect to the vbox server?"
-msgstr "Quale nome utente pu� connettersi a vbox server?"
+msgstr "Käyttäjätunnus, jolla vbox-palvelimeen saa ottaa yhteyden:"
 
 #. Type: string
 #. Description
@@ -719,27 +711,29 @@ msgid ""
 "a username and password. Enter the username here. This does not have to be a "
 "user on the system itself."
 msgstr ""
-"Per ascoltare i messaggi usando vbox (contenuto nel pacchetto "
-"isdnvboxclient), � necessario un nome utente e una password. Inserire il "
-"nome utente, non � necessario che sia un utente del sistema."
+"Viestin kuunteleminen vboxilla (paketista isdnvboxclient) vaatii "
+"käyttäjätunnuksen ja salasanan. Anna tunnus tässä. Tämän ei tarvitse olla "
+"järjestelmässä oleva käyttäjätunnus."
 
 #. Type: password
 #. Description
 #: ../isdnvboxserver.templates:7001
 msgid "Enter the password for ${User} here."
-msgstr "Inserire la password per ${User}."
+msgstr "Tunnuksen ${User} salasana:"
 
 #. Type: password
 #. Description
 #: ../isdnvboxserver.templates:7001
 msgid "Please don't use ':' in it! The way it is stored cannot handle this."
-msgstr "Non usare �:�, la modalit� di memorizzazione non lo consente."
+msgstr ""
+"Älä käytä merkkiä ”:”! Tämä tallennetaan tavalla, joka ei pysty "
+"käsittelemään sitä."
 
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:8001
 msgid "No home directory!"
-msgstr "Nessuna home directory!"
+msgstr "Kotihakemistoa ei ole!"
 
 #. Type: error
 #. Description
@@ -748,14 +742,14 @@ msgid ""
 "The home directory `${DIR}' for user `${USER}' doesn't exist. This means "
 "that the file `${DIR}/.vbox.conf' cannot be created."
 msgstr ""
-"La home directory �${DIR}� per l'utente �${USER}� non esiste, questo comporta "
-"che il file �${DIR}/.vbox.cond� non possa essere creato."
+"Käyttäjän ”${USER}” kotihakemistoa ”${DIR}” ei ole olemassa. Tämä "
+"tarkoittaa, että tiedostoa ”${DIR}/.vbox.conf” ei voida luoda."
 
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:9001
 msgid "User doesn't exist!"
-msgstr "L'utente non esiste!"
+msgstr "Käyttäjää ei ole!"
 
 #. Type: error
 #. Description
@@ -765,15 +759,15 @@ msgid ""
 "configuration with `dpkg-reconfigure isdnvboxserver' to enter another "
 "username, or after creating the user."
 msgstr ""
-"L'utente �${USER}� non esiste nel sistema! Ripetere la configurazione con "
-"�dpkg-reconfigure isdnvboxserver� e inserire un nome utente diverso oppure  "
-"dopo aver creato l'utente."
+"Käyttäjätunnusta ”${USER}” ei ole olemassa järjestelmässä! Tee asetukset "
+"uudelleen ajamalla ”dpkg-reconfigure isdnvboxserver” antaaksesi toisen "
+"käyttäjätunnuksen tai luotuasi käyttäjän."
 
 #. Type: select
 #. Description
 #: ../isdnvboxserver.templates:10001
 msgid "Should vboxgetty be enabled?"
-msgstr "Attivare vboxgetty?"
+msgstr "Tulisiko vboxgetty ottaa käyttöön?"
 
 #. Type: select
 #. Description
@@ -783,15 +777,15 @@ msgid ""
 "enable it once this package is fully configured. Choose `no' if you want to "
 "tweak it manually."
 msgstr ""
-"vboxgetty � presente in /etc/inittab ma non � ancora stato attivato. "
-"Rispondendo �s� verr� attivato non appena questo pacchetto sar� "
-"completamente configurato. Rispondere �no� se si vuole gestirlo manualmente."
+"vboxgetty mainitaan tiedostossa /etc/inittab, mutta sitä ei ole vielä otettu "
+"käyttöön. Jos valitset tämän, se otetaan käyttöön, kun paketin asetukset on "
+"tehty kokonaan. Älä valitse tätä, jos sitä halutaan muokata käsin."
 
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:11001
 msgid "Device in inittab doesn't agree with devfs mode"
-msgstr "Il device usato in inittab non corrisponde con la modalit� devfs"
+msgstr "Tiedostossa inittab mainittu laite ei vastaa devfs-tilaa"
 
 #. Type: error
 #. Description
@@ -802,10 +796,10 @@ msgid ""
 "name is used in inittab while devfs is not mounted, or the non-devfs name is "
 "used while devfs is mounted."
 msgstr ""
-"Il valore per vboxgetty in /etc/inittab usa un device che non corrisponde "
-"con l'attuale modalit� devfs; un nome devfs (/dev/isdn/ttyIxx) � usato in "
-"inittab ma devfs non � stato montato oppure � usato un nome non-devfs ma � "
-"montato devfs."
+"Tiedostossa /etc/inittab oleva vboxgetty-tietue käyttää laitenimeä, joka ei "
+"vastaa nykyistä devfs:n käyttöä. Joko devfs-nimeä (/dev/isdn/ttyIxx) "
+"käytetään tiedostossa inittab, vaikka devfs ei ole liitettynä, tai käytetään "
+"muuta nimeä, kun devfs on liitettynä."
 
 #. Type: error
 #. Description
@@ -813,13 +807,13 @@ msgstr ""
 #. Description
 #: ../isdnvboxserver.templates:11001 ../isdnvboxserver.templates:12001
 msgid "You will have to fix this by hand."
-msgstr "� necessario correggere a mano."
+msgstr "Tämä täytyy korjata käsin."
 
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:12001
 msgid "Device in vboxgetty.conf doesn't agree with devfs mode"
-msgstr "Il device in vboxgetty.conf non corrisponde con la modalit� devfs"
+msgstr "Tiedoston vboxgetty.conf laite ei täsmää devfs-tilaan."
 
 #. Type: error
 #. Description
@@ -830,75 +824,70 @@ msgid ""
 "name is used in vboxgetty.conf while devfs is not mounted, or the non-devfs "
 "name is used while devfs is mounted."
 msgstr ""
-"Il valore per device in /etc/isdn/vboxgetty.conf usa un nome di device che "
-"non corrisponde con l'attuale uso di devfs; un nome devfs (/dev/isdn/ttyIxx) "
-"� usato in vboxgetty.conf ma devfs non � stato montato oppure � usato un "
-"nome non-devfs ma � montato devfs."
+"Tiedostossa /etc/isdn/vboxgetty.conf annettu laitenimi ei vastaa "
+"tämänhetkistä devfs:n käyttöä. Joko devfs-nimeä (/dev/isdn/ttyIxx) käytetään "
+"tiedostossa vboxgetty.conf, vaikka devfs ei ole liitettynä, tai käytetään "
+"muuta nimeä, kun devfs on liitettynä."
 
 #~ msgid "manual"
-#~ msgstr "manuale"
+#~ msgstr "manuaalinen"
 
 #~ msgid "Entering isdnlog configuration"
-#~ msgstr "Inserimento della configurazione di isdnlog"
+#~ msgstr "Siirrytään isdnlogin asetusten tekoon"
 
 #~ msgid ""
 #~ "For correct isdnlog functioning, isdnlog needs to be configured with a "
 #~ "number of settings. These are some or all (depending on the level you "
 #~ "have configured debconf with) of:"
 #~ msgstr ""
-#~ "Per il corretto funzionamento isdnlog deve essere configurato impostando "
-#~ "alcuni parametri. Questi sono (in base al livello che si � configurato in "
-#~ "debconf):"
+#~ "Useita isdnlogin asetuksia pitää tehdä ennen kuin se voi toimia oikein. "
+#~ "Näitä ovat (riippuen asetetusta debconf-kysymysten tasosta) osa tai "
+#~ "kaikki seuraavista:"
 
 #~ msgid ""
 #~ " - country          this is used for setting a number of defaults,\n"
 #~ "                    e.g. what rate tables to use for calculating\n"
 #~ "                    the cost of a call."
 #~ msgstr ""
-#~ " - paese                    � usato per impostare alcuni dei valori\n"
-#~ "                            predefiniti (p.e. la tabella delle tariffe "
-#~ "da\n"
-#~ "                            usare per il calcolo del costo di una "
-#~ "chiamata)."
+#~ " - maa         Tätä käytetään useissa oletusasetuksissa, esimerkiksi\n"
+#~ "               määritettäessä mitä hinnastoa käytetään puheluiden\n"
+#~ "               hintoina."
 
 #~ msgid " - country prefix   what is used to indicate an international number"
 #~ msgstr ""
-#~ " - prefisso internazionale  prefisso che indica un numero internazionale"
+#~ " - maaetuliite    Tätä käytetään kansainvälisen numeron tuottamiseen."
 
 #~ msgid ""
 #~ " - country code     the phone number for your country\n"
 #~ "                    (e.g. 49 for Germany)"
-#~ msgstr ""
-#~ " - codice nazionale         il numero telefonico del proprio paese\n"
-#~ "                            (p.e. 39 per l'Italia)"
+#~ msgstr " - maakoodi     Maan puhelinnumero (esim 358 Suomelle)."
 
 #~ msgid ""
 #~ " - areacode prefix  what is used to indicate an areacode,\n"
 #~ "                    if applicable in your country. Usually a 0 ."
 #~ msgstr ""
-#~ " - prefisso di distretto    prefisso che indica un distretto (se usato\n"
-#~ "                            nel proprio paese, solitamente lo 0)."
+#~ " - aluekoodin etuliite Kertoo, jos tarpeen numeron, jota käytetään\n"
+#~ "                       aluekoodin osoittamiseen. Yleensä 0."
 
 #~ msgid " - areacode         what your local areacode is (if applicable)"
-#~ msgstr " - codice del distretto     codice del proprio distretto (se usato)"
+#~ msgstr " - aluekoodi       Paikallinen aluekoodi (jos tarpeen)."
 
 #~ msgid ""
 #~ "After installation, you may have to edit /etc/isdn/isdnlog.isdnctrl0 "
 #~ "before isdnlog can work properly, although that file is set up with "
 #~ "reasonable defaults for most cases."
 #~ msgstr ""
-#~ "Dopo l'installazione potrebbe essere necessario modificare /etc/isdn/"
-#~ "isdnlog.isdnctrl0 per far funzionare correttamente isdnlog, nonostante "
-#~ "che il file sia impostato con valori predefiniti che dovrebbero essere "
-#~ "adatti per la maggior parte dei casi."
+#~ "Asennuksen jälkeen tiedostoa /etc/isdn/isdnlog.isdnctrl0 täytyy ehkä "
+#~ "muokata ennen kuin isdnlog voi toimia oikein, vaikka tiedoston "
+#~ "oletusarvot toimivatkin usemmiten."
 
 #~ msgid ""
 #~ "If you previously had /etc/isdn/isdnlog.isdnctrl0, that will be preserved."
 #~ msgstr ""
-#~ "Se � gi� presente /etc/isdn/isdnlog.isdnctrl0, questo viene preservato."
+#~ "Jos tiedosto /etc/isdn/isdnlog.isdnctrl0 on jo olemassa, se säilytetään."
 
 #~ msgid "isdnutils is now split up"
-#~ msgstr "isndutils � stato diviso"
+#~ msgstr "isdnutils on jaettu osiin"
 
 #~ msgid ""
 #~ "The old isdnutils package is now split up into smaller parts: isdnutils "
@@ -906,35 +895,34 @@ msgstr ""
 #~ "isdnlog isdnlog-data libcapi20-3 isdnactivecards pppdcapiplugin "
 #~ "isdneurofile"
 #~ msgstr ""
-#~ "Il vecchio pacchetto isdnutils � stato suddiviso in parti pi� piccole: "
-#~ "isdnutils ipppd isdnutils-xtools isdnutils-doc isdnvboxserver "
-#~ "isdnvboxclient isdnlog isdnlog-data libcapi20-3 isdnactivecards "
-#~ "pppdcapiplugin isdneurofile"
+#~ "Vanha isdnutils-paketti on nyt jaettu pienempiin osiin: isdnutils ipppd "
+#~ "isdnutils-xtools isdnutils-doc isdnvboxserver isdnvboxclient isdnlog "
+#~ "isdnlog-data libcapi20-3 isdnactivecards pppdcapiplugin ja isdneurofile."
 
 #~ msgid ""
 #~ "This allows you to better select what parts you want installed, almost no "
 #~ "one needs everything. Unfortunately there's no way of automatically "
 #~ "selecting those parts you need."
 #~ msgstr ""
-#~ "Questo permette di ottimizzare la scelta delle parti da installare dato "
-#~ "che quasi nessuno necessita di tutto. Sfortunatamente non c'� modo di "
-#~ "scegliere automaticamente le parti necessarie per ognuno."
+#~ "Tällöin voidaan asentaa vain tarvittavat osat, tuskin kukaan tarvitsee "
+#~ "kaikkea. Ikävä kyllä tarvittavia osia ei voida valita automaattisesti."
 
 #~ msgid ""
 #~ "You have ipppX interfaces configured, but you have not selected  ipppd to "
 #~ "be installed. This can be dangerous (leaving you with no way of obtaining "
 #~ "ipppd), so aborting the installation of this new isdnutils."
 #~ msgstr ""
-#~ "Sono presenti delle intefacce ipppX configurate ma si � scelto di non "
-#~ "installare ipppd. Questo pu� essere pericoloso (rendendo impossibile "
-#~ "l'uso di ipppd), quindi l'installazione di isdnutils viene interrotta."
+#~ "ipppX-liitäntöjä on asetettuna, mutta pakettia ipppd ei ole valittu "
+#~ "asennettavaksi. Tämä voi olla vaarallista (koska tällöin ei välttämättä "
+#~ "ole tapaa ipppd:n hankkimiseen), joten tämä asennus keskeytetään."
 
 #~ msgid ""
 #~ "If you really mean to not have ipppd, please remove the ipppd.* files "
 #~ "from /etc/isdn/, stop any ipppX interfaces, and reinstall isdnutils."
 #~ msgstr ""
-#~ "Se realmente si intende non usare ipppd, rimuovere i file ipppd.* da /etc/"
-#~ "isdn/, fermare tutte le interfacce ipppX e reinstallare isdnutils."
+#~ "Jos pakettia ipppd ei todella haluta, poista hakemistosta /etc/isdn "
+#~ "tiedostot ipppd.*, pysäytä kaikki ipppX-liitännät ja asenna isdnutils "
+#~ "uudelleen."
 
 #~ msgid ""
 #~ "If you used dselect, please select (+) ipppd, and any of the other parts "
@@ -944,123 +932,34 @@ msgstr ""
 #~ "install' first to configure any other packages that were unpacked but not "
 #~ "yet configured."
 #~ msgstr ""
-#~ "Se si � usato dselect, selezionare (+) ipppd e gli altri pacchetti di cui "
-#~ "si ha bisogno (p.e. isdnlog, isdnvbox, isdnutils-xtools), oltre a quelli "
-#~ "che sono stati selezionati automaticamente. Se si � usato apt-get, usare "
-#~ "�apt-get install isdnutils ipppd isdnlog ...�, potrebbe essere necessario "
-#~ "usare prima �apt-get -f install� per configurare qualsiasi altro pacchetto "
-#~ "che sia gi� stato estratto ma non ancora configurato."
-
-#~ msgid "You have an (old) isdnvbox cron.weekly script"
-#~ msgstr "� presente un (vecchio) script isdnvbox in cron.weekly"
-
-#~ msgid ""
-#~ "In early versions of isdnutils 3.1pre1b, when upgrading from 3.0 the /etc/"
-#~ "cron.weekly/isdnutils script was renamed to isdnvbox. Unfortunately, when "
-#~ "isdnvbox was split up into isdnvboxserver and isdnvboxclient, the "
-#~ "existing cron script was not renamed. This can lead to two scripts "
-#~ "existing."
-#~ msgstr ""
-#~ "Le versioni di isdnutils precedenti alla 3.1pre1b durante l'aggiornamento "
-#~ "dalla versione 3.0 rinominavano lo script /etc/cron.weekly/isdnutil in "
-#~ "isdnvbox. Sfortunatamente da quando isdnvbox � stato suddiviso in "
-#~ "isdnvboxserver e isdnvboxclient lo script per cron esistente non viene "
-#~ "pi� rinominato e questo pu� portare ad avere due script."
-
-#~ msgid ""
-#~ "Normally, at this point the old script could just be deleted, but it "
-#~ "looks like you have edited the script manually. Please look at /etc/cron."
-#~ "weekly/isdnvbox to see if any changes need to be preserved (e.g. in the /"
-#~ "etc/cron.weekly/isdnvboxserver script), and then delete the old script by "
-#~ "hand."
-#~ msgstr ""
-#~ "A questo punto normalmente i vecchi script possono essere rimossi ma "
-#~ "sembra che questi siano stati modificati manualmente. Controllare se in /"
-#~ "etc/cron.weekly/isdnvbox ci sono delle modifiche da preservare (p.e. "
-#~ "nello script /etc/cron.weekly/isdnvboxserver) e poi rimuovere manualmente "
-#~ "il vecchio script."
-
-#~ msgid ""
-#~ "If you can't see anything that needs preserving, it is probably safe to "
-#~ "delete it."
-#~ msgstr ""
-#~ "Se si ritiene che non ci siano delle cose da preservare � consigliabile "
-#~ "rimuoverlo."
-
-#~ msgid "/etc/cron.weekly/isdnutils renamed to isdnvboxserver"
-#~ msgstr "/etc/cron.weekly/isdnutils rinominato in isdnvboxserver"
-
-#~ msgid ""
-#~ "The existing /etc/cron.weekly/isdnutils script has been renamed to "
-#~ "isdnvboxserver to fit the names of the splitted packages (in the old "
-#~ "version, the script only handled isdnvbox things)."
-#~ msgstr ""
-#~ "Lo script /etc/cron.weekly/isdnutils � stato rinominato in isdnvboxserver "
-#~ "in modo di rispecchiare il nome del pacchetto che lo installa (nella "
-#~ "vecchia versione lo script era usato solo dai componenti di isdnvbox)."
-
-#~ msgid ""
-#~ "When the packaging system asks whether to replace the /etc/cron.weekly/"
-#~ "isdnvboxserver, it is recommended to do so. If you have made any changes "
-#~ "to the script in the past, please put those changes into the new script."
-#~ msgstr ""
-#~ "Quando il sistema di gestione dei pacchetti chiede di sostituire /etc/"
-#~ "cron.weekly/isdnvboxserver si raccomanda di accettare. Se in passato si "
-#~ "sono fatte delle modifiche allo script ripetere i cambiamenti nel nuovo "
-#~ "script."
-
-#~ msgid "You've chosen not to use debconf for isdnvboxserver"
-#~ msgstr "Si � scelto di non usare debconf per isdnvboxserver"
-
-#~ msgid ""
-#~ "If you change your mind, run \"dpkg-reconfigure isdnvboxserver\". To "
-#~ "finalize isdnvboxserver, you need to ensure that vboxgetty is running "
-#~ "from inittab, and that vboxd will run out of inetd."
-#~ msgstr ""
-#~ "Se si cambia idea, eseguire �dpkg-reconfigure isdnvboxserver�. Per mettere "
-#~ "a punto isdnvboxserver � necessario assicurarsi che vboxgetty sia "
-#~ "eseguito da inittab e che vboxd sia avviato da inetd."
-
-#~ msgid "spool directory created"
-#~ msgstr "creata la directory di spool"
-
-#~ msgid ""
-#~ "The spool directory `${NEWSPOOL}' has been created, which is necessary "
-#~ "for proper working of vbox."
-#~ msgstr ""
-#~ "La directory di spool �${NEWSPOOL}�, necessaria per il corretto "
-#~ "funzionamento di vbox, � stata creata."
-
-#~ msgid "vbox config file created"
-#~ msgstr "creato il file di configurazione di vbox"
-
-#~ msgid ""
-#~ "The configuration file `${DIR}/.vbox.conf' has been created. See `man "
-#~ "vbox.conf' for information on changing this file."
-#~ msgstr ""
-#~ "Il file di configurazione �${DIR}/.vbox.conf� � stato creato, vedere �man "
-#~ "vbox.conf� per le informazioni su come modificare questo file."
+#~ "Käytettäessä dselectiä tulisi valita (+) ipppd ja muut mahdollisesti "
+#~ "tarvittavat osat (esim. isdnlog, isdnvbox, isdnutils-xtools), vaikka "
+#~ "näiden olisi pitänyt tulla valituksi automaattisesti. Käytettäessä apt-"
+#~ "getiä voidaan käyttää komentoa ”apt-get install isdnutils ipppd "
+#~ "isdnlog ...” Komento ”apt-get -f install” täytyy ehkä ajaa ensin "
+#~ "sellaisten pakettien asetusten tekemiseksi, jotka on purettu, mutta ei "
+#~ "asetettu."
 
 #~ msgid "user `vbox' created"
-#~ msgstr "creato l'utente �vbox�"
+#~ msgstr "käyttäjä ”vbox” luotu"
 
 #~ msgid ""
 #~ "A user `vbox' was created, in group `dialout'. This is used as the ID "
 #~ "that the vbox daemons run under."
 #~ msgstr ""
-#~ "� stato creato l'utente �vbox� nel gruppo �dialout�, questa � l'identit� "
-#~ "con cui verranno eseguiti i demoni vbox."
+#~ "Käyttäjä ”vbox” luotiin ryhmään ”dialout”. Tätä käytetään tunnuksena, "
+#~ "jolla vbox-taustaohjelmaa ajetaan."
 
 #~ msgid "Failed to create user `vbox'"
-#~ msgstr "Fallita la creazione dell'utente �vbox�"
+#~ msgstr "Käyttäjän ”vbox” luominen epäonnistui"
 
 #~ msgid ""
 #~ "For optimal operation of vbox, a user `vbox' should be created, in group "
 #~ "`dialout'. However, creating that user failed with the following error(s):"
 #~ msgstr ""
-#~ "Per il funzionamento ottimale di vbox si deve creare l'utente �vbox� nel "
-#~ "gruppo �dialout�. Purtroppo la creazione di questo utente � fallita "
-#~ "riportando i seguenti errori:"
+#~ "vboxin ihanteellinen toiminta vaatisi, että käyttäjä ”vbox” luodaan "
+#~ "ryhmään ”dialout”. Kyseisen tunnuksen luominen kuitenkin epäonnistui ja "
+#~ "tuotti seuraavat virheilmoitukset:"
 
 #~ msgid "${MSG}"
 #~ msgstr "${MSG}"
@@ -1069,11 +968,11 @@ msgstr ""
 #~ "Please remedy this problem by hand, and then rerun the configuration with "
 #~ "`dpkg-reconfigure isdnvboxserver'."
 #~ msgstr ""
-#~ "Correggere manualmente questo problema e ripetere la configurazione con "
-#~ "�dpkg-reconfigure isdnvboxserver�."
+#~ "Korjaa ongelma käsin ja tee asetukset uudelleen komennolla ”dpkg-"
+#~ "reconfigure isdnvboxserver”."
 
 #~ msgid "isdnvboxserver is being configured."
-#~ msgstr "Configurazione di isdnvboxserver in corso."
+#~ msgstr "isdnvboxserverin asetuksia tehdään"
 
 #~ msgid "Note to translators: no need to translate this, not shown to users."
 #~ msgstr "Note to translators: no need to translate this, not shown to users."

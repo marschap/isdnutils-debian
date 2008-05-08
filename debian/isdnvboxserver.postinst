@@ -80,17 +80,6 @@ if [ -z "$RET" -o `echo "$RET" | tr A-Z a-z` = quit ]; then # do it by hand
     exit 0
 fi
 
-# DONT ADD A USER!
-# if ! getent passwd vbox; then
-#     stderr="`adduser --system --home /var/spool/vbox --ingroup dialout --disabled-password --gecos 'vbox daemons' vbox 2>&1`"
-#     if [ $? -ne 0 ]; then
-#         db_subst isdnvboxserver/adduserfailed MSG "$stderr"
-#         db_input high isdnvboxserver/adduserfailed
-#     else
-#         db_input low isdnvboxserver/adduserdone
-#     fi
-#     db_go || true
-# fi
 if [ -s /etc/isdn/vboxgetty.conf ]; then
     # only use ttyI6
     eval `perl -- - /etc/isdn/vboxgetty.conf <<'EOF'
@@ -132,9 +121,6 @@ if [ ! -d "$VBOX_SPOOL" ]; then
     # so create it here if necessary
     mkdir -p "$VBOX_SPOOL/incoming" "$VBOX_SPOOL/messages"
     cp /usr/share/isdnvboxserver/default/standard.tcl "$VBOX_SPOOL/."
-    db_subst isdnvboxserver/spoolcreate NEWSPOOL "$VBOX_SPOOL"
-    db_input low  isdnvboxserver/spoolcreate || true
-    db_go
 fi
 if chown -R "$VBOX_DUSER" "$VBOX_SPOOL"; then
     : #OK
@@ -157,8 +143,6 @@ if [ ! -z "$VBOX_DUSER" ]; then
         if [ -d "$VBOX_USERHOME" ]; then
             if [ ! -s "$VBOX_USERHOME/.vbox.conf" ]; then
                 cp /usr/share/isdn/default/vbox.conf $VBOX_USERHOME/.vbox.conf
-                db_subst isdnvboxserver/vboxcreate DIR $VBOX_USERHOME
-                db_input high isdnvboxserver/vboxcreate || true
                 chown $VBOX_DUSER $VBOX_USERHOME/.vbox.conf
             fi
         else
