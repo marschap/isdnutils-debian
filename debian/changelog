@@ -1,3 +1,13 @@
+isdnutils (1:3.9.20060704-3.5) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix bashism in an eurofile script. Thanks to Chris Lamb for the patch
+    Closes: #486036
+  * Fix pending l10n issues. Debconf translations:
+    - Swedish. Closes: #491770
+
+ -- Christian Perrier <bubulle@debian.org>  Sun, 12 Oct 2008 11:46:55 +0200
+
 isdnutils (1:3.9.20060704-3.4) unstable; urgency=low
 
   * Non-maintainer upload to fix pending l10n issues.
