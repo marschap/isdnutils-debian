@@ -180,6 +180,7 @@ start_isdnlog() {
             --quiet --exec /usr/sbin/isdnlog -- -D -f$optionfile $DEVISDNCTRL &
     done
     daemon=false
+    [ -d /var/run/isdnrate/ ] || mkdir /var/run/isdnrate/
     socket=/var/run/isdnrate/socket
     if [ -s /etc/isdn/isdnrate.conf ]; then
         set +e
@@ -219,6 +220,7 @@ reload_isdnlog() {
     # stop daemon if it happens to be running, then start it if necessary
     /usr/bin/isdnrate -CD3 2>/dev/null || true
     daemon=false
+    [ -d /var/run/isdnrate/ ] || mkdir /var/run/isdnrate/
     socket=/var/run/isdnrate/isdnrate
     if [ -s /etc/isdn/isdnrate.conf ]; then
         set +e

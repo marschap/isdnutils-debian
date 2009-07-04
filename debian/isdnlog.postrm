@@ -9,6 +9,8 @@ case "$1" in
             cd /etc/isdn
             rm isdnlog.isdnctrl[02468] isdnrate.conf 2>/dev/null || true
             cd /
+	    # Use || true to survive from the error, just like dpkg would
+	    [ ! -d /var/run/isdnrate/ ] || rmdir /var/run/isdnrate/ || true
          fi
          ;;
 

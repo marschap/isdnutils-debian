@@ -12,11 +12,11 @@ elif [ $# -ne 1 ]; then
 fi
 case "$1" in
     -patch)
-        patch $pdir -f --no-backup-if-mismatch -p0 < $0
+        patch $pdir -f --no-backup-if-mismatch -p1 < $0
         #cd ${dir}gcc && autoconf
         ;;
     -unpatch)
-        patch $pdir -f --no-backup-if-mismatch -R -p0 < $0
+        patch $pdir -f --no-backup-if-mismatch -R -p1 < $0
         #rm ${dir}gcc/configure
         ;;
     *)

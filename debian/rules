@@ -395,6 +395,8 @@ debian_patches = \
 	toplevel-make \
 	capi20-msg2str-safety \
 	lsb-init-script \
+	bashisms \
+	isdneurofile-bashism
 
 ifeq ($(distribution),Ubuntu)
   debian_patches += no-imake

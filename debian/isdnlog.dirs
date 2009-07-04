@@ -10,4 +10,3 @@ usr/share/man/man5
 usr/share/man/man8
 var/lib/isdn
 var/log/isdn
-var/run/isdnrate

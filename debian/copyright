@@ -7,7 +7,7 @@ Upstream Authors: the i4l crew ( see http://www.isdn4linux.de/ )
 
 GPL Copyrights:
 
-  For the complete GPL version 2 text, see /usr/share/common-licenses/GPL .
+  For the complete GPL version 2 text, see /usr/share/common-licenses/GPL-2.
 
 All changes for debian are done by Paul Slootman <paul@debian.org> or
 derived from the work of other debian developers and users and licensed

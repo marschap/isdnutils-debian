@@ -1,3 +1,19 @@
+isdnutils (1:3.9.20060704-3.7) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Add bashisms and isdneurofile-bashism to the list of patches to apply.
+    - Really closes: #530105, #530980.
+  * Bump compat level to five.
+  * debian/control:
+    + Fix FTBFS, build-depend on xutils-dev. Closes: #527529.
+    + Add missing dependency on misc:Depends.
+    + Bump versioned dependency on debhelper to match compat level.
+    + Remove Paul Slootman from uploaders, already in maintainer field.
+  * debian/copyright: refer to the GPL version 2 file.
+  * Don't ship var/run/isdnrate/, create it in init script.
+
+ -- Raphael Geissert <geissert@debian.org>  Sat, 04 Jul 2009 12:23:57 -0500
+
 isdnutils (1:3.9.20060704-3.6) unstable; urgency=medium
 
   * Non-maintainer upload.
