@@ -1,3 +1,46 @@
+isdnutils (1:3.9.20060704-4) unstable; urgency=low
+
+  * Orphaning isdnutils, as I do not use it anymore in a way to be able to
+    properly maintain it.
+  * Acknowledge NMU upload.
+    closes: #527529
+  * Call /sbin/MAKDEV explicitly from ipppd postinst instead of relying on the
+    symlink in /dev/, which may not be there if makedev was installed after
+    udev was started.
+    closes: #542156
+  * Renamed /etc/modprobe.d/blacklist-capiutils to blacklist-capiutils.conf to
+    avoid warnings from modprobe due to recent changes in module-init-tools.
+    closes: #520248
+  * Removed / modified calls to log_success_msg with empty strings from
+    init.d.functions, as that apparently causes the script to exit, wierd...
+    closes: #543567
+  * Remodelled isdnutils-base.postinst for checking on non-empty /etc/isdn/.
+    closes: #431855
+  * Modified / corrected debconf templates.
+    closes: #378705
+  * Fixed capifax manpage to mention the filename to be sent, and to correctly
+    describe how the notification program is called.
+    closes: #318930,#353884,#324719
+  * Added support for sending to 3.1kHz-only destinations.
+    closes: #354830
+  * Start isdnutils at sequence 21, so that the makedev script is run
+    earlier (S20isdnutils < S20makedev).
+    closes: #383992
+  * Add support for successful CAPI return codes instead of treating them as
+    errors.
+    closes: #471600
+  * Start isdneurofile at sequence 22, so that the isdnutils script is run
+    earlier, at sequence 21 (see above).
+    closes: #498943
+  * Fixed text typo in init.d/isdnutils.
+    closes: #502276
+  * Fixed bashism in vboxmail.enhanced script.
+    closes: #530106
+  * Changed dependency on makdev to "udev | makedev".
+    closes: #546872
+
+ -- Paul Slootman <paul@debian.org>  Tue, 15 Sep 2009 17:14:00 +0200
+
 isdnutils (1:3.9.20060704-3.7) unstable; urgency=low
 
   * Non-maintainer upload.

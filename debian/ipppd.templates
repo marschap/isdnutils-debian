@@ -1,6 +1,6 @@
 Template: ipppd/ispwontdoit
 Type: error
-_Description: ISP dialup config exists already
+_Description: ISP dialup config already exists
  The files device.${IPPP0} and ipppd.${IPPP0} already exist. Therefore the
  ipppd configuration phase won't touch anything there, as it looks like
  it's already been configured.
@@ -14,22 +14,20 @@ _Description: ISP dialup config exists already
 Template: ipppd/whichif
 Type: string
 Default: ippp0
-_Description: Which interface should be configured?
- Which interface should debconf configure?
- .
- Most people will say "ippp0" here, as that is the default for a connection
+_Description: Interface to configure:
+ Most people should say "ippp0" here, as that is the default for a connection
  to an ISP. The default gateway will be ippp0.
  .
  However, some people have special requirements, and they may choose
- another interface that debconf will configure (e.g. because they don't
+ another interface that will be configured (e.g. because they don't
  want this connection to be the default gateway).
  .
- Note that debconf will currently only configure at most one interface.
- Enter "none" if you do not want debconf to configure anything for ipppd.
+ Note that currently at most one interface can be configured in this manner.
+ Leave the field blank if you do not want to configure anything now for ipppd.
 
 Template: ipppd/wrongif
 Type: error
-_Description: wrong interface name
+_Description: Wrong interface name
  You can only give names starting with "ippp" followed by a number between
  0 and 63.
 
@@ -37,26 +35,24 @@ Template: ipppd/ispphone
 Type: string
 Default: manual
 _Description: What is your ISP's telephone number?
- What telephone number(s) must be dialed in order to connect
- to your Internet service provider (ISP)?
+ At least one phone number has to be dialed in order to connect
+ to your Internet service provider (ISP).
  .
  Enter the telephone number here, including dialing prefixes,
- area codes, and so on. Enter the number without any spaces.
+ area codes, and so on, but without any spaces.
  .
- You can enter multiple telephone numbers. If you do so then
- separate them with spaces.
+ You can enter multiple telephone numbers, separated by spaces.
  .
- Enter the word "manual" or leave the field blank if you want
- to configure the connection manually.
+ Leave the field blank if you want to configure the connection manually.
 
 Template: ipppd/eaz
 Type: string
 Default: 0
-_Description: What is your local MSN?
+_Description: Local MSN:
  When making a call with ISDN, the MSN (phone number) that is originating
- the call must be given in the call-setup message. While usually a wrong
- MSN will be replaced by the main MSN for the ISDN line, especially on
- PABXes a wrong MSN (often the extension number in this case) will cause
+ the call must be given in the call-setup message. While a wrong MSN will
+ usually be replaced by the main MSN for the ISDN line, especially on
+ PABXes, a wrong MSN (often the extension number in this case) will cause
  the call-setup to fail. So, it is best to enter the correct local MSN
  here.
  .
@@ -66,14 +62,14 @@ _Description: What is your local MSN?
 
 Template: ipppd/isplogin
 Type: string
-_Description: What is the user name for logging into your ISP?
- Most (all?) ISPs need a user name and password for authenticating you as a
+_Description: User name for logging into your ISP:
+ Most ISPs need a user name and password for authenticating you as a
  valid user before allowing access. Enter the user name here. The password
  will be asked for next.
 
 Template: ipppd/isppasswd
 Type: password
-_Description: What is the password for logging into your ISP?
+_Description: Password for logging into your ISP:
  The password you give here will be entered into /etc/ppp/pap-secrets and
  /etc/ppp/chap-secrets together with the username.
 
@@ -109,7 +105,7 @@ _Description: /etc/ppp/ip-up.d/00-isdnutils still exists
  those changes in the 00-ipppd file (which is the new name). After that,
  please delete the old 00-isdnutils file.
  .
- Until it is deleted, it will still be used! This may cause conflicts.
+ Until it is deleted, it will still be used. This may cause conflicts.
 
 Template: ipppd/oldipdown
 Type: error
@@ -119,7 +115,7 @@ _Description: /etc/ppp/ip-down.d/99-isdnutils still exists
  those changes in the 99-ipppd file (which is the new name). After that,
  please delete the old 99-isdnutils file.
  .
- Until it is deleted, it will still be used! This may cause conflicts.
+ Until it is deleted, it will still be used. This may cause conflicts.
 
 Template: ipppd/oldipupdown
 Type: error
@@ -130,17 +126,17 @@ _Description: old /etc/ppp/ip-up.d and ip-down.d scripts still exist
  and 99-ipppd files (which are the new names). After that, please delete
  the old 00-isdnutils and 99-isdnutils files.
  .
- Until they are deleted, they will still be used! This may cause conflicts.
+ Until they are deleted, they will still be used. This may cause conflicts.
 
 Template: ipppd/noisdnutilsinit
 Type: error
-_Description: (re)start ipppd by hand
+_Description: (Re)start ipppd manually
  There is no /etc/init.d/isdnutils on your system; hence you will have to
- stop and start any ipppd daemons by hand.
+ stop and start any ipppd daemons manually.
 
 Template: ipppd/isdnutilsinitbad
 Type: error
-_Description: error running isdnutils init script
+_Description: Error running isdnutils init script
  The /etc/init.d/isdnutils script ran with errors. Please check the
  installation of the isdnutils-base package; reinstall it if necessary.
  Perhaps moving /etc/init.d/isdnutils.dpkg-dist (if it exists) to

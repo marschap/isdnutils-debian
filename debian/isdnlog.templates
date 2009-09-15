@@ -1,14 +1,19 @@
 Template: isdnlog/country
 Type: select
+#flag:translate:9
 __Choices: AT, CH, DE, ES, FR, LU, NL, NO, other
-Default: DE
-_Description: What country is this system in?
+# Translators: If your 2-letter code country is in the following list:
+#    "AT, CH, DE, ES, FR, LU, NL, NO"
+# translate this string by this code. Otherwise, just write "other" (but
+# do not translate it).
+_Default: other[ default country]
+_Description: Country:
  This is used for setting a number of defaults, e.g. what rate tables to
  use for calculating the cost of a call.
 
 Template: isdnlog/country_manual
 Type: string
-_Description: Enter the ISO two-letter code for your country
+_Description: ISO two-letter code for your country:
  This can't really be used for setting any defaults, but maybe some day...
  .
  Note that you will probably have to edit /etc/isdn/isdn.conf before
@@ -17,32 +22,31 @@ _Description: Enter the ISO two-letter code for your country
 Template: isdnlog/countryprefix
 Type: string
 Default: +
-_Description: What is used to indicate an international number?
+_Description: Prefix for international number:
 
 Template: isdnlog/countrycode
 Type: string
 Default: 49
-_Description: What is the countrycode for your country?
+_Description: Code of your country:
  e.g. ${default_countrycode} for ${default_country}
 
 Template: isdnlog/areaprefix
 Type: string
 Default: 0
-_Description: What is used to indicate an areacode, if applicable?
+_Description: Prefix for areacode, if applicable:
 
 Template: isdnlog/areacode
 Type: string
-_Description: What is your local areacode, if applicable?
+_Description: Local areacode, if applicable:
 
 Template: isdnlog/isdnrate-daemon
-Type: select
-Choices: no, yes
-Default: no
+Type: boolean
+Default: false
 _Description: Run isdnrate as a daemon?
  isdnrate is a utility to calculate the costs of a connection to a given
  phone number, used e.g. for LCR systems to find the cheapest carrier on a
  call-by-call basis. Having it run as a daemon speeds things up as then it
- only has to load all the data just once.
+ only has to load all the data once.
  .
  This is only for people with special requirements, such as those using the
- isdn2h323 package. Hence most people should say "no".
+ isdn2h323 package. Hence most people should not choose this option.

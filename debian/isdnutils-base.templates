@@ -1,17 +1,17 @@
 Template: isdnutils/firmware
 Type: select
-_Choices: none, ISAR.BIN
+#flag:translate:1
+__Choices: none, ISAR.BIN
 Default: none
-_Description: Does firmware need to be loaded?
+_Description: Firmware to load:
  Some ISDN cards can't function properly until firmware has been
  downloaded. Notable example is the Sedlbauer SpeedFax+ PCI or Siemens
- I-Surf, which need ISAR.BIN to be loaded. (I don't know of any others at
- this time.) Choose "ISAR.BIN" if this is necessary. If you don't know what
- I'm talking about, choose "none".
+ I-Surf, which need ISAR.BIN to be loaded. Choose "ISAR.BIN" if this is
+ necessary. If you don't know what to answer here, choose "none".
 
 Template: isdnutils/firmwarecards
 Type: string
-_Description: Which ISDN card numbers have to be loaded with the firmware?
+_Description: ISDN card numbers to load with the firmware:
  If you have more than one card, enter the number of the card(s) that have
  to be loaded with the firmware, starting with 1, separated by commas. If
  you have only one card, the obvious answer here is "1". If you have two

@@ -87,7 +87,7 @@ check_isdncards() {
 	    # udev is running
 	    old_pwd=$(pwd)
 	    cd /dev
-	    WRITE_ON_UDEV=1 ./MAKEDEV isdnmodem isdnbri dcbri isdn-io isdn-tty isdn-ippp
+	    WRITE_ON_UDEV=1 /sbin/MAKEDEV isdnmodem isdnbri dcbri isdn-io isdn-tty isdn-ippp
 	    if [ ! -e /dev/isdnctrl ]; then
 		cd /dev && ln -s isdnctrl0 isdnctrl
 	    fi
@@ -110,7 +110,6 @@ check_isdncards() {
         fi
 	set -- `perl -ne 's/^idmap:\s+//; s/ -//g; s/(\S+) \1/\1/g; print; exit;' $ISDNINFO 2>/dev/null`
 	if [ $# -eq 0 -a "$do_what" != stop ]; then
-            log_success_msg " "
             log_success_msg " no ISDN cards configured! Please configure 'hisax' module with modconf"
             log_success_msg "    Read /usr/share/doc/isdnutils-base/README.HiSax.gz for more information"
             log_success_msg "    (e.g. with 'zless /usr/share/doc/isdnutils-base/README.HiSax.gz')."
@@ -254,7 +253,7 @@ start_devices() {
     if [ -z "$DEVS" -a ! -f /etc/isdn/noconfig ]; then
         log_success_msg "  There is apparently no configuration created yet."
         log_success_msg "  You can create configuration files with the 'isdnconfig' tool."
-        log_success_msg " "
+        log_success_msg "  ."
         log_success_msg "  If you don't want this warning in future, please create the file"
         log_success_msg "     /etc/isdn/noconfig"
         log_success_msg "  For more information, see /usr/share/doc/isdnutils-base/HOWTO.isdnutils.gz"
@@ -285,7 +284,7 @@ start_devices() {
             if [ ! -c /dev/$device -a ! -c /dev/isdn/$device ]; then
 		cd /dev
 		/bin/echo -e " (creating /dev/$device)\c"
-		WRITE_ON_UDEV=1 ./MAKEDEV $device || true
+		WRITE_ON_UDEV=1 /sbin/MAKEDEV $device || true
 		cd /etc/isdn
 	    fi
 	    if [ `expr "$extraopts" : 'slave'` -eq 5 ]; then

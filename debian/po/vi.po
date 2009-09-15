@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: isdnutils 1:3.9.20060704-3.5\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
-"POT-Creation-Date: 2008-04-16 18:20+0200\n"
+"POT-Creation-Date: 2009-09-16 16:36+0200\n"
 "PO-Revision-Date: 2008-04-27 23:44+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
@@ -19,7 +19,9 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../ipppd.templates:1001
-msgid "ISP dialup config exists already"
+#, fuzzy
+#| msgid "ISP dialup config exists already"
+msgid "ISP dialup config already exists"
 msgstr "Đã có cấu hình quay số cho nhà cung cấp dịch vụ Internet (ISP)."
 
 #. Type: error
@@ -53,21 +55,21 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../ipppd.templates:2001
-msgid "Which interface should be configured?"
+#, fuzzy
+#| msgid "Which interface should be configured?"
+msgid "Interface to configure:"
 msgstr "Có nên cấu hình giao diện nào?"
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:2001
-msgid "Which interface should debconf configure?"
-msgstr "Debconf nên cấu hình giao diện nào?"
-
-#. Type: string
-#. Description
-#: ../ipppd.templates:2001
+#, fuzzy
+#| msgid ""
+#| "Most people will say \"ippp0\" here, as that is the default for a "
+#| "connection to an ISP. The default gateway will be ippp0."
 msgid ""
-"Most people will say \"ippp0\" here, as that is the default for a connection "
-"to an ISP. The default gateway will be ippp0."
+"Most people should say \"ippp0\" here, as that is the default for a "
+"connection to an ISP. The default gateway will be ippp0."
 msgstr ""
 "Phần lớn người sẽ nói « ippp0 » ở đây, vì nó là giá trị mặc định để kết nối "
 "đến nhà cung cấp dịch vụ Internet (ISP).  Cổng ra mặc định là « ippp0 »."
@@ -75,9 +77,14 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../ipppd.templates:2001
+#, fuzzy
+#| msgid ""
+#| "However, some people have special requirements, and they may choose "
+#| "another interface that debconf will configure (e.g. because they don't "
+#| "want this connection to be the default gateway)."
 msgid ""
 "However, some people have special requirements, and they may choose another "
-"interface that debconf will configure (e.g. because they don't want this "
+"interface that will be configured (e.g. because they don't want this "
 "connection to be the default gateway)."
 msgstr ""
 "Tuy nhiên, một số người có yêu cầu đặc biệt thì có thể chọn một giao diện "
@@ -87,9 +94,13 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../ipppd.templates:2001
+#, fuzzy
+#| msgid ""
+#| "Note that debconf will currently only configure at most one interface. "
+#| "Enter \"none\" if you do not want debconf to configure anything for ipppd."
 msgid ""
-"Note that debconf will currently only configure at most one interface. Enter "
-"\"none\" if you do not want debconf to configure anything for ipppd."
+"Note that currently at most one interface can be configured in this manner. "
+"Leave the field blank if you do not want to configure anything now for ipppd."
 msgstr ""
 "Ghi chú rằng hiện thời debconf sẽ cấu hình nhiều nhất một giao diện. Hãy "
 "nhập « không có » nếu bạn không muốn debconf cấu hình gì cho ipppd."
@@ -97,7 +108,9 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../ipppd.templates:3001
-msgid "wrong interface name"
+#, fuzzy
+#| msgid "wrong interface name"
+msgid "Wrong interface name"
 msgstr "sai tên giao diện"
 
 #. Type: error
@@ -118,9 +131,13 @@ msgstr "Nhà cung cấp dịch vụ Internet của bạn có số điện thoạ
 #. Type: string
 #. Description
 #: ../ipppd.templates:4001
+#, fuzzy
+#| msgid ""
+#| "What telephone number(s) must be dialed in order to connect to your "
+#| "Internet service provider (ISP)?"
 msgid ""
-"What telephone number(s) must be dialed in order to connect to your Internet "
-"service provider (ISP)?"
+"At least one phone number has to be dialed in order to connect to your "
+"Internet service provider (ISP)."
 msgstr ""
 "Để kết nối đến nhà cung cấp dịch vụ Internet (ISP) của bạn cần quay số điện "
 "thoại nào?"
@@ -128,9 +145,13 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../ipppd.templates:4001
+#, fuzzy
+#| msgid ""
+#| "Enter the telephone number here, including dialing prefixes, area codes, "
+#| "and so on. Enter the number without any spaces."
 msgid ""
 "Enter the telephone number here, including dialing prefixes, area codes, and "
-"so on. Enter the number without any spaces."
+"so on, but without any spaces."
 msgstr ""
 "Hãy nhập vào đây số điện thoại đó, gồm tiền tố quay số nào, mã vùng v.v. "
 "Nhập số không có dấu cách định giới."
@@ -138,33 +159,45 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../ipppd.templates:4001
-msgid ""
-"You can enter multiple telephone numbers. If you do so then separate them "
-"with spaces."
+#, fuzzy
+#| msgid ""
+#| "You can enter multiple telephone numbers. If you do so then separate them "
+#| "with spaces."
+msgid "You can enter multiple telephone numbers, separated by spaces."
 msgstr "Bạn có thể nhập nhiều số điện thoại, định giới bằng dấu cách."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:4001
-msgid ""
-"Enter the word \"manual\" or leave the field blank if you want to configure "
-"the connection manually."
+#, fuzzy
+#| msgid ""
+#| "Enter the word \"manual\" or leave the field blank if you want to "
+#| "configure the connection manually."
+msgid "Leave the field blank if you want to configure the connection manually."
 msgstr ""
 "Muốn tự cấu hình sự kết nối thì hãy nhập « bằng tay » hoặc bỏ trường này rỗng."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:5001
-msgid "What is your local MSN?"
-msgstr "MSN của bạn là số nào?"
+msgid "Local MSN:"
+msgstr ""
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:5001
+#, fuzzy
+#| msgid ""
+#| "When making a call with ISDN, the MSN (phone number) that is originating "
+#| "the call must be given in the call-setup message. While usually a wrong "
+#| "MSN will be replaced by the main MSN for the ISDN line, especially on "
+#| "PABXes a wrong MSN (often the extension number in this case) will cause "
+#| "the call-setup to fail. So, it is best to enter the correct local MSN "
+#| "here."
 msgid ""
 "When making a call with ISDN, the MSN (phone number) that is originating the "
-"call must be given in the call-setup message. While usually a wrong MSN will "
-"be replaced by the main MSN for the ISDN line, especially on PABXes a wrong "
+"call must be given in the call-setup message. While a wrong MSN will usually "
+"be replaced by the main MSN for the ISDN line, especially on PABXes, a wrong "
 "MSN (often the extension number in this case) will cause the call-setup to "
 "fail. So, it is best to enter the correct local MSN here."
 msgstr ""
@@ -189,16 +222,23 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../ipppd.templates:6001
-msgid "What is the user name for logging into your ISP?"
+#, fuzzy
+#| msgid "What is the user name for logging into your ISP?"
+msgid "User name for logging into your ISP:"
 msgstr "Việc đăng nhập vào ISP của bạn cần dùng tên người dùng nào?"
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:6001
+#, fuzzy
+#| msgid ""
+#| "Most (all?) ISPs need a user name and password for authenticating you as "
+#| "a valid user before allowing access. Enter the user name here. The "
+#| "password will be asked for next."
 msgid ""
-"Most (all?) ISPs need a user name and password for authenticating you as a "
-"valid user before allowing access. Enter the user name here. The password "
-"will be asked for next."
+"Most ISPs need a user name and password for authenticating you as a valid "
+"user before allowing access. Enter the user name here. The password will be "
+"asked for next."
 msgstr ""
 "Phần lớn (có lẽ tất cả) các ISP cần thiết bạn cung cấp cả một tên người dùng "
 "lẫn một mật khẩu đều để xác thực bạn là một người dùng hợp lệ, trước khi cho "
@@ -208,7 +248,9 @@ msgstr ""
 #. Type: password
 #. Description
 #: ../ipppd.templates:7001
-msgid "What is the password for logging into your ISP?"
+#, fuzzy
+#| msgid "What is the password for logging into your ISP?"
+msgid "Password for logging into your ISP:"
 msgstr "Để đăng nhập vào ISP, bạn có sử dụng mật khẩu nào?"
 
 #. Type: password
@@ -304,7 +346,10 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../ipppd.templates:11001 ../ipppd.templates:12001
-msgid "Until it is deleted, it will still be used! This may cause conflicts."
+#, fuzzy
+#| msgid ""
+#| "Until it is deleted, it will still be used! This may cause conflicts."
+msgid "Until it is deleted, it will still be used. This may cause conflicts."
 msgstr "Không xoá nó thì nó vẫn còn được dùng, mà có thể gây ra sự xung đột."
 
 #. Type: error
@@ -352,23 +397,32 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../ipppd.templates:13001
+#, fuzzy
+#| msgid ""
+#| "Until they are deleted, they will still be used! This may cause conflicts."
 msgid ""
-"Until they are deleted, they will still be used! This may cause conflicts."
+"Until they are deleted, they will still be used. This may cause conflicts."
 msgstr ""
 "Không xoá chúng thì chúng vẫn còn được dùng, mà có thể gây ra sự xung đột."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:14001
-msgid "(re)start ipppd by hand"
+#, fuzzy
+#| msgid "(re)start ipppd by hand"
+msgid "(Re)start ipppd manually"
 msgstr "Tự khởi chạy (lại) ipppd"
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:14001
+#, fuzzy
+#| msgid ""
+#| "There is no /etc/init.d/isdnutils on your system; hence you will have to "
+#| "stop and start any ipppd daemons by hand."
 msgid ""
 "There is no /etc/init.d/isdnutils on your system; hence you will have to "
-"stop and start any ipppd daemons by hand."
+"stop and start any ipppd daemons manually."
 msgstr ""
 "Không có tập tin « /etc/init.d/isdnutils » trong hệ thống này nên bạn sẽ cần "
 "phải tự ngừng và tự khởi chạy trình nền (dæmon) ippd nào."
@@ -376,7 +430,9 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../ipppd.templates:15001
-msgid "error running isdnutils init script"
+#, fuzzy
+#| msgid "error running isdnutils init script"
+msgid "Error running isdnutils init script"
 msgstr "gặp lỗi khi chạy văn lệnh khởi động isdnutils"
 
 #. Type: error
@@ -396,66 +452,28 @@ msgstr ""
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:1001
-msgid "AT"
-msgstr "AT"
-
-#. Type: select
-#. Choices
-#: ../isdnlog.templates:1001
-msgid "CH"
-msgstr "CH"
-
-#. Type: select
-#. Choices
-#: ../isdnlog.templates:1001
-msgid "DE"
-msgstr "DE"
-
-#. Type: select
-#. Choices
-#: ../isdnlog.templates:1001
-msgid "ES"
-msgstr "ES"
-
-#. Type: select
-#. Choices
-#: ../isdnlog.templates:1001
-msgid "FR"
-msgstr "FR"
-
-#. Type: select
-#. Choices
-#: ../isdnlog.templates:1001
-msgid "LU"
-msgstr "LU"
-
-#. Type: select
-#. Choices
-#: ../isdnlog.templates:1001
-msgid "NL"
-msgstr "NL"
-
-#. Type: select
-#. Choices
-#: ../isdnlog.templates:1001
-msgid "NO"
-msgstr "NO"
-
-#. Type: select
-#. Choices
-#: ../isdnlog.templates:1001
 msgid "other"
 msgstr "khác"
 
 #. Type: select
-#. Description
+#. Default
+#. Translators: If your 2-letter code country is in the following list:
+#. "AT, CH, DE, ES, FR, LU, NL, NO"
+#. translate this string by this code. Otherwise, just write "other" (but
+#. do not translate it).
 #: ../isdnlog.templates:1002
-msgid "What country is this system in?"
-msgstr "Hệ thống này nằm trong quốc gia nào?"
+msgid "other[ default country]"
+msgstr ""
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:1002
+#: ../isdnlog.templates:1003
+msgid "Country:"
+msgstr ""
+
+#. Type: select
+#. Description
+#: ../isdnlog.templates:1003
 msgid ""
 "This is used for setting a number of defaults, e.g. what rate tables to use "
 "for calculating the cost of a call."
@@ -466,7 +484,9 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnlog.templates:2001
-msgid "Enter the ISO two-letter code for your country"
+#, fuzzy
+#| msgid "Enter the ISO two-letter code for your country"
+msgid "ISO two-letter code for your country:"
 msgstr "Hãy nhập mã hai chữ ISO cho quốc gian của bạn (v.d. VN cho Việt Nam)."
 
 #. Type: string
@@ -491,14 +511,14 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnlog.templates:3001
-msgid "What is used to indicate an international number?"
-msgstr "Để ngụ ý một số nước ngoài, chỗ của bạn dùng ký tự nào?"
+msgid "Prefix for international number:"
+msgstr ""
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:4001
-msgid "What is the countrycode for your country?"
-msgstr "Chỗ của bạn có số riêng nào?"
+msgid "Code of your country:"
+msgstr ""
 
 #. Type: string
 #. Description
@@ -509,41 +529,55 @@ msgstr "v.d. ${default_countrycode} cho ${default_country}"
 #. Type: string
 #. Description
 #: ../isdnlog.templates:5001
-msgid "What is used to indicate an areacode, if applicable?"
-msgstr "Nếu thích hợp, để ngụ ý mã vùng chỗ của bạn dùng ký tự nào?"
+#, fuzzy
+#| msgid "What is your local areacode, if applicable?"
+msgid "Prefix for areacode, if applicable:"
+msgstr "Nếu thích hợp, chỗ của bạn có số vùng địa phương nào?"
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:6001
-msgid "What is your local areacode, if applicable?"
+#, fuzzy
+#| msgid "What is your local areacode, if applicable?"
+msgid "Local areacode, if applicable:"
 msgstr "Nếu thích hợp, chỗ của bạn có số vùng địa phương nào?"
 
-#. Type: select
+#. Type: boolean
 #. Description
 #: ../isdnlog.templates:7001
 msgid "Run isdnrate as a daemon?"
 msgstr "Bạn có muốn chạy trình isdnrate (giá isdn) như là trình nền không?"
 
-#. Type: select
+#. Type: boolean
 #. Description
 #: ../isdnlog.templates:7001
+#, fuzzy
+#| msgid ""
+#| "isdnrate is a utility to calculate the costs of a connection to a given "
+#| "phone number, used e.g. for LCR systems to find the cheapest carrier on a "
+#| "call-by-call basis. Having it run as a daemon speeds things up as then it "
+#| "only has to load all the data just once."
 msgid ""
 "isdnrate is a utility to calculate the costs of a connection to a given "
 "phone number, used e.g. for LCR systems to find the cheapest carrier on a "
 "call-by-call basis. Having it run as a daemon speeds things up as then it "
-"only has to load all the data just once."
+"only has to load all the data once."
 msgstr ""
 "isdnrate là một tiện ích tính giá kết nối đến một số điện thoại nào đó. Nó "
 "được dùng, lấy thí dụ, để hệ thống LCR có thể tìm công ty điện thoại rẻ nhất "
 "cho mỗi cuộc gọi. Chạy nó là trình nền (dæmon) cũng tăng tốc độ, vì nó cần "
 "phải nạp toàn bộ dữ liệu chỉ một lần."
 
-#. Type: select
+#. Type: boolean
 #. Description
 #: ../isdnlog.templates:7001
+#, fuzzy
+#| msgid ""
+#| "This is only for people with special requirements, such as those using "
+#| "the isdn2h323 package. Hence most people should say \"no\"."
 msgid ""
 "This is only for people with special requirements, such as those using the "
-"isdn2h323 package. Hence most people should say \"no\"."
+"isdn2h323 package. Hence most people should not choose this option."
 msgstr ""
 "Tùy chọn này chỉ cho người có như cầu đặc biệt, v.d. những người sử dụng gói "
 "« isdn2h323 ». Vì vậy, phần lớn người nên nói « không » tại đây."
@@ -551,24 +585,32 @@ msgstr ""
 #. Type: select
 #. Choices
 #: ../isdnutils-base.templates:1001
-msgid "none, ISAR.BIN"
-msgstr "không có, ISAR.BIN"
+msgid "none"
+msgstr ""
 
 #. Type: select
 #. Description
 #: ../isdnutils-base.templates:1002
-msgid "Does firmware need to be loaded?"
+#, fuzzy
+#| msgid "Does firmware need to be loaded?"
+msgid "Firmware to load:"
 msgstr "Có phần vững nào cần nạp không?"
 
 #. Type: select
 #. Description
 #: ../isdnutils-base.templates:1002
+#, fuzzy
+#| msgid ""
+#| "Some ISDN cards can't function properly until firmware has been "
+#| "downloaded. Notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-"
+#| "Surf, which need ISAR.BIN to be loaded. (I don't know of any others at "
+#| "this time.) Choose \"ISAR.BIN\" if this is necessary. If you don't know "
+#| "what I'm talking about, choose \"none\"."
 msgid ""
 "Some ISDN cards can't function properly until firmware has been downloaded. "
 "Notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which need "
-"ISAR.BIN to be loaded. (I don't know of any others at this time.) Choose "
-"\"ISAR.BIN\" if this is necessary. If you don't know what I'm talking about, "
-"choose \"none\"."
+"ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is necessary. If you "
+"don't know what to answer here, choose \"none\"."
 msgstr ""
 "Một số thẻ ISDN không thể hoạt động cho đúng cho nếu bạn chưa tải phần vững "
 "(firmware) về hệ thống. Một thí dụ quan trọng là thể kiểu Sedlbauer SpeedFax"
@@ -579,7 +621,9 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnutils-base.templates:2001
-msgid "Which ISDN card numbers have to be loaded with the firmware?"
+#, fuzzy
+#| msgid "Which ISDN card numbers have to be loaded with the firmware?"
+msgid "ISDN card numbers to load with the firmware:"
 msgstr "Cùng với phần vững này, cần phải nạp những số hiệu thẻ ISDN nào?"
 
 #. Type: string
@@ -598,7 +642,9 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:1001
-msgid "What number should vbox answer?"
+#, fuzzy
+#| msgid "What number should vbox answer?"
+msgid "Number that vbox should answer:"
 msgstr "Vbox nên trả lời số nào?"
 
 #. Type: string
@@ -615,11 +661,16 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:1001
+#, fuzzy
+#| msgid ""
+#| "Enter `quit' (or leave it blank) if you want to configure by hand, not "
+#| "via debconf. Also enter `quit' if you already have an existing (working) "
+#| "vbox configuration from the time when this was still part of isdnutils "
+#| "(unless you want to create a new configuration)."
 msgid ""
-"Enter `quit' (or leave it blank) if you want to configure by hand, not via "
-"debconf. Also enter `quit' if you already have an existing (working) vbox "
-"configuration from the time when this was still part of isdnutils (unless "
-"you want to create a new configuration)."
+"Leave the field blank if you want to configure by hand, or if you already "
+"have an existing (working) vbox configuration from the time when this was "
+"still part of isdnutils (unless you want to create a new configuration)."
 msgstr ""
 "Hãy nhập « quit » (thoát), hay bỏ rỗng, nếu bạn muốn tự cấu hình giá trị này, "
 "không phải cấu hình thông qua debconf. Cũng hãy nhập « quit » nếu bạn có một "
@@ -629,17 +680,25 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:2001
-msgid "After how many rings should vbox pick up the line?"
+#, fuzzy
+#| msgid "After how many rings should vbox pick up the line?"
+msgid "Number of rings for vbox to pick up the line:"
 msgstr "Vbox nên lấy gọi sau chuông điện thoại đã réo mấy lần?"
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:2001
+#, fuzzy
+#| msgid ""
+#| "One ring is about 5 seconds. You can fine-tune the number of rings for "
+#| "certain phonenumbers manually, e.g. any salesmen you know the number of "
+#| "(or calls without caller-ID) can be dumped into the answering machine "
+#| "after one ring. See `man vbox.conf' for more info."
 msgid ""
 "One ring is about 5 seconds. You can fine-tune the number of rings for "
 "certain phonenumbers manually, e.g. any salesmen you know the number of (or "
 "calls without caller-ID) can be dumped into the answering machine after one "
-"ring. See `man vbox.conf' for more info."
+"ring. See `man vbox.conf' for more information."
 msgstr ""
 "Chuông điện thoại có réo một lần trong khoảng năm giây. Vậy bạn có thể tự "
 "điều hưởng tinh tổng số lần réo cho số điện thoại nào đó. Ví dụ, sau một lần "
@@ -647,27 +706,39 @@ msgstr ""
 "biết, hoặc mọi cuộc gọi không có mã số người gọi (CID). Xem « man vbox.conf » "
 "để tìm thêm thông tin."
 
-#. Type: select
+#. Type: boolean
 #. Description
 #: ../isdnvboxserver.templates:3001
 msgid "Should the message be attached to the email?"
 msgstr "Thông điệp nên được đính kèm thư điện tử không?"
 
-#. Type: select
+#. Type: boolean
 #. Description
 #: ../isdnvboxserver.templates:3001
+#, fuzzy
+#| msgid ""
+#| "When a message is recorded, an email notification is sent. If that email "
+#| "should contain the message as an attachment, choose \"yes\" here. Note: "
+#| "the attachment can be large!"
 msgid ""
 "When a message is recorded, an email notification is sent. If that email "
-"should contain the message as an attachment, choose \"yes\" here. Note: the "
-"attachment can be large!"
+"should contain the message as an attachment, choose the option."
 msgstr ""
 "Khi thông điệp được thu, cũng gửi thư thông báo. Nếu thư đó nên chứa thông "
 "điệp dạng đồ đính kèm, chọn « có » ở đây. Ghi chú : đồ đính kèm có thể lớn."
 
+#. Type: boolean
+#. Description
+#: ../isdnvboxserver.templates:3001
+msgid "Note: the attachment can be large."
+msgstr ""
+
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:4001
-msgid "As what user should the answering machine run?"
+#, fuzzy
+#| msgid "As what user should the answering machine run?"
+msgid "User who runs the answering machine:"
 msgstr "Máy trả lời nên chạy với tư cách người dùng nào?"
 
 #. Type: string
@@ -685,19 +756,25 @@ msgstr ""
 #. Type: text
 #. Description
 #: ../isdnvboxserver.templates:5001
-msgid "The user ${Daemonuser} doesn't exist on the system."
+#, fuzzy
+#| msgid "The user ${Daemonuser} doesn't exist on the system."
+msgid "User ${Daemonuser} doesn't exist on the system"
 msgstr "Không có người dùng ${Daemonuser} trong hệ thống này."
 
 #. Type: text
 #. Description
 #: ../isdnvboxserver.templates:5001
-msgid "Enter a valid user name here that's known to the system."
-msgstr "Hãy nhập một người dùng hợp lệ được biết trên hệ thống này."
+msgid ""
+"The user who runs the answering machine should be a valid user name on this "
+"system."
+msgstr ""
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:6001
-msgid "What username may connect to the vbox server?"
+#, fuzzy
+#| msgid "What username may connect to the vbox server?"
+msgid "Username which may connect to the vbox server:"
 msgstr "Tên người dùng nào có thể kết nối đến máy phục vụ vbox?"
 
 #. Type: string
@@ -715,7 +792,9 @@ msgstr ""
 #. Type: password
 #. Description
 #: ../isdnvboxserver.templates:7001
-msgid "Enter the password for ${User} here."
+#, fuzzy
+#| msgid "Enter the password for ${User} here."
+msgid "Password for ${User}:"
 msgstr "Nhập vào đây mật khẩu cho ${User}."
 
 #. Type: password
@@ -729,7 +808,9 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:8001
-msgid "No home directory!"
+#, fuzzy
+#| msgid "No home directory!"
+msgid "No home directory"
 msgstr "Không có thư mục chính !"
 
 #. Type: error
@@ -745,14 +826,21 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:9001
-msgid "User doesn't exist!"
+#, fuzzy
+#| msgid "User doesn't exist!"
+msgid "User doesn't exist"
 msgstr "Không có người dùng đó !"
 
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:9001
+#, fuzzy
+#| msgid ""
+#| "The user `${USER}' doesn't exist on the system! Please rerun the "
+#| "configuration with `dpkg-reconfigure isdnvboxserver' to enter another "
+#| "username, or after creating the user."
 msgid ""
-"The user `${USER}' doesn't exist on the system! Please rerun the "
+"The user `${USER}' doesn't exist on the system. Please rerun the "
 "configuration with `dpkg-reconfigure isdnvboxserver' to enter another "
 "username, or after creating the user."
 msgstr ""
@@ -760,19 +848,24 @@ msgstr ""
 "bằng lệnh « dpkg-reconfigure isdnvboxserver » để nhập một tên người dùng "
 "khác, hoặc sau khi tạo người dùng mới đó."
 
-#. Type: select
+#. Type: boolean
 #. Description
 #: ../isdnvboxserver.templates:10001
 msgid "Should vboxgetty be enabled?"
 msgstr "Có nên hiệu lực vboxgetty không?"
 
-#. Type: select
+#. Type: boolean
 #. Description
 #: ../isdnvboxserver.templates:10001
+#, fuzzy
+#| msgid ""
+#| "vboxgetty is in /etc/inittab, but not yet enabled. Answering `yes' here "
+#| "will enable it once this package is fully configured. Choose `no' if you "
+#| "want to tweak it manually."
 msgid ""
-"vboxgetty is in /etc/inittab, but not yet enabled. Answering `yes' here will "
-"enable it once this package is fully configured. Choose `no' if you want to "
-"tweak it manually."
+"vboxgetty is in /etc/inittab, but not yet enabled. Choosing this option will "
+"enable it once this package is fully configured. Refuse this option if you "
+"want to tweak it manually."
 msgstr ""
 "vboxgetty nằm trong « /etc/inittab » nhưng chưa hoạt động. Trả lời « có » tại "
 "đây sẽ hiệu lực nó một khi gói này đã được cấu hình đầy đủ. Còn chọn « không "
@@ -825,3 +918,51 @@ msgstr ""
 "không tương ứng với cách sử dụng « devfs » hiện thời: hoặc có một tên « devfs "
 "» (/dev/isdn/ttyIxx) được dùng trong « vboxgetty.conf » khi chưa gắn kết « "
 "devfs », hoặc tên khác « devfs » được dùng khi « devfs » được gắn kết."
+
+#~ msgid "Which interface should debconf configure?"
+#~ msgstr "Debconf nên cấu hình giao diện nào?"
+
+#~ msgid "What is your local MSN?"
+#~ msgstr "MSN của bạn là số nào?"
+
+#~ msgid "AT"
+#~ msgstr "AT"
+
+#~ msgid "CH"
+#~ msgstr "CH"
+
+#~ msgid "DE"
+#~ msgstr "DE"
+
+#~ msgid "ES"
+#~ msgstr "ES"
+
+#~ msgid "FR"
+#~ msgstr "FR"
+
+#~ msgid "LU"
+#~ msgstr "LU"
+
+#~ msgid "NL"
+#~ msgstr "NL"
+
+#~ msgid "NO"
+#~ msgstr "NO"
+
+#~ msgid "What country is this system in?"
+#~ msgstr "Hệ thống này nằm trong quốc gia nào?"
+
+#~ msgid "What is used to indicate an international number?"
+#~ msgstr "Để ngụ ý một số nước ngoài, chỗ của bạn dùng ký tự nào?"
+
+#~ msgid "What is the countrycode for your country?"
+#~ msgstr "Chỗ của bạn có số riêng nào?"
+
+#~ msgid "What is used to indicate an areacode, if applicable?"
+#~ msgstr "Nếu thích hợp, để ngụ ý mã vùng chỗ của bạn dùng ký tự nào?"
+
+#~ msgid "none, ISAR.BIN"
+#~ msgstr "không có, ISAR.BIN"
+
+#~ msgid "Enter a valid user name here that's known to the system."
+#~ msgstr "Hãy nhập một người dùng hợp lệ được biết trên hệ thống này."

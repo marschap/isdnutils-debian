@@ -276,7 +276,7 @@ ifneq ($(some_arch_match),yes)
 		--no-restart-on-upgrade --update-rcd-params='defaults 13 21'
 	mkdir -p debian/capiutils/etc/modprobe.d
 	cp -p debian/capiutils.blacklist \
-		debian/capiutils/etc/modprobe.d/blacklist-capiutils
+		debian/capiutils/etc/modprobe.d/blacklist-capiutils.conf
 endif
 	# Ok, for two commands
 	# No, for one command after all. Do this one by hand.

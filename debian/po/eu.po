@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: isdnutils-eu\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
-"POT-Creation-Date: 2008-04-16 18:20+0200\n"
+"POT-Creation-Date: 2009-09-16 16:36+0200\n"
 "PO-Revision-Date: 2008-05-05 11:29+0200\n"
 "Last-Translator: Piarres Beobide <pi@beobide.net>\n"
 "Language-Team: Euskara <debian-l10n-basque@lists.debian.org>\n"
@@ -19,7 +19,9 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../ipppd.templates:1001
-msgid "ISP dialup config exists already"
+#, fuzzy
+#| msgid "ISP dialup config exists already"
+msgid "ISP dialup config already exists"
 msgstr "ISP markatze konfigurazioa badago dagoeneko"
 
 #. Type: error
@@ -53,21 +55,21 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../ipppd.templates:2001
-msgid "Which interface should be configured?"
+#, fuzzy
+#| msgid "Which interface should be configured?"
+msgid "Interface to configure:"
 msgstr "Zein interfaze konfiguratu behar da?"
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:2001
-msgid "Which interface should debconf configure?"
-msgstr "Zein interfaze konfiguratu behar du debconf-ek?"
-
-#. Type: string
-#. Description
-#: ../ipppd.templates:2001
+#, fuzzy
+#| msgid ""
+#| "Most people will say \"ippp0\" here, as that is the default for a "
+#| "connection to an ISP. The default gateway will be ippp0."
 msgid ""
-"Most people will say \"ippp0\" here, as that is the default for a connection "
-"to an ISP. The default gateway will be ippp0."
+"Most people should say \"ippp0\" here, as that is the default for a "
+"connection to an ISP. The default gateway will be ippp0."
 msgstr ""
 "Jende gehienak \"ippp0\" ezarri behar du hemen, hau denez ISP-arekiko "
 "lehenetsiriko konexioa. Lehenetsiriko atebidea ippp0 izan behar da."
@@ -75,9 +77,14 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../ipppd.templates:2001
+#, fuzzy
+#| msgid ""
+#| "However, some people have special requirements, and they may choose "
+#| "another interface that debconf will configure (e.g. because they don't "
+#| "want this connection to be the default gateway)."
 msgid ""
 "However, some people have special requirements, and they may choose another "
-"interface that debconf will configure (e.g. because they don't want this "
+"interface that will be configured (e.g. because they don't want this "
 "connection to be the default gateway)."
 msgstr ""
 "Hala ere, zenbait jendek behar bereziak ditu, eta hauek debconf-ek "
@@ -87,9 +94,13 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../ipppd.templates:2001
+#, fuzzy
+#| msgid ""
+#| "Note that debconf will currently only configure at most one interface. "
+#| "Enter \"none\" if you do not want debconf to configure anything for ipppd."
 msgid ""
-"Note that debconf will currently only configure at most one interface. Enter "
-"\"none\" if you do not want debconf to configure anything for ipppd."
+"Note that currently at most one interface can be configured in this manner. "
+"Leave the field blank if you do not want to configure anything now for ipppd."
 msgstr ""
 "Kontutan izan oraingoz debconf txantiloi honek gehienez interfaze bat "
 "konfiguratu dezakeela. Idatzi \"batez\" ez baduzu debconf-ek ipppd "
@@ -98,7 +109,9 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../ipppd.templates:3001
-msgid "wrong interface name"
+#, fuzzy
+#| msgid "wrong interface name"
+msgid "Wrong interface name"
 msgstr "okerreko interfaze izena"
 
 #. Type: error
@@ -120,9 +133,13 @@ msgstr "Zein da zure ISP-aren telefono zenbakia?"
 #. Type: string
 #. Description
 #: ../ipppd.templates:4001
+#, fuzzy
+#| msgid ""
+#| "What telephone number(s) must be dialed in order to connect to your "
+#| "Internet service provider (ISP)?"
 msgid ""
-"What telephone number(s) must be dialed in order to connect to your Internet "
-"service provider (ISP)?"
+"At least one phone number has to be dialed in order to connect to your "
+"Internet service provider (ISP)."
 msgstr ""
 "Zein telefono zenbaki markatu behar da zure internet zerbitzu "
 "hornitzailearekin (ISP) konektatzeko?"
@@ -130,9 +147,13 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../ipppd.templates:4001
+#, fuzzy
+#| msgid ""
+#| "Enter the telephone number here, including dialing prefixes, area codes, "
+#| "and so on. Enter the number without any spaces."
 msgid ""
 "Enter the telephone number here, including dialing prefixes, area codes, and "
-"so on. Enter the number without any spaces."
+"so on, but without any spaces."
 msgstr ""
 "Idatzi telefono zenbaki hau, markatze aurrizkiak, eskualdeko kode, eta beste "
 "edozein barne. Idatzi zenbakia zuriunerik gabe."
@@ -140,18 +161,22 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../ipppd.templates:4001
-msgid ""
-"You can enter multiple telephone numbers. If you do so then separate them "
-"with spaces."
+#, fuzzy
+#| msgid ""
+#| "You can enter multiple telephone numbers. If you do so then separate them "
+#| "with spaces."
+msgid "You can enter multiple telephone numbers, separated by spaces."
 msgstr ""
 "Telefono zenbaki anitz idatz ditzakezu. Hori egiteko zuriunez bereizi itzazu."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:4001
-msgid ""
-"Enter the word \"manual\" or leave the field blank if you want to configure "
-"the connection manually."
+#, fuzzy
+#| msgid ""
+#| "Enter the word \"manual\" or leave the field blank if you want to "
+#| "configure the connection manually."
+msgid "Leave the field blank if you want to configure the connection manually."
 msgstr ""
 "Idatzi \"eskuz\" hitza edo utzi eremua zurian konexioa eskuz konfiguratu "
 "nahi baduzu."
@@ -159,16 +184,24 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../ipppd.templates:5001
-msgid "What is your local MSN?"
-msgstr "Zein da zure MSN lokala?"
+msgid "Local MSN:"
+msgstr ""
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:5001
+#, fuzzy
+#| msgid ""
+#| "When making a call with ISDN, the MSN (phone number) that is originating "
+#| "the call must be given in the call-setup message. While usually a wrong "
+#| "MSN will be replaced by the main MSN for the ISDN line, especially on "
+#| "PABXes a wrong MSN (often the extension number in this case) will cause "
+#| "the call-setup to fail. So, it is best to enter the correct local MSN "
+#| "here."
 msgid ""
 "When making a call with ISDN, the MSN (phone number) that is originating the "
-"call must be given in the call-setup message. While usually a wrong MSN will "
-"be replaced by the main MSN for the ISDN line, especially on PABXes a wrong "
+"call must be given in the call-setup message. While a wrong MSN will usually "
+"be replaced by the main MSN for the ISDN line, especially on PABXes, a wrong "
 "MSN (often the extension number in this case) will cause the call-setup to "
 "fail. So, it is best to enter the correct local MSN here."
 msgstr ""
@@ -192,16 +225,23 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../ipppd.templates:6001
-msgid "What is the user name for logging into your ISP?"
+#, fuzzy
+#| msgid "What is the user name for logging into your ISP?"
+msgid "User name for logging into your ISP:"
 msgstr "Zein da zure ISPan saioa hasteko erabiltzaile izena?"
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:6001
+#, fuzzy
+#| msgid ""
+#| "Most (all?) ISPs need a user name and password for authenticating you as "
+#| "a valid user before allowing access. Enter the user name here. The "
+#| "password will be asked for next."
 msgid ""
-"Most (all?) ISPs need a user name and password for authenticating you as a "
-"valid user before allowing access. Enter the user name here. The password "
-"will be asked for next."
+"Most ISPs need a user name and password for authenticating you as a valid "
+"user before allowing access. Enter the user name here. The password will be "
+"asked for next."
 msgstr ""
 "ISP gehienek (denek?) erabiltzaile izen eta pasahitz bidezko autentifikazioa "
 "erabiltzen dute saioa hasten uzteko. Idatzi erabiltzaile-izena hemen. "
@@ -210,7 +250,9 @@ msgstr ""
 #. Type: password
 #. Description
 #: ../ipppd.templates:7001
-msgid "What is the password for logging into your ISP?"
+#, fuzzy
+#| msgid "What is the password for logging into your ISP?"
+msgid "Password for logging into your ISP:"
 msgstr "Zein da zure ISPan saioa hasteko pasahitza?"
 
 #. Type: password
@@ -309,7 +351,10 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../ipppd.templates:11001 ../ipppd.templates:12001
-msgid "Until it is deleted, it will still be used! This may cause conflicts."
+#, fuzzy
+#| msgid ""
+#| "Until it is deleted, it will still be used! This may cause conflicts."
+msgid "Until it is deleted, it will still be used. This may cause conflicts."
 msgstr "Ezabatzen den arte berau erabili egingo da! Honek arazoak sor ditzake."
 
 #. Type: error
@@ -357,22 +402,31 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../ipppd.templates:13001
+#, fuzzy
+#| msgid ""
+#| "Until they are deleted, they will still be used! This may cause conflicts."
 msgid ""
-"Until they are deleted, they will still be used! This may cause conflicts."
+"Until they are deleted, they will still be used. This may cause conflicts."
 msgstr "Ezabatu bitartean erabiliak izango dira! Honek arazoak sor ditzake."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:14001
-msgid "(re)start ipppd by hand"
+#, fuzzy
+#| msgid "(re)start ipppd by hand"
+msgid "(Re)start ipppd manually"
 msgstr "(ber)hasi ipppd eskuz"
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:14001
+#, fuzzy
+#| msgid ""
+#| "There is no /etc/init.d/isdnutils on your system; hence you will have to "
+#| "stop and start any ipppd daemons by hand."
 msgid ""
 "There is no /etc/init.d/isdnutils on your system; hence you will have to "
-"stop and start any ipppd daemons by hand."
+"stop and start any ipppd daemons manually."
 msgstr ""
 "Ez dago /etc/init.d/isdnutils zure sistema, beraz ipppd deabruak eskuz "
 "abiarazi eta gelditu beharko dituzu."
@@ -380,7 +434,9 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../ipppd.templates:15001
-msgid "error running isdnutils init script"
+#, fuzzy
+#| msgid "error running isdnutils init script"
+msgid "Error running isdnutils init script"
 msgstr "errorea isdnutils hasiera script-a exekutatzean"
 
 #. Type: error
@@ -400,66 +456,28 @@ msgstr ""
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:1001
-msgid "AT"
-msgstr "AT"
-
-#. Type: select
-#. Choices
-#: ../isdnlog.templates:1001
-msgid "CH"
-msgstr "CH"
-
-#. Type: select
-#. Choices
-#: ../isdnlog.templates:1001
-msgid "DE"
-msgstr "DE"
-
-#. Type: select
-#. Choices
-#: ../isdnlog.templates:1001
-msgid "ES"
-msgstr "ES"
-
-#. Type: select
-#. Choices
-#: ../isdnlog.templates:1001
-msgid "FR"
-msgstr "FR"
-
-#. Type: select
-#. Choices
-#: ../isdnlog.templates:1001
-msgid "LU"
-msgstr "LU"
-
-#. Type: select
-#. Choices
-#: ../isdnlog.templates:1001
-msgid "NL"
-msgstr "NL"
-
-#. Type: select
-#. Choices
-#: ../isdnlog.templates:1001
-msgid "NO"
-msgstr "NO"
-
-#. Type: select
-#. Choices
-#: ../isdnlog.templates:1001
 msgid "other"
 msgstr "besteak"
 
 #. Type: select
-#. Description
+#. Default
+#. Translators: If your 2-letter code country is in the following list:
+#. "AT, CH, DE, ES, FR, LU, NL, NO"
+#. translate this string by this code. Otherwise, just write "other" (but
+#. do not translate it).
 #: ../isdnlog.templates:1002
-msgid "What country is this system in?"
-msgstr "Zein naziotan dago sistema?"
+msgid "other[ default country]"
+msgstr ""
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:1002
+#: ../isdnlog.templates:1003
+msgid "Country:"
+msgstr ""
+
+#. Type: select
+#. Description
+#: ../isdnlog.templates:1003
 msgid ""
 "This is used for setting a number of defaults, e.g. what rate tables to use "
 "for calculating the cost of a call."
@@ -470,7 +488,9 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnlog.templates:2001
-msgid "Enter the ISO two-letter code for your country"
+#, fuzzy
+#| msgid "Enter the ISO two-letter code for your country"
+msgid "ISO two-letter code for your country:"
 msgstr "Idatzi zure nazioaren ISO bi letrako kodea"
 
 #. Type: string
@@ -495,14 +515,14 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnlog.templates:3001
-msgid "What is used to indicate an international number?"
-msgstr "Zer erabiltzen da zenbaki internazional bat dela zehazteko?"
+msgid "Prefix for international number:"
+msgstr ""
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:4001
-msgid "What is the countrycode for your country?"
-msgstr "Zein da zure nazioko nazio-kodea?"
+msgid "Code of your country:"
+msgstr ""
 
 #. Type: string
 #. Description
@@ -513,41 +533,55 @@ msgstr "adib. ${default_countrycode} ${default_country}-rentzat"
 #. Type: string
 #. Description
 #: ../isdnlog.templates:5001
-msgid "What is used to indicate an areacode, if applicable?"
-msgstr "Erabilgarri bada, zer erabiltzen da eskualde kodea zehazteko?"
+#, fuzzy
+#| msgid "What is your local areacode, if applicable?"
+msgid "Prefix for areacode, if applicable:"
+msgstr "Erabilgarri bada, zein da zure eskualde kodea?"
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:6001
-msgid "What is your local areacode, if applicable?"
+#, fuzzy
+#| msgid "What is your local areacode, if applicable?"
+msgid "Local areacode, if applicable:"
 msgstr "Erabilgarri bada, zein da zure eskualde kodea?"
 
-#. Type: select
+#. Type: boolean
 #. Description
 #: ../isdnlog.templates:7001
 msgid "Run isdnrate as a daemon?"
 msgstr "Isdnrate deabru gisa exekutatu?"
 
-#. Type: select
+#. Type: boolean
 #. Description
 #: ../isdnlog.templates:7001
+#, fuzzy
+#| msgid ""
+#| "isdnrate is a utility to calculate the costs of a connection to a given "
+#| "phone number, used e.g. for LCR systems to find the cheapest carrier on a "
+#| "call-by-call basis. Having it run as a daemon speeds things up as then it "
+#| "only has to load all the data just once."
 msgid ""
 "isdnrate is a utility to calculate the costs of a connection to a given "
 "phone number, used e.g. for LCR systems to find the cheapest carrier on a "
 "call-by-call basis. Having it run as a daemon speeds things up as then it "
-"only has to load all the data just once."
+"only has to load all the data once."
 msgstr ""
 "isdnrate emandako telefono zenbaki baten konexioaren gastua kalkulatzeko "
 "lanabes bat da, adibidez deiez-dei oinarrizko batetan operadora merkeena "
 "aurkitzeko LCR sistemetan. Deabru bezala abiarazirik izateak gauzak "
 "bizkortzen ditu orduan datuak behin bakarrik kargatu behar ditu eta."
 
-#. Type: select
+#. Type: boolean
 #. Description
 #: ../isdnlog.templates:7001
+#, fuzzy
+#| msgid ""
+#| "This is only for people with special requirements, such as those using "
+#| "the isdn2h323 package. Hence most people should say \"no\"."
 msgid ""
 "This is only for people with special requirements, such as those using the "
-"isdn2h323 package. Hence most people should say \"no\"."
+"isdn2h323 package. Hence most people should not choose this option."
 msgstr ""
 "Hau behar bereziak dituen jendearentzat bakarrik da, adibidez isdn2h232 "
 "paketea erabiltzen dutenek. Hemen jende gehienak \"ez\" esan beharko luke."
@@ -555,24 +589,32 @@ msgstr ""
 #. Type: select
 #. Choices
 #: ../isdnutils-base.templates:1001
-msgid "none, ISAR.BIN"
-msgstr "batez, ISAR.BIN"
+msgid "none"
+msgstr ""
 
 #. Type: select
 #. Description
 #: ../isdnutils-base.templates:1002
-msgid "Does firmware need to be loaded?"
+#, fuzzy
+#| msgid "Does firmware need to be loaded?"
+msgid "Firmware to load:"
 msgstr "Firmware-a kargatu behar al da?"
 
 #. Type: select
 #. Description
 #: ../isdnutils-base.templates:1002
+#, fuzzy
+#| msgid ""
+#| "Some ISDN cards can't function properly until firmware has been "
+#| "downloaded. Notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-"
+#| "Surf, which need ISAR.BIN to be loaded. (I don't know of any others at "
+#| "this time.) Choose \"ISAR.BIN\" if this is necessary. If you don't know "
+#| "what I'm talking about, choose \"none\"."
 msgid ""
 "Some ISDN cards can't function properly until firmware has been downloaded. "
 "Notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which need "
-"ISAR.BIN to be loaded. (I don't know of any others at this time.) Choose "
-"\"ISAR.BIN\" if this is necessary. If you don't know what I'm talking about, "
-"choose \"none\"."
+"ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is necessary. If you "
+"don't know what to answer here, choose \"none\"."
 msgstr ""
 "Zenbait ISDN txartelek ezin du behar bezala funtzionatu firmwarea kargatu "
 "arte. Adibide bereizi argiak Sedlbauer SpeedFax+ PCI edo Siemens I-Surf "
@@ -583,7 +625,9 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnutils-base.templates:2001
-msgid "Which ISDN card numbers have to be loaded with the firmware?"
+#, fuzzy
+#| msgid "Which ISDN card numbers have to be loaded with the firmware?"
+msgid "ISDN card numbers to load with the firmware:"
 msgstr "Zein ISDN txartel zenbaki kargatu behar dira firmware-arekin?"
 
 #. Type: string
@@ -603,7 +647,9 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:1001
-msgid "What number should vbox answer?"
+#, fuzzy
+#| msgid "What number should vbox answer?"
+msgid "Number that vbox should answer:"
 msgstr "Zein zenbaki erantzun behar vbox-ek?"
 
 #. Type: string
@@ -621,11 +667,16 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:1001
+#, fuzzy
+#| msgid ""
+#| "Enter `quit' (or leave it blank) if you want to configure by hand, not "
+#| "via debconf. Also enter `quit' if you already have an existing (working) "
+#| "vbox configuration from the time when this was still part of isdnutils "
+#| "(unless you want to create a new configuration)."
 msgid ""
-"Enter `quit' (or leave it blank) if you want to configure by hand, not via "
-"debconf. Also enter `quit' if you already have an existing (working) vbox "
-"configuration from the time when this was still part of isdnutils (unless "
-"you want to create a new configuration)."
+"Leave the field blank if you want to configure by hand, or if you already "
+"have an existing (working) vbox configuration from the time when this was "
+"still part of isdnutils (unless you want to create a new configuration)."
 msgstr ""
 "Idatzi `quit' (edo zurian utzi) debconf bidez egin ordez eskuz konfiguratu "
 "nahi baduzu. Baita `quit' idatzi dagoeneko vbox isdnutils paketearen zati "
@@ -634,45 +685,65 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:2001
-msgid "After how many rings should vbox pick up the line?"
+#, fuzzy
+#| msgid "After how many rings should vbox pick up the line?"
+msgid "Number of rings for vbox to pick up the line:"
 msgstr "Zenbat denboraren ondoren erantzun behar du vbox-ek?"
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:2001
+#, fuzzy
+#| msgid ""
+#| "One ring is about 5 seconds. You can fine-tune the number of rings for "
+#| "certain phonenumbers manually, e.g. any salesmen you know the number of "
+#| "(or calls without caller-ID) can be dumped into the answering machine "
+#| "after one ring. See `man vbox.conf' for more info."
 msgid ""
 "One ring is about 5 seconds. You can fine-tune the number of rings for "
 "certain phonenumbers manually, e.g. any salesmen you know the number of (or "
 "calls without caller-ID) can be dumped into the answering machine after one "
-"ring. See `man vbox.conf' for more info."
+"ring. See `man vbox.conf' for more information."
 msgstr ""
 "Ring bat 5 segundu inguru dira. Jakindako telefono zenbakientzat ring "
 "kopurua pertsonalizatu dezakezu, adib, ezagutzen duzun edozein saltzaileren "
 "(edo deitzaile-ID gabeko deiak) erantzute makinara bidali daitezke ring "
 "bakar baten ondoren. Begiratu `man vbox.conf' argibide gehiagorako."
 
-#. Type: select
+#. Type: boolean
 #. Description
 #: ../isdnvboxserver.templates:3001
 msgid "Should the message be attached to the email?"
 msgstr "Mezua epostara txertatu behar al da?"
 
-#. Type: select
+#. Type: boolean
 #. Description
 #: ../isdnvboxserver.templates:3001
+#, fuzzy
+#| msgid ""
+#| "When a message is recorded, an email notification is sent. If that email "
+#| "should contain the message as an attachment, choose \"yes\" here. Note: "
+#| "the attachment can be large!"
 msgid ""
 "When a message is recorded, an email notification is sent. If that email "
-"should contain the message as an attachment, choose \"yes\" here. Note: the "
-"attachment can be large!"
+"should contain the message as an attachment, choose the option."
 msgstr ""
 "Mezu bat gordetzen denean, eposta berri-emate bat bidaltzen da. Eposta honek "
 "mezua erantsirik eduki behar badu \"bai\" hautatu hemen. Kontutan izan "
 "eranskina handia izan daitekeela!"
 
+#. Type: boolean
+#. Description
+#: ../isdnvboxserver.templates:3001
+msgid "Note: the attachment can be large."
+msgstr ""
+
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:4001
-msgid "As what user should the answering machine run?"
+#, fuzzy
+#| msgid "As what user should the answering machine run?"
+msgid "User who runs the answering machine:"
 msgstr "Zein erabiltzaile bezala exekutatu behar da erantzute makina?"
 
 #. Type: string
@@ -690,19 +761,25 @@ msgstr ""
 #. Type: text
 #. Description
 #: ../isdnvboxserver.templates:5001
-msgid "The user ${Daemonuser} doesn't exist on the system."
+#, fuzzy
+#| msgid "The user ${Daemonuser} doesn't exist on the system."
+msgid "User ${Daemonuser} doesn't exist on the system"
 msgstr "${Daemonuser} erabiltzaile ez da existitzen sisteman."
 
 #. Type: text
 #. Description
 #: ../isdnvboxserver.templates:5001
-msgid "Enter a valid user name here that's known to the system."
-msgstr "Idatzi sisteman ezagutzen den baliozko erabiltzaile-izen bat."
+msgid ""
+"The user who runs the answering machine should be a valid user name on this "
+"system."
+msgstr ""
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:6001
-msgid "What username may connect to the vbox server?"
+#, fuzzy
+#| msgid "What username may connect to the vbox server?"
+msgid "Username which may connect to the vbox server:"
 msgstr "Zein erabiltzaile izen konektatu behar da vbox zerbitzarira?"
 
 #. Type: string
@@ -720,7 +797,9 @@ msgstr ""
 #. Type: password
 #. Description
 #: ../isdnvboxserver.templates:7001
-msgid "Enter the password for ${User} here."
+#, fuzzy
+#| msgid "Enter the password for ${User} here."
+msgid "Password for ${User}:"
 msgstr "Idatzi ${User} erabiltzailearen pasahitza hemen."
 
 #. Type: password
@@ -733,7 +812,9 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:8001
-msgid "No home directory!"
+#, fuzzy
+#| msgid "No home directory!"
+msgid "No home directory"
 msgstr "Ez dago etxe direktorioa!"
 
 #. Type: error
@@ -749,14 +830,21 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:9001
-msgid "User doesn't exist!"
+#, fuzzy
+#| msgid "User doesn't exist!"
+msgid "User doesn't exist"
 msgstr "Erabiltzailea ez dago!"
 
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:9001
+#, fuzzy
+#| msgid ""
+#| "The user `${USER}' doesn't exist on the system! Please rerun the "
+#| "configuration with `dpkg-reconfigure isdnvboxserver' to enter another "
+#| "username, or after creating the user."
 msgid ""
-"The user `${USER}' doesn't exist on the system! Please rerun the "
+"The user `${USER}' doesn't exist on the system. Please rerun the "
 "configuration with `dpkg-reconfigure isdnvboxserver' to enter another "
 "username, or after creating the user."
 msgstr ""
@@ -764,19 +852,24 @@ msgstr ""
 "`dpkg-reconfigure isdnvboxserver' erabiliaz beste erabiltzaile-izen bat "
 "ezartzeko edo erabiltzaile sortu ondoren."
 
-#. Type: select
+#. Type: boolean
 #. Description
 #: ../isdnvboxserver.templates:10001
 msgid "Should vboxgetty be enabled?"
 msgstr "vboxgetty gaitu egin behar al da?"
 
-#. Type: select
+#. Type: boolean
 #. Description
 #: ../isdnvboxserver.templates:10001
+#, fuzzy
+#| msgid ""
+#| "vboxgetty is in /etc/inittab, but not yet enabled. Answering `yes' here "
+#| "will enable it once this package is fully configured. Choose `no' if you "
+#| "want to tweak it manually."
 msgid ""
-"vboxgetty is in /etc/inittab, but not yet enabled. Answering `yes' here will "
-"enable it once this package is fully configured. Choose `no' if you want to "
-"tweak it manually."
+"vboxgetty is in /etc/inittab, but not yet enabled. Choosing this option will "
+"enable it once this package is fully configured. Refuse this option if you "
+"want to tweak it manually."
 msgstr ""
 "vboxgetty /etc/inittab-en dago, baina gaitu gabe. Hemen `bai' erantzunaz "
 "gaitu egingo da behin paketea guztiz konfiguratzen denean. Hautatu `ez' "
@@ -829,3 +922,51 @@ msgstr ""
 "dagokion gailu izen bat du; edo devfs muntatu gabe vboxgetty.conf "
 "fitxategiak devfs (/dev/isdn/ttyIxx) izen bat erabiltzen du edo devfs-ez den "
 "izen bat erabiltzen ari da devfs muntaturik dagoenean."
+
+#~ msgid "Which interface should debconf configure?"
+#~ msgstr "Zein interfaze konfiguratu behar du debconf-ek?"
+
+#~ msgid "What is your local MSN?"
+#~ msgstr "Zein da zure MSN lokala?"
+
+#~ msgid "AT"
+#~ msgstr "AT"
+
+#~ msgid "CH"
+#~ msgstr "CH"
+
+#~ msgid "DE"
+#~ msgstr "DE"
+
+#~ msgid "ES"
+#~ msgstr "ES"
+
+#~ msgid "FR"
+#~ msgstr "FR"
+
+#~ msgid "LU"
+#~ msgstr "LU"
+
+#~ msgid "NL"
+#~ msgstr "NL"
+
+#~ msgid "NO"
+#~ msgstr "NO"
+
+#~ msgid "What country is this system in?"
+#~ msgstr "Zein naziotan dago sistema?"
+
+#~ msgid "What is used to indicate an international number?"
+#~ msgstr "Zer erabiltzen da zenbaki internazional bat dela zehazteko?"
+
+#~ msgid "What is the countrycode for your country?"
+#~ msgstr "Zein da zure nazioko nazio-kodea?"
+
+#~ msgid "What is used to indicate an areacode, if applicable?"
+#~ msgstr "Erabilgarri bada, zer erabiltzen da eskualde kodea zehazteko?"
+
+#~ msgid "none, ISAR.BIN"
+#~ msgstr "batez, ISAR.BIN"
+
+#~ msgid "Enter a valid user name here that's known to the system."
+#~ msgstr "Idatzi sisteman ezagutzen den baliozko erabiltzaile-izen bat."

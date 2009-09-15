@@ -51,7 +51,7 @@ bodytext=`vboxmode $MSNAME`
 MODE=$?
 
 caller=`vboxmode $MSNAME | awk 'BEGIN {FS=": "} /Speaker\ caller\ number/ {print $2}'`
-if [ "$caller" == "0" ]; then caller=unknown;fi
+if [ "$caller" = "0" ]; then caller=unknown; fi
 
 if [ ! -x /usr/bin/sox ] || [ ! -x /usr/bin/mime-construct ]; then
     # not all necessary packages installed...

@@ -39,7 +39,7 @@ case "$1" in
         service="$2"
 	case "$service" in
 	    ipppd|isdnlog) ;;
-	    *) log_failure_msg "Unknown ISDN service to stop: $2"; exit 1
+	    *) log_failure_msg "Unknown ISDN service to start: $2"; exit 1
 	esac
 	[ -s /usr/sbin/$service ] || exit 0
     	log_begin_msg "Starting $service..."

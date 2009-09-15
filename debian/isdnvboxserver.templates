@@ -1,80 +1,80 @@
 Template: isdnvboxserver/msn
 Type: string
 Default: quit
-_Description: What number should vbox answer?
+_Description: Number that vbox should answer:
  Vbox must know what number to listen to. Depending on your country's ISDN
  system, this may or may not include the areacode. It is usually without
  the leading 0.
  .
- Enter `quit' (or leave it blank) if you want to configure by hand, not via
- debconf. Also enter `quit' if you already have an existing (working) vbox
+ Leave the field blank if you want to configure by hand, or if you already
+ have an existing (working) vbox
  configuration from the time when this was still part of isdnutils (unless
  you want to create a new configuration).
 
 Template: isdnvboxserver/rings
 Type: string
 Default: 4
-_Description: After how many rings should vbox pick up the line?
+_Description: Number of rings for vbox to pick up the line:
  One ring is about 5 seconds. You can fine-tune the number of rings for
  certain phonenumbers manually, e.g. any salesmen you know the number of
  (or calls without caller-ID) can be dumped into the answering machine
- after one ring. See `man vbox.conf' for more info.
+ after one ring. See `man vbox.conf' for more information.
 
 Template: isdnvboxserver/attachmsg
-Type: select
-Choices: yes, no
-Default: yes
+Type: boolean
+Default: true
 _Description: Should the message be attached to the email?
- When a message is recorded, an email notification is sent. If that email
- should contain the message as an attachment, choose "yes" here. Note: the
- attachment can be large!
+ When a message is recorded, an email notification is sent. If that
+ email should contain the message as an attachment, choose the option.
+ .
+ Note: the attachment can be large.
 
 Template: isdnvboxserver/daemonuser
 Type: string
 Default: vboxdaemonuser
-_Description: As what user should the answering machine run?
+_Description: User who runs the answering machine:
  vboxd runs with the privileges of a normal (non-root) user. This is
  typically your non-root login name. This user must be a member of the
  `dialout' group.
 
 Template: isdnvboxserver/nosuchuser
 Type: text
-_Description: The user ${Daemonuser} doesn't exist on the system.
- Enter a valid user name here that's known to the system.
+_Description: User ${Daemonuser} doesn't exist on the system
+ The user who runs the answering machine should be a valid user name
+ on this system.
 
 Template: isdnvboxserver/user
 Type: string
-_Description: What username may connect to the vbox server?
+_Description: Username which may connect to the vbox server:
  To listen to messages using vbox (from the isdnvboxclient package), you
  need a username and password. Enter the username here. This does not have
  to be a user on the system itself.
 
 Template: isdnvboxserver/password
 Type: password
-_Description: Enter the password for ${User} here.
+_Description: Password for ${User}:
  Please don't use ':' in it! The way it is stored cannot handle this.
 
 Template: isdnvboxserver/vboxnodir
 Type: error
-_Description: No home directory!
+_Description: No home directory
  The home directory `${DIR}' for user `${USER}' doesn't exist. This means
  that the file `${DIR}/.vbox.conf' cannot be created.
 
 Template: isdnvboxserver/vboxnouser
 Type: error
-_Description: User doesn't exist!
- The user `${USER}' doesn't exist on the system! Please rerun the
+_Description: User doesn't exist
+ The user `${USER}' doesn't exist on the system. Please rerun the
  configuration with `dpkg-reconfigure isdnvboxserver' to enter another
  username, or after creating the user.
 
 Template: isdnvboxserver/doinit
-Type: select
-Choices: yes, no
-Default: yes
+Type: boolean
+Default: true
 _Description: Should vboxgetty be enabled?
- vboxgetty is in /etc/inittab, but not yet enabled. Answering `yes' here
- will enable it once this package is fully configured. Choose `no' if you
- want to tweak it manually.
+ vboxgetty is in /etc/inittab, but not yet enabled. Choosing this option
+ will enable it once this package is fully configured. Refuse this option
+ if you want to tweak it manually.
 
 Template: isdnvboxserver/devfs_inittab
 Type: error

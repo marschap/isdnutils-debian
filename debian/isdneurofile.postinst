@@ -5,7 +5,7 @@ set -e
 
 case "$1" in
     configure)
-	update-rc.d isdneurofile defaults >/dev/null
+	update-rc.d isdneurofile defaults 21 19 >/dev/null
 	if [ -z "$2" -o "$2" = "<unknown>" ]; then
 		invoke-rc.d isdneurofile start
 	fi
