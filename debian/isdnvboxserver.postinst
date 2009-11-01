@@ -14,7 +14,7 @@ if [ ! -c $DEVDIR/ttyI6 ]; then
     else
         cd /dev
         echo "Note: running MAKEDEV to create ISDN tty devices in /dev..."
-        /sbin/MAKEDEV isdn-tty
+        MAKEDEV isdn-tty
     fi
 fi
 
@@ -206,7 +206,7 @@ EOF
 fi
 
 # if inittab was changed up above, make init reread it
-/sbin/init q
+init q
 # vboxgetty might have new parameters, make sure they're used
 if [ -s /var/run/vboxgetty-ttyI6.pid ]; then
     kill `cat vboxgetty-ttyI6.pid 2>/dev/null` >/dev/null 2>&1 || true

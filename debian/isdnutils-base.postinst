@@ -20,7 +20,7 @@ case "$1" in
 
         cd /dev
         echo "Note: running MAKEDEV to create ISDN devices in /dev..."
-        /sbin/MAKEDEV isdn-tty isdn-io
+        MAKEDEV isdn-tty isdn-io
         rm -f isdnctrl
         ln -s isdnctrl0 isdnctrl
         # firmware handling

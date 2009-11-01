@@ -13,11 +13,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: isdnutils 1:3.6.2005-01-03-5\n"
+"Project-Id-Version: isdnutils 1:3.9.20060704-5\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
-"POT-Creation-Date: 2009-09-16 16:36+0200\n"
-"PO-Revision-Date: 2007-01-28 13:03+0100\n"
-"Last-Translator: Martin Sin <martin.sin@seznam.cz>\n"
+"POT-Creation-Date: 2009-10-14 06:41+0200\n"
+"PO-Revision-Date: 2009-10-13 19:33+0200\n"
+"Last-Translator: Martin Sin <martin.sin@zshk.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -25,180 +25,129 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:1001
-#, fuzzy
-#| msgid "ISP dialup config exists already"
-msgid "ISP dialup config already exists"
-msgstr "Konfigurační soubor vytáčeného připojení již existuje"
+#: ../ipppd.templates:2001
+msgid "ISP dialup configuration already exists"
+msgstr "Nastavení ISP vytáčeného připojení již existuje"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:1001
+#: ../ipppd.templates:2001
 msgid ""
-"The files device.${IPPP0} and ipppd.${IPPP0} already exist. Therefore the "
-"ipppd configuration phase won't touch anything there, as it looks like it's "
-"already been configured."
+"The device.${IPPP0} and ipppd.${IPPP0} files already exist. Therefore, the "
+"ipppd configuration phase won't touch anything there, as it looks like it "
+"has already been configured."
 msgstr ""
 "Soubory device.${IPPP0} a ipppd.${IPPP0} již existují. Proto konfigurační "
 "část ipppd nebude nic měnit. Zdá se, že je vše nastaveno."
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:1001
+#: ../ipppd.templates:2001
 msgid ""
 "If it doesn't work yet, and you want to try the automatic configuration, "
 "stop all ISDN processes (use \"/etc/init.d/isdnutils stop\"), remove the "
 "files mentioned above, and rerun the configuration with \"dpkg-reconfigure "
-"ipppd\". After that, restart the ISDN processes: \"/etc/init.d/isdnutils "
+"ipppd\". After that, restart the ISDN processes with \"/etc/init.d/isdnutils "
 "start\"."
-msgstr "ještě"
+msgstr ""
+"Pokud to nebude fungovat a chcete vyzkoušet automatické nastavení, ukončete "
+"všechny procesy ISDN (pomocí \"/etc/init.d/isdnutils stop\"), odstraňte výše "
+"uvedené soubory a spusťte nové nastavení pomocí \"dpkg-reconfigure ipppd\". "
+"Poté spusťte procesy ISDN pomocí \"/etc/init.d/isdnutils start\"."
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:2001
-#, fuzzy
-#| msgid "Which interface should be configured?"
+#: ../ipppd.templates:3001
 msgid "Interface to configure:"
-msgstr "Které rozhraní má být nastaveno?"
+msgstr "Nastavované rozhraní:"
 
 #. Type: string
-#. Description
-#: ../ipppd.templates:2001
-#, fuzzy
-#| msgid ""
-#| "Most people will say \"ippp0\" here, as that is the default for a "
-#| "connection to an ISP. The default gateway will be ippp0."
-msgid ""
-"Most people should say \"ippp0\" here, as that is the default for a "
-"connection to an ISP. The default gateway will be ippp0."
-msgstr ""
-"Většina lidí zde odpoví \"ippp0\", protože to je výchozí hodnota pro "
-"připojení k ISP. Výchozí branou bude ippp0."
-
-#. Type: string
-#. Description
-#: ../ipppd.templates:2001
-#, fuzzy
-#| msgid ""
-#| "However, some people have special requirements, and they may choose "
-#| "another interface that debconf will configure (e.g. because they don't "
-#| "want this connection to be the default gateway)."
-msgid ""
-"However, some people have special requirements, and they may choose another "
-"interface that will be configured (e.g. because they don't want this "
-"connection to be the default gateway)."
-msgstr ""
-"Samozřejmě, někteří mají speciální požadavky a tak mohou zvolit jiné "
-"rozhraní, které pak debconf nastaví (např. pokud nechtějí toto použít jako "
-"výchozí bránu)."
-
-#. Type: string
-#. Description
-#: ../ipppd.templates:2001
-#, fuzzy
-#| msgid ""
-#| "Note that debconf will currently only configure at most one interface. "
-#| "Enter \"none\" if you do not want debconf to configure anything for ipppd."
-msgid ""
-"Note that currently at most one interface can be configured in this manner. "
-"Leave the field blank if you do not want to configure anything now for ipppd."
-msgstr ""
-"Pamatujte, že debconf běžně nastaví pouze jedno rozhraní. Zadejte \"none\", "
-"pokud si nepřejete ipppd nastavovat pomocí debconfu."
-
-#. Type: error
 #. Description
 #: ../ipppd.templates:3001
-#, fuzzy
-#| msgid "wrong interface name"
-msgid "Wrong interface name"
-msgstr "špatný název rozhraní"
+msgid "The default setting should be safe for most configurations."
+msgstr "Ve většině případů by mělo vyhovovat výchozí nastavení."
 
-#. Type: error
+#. Type: string
 #. Description
 #: ../ipppd.templates:3001
 msgid ""
-"You can only give names starting with \"ippp\" followed by a number between "
-"0 and 63."
+"However, if you have special requirements or want to choose to configure "
+"another interface, please enter it here."
 msgstr ""
-"Můžete zadat pouze jména začínající na \"ippp\" následovaná číslem mezi 0 a "
+"Samozřejmě, pokud máte speciální požadavky nebo chcete nastavit jiné "
+"rozhraní, zadejte ho právě zde."
+
+#. Type: string
+#. Description
+#: ../ipppd.templates:3001
+msgid "Leave the field blank if you do not want to configure anything now."
+msgstr "Pokud nyní nechcete nic nastavovat, nechte toto políčko prázdné."
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:4001
+msgid "Invalid interface name"
+msgstr "Špatný název rozhraní"
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:4001
+msgid ""
+"Valid interface names begin with \"ippp\" followed by a number between 0 and "
 "63."
+msgstr ""
+"Platná jména rozhraní začínají na \"ippp\" a jsou následovaná některým z "
+"čísel mezi 0 a 63."
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4001
-msgid "What is your ISP's telephone number?"
-msgstr "Jaké je telefonní číslo vašeho poskytovatele připojení?"
+#: ../ipppd.templates:5001
+msgid "ISP's telephone number:"
+msgstr "Telefonní číslo ISP:"
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4001
-#, fuzzy
-#| msgid ""
-#| "What telephone number(s) must be dialed in order to connect to your "
-#| "Internet service provider (ISP)?"
+#: ../ipppd.templates:5001
 msgid ""
-"At least one phone number has to be dialed in order to connect to your "
+"At least one phone number has to be dialed in order to connect to an "
 "Internet service provider (ISP)."
 msgstr ""
-"Jaké telefonní číslo(a) musí být vytočeno pro připojení k vašemu "
-"poskytovateli internetového připojení (ISP)?"
+"Pro připojení k Internetu vašeho poskytovatele připojení (ISP) je nutné "
+"zadat alespoň jedno telefonní číslo."
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4001
-#, fuzzy
-#| msgid ""
-#| "Enter the telephone number here, including dialing prefixes, area codes, "
-#| "and so on. Enter the number without any spaces."
+#: ../ipppd.templates:5001
 msgid ""
-"Enter the telephone number here, including dialing prefixes, area codes, and "
-"so on, but without any spaces."
+"Please enter that telephone number here, including dialing prefixes, area "
+"codes, and so on, but without any spaces."
 msgstr ""
-"Zadejte zde telefonní číslo, včetně předvoleb, kódů oblasti a tak dále. "
+"Zadejte prosím telefonní číslo včetně předvoleb, kódů oblasti a tak dále. "
 "Číslo zadejte bez jakýchkoliv mezer."
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4001
-#, fuzzy
-#| msgid ""
-#| "You can enter multiple telephone numbers. If you do so then separate them "
-#| "with spaces."
-msgid "You can enter multiple telephone numbers, separated by spaces."
-msgstr ""
-"Můžete zadat více telefonních čísel. Pokud tak učiníte, oddělte je pomocí "
-"mezer."
+#: ../ipppd.templates:5001
+msgid ""
+"Multiple telephone numbers may be entered and should be separated by spaces."
+msgstr "Můžete zadat více telefonních čísel oddělených pomocí mezer."
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4001
-#, fuzzy
-#| msgid ""
-#| "Enter the word \"manual\" or leave the field blank if you want to "
-#| "configure the connection manually."
+#: ../ipppd.templates:5001
 msgid "Leave the field blank if you want to configure the connection manually."
 msgstr ""
-"Pokud si přejete nastavit připojení ručně, pak zadejte slovo \"manual\", "
-"nebo nechte pole prázdné."
+"Pokud si přejete nastavit připojení ručně, nechte toto políčko prázdné."
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:5001
+#: ../ipppd.templates:6001
 msgid "Local MSN:"
-msgstr ""
+msgstr "Místní MSN:"
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:5001
-#, fuzzy
-#| msgid ""
-#| "When making a call with ISDN, the MSN (phone number) that is originating "
-#| "the call must be given in the call-setup message. While usually a wrong "
-#| "MSN will be replaced by the main MSN for the ISDN line, especially on "
-#| "PABXes a wrong MSN (often the extension number in this case) will cause "
-#| "the call-setup to fail. So, it is best to enter the correct local MSN "
-#| "here."
+#: ../ipppd.templates:6001
 msgid ""
 "When making a call with ISDN, the MSN (phone number) that is originating the "
 "call must be given in the call-setup message. While a wrong MSN will usually "
@@ -206,135 +155,119 @@ msgid ""
 "MSN (often the extension number in this case) will cause the call-setup to "
 "fail. So, it is best to enter the correct local MSN here."
 msgstr ""
-"Když provádíte hovory pomocí ISDN, pak musíte zadat telelefonní číslo MSN, "
-"které jednoznačně určuje hovor. Toto číslo musí být předáno ve zprávě "
-"ustavující hovor. Zatímco je špatné MSN obvykle nahrazeno hlavním MSN ISDN "
-"linky, tak především na PaBX způsobí špatné MSN (v tomto případě, často ve "
-"formě rozšiřujicího čísla) selhání nastavení hovoru. Takže, nejlepší je "
-"zadat zde správné místní MSN."
+"Když provádíte hovory pomocí ISDN, pak musíte zadat telefonní číslo MSN, "
+"které jednoznačně určuje hovor. I když bývá špatné MSN obvykle nahrazeno "
+"hlavním MSN linky ISDN, tak především na PABX způsobí špatné MSN (v tomto "
+"případě často ve formě rozšiřujícího čísla) selhání nastavení hovoru. Takže "
+"nejlepší je zadat zde správné místní MSN."
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:5001
+#: ../ipppd.templates:6001
 msgid ""
 "This may also be necessary if you want the costs to be registered to one "
 "particular MSN, in case you have more than one MSN and this is supported by "
-"your telco."
+"your telecommunication providing company."
 msgstr ""
 "Může to být také nezbytné, pokud chcete mít náklady zaregistrovány u jednoho "
-"konkrétního MSN, v případě, že máte více než jedno MSN a je to podporováno "
+"konkrétního MSN - v případě, že máte více než jedno MSN a je to podporováno "
 "vaším poskytovatelem."
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:6001
-#, fuzzy
-#| msgid "What is the user name for logging into your ISP?"
-msgid "User name for logging into your ISP:"
-msgstr "Jaké je uživatelské jméno pro přihlášení k vašemu ISP?"
+#: ../ipppd.templates:7001
+msgid "ISP account name:"
+msgstr "Jméno účtu ISP:"
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:6001
-#, fuzzy
-#| msgid ""
-#| "Most (all?) ISPs need a user name and password for authenticating you as "
-#| "a valid user before allowing access. Enter the user name here. The "
-#| "password will be asked for next."
+#: ../ipppd.templates:7001
 msgid ""
-"Most ISPs need a user name and password for authenticating you as a valid "
-"user before allowing access. Enter the user name here. The password will be "
-"asked for next."
-msgstr ""
-"Většina (všichni?) ISP chtějí znát uživatelské jméno a heslo pro "
-"autentikování svých uživatelů a to ještě před povolením přístupu. Zadejte "
-"zde uživatelské jméno. Heslo bude následovat v další otázce."
+"Most ISPs require an account name and password to be provided when "
+"connecting."
+msgstr "Většina ISP vyžadují pro připojení zadání uživatelského jména a hesla."
 
 #. Type: password
 #. Description
-#: ../ipppd.templates:7001
-#, fuzzy
-#| msgid "What is the password for logging into your ISP?"
-msgid "Password for logging into your ISP:"
-msgstr "Jaké je heslo pro přihlášení k vašemu ISP?"
+#: ../ipppd.templates:8001
+msgid "ISP password:"
+msgstr "Heslo ISP:"
 
 #. Type: password
 #. Description
-#: ../ipppd.templates:7001
+#: ../ipppd.templates:8001
 msgid ""
-"The password you give here will be entered into /etc/ppp/pap-secrets and /"
-"etc/ppp/chap-secrets together with the username."
+"Please enter the password to use when connecting to the ISP. This password "
+"will be kept in /etc/ppp/pap-secrets and /etc/ppp/chap-secrets together with "
+"the account name."
 msgstr ""
-"Heslo, které zde zadáte, bude spolu s uživatelským jménem uloženo v /etc/ppp/"
-"pap-secrets a /etc/ppp/chap-secrets."
+"Zadejte prosím heslo pro připojení k ISP. Toto heslo bude uloženo v /etc/ppp/"
+"pap-secrets a /etc/ppp/chap-secrets spolu se jménem účtu."
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:8001
+#: ../ipppd.templates:9001
 msgid "ISP user name already in pap-secrets"
 msgstr "Uživatelské jméno ISP je již v pap-secrets uloženo"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:8001
+#: ../ipppd.templates:9001
 msgid ""
 "The user name you entered for logging into your ISP is already listed in "
-"the /etc/ppp/pap-secrets file. That's not a problem; the existing entry will "
-"be commented out, and a new entry with the data you just entered will be "
-"inserted."
+"the /etc/ppp/pap-secrets file. The existing entry will be commented out, and "
+"a new entry with the data you just entered will be inserted."
 msgstr ""
 "Uživatelské jméno, které jste zadali pro přihlášení k vašemu ISP, je již v "
-"souboru /etc/ppp/pap-secrets uvedeno. To není žádný problém; existující "
-"položka bude zakomentována a nová položka, kterou zadáte, vložena."
+"souboru /etc/ppp/pap-secrets uvedeno. Stávající hodnota bude zakomentována a "
+"nová vložena na její místo."
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:9001
+#: ../ipppd.templates:10001
 msgid "ISP user name already in chap-secrets"
 msgstr "Uživatelské jméno ISP je již v chap-secrets uloženo"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:9001
+#: ../ipppd.templates:10001
 msgid ""
 "The user name you entered for logging into your ISP is already listed in "
-"the /etc/ppp/chap-secrets file. That's not a problem; the existing entry "
-"will be commented out, and a new entry with the data you just entered will "
-"be inserted."
+"the /etc/ppp/chap-secrets file. The existing entry will be commented out, "
+"and a new entry with the data you just entered will be inserted."
 msgstr ""
 "Uživatelské jméno, které jste zadali pro přihlášení k vašemu ISP je již v "
-"souboru /etc/ppp/chap-secrets uvedeno. To není žádný probém; existující "
-"položka bude zakomentována a nová položka, kterou zadáte, vložena."
+"souboru /etc/ppp/chap-secrets uvedeno. Stávající hodnota bude zakomentována "
+"a nová vložena na její místo."
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:10001
+#: ../ipppd.templates:11001
 msgid "ISP user name already in chap-secrets and pap-secrets"
 msgstr "Uživatelské jméno ISP je již v chap-secrets a pap-secrets uloženo"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:10001
+#: ../ipppd.templates:11001
 msgid ""
 "The user name you entered for logging into your ISP is already listed in the "
-"chap-secrets and pap-secrets files in /etc/ppp/. That's not a problem; the "
-"existing entries will be commented out, and new entries with the data you "
-"just entered will be inserted."
+"chap-secrets and pap-secrets files in /etc/ppp/. The existing entries will "
+"be commented out, and new entries with the data you just entered will be "
+"inserted."
 msgstr ""
 "Uživatelské jméno, které jste zadali pro přihlášení k vašemu ISP je již v "
-"souborech chap-secrets a pap-secrets (adresář /etc/ppp/) uvedeno. To není "
-"žádný problém; existující položky budou zakomentovány a nová položka, kterou "
-"zadáte, bude vložena."
+"souborech chap-secrets a pap-secrets (adresář /etc/ppp/) uvedeno. Stávající "
+"hodnota bude zakomentována a nová vložena na její místo."
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:11001
+#: ../ipppd.templates:12001
 msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
 msgstr "/etc/ppp/ip-up.d/00-isdnutils dosud existuje"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:11001
+#: ../ipppd.templates:12001
 msgid ""
 "The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package still "
 "exists. If you changed that file at some point, you may need to redo those "
@@ -351,23 +284,19 @@ msgstr ""
 #. Description
 #. Type: error
 #. Description
-#: ../ipppd.templates:11001 ../ipppd.templates:12001
-#, fuzzy
-#| msgid ""
-#| "Until it is deleted, it will still be used! This may cause conflicts."
+#: ../ipppd.templates:12001 ../ipppd.templates:13001
 msgid "Until it is deleted, it will still be used. This may cause conflicts."
-msgstr ""
-"Soubor bude používán, dokud nebude odstraněn! To může způsobit konflikty."
+msgstr "Dokud nebude smazán, bude stále používán. To může vést ke konfliktům."
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:12001
+#: ../ipppd.templates:13001
 msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
 msgstr "/etc/ppp/ip-down.d/99-isdnutils dosud existuje"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:12001
+#: ../ipppd.templates:13001
 msgid ""
 "The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package "
 "still exists. If you changed that file at some point, you may need to redo "
@@ -382,13 +311,13 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:13001
+#: ../ipppd.templates:14001
 msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
 msgstr "dosud existují staré skripty /etc/ppp/ip-up.d a ip-down.d"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:13001
+#: ../ipppd.templates:14001
 msgid ""
 "The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils files "
 "from the old isdnutils package still exist. If you changed those files at "
@@ -404,32 +333,23 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:13001
-#, fuzzy
-#| msgid ""
-#| "Until they are deleted, they will still be used! This may cause conflicts."
+#: ../ipppd.templates:14001
 msgid ""
 "Until they are deleted, they will still be used. This may cause conflicts."
 msgstr ""
-"Soubory budou používány, dokud je nesmažete! To může způsobit konflikty."
+"Soubory budou používány, dokud je nesmažete. To může vést ke konfliktům."
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:14001
-#, fuzzy
-#| msgid "(re)start ipppd by hand"
+#: ../ipppd.templates:15001
 msgid "(Re)start ipppd manually"
-msgstr "restartovat (spustit) ipppd ručně"
+msgstr "Restartovat (spustit) ipppd ručně"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:14001
-#, fuzzy
-#| msgid ""
-#| "There is no /etc/init.d/isdnutils on your system; hence you will have to "
-#| "stop and start any ipppd daemons by hand."
+#: ../ipppd.templates:15001
 msgid ""
-"There is no /etc/init.d/isdnutils on your system; hence you will have to "
+"There is no /etc/init.d/isdnutils on this system; hence you will have to "
 "stop and start any ipppd daemons manually."
 msgstr ""
 "Ve vašem systému není soubor /etc/init.d/isdnutils; takže budete muset "
@@ -437,15 +357,13 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:15001
-#, fuzzy
-#| msgid "error running isdnutils init script"
+#: ../ipppd.templates:16001
 msgid "Error running isdnutils init script"
-msgstr "chyba při spuštění inicializačního skriptu isdnutils"
+msgstr "Chyba při spuštění inicializačního skriptu isdnutils"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:15001
+#: ../ipppd.templates:16001
 msgid ""
 "The /etc/init.d/isdnutils script ran with errors. Please check the "
 "installation of the isdnutils-base package; reinstall it if necessary. "
@@ -459,437 +377,421 @@ msgstr ""
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:1001
+#: ../isdnlog.templates:2001
+msgid "Austria"
+msgstr "Rakousko"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "France"
+msgstr "Francie"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Germany"
+msgstr "Německo"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Luxembourg"
+msgstr "Lucembursko"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Netherlands"
+msgstr "Nizozemí"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Norway"
+msgstr "Norsko"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Spain"
+msgstr "Španělsko"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Switzerland"
+msgstr "Švýcarsko"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
 msgid "other"
-msgstr "jiný"
+msgstr "jiná"
 
 #. Type: select
-#. Default
-#. Translators: If your 2-letter code country is in the following list:
-#. "AT, CH, DE, ES, FR, LU, NL, NO"
-#. translate this string by this code. Otherwise, just write "other" (but
-#. do not translate it).
-#: ../isdnlog.templates:1002
+#. DefaultChoice
+#. Translators:
+#. You must NOT translate this string, but you can change its value.
+#. The comment between brackets is used to distinguish this msgid
+#. from the one in the Choices list; you do not have to worry about
+#. them, and have to simply choose a msgstr among the English values
+#. listed in the Choices field above, e.g. msgstr "Dutch (nl)"
+#.
+#. Please choose among
+#. "Austria, France, Germany, Luxembourg, Netherlands, Norway, Spain, Switzerland, other"
+#. In short, if your country is one of those, put its name
+#. in the msgstr and put it *in English*
+#. If your country is another one, put "other"....still in English
+#. Ignore the part that's between brackets, ie do NOT translate it
+#. Valid examples:
+#. ## Choice of the Dutch translator
+#. msgid "other[ default country]"
+#. msgstr "Netherlands"
+#. ## Choice of the Russian translator
+#. msgid "other[ default country]"
+#. msgstr "Russia"
+#. Invalid examples
+#. # Choice of the Italian translator
+#. msgid "other"
+#. msgstr "Italia"
+#: ../isdnlog.templates:2002
 msgid "other[ default country]"
-msgstr ""
+msgstr "jiná"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:1003
+#: ../isdnlog.templates:2003
 msgid "Country:"
-msgstr ""
+msgstr "Země:"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:1003
+#: ../isdnlog.templates:2003
 msgid ""
-"This is used for setting a number of defaults, e.g. what rate tables to use "
-"for calculating the cost of a call."
+"Please choose the local country. This will be used to set the rate table to "
+"use for calculating the costs of calls."
 msgstr ""
-"Toto se používá pro nastavení několika hodnot, např. jaké cenové tabulky "
-"použít pro výpočet nákladů na volání."
-
-#. Type: string
-#. Description
-#: ../isdnlog.templates:2001
-#, fuzzy
-#| msgid "Enter the ISO two-letter code for your country"
-msgid "ISO two-letter code for your country:"
-msgstr "Zadejte dvoupísmenný ISO kód vaší země"
-
-#. Type: string
-#. Description
-#: ../isdnlog.templates:2001
-msgid ""
-"This can't really be used for setting any defaults, but maybe some day..."
-msgstr ""
-"Tato hodnota nemůže být použita pro nastavení výchozích hodnot, ale možná "
-"jednou..."
-
-#. Type: string
-#. Description
-#: ../isdnlog.templates:2001
-msgid ""
-"Note that you will probably have to edit /etc/isdn/isdn.conf before isdnlog "
-"will be able to work."
-msgstr ""
-"Pamatujte, že budete muset, pravděpodobně ještě před spuštěním, upravit "
-"soubor /etc/isdn/isdn.conf."
-
-#. Type: string
-#. Description
-#: ../isdnlog.templates:3001
-msgid "Prefix for international number:"
-msgstr ""
+"Zadejte prosím vaši zemi. To se použije pro nastavení poplatků používaných "
+"pro výpočet nákladů za připojení."
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:4001
-msgid "Code of your country:"
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../isdnlog.templates:4001
-msgid "e.g. ${default_countrycode} for ${default_country}"
-msgstr "např. ${default_countrycode} pro ${default_country}"
+msgid "Prefix to dial before international number:"
+msgstr "Prefix pro vytočení mezinárodního čísla:"
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:5001
-#, fuzzy
-#| msgid "What is your local areacode, if applicable?"
-msgid "Prefix for areacode, if applicable:"
-msgstr "Jaký je váš místní kód oblasti, je-li použitelný?"
+msgid "Country ITU code:"
+msgstr "Kód země ITU:"
+
+#. Type: string
+#. Description
+#: ../isdnlog.templates:5001
+msgid "Please enter the international code for the local country."
+msgstr "Zadejte prosím mezinárodní kód místní země."
+
+#. Type: string
+#. Description
+#. Translators: do not translate ${default_countrycode} and ${default_country}
+#: ../isdnlog.templates:5001
+msgid "Example: ${default_countrycode} for ${default_country}"
+msgstr "Např. ${default_countrycode} pro ${default_country}"
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:6001
-#, fuzzy
-#| msgid "What is your local areacode, if applicable?"
-msgid "Local areacode, if applicable:"
-msgstr "Jaký je váš místní kód oblasti, je-li použitelný?"
+msgid "Prefix for area code, if applicable:"
+msgstr "Prefix oblasti, je-li používaný:"
+
+#. Type: string
+#. Description
+#: ../isdnlog.templates:7001
+msgid "Local area code, if applicable:"
+msgstr "Místní kód oblasti, je-li používaný:"
 
 #. Type: boolean
 #. Description
-#: ../isdnlog.templates:7001
+#: ../isdnlog.templates:8001
 msgid "Run isdnrate as a daemon?"
 msgstr "Spustit isdnrate jako daemon?"
 
 #. Type: boolean
 #. Description
-#: ../isdnlog.templates:7001
-#, fuzzy
-#| msgid ""
-#| "isdnrate is a utility to calculate the costs of a connection to a given "
-#| "phone number, used e.g. for LCR systems to find the cheapest carrier on a "
-#| "call-by-call basis. Having it run as a daemon speeds things up as then it "
-#| "only has to load all the data just once."
+#: ../isdnlog.templates:8001
 msgid ""
-"isdnrate is a utility to calculate the costs of a connection to a given "
-"phone number, used e.g. for LCR systems to find the cheapest carrier on a "
-"call-by-call basis. Having it run as a daemon speeds things up as then it "
-"only has to load all the data once."
+"The isdnrate utility calculates the costs of a connection to a given phone "
+"number, used e.g. for LCR systems to find the cheapest carrier on a call-by-"
+"call basis. Having it run as a daemon speeds things up as then it only has "
+"to load all the data once."
 msgstr ""
-"isdnrate je utilita sloužící k výpočtu cen za připojení pro dané telefonní "
-"číslo, používá se např. pro systémy LCR, k nalezení nejlevnějšího nosiče při "
+"Nástroj isdnrate slouží k výpočtu cen za připojení pro dané telefonní číslo, "
+"používá se např. pro systémy LCR, k nalezení nejlevnějšího nosiče při "
 "spojeních typu call-by-call. Spuštění ve formě daemona zrychlí věci tím, že "
 "načte všechna data pouze jednou."
 
 #. Type: boolean
 #. Description
-#: ../isdnlog.templates:7001
-#, fuzzy
-#| msgid ""
-#| "This is only for people with special requirements, such as those using "
-#| "the isdn2h323 package. Hence most people should say \"no\"."
+#: ../isdnlog.templates:8001
 msgid ""
-"This is only for people with special requirements, such as those using the "
-"isdn2h323 package. Hence most people should not choose this option."
+"This setting is only useful for special setups, such as for an ISDN-to-H.323 "
+"gateway."
 msgstr ""
-"Toto je pouze pro lidi mající speciální požadavky, jako ti, kteří používají "
-"balíček isdn2h323. Proto zde většina lidí odpovídá \"ne\"."
+"Toto nastavení se hodí pouze ve speciálních případech jako je brána ISDN-to-"
+"H.323."
 
 #. Type: select
 #. Choices
-#: ../isdnutils-base.templates:1001
+#: ../isdnutils-base.templates:2001
 msgid "none"
-msgstr ""
+msgstr "žádný"
 
 #. Type: select
 #. Description
-#: ../isdnutils-base.templates:1002
-#, fuzzy
-#| msgid "Does firmware need to be loaded?"
+#: ../isdnutils-base.templates:2002
 msgid "Firmware to load:"
-msgstr "Musí být firmware načten?"
+msgstr "Firmware k načtení:"
 
 #. Type: select
 #. Description
-#: ../isdnutils-base.templates:1002
-#, fuzzy
-#| msgid ""
-#| "Some ISDN cards can't function properly until firmware has been "
-#| "downloaded. Notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-"
-#| "Surf, which need ISAR.BIN to be loaded. (I don't know of any others at "
-#| "this time.) Choose \"ISAR.BIN\" if this is necessary. If you don't know "
-#| "what I'm talking about, choose \"none\"."
+#: ../isdnutils-base.templates:2002
 msgid ""
-"Some ISDN cards can't function properly until firmware has been downloaded. "
-"Notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which need "
-"ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is necessary. If you "
-"don't know what to answer here, choose \"none\"."
+"Some ISDN cards can't function properly until some firmware has been loaded. "
+"A notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which "
+"need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is necessary."
 msgstr ""
 "Některé karty ISDN nemohou správně fungovat, dokud není natažen firmware. "
 "Typickým příkladem je Sedlbauer SpeedFax+ PCI nebo Siemens I-Surf, které "
-"potřebují načíst ISAR.BIN. (V tomto okamžiku o více zařízeních nevím.) "
-"Zvolte \"ISAR.BIN\", je-li třeba. Pokud nevíte o čem mluvím, zvolte \"žádný"
-"\"."
+"potřebují načíst ISAR.BIN. Zvolte \"ISAR.BIN\", je-li třeba. "
 
 #. Type: string
 #. Description
-#: ../isdnutils-base.templates:2001
-#, fuzzy
-#| msgid "Which ISDN card numbers have to be loaded with the firmware?"
+#: ../isdnutils-base.templates:3001
 msgid "ISDN card numbers to load with the firmware:"
-msgstr "Která označení ISDN karet mají být načtena s firmwarem?"
+msgstr "Čísla ISDN karet pro tento firmware:"
 
 #. Type: string
 #. Description
-#: ../isdnutils-base.templates:2001
+#: ../isdnutils-base.templates:3001
 msgid ""
-"If you have more than one card, enter the number of the card(s) that have to "
-"be loaded with the firmware, starting with 1, separated by commas. If you "
-"have only one card, the obvious answer here is \"1\". If you have two cards "
-"which both have to be loaded with firmware, enter \"1,2\"."
+"If you use more than one card, enter the number of the card(s) in need of "
+"firmware."
 msgstr ""
-"Pokud máte více než jednu kartu, zadejte číslo karty (karet), u kterých se "
-"má načítat firmware, začněte od čísla 1, čísla oddělujte pomocí čárek. Pokud "
-"máte pouze jednu kartu, pak je obvyklou odpovědí \"1\". Pokud máte 2 karty, "
-"u nichž obou chcete načíst firmware, pak zadejte \"1,2\"."
+"Pokud máte více jak jednu kartu, zadejte čísla karret potřebující tento "
+"firmware."
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:1001
-#, fuzzy
-#| msgid "What number should vbox answer?"
-msgid "Number that vbox should answer:"
-msgstr "Na jakém čísle má vbox naslouchat?"
-
-#. Type: string
-#. Description
-#: ../isdnvboxserver.templates:1001
+#: ../isdnutils-base.templates:3001
 msgid ""
-"Vbox must know what number to listen to. Depending on your country's ISDN "
-"system, this may or may not include the areacode. It is usually without the "
-"leading 0."
+"Multiple entries should be separated by commas. Card numbers are integers "
+"where \"1\" is the first card, \"2\" the second, etc."
+msgstr ""
+"Více polože je možno oddělovat pomocí mezer. Čísla karet jsou celá čísla, "
+"kde „1“ znamená první kartu, „2“ symbolizuje druhou kartu, atd."
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:2001
+msgid "Number that vbox should answer:"
+msgstr "Číslo na kterém poslouchá vbox:"
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:2001
+msgid ""
+"Vbox must know what number to listen to. Depending on the country's ISDN "
+"system, this may or may not include the area code. Leading \"0\" should most "
+"often be dropped."
 msgstr ""
 "Vbox musí vědět na jakém čísle poslouchat. Číslo závisí na ISDN systému "
-"příslušné země a může, ale nemusí, obsahovat číslo oblasti. Obvykle se "
-"zadává bez uvozující 0."
+"příslušné země a může, ale nemusí, obsahovat číslo oblasti. Uvozující „0“ "
+"můžete vynechat."
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:1001
-#, fuzzy
-#| msgid ""
-#| "Enter `quit' (or leave it blank) if you want to configure by hand, not "
-#| "via debconf. Also enter `quit' if you already have an existing (working) "
-#| "vbox configuration from the time when this was still part of isdnutils "
-#| "(unless you want to create a new configuration)."
+#: ../isdnvboxserver.templates:2001
 msgid ""
 "Leave the field blank if you want to configure by hand, or if you already "
-"have an existing (working) vbox configuration from the time when this was "
+"use an existing (working) vbox configuration from the time when this was "
 "still part of isdnutils (unless you want to create a new configuration)."
 msgstr ""
-"Pokud chcete nastavovat ručně a ne přes debconf, pak zadejte `quit' (nebo "
-"nechte prázdné). `quit' zadejte také v případě, že již máte (funkční) "
-"konfiguraci vboxu z časů, kdy byl ještě součástí isdnutils (ledaže byste si "
-"přáli vytvořit novou konfiguraci)."
+"Pokud to chcete nastavit ručně nebo chcete použít stávající nastavení vbox, "
+"pak nechejte toto políčko prázdné."
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:2001
-#, fuzzy
-#| msgid "After how many rings should vbox pick up the line?"
+#: ../isdnvboxserver.templates:3001
 msgid "Number of rings for vbox to pick up the line:"
-msgstr "Po kolika zazvověních má vbox zvednout linku?"
+msgstr "Počet zvonění po kterých má vbox zvednout hovor:"
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:2001
-#, fuzzy
-#| msgid ""
-#| "One ring is about 5 seconds. You can fine-tune the number of rings for "
-#| "certain phonenumbers manually, e.g. any salesmen you know the number of "
-#| "(or calls without caller-ID) can be dumped into the answering machine "
-#| "after one ring. See `man vbox.conf' for more info."
+#: ../isdnvboxserver.templates:3001
 msgid ""
-"One ring is about 5 seconds. You can fine-tune the number of rings for "
-"certain phonenumbers manually, e.g. any salesmen you know the number of (or "
-"calls without caller-ID) can be dumped into the answering machine after one "
-"ring. See `man vbox.conf' for more information."
+"One ring is about 5 seconds. This setting can later be fine-tuned for each "
+"incoming telephone number, for instance to aggressively filter some incoming "
+"numbers."
 msgstr ""
-"Jedno zvonění je okolo 5 sekund. Počet zvonění můžete pro určitá telefonní "
-"čísla  vyladit ručně. Např. obchodníci, jejichž číslo znáte, (nebo hovory "
-"bez identifikace), mohou být po jednom zvonění přepojeny na záznamník.Pro "
-"více informací se podívejte na `man vbox.conf'."
+"Jedno zvonění je okolo 5 sekund. Toto nastavení je možno později vylepšit "
+"pro každé příchozí telefonní číslo zvlášť, např. při filtrování určitých "
+"příchozích hovorů."
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:3001
+msgid "You should read vbox.conf(5) for more information."
+msgstr "Více informací naleznete v vbox.conf(5)."
 
 #. Type: boolean
 #. Description
-#: ../isdnvboxserver.templates:3001
-msgid "Should the message be attached to the email?"
-msgstr "Má být zpráva připojena k emailu?"
+#: ../isdnvboxserver.templates:4001
+msgid "Should incoming messages be attached to notification mails?"
+msgstr "Mají být příchozí zprávy přiloženy k emailovým upozorněním?"
 
 #. Type: boolean
 #. Description
-#: ../isdnvboxserver.templates:3001
-#, fuzzy
-#| msgid ""
-#| "When a message is recorded, an email notification is sent. If that email "
-#| "should contain the message as an attachment, choose \"yes\" here. Note: "
-#| "the attachment can be large!"
+#: ../isdnvboxserver.templates:4001
 msgid ""
 "When a message is recorded, an email notification is sent. If that email "
 "should contain the message as an attachment, choose the option."
 msgstr ""
 "Jakmile je zpráva nahrána, je poslán upozorňovací email. Pokud chcete, aby "
-"email obsahoval jako přílohu onu zprávu, pak zvolte \"ano\". Pamatujte: "
-"příloha může být velká!"
-
-#. Type: boolean
-#. Description
-#: ../isdnvboxserver.templates:3001
-msgid "Note: the attachment can be large."
-msgstr ""
+"email obsahoval jako přílohu onu zprávu, pak souhlaste."
 
 #. Type: string
-#. Description
-#: ../isdnvboxserver.templates:4001
-#, fuzzy
-#| msgid "As what user should the answering machine run?"
-msgid "User who runs the answering machine:"
-msgstr "Pod kterým uživatelem se má spustit záznamník?"
-
-#. Type: string
-#. Description
-#: ../isdnvboxserver.templates:4001
-msgid ""
-"vboxd runs with the privileges of a normal (non-root) user. This is "
-"typically your non-root login name. This user must be a member of the "
-"`dialout' group."
-msgstr ""
-"vboxd se spouští s právy normálního (ne-rootovského) uživatele. Tím je "
-"obvykle vaše ne-rootovské přihlašovací jméno. Tento uživatel musí být členem "
-"skupiny `dialout'."
-
-#. Type: text
 #. Description
 #: ../isdnvboxserver.templates:5001
-#, fuzzy
-#| msgid "The user ${Daemonuser} doesn't exist on the system."
-msgid "User ${Daemonuser} doesn't exist on the system"
-msgstr "Uživatel ${Daemonuser} v tomto systému neexistuje."
+msgid "Run the answering machine as:"
+msgstr "Spustit záznamník jako:"
 
-#. Type: text
+#. Type: string
 #. Description
 #: ../isdnvboxserver.templates:5001
 msgid ""
-"The user who runs the answering machine should be a valid user name on this "
-"system."
+"The vboxd daemon should run as an unprivileged (non-root) user. It must be a "
+"member of the \"dialout\" group."
 msgstr ""
+"Daemon vboxd by měl běžet s právy neprivilegovaného uživatele (ne root). Ten "
+"však musí být členem skupiny „dialout“."
 
-#. Type: string
+#. Type: text
 #. Description
+#. Translators, do not translate "Daemonuser"
 #: ../isdnvboxserver.templates:6001
-#, fuzzy
-#| msgid "What username may connect to the vbox server?"
-msgid "Username which may connect to the vbox server:"
-msgstr "Který uživatel se může připojit k vbox serveru?"
+msgid "${Daemonuser} unknown"
+msgstr "${Daemonuser} není známý"
 
-#. Type: string
+#. Type: text
 #. Description
 #: ../isdnvboxserver.templates:6001
 msgid ""
-"To listen to messages using vbox (from the isdnvboxclient package), you need "
-"a username and password. Enter the username here. This does not have to be a "
-"user on the system itself."
+"The user you chose does not exist on this machine. You must choose a valid "
+"username."
 msgstr ""
-"Pro poslech zpráv prostřednictvím vboxu (součást balíčku isdnvboxclient), "
-"potřebujete znát uživatelské jméno a heslo. Zde zadejte uživatelské jméno. "
-"Tím by neměl být uživatel na daném systému."
+"Uživatel, kterého jste vybrali na tomto počítači neexistuje. Vyberte "
+"platného uživatele."
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:7001
+msgid "Login for the answering machine:"
+msgstr "Přihlašovací jméno záznamníku:"
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:7001
+msgid ""
+"Connections to the answering machine (using the vbox program provided by the "
+"isdnvboxclient package) will be prompted for a username and password."
+msgstr ""
+"Připojení k záznamníku (používají program vbox obsažený v balíčku "
+"isdnvboxclient) bude dotázáno na nějaké uživatelské jméno a heslo."
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:7001
+msgid ""
+"The username you define here does not have to correspond to a login account "
+"on this system."
+msgstr "Uvedený uživatel nemusí odpovídat uživateli tohoto systému."
 
 #. Type: password
 #. Description
-#: ../isdnvboxserver.templates:7001
-#, fuzzy
-#| msgid "Enter the password for ${User} here."
+#. Translators, do not translate "${User}"
+#: ../isdnvboxserver.templates:8001
 msgid "Password for ${User}:"
-msgstr "Zadejte zde heslo pro ${User}."
+msgstr "Heslo pro ${User}:"
 
 #. Type: password
 #. Description
-#: ../isdnvboxserver.templates:7001
-msgid "Please don't use ':' in it! The way it is stored cannot handle this."
-msgstr ""
-"Nepoužívejte prosím ':'! Způsob, jakým je tato informace uložena, to "
-"nedokáže zpracovat."
+#: ../isdnvboxserver.templates:8001
+msgid "Please choose the password for the ${User} connection user."
+msgstr "Zadejte prosím heslo uživatele ${User}."
 
 #. Type: error
 #. Description
-#: ../isdnvboxserver.templates:8001
-#, fuzzy
-#| msgid "No home directory!"
+#: ../isdnvboxserver.templates:9001
 msgid "No home directory"
-msgstr "Domovský adresář neexistuje!"
+msgstr "Domovský adresář neexistuje"
 
 #. Type: error
 #. Description
-#: ../isdnvboxserver.templates:8001
+#: ../isdnvboxserver.templates:9001
 msgid ""
-"The home directory `${DIR}' for user `${USER}' doesn't exist. This means "
-"that the file `${DIR}/.vbox.conf' cannot be created."
+"The home directory \"${DIR}\" for user \"${USER}\" does not exist. This "
+"means that the file \"${DIR}/.vbox.conf\" cannot be created."
 msgstr ""
-"Neexistuje domovský adresář `${DIR}' pro uživatele `${USER}'. To znamená, že "
-"nemůže být vytvořen soubor `${DIR}/.vbox.conf'."
+"Neexistuje domovský adresář „${DIR}“ pro uživatele „${USER}“. To znamená, že "
+"nemůže být vytvořen soubor „${DIR}/.vbox.conf“."
 
 #. Type: error
 #. Description
-#: ../isdnvboxserver.templates:9001
-#, fuzzy
-#| msgid "User doesn't exist!"
-msgid "User doesn't exist"
-msgstr "Uživatel neexistuje!"
+#: ../isdnvboxserver.templates:10001
+msgid "Non-existing user"
+msgstr "Neexistující uživatel"
 
 #. Type: error
 #. Description
-#: ../isdnvboxserver.templates:9001
-#, fuzzy
-#| msgid ""
-#| "The user `${USER}' doesn't exist on the system! Please rerun the "
-#| "configuration with `dpkg-reconfigure isdnvboxserver' to enter another "
-#| "username, or after creating the user."
+#: ../isdnvboxserver.templates:10001
 msgid ""
-"The user `${USER}' doesn't exist on the system. Please rerun the "
-"configuration with `dpkg-reconfigure isdnvboxserver' to enter another "
+"The user \"${USER}\" doesn't exist on the system. Please rerun the "
+"configuration with \"dpkg-reconfigure isdnvboxserver\" to enter another "
 "username, or after creating the user."
 msgstr ""
-"Uživatel `${USER}' ve vašem systému neexistuje! Pro zadání jiného uživatele "
-"opravte prosím nastavení pomocí `dpkg-reconfigure isdnvboxserver', nebo "
+"Uživatel „${USER}“ ve vašem systému neexistuje. Pro zadání jiného uživatele "
+"opravte prosím nastavení pomocí „dpkg-reconfigure isdnvboxserver“, nebo "
 "nejprve příslušného uživatele vytvořte. "
 
 #. Type: boolean
 #. Description
-#: ../isdnvboxserver.templates:10001
+#: ../isdnvboxserver.templates:11001
 msgid "Should vboxgetty be enabled?"
 msgstr "Má být vboxgetty povolen?"
 
 #. Type: boolean
 #. Description
-#: ../isdnvboxserver.templates:10001
-#, fuzzy
-#| msgid ""
-#| "vboxgetty is in /etc/inittab, but not yet enabled. Answering `yes' here "
-#| "will enable it once this package is fully configured. Choose `no' if you "
-#| "want to tweak it manually."
+#: ../isdnvboxserver.templates:11001
 msgid ""
-"vboxgetty is in /etc/inittab, but not yet enabled. Choosing this option will "
-"enable it once this package is fully configured. Refuse this option if you "
-"want to tweak it manually."
+"A call for vboxgetty is defined in /etc/inittab, but not yet enabled. "
+"Choosing this option will enable it once this package is fully configured. "
+"Refuse this option if you want to tweak it manually."
 msgstr ""
-"vboxgetty se nachází v /etc/inittab, ale ještě není povolen. Odpovíte-li "
-"`ano', pak bude povolen jakmile bude balíček plně nastaven. Zvolte `ne', "
-"pokud si to přejete nastavit ručně."
+"Volání vboxgetty se nachází v /etc/inittab, ale ještě není povolen. Zvolením "
+"této volby bude povolen ihned po nastavení balíčku. Nebudete-li souhlasit, "
+"nastavte tuto volbu ručně."
 
 #. Type: error
 #. Description
-#: ../isdnvboxserver.templates:11001
+#: ../isdnvboxserver.templates:12001
 msgid "Device in inittab doesn't agree with devfs mode"
 msgstr "Zařízení v inittabu nesouhlasí s módem devfs"
 
 #. Type: error
 #. Description
-#: ../isdnvboxserver.templates:11001
+#: ../isdnvboxserver.templates:12001
 msgid ""
 "The entry for vboxgetty in /etc/inittab uses a device name that does not "
 "correspond to the current devfs usage; either a devfs (/dev/isdn/ttyIxx) "
@@ -905,19 +807,19 @@ msgstr ""
 #. Description
 #. Type: error
 #. Description
-#: ../isdnvboxserver.templates:11001 ../isdnvboxserver.templates:12001
-msgid "You will have to fix this by hand."
-msgstr "Měli byste to opravit ručně."
+#: ../isdnvboxserver.templates:12001 ../isdnvboxserver.templates:13001
+msgid "This problem has to be fixed manually."
+msgstr "Tento problém je nutné napravit ručně."
 
 #. Type: error
 #. Description
-#: ../isdnvboxserver.templates:12001
+#: ../isdnvboxserver.templates:13001
 msgid "Device in vboxgetty.conf doesn't agree with devfs mode"
 msgstr "Zařízení ve vboxgetty.conf nesouhlasí s módem devfs"
 
 #. Type: error
 #. Description
-#: ../isdnvboxserver.templates:12001
+#: ../isdnvboxserver.templates:13001
 msgid ""
 "The device entry in /etc/isdn/vboxgetty.conf uses a device name that does "
 "not correspond to the current devfs usage; either a devfs (/dev/isdn/ttyIxx) "
@@ -928,6 +830,157 @@ msgstr ""
 "neodpovídá současnému nastavení devfs; buď bylo jméno devfs (/dev/isdn/"
 "ttyIxx) použito ve vboxgetty.conf ještě před připojením devfs, nebo je toto "
 "jméno použito ještě před připojením devfs."
+
+#, fuzzy
+#~| msgid ""
+#~| "Most people will say \"ippp0\" here, as that is the default for a "
+#~| "connection to an ISP. The default gateway will be ippp0."
+#~ msgid ""
+#~ "Most people should say \"ippp0\" here, as that is the default for a "
+#~ "connection to an ISP. The default gateway will be ippp0."
+#~ msgstr ""
+#~ "Většina lidí zde odpoví \"ippp0\", protože to je výchozí hodnota pro "
+#~ "připojení k ISP. Výchozí branou bude ippp0."
+
+#, fuzzy
+#~| msgid ""
+#~| "However, some people have special requirements, and they may choose "
+#~| "another interface that debconf will configure (e.g. because they don't "
+#~| "want this connection to be the default gateway)."
+#~ msgid ""
+#~ "However, some people have special requirements, and they may choose "
+#~ "another interface that will be configured (e.g. because they don't want "
+#~ "this connection to be the default gateway)."
+#~ msgstr ""
+#~ "Samozřejmě, někteří mají speciální požadavky a tak mohou zvolit jiné "
+#~ "rozhraní, které pak debconf nastaví (např. pokud nechtějí toto použít "
+#~ "jako výchozí bránu)."
+
+#, fuzzy
+#~| msgid ""
+#~| "Note that debconf will currently only configure at most one interface. "
+#~| "Enter \"none\" if you do not want debconf to configure anything for "
+#~| "ipppd."
+#~ msgid ""
+#~ "Note that currently at most one interface can be configured in this "
+#~ "manner. Leave the field blank if you do not want to configure anything "
+#~ "now for ipppd."
+#~ msgstr ""
+#~ "Pamatujte, že debconf běžně nastaví pouze jedno rozhraní. Zadejte \"none"
+#~ "\", pokud si nepřejete ipppd nastavovat pomocí debconfu."
+
+#, fuzzy
+#~| msgid "What is the user name for logging into your ISP?"
+#~ msgid "User name for logging into your ISP:"
+#~ msgstr "Jaké je uživatelské jméno pro přihlášení k vašemu ISP?"
+
+#, fuzzy
+#~| msgid ""
+#~| "Most (all?) ISPs need a user name and password for authenticating you as "
+#~| "a valid user before allowing access. Enter the user name here. The "
+#~| "password will be asked for next."
+#~ msgid ""
+#~ "Most ISPs need a user name and password for authenticating you as a valid "
+#~ "user before allowing access. Enter the user name here. The password will "
+#~ "be asked for next."
+#~ msgstr ""
+#~ "Většina (všichni?) ISP chtějí znát uživatelské jméno a heslo pro "
+#~ "autentikování svých uživatelů a to ještě před povolením přístupu. Zadejte "
+#~ "zde uživatelské jméno. Heslo bude následovat v další otázce."
+
+#, fuzzy
+#~| msgid "What is the password for logging into your ISP?"
+#~ msgid "Password for logging into your ISP:"
+#~ msgstr "Jaké je heslo pro přihlášení k vašemu ISP?"
+
+#, fuzzy
+#~| msgid "Enter the ISO two-letter code for your country"
+#~ msgid "ISO two-letter code for your country:"
+#~ msgstr "Zadejte dvoupísmenný ISO kód vaší země"
+
+#~ msgid ""
+#~ "This can't really be used for setting any defaults, but maybe some day..."
+#~ msgstr ""
+#~ "Tato hodnota nemůže být použita pro nastavení výchozích hodnot, ale možná "
+#~ "jednou..."
+
+#~ msgid ""
+#~ "Note that you will probably have to edit /etc/isdn/isdn.conf before "
+#~ "isdnlog will be able to work."
+#~ msgstr ""
+#~ "Pamatujte, že budete muset, pravděpodobně ještě před spuštěním, upravit "
+#~ "soubor /etc/isdn/isdn.conf."
+
+#, fuzzy
+#~| msgid ""
+#~| "This is only for people with special requirements, such as those using "
+#~| "the isdn2h323 package. Hence most people should say \"no\"."
+#~ msgid ""
+#~ "This is only for people with special requirements, such as those using "
+#~ "the isdn2h323 package. Hence most people should not choose this option."
+#~ msgstr ""
+#~ "Toto je pouze pro lidi mající speciální požadavky, jako ti, kteří "
+#~ "používají balíček isdn2h323. Proto zde většina lidí odpovídá \"ne\"."
+
+#~ msgid ""
+#~ "If you have more than one card, enter the number of the card(s) that have "
+#~ "to be loaded with the firmware, starting with 1, separated by commas. If "
+#~ "you have only one card, the obvious answer here is \"1\". If you have two "
+#~ "cards which both have to be loaded with firmware, enter \"1,2\"."
+#~ msgstr ""
+#~ "Pokud máte více než jednu kartu, zadejte číslo karty (karet), u kterých "
+#~ "se má načítat firmware, začněte od čísla 1, čísla oddělujte pomocí čárek. "
+#~ "Pokud máte pouze jednu kartu, pak je obvyklou odpovědí \"1\". Pokud máte "
+#~ "2 karty, u nichž obou chcete načíst firmware, pak zadejte \"1,2\"."
+
+#, fuzzy
+#~| msgid ""
+#~| "One ring is about 5 seconds. You can fine-tune the number of rings for "
+#~| "certain phonenumbers manually, e.g. any salesmen you know the number of "
+#~| "(or calls without caller-ID) can be dumped into the answering machine "
+#~| "after one ring. See `man vbox.conf' for more info."
+#~ msgid ""
+#~ "One ring is about 5 seconds. You can fine-tune the number of rings for "
+#~ "certain phonenumbers manually, e.g. any salesmen you know the number of "
+#~ "(or calls without caller-ID) can be dumped into the answering machine "
+#~ "after one ring. See `man vbox.conf' for more information."
+#~ msgstr ""
+#~ "Jedno zvonění je okolo 5 sekund. Počet zvonění můžete pro určitá "
+#~ "telefonní čísla  vyladit ručně. Např. obchodníci, jejichž číslo znáte, "
+#~ "(nebo hovory bez identifikace), mohou být po jednom zvonění přepojeny na "
+#~ "záznamník.Pro více informací se podívejte na `man vbox.conf'."
+
+#, fuzzy
+#~| msgid "The user ${Daemonuser} doesn't exist on the system."
+#~ msgid "User ${Daemonuser} doesn't exist on the system"
+#~ msgstr "Uživatel ${Daemonuser} v tomto systému neexistuje."
+
+#, fuzzy
+#~| msgid "What username may connect to the vbox server?"
+#~ msgid "Username which may connect to the vbox server:"
+#~ msgstr "Který uživatel se může připojit k vbox serveru?"
+
+#~ msgid ""
+#~ "To listen to messages using vbox (from the isdnvboxclient package), you "
+#~ "need a username and password. Enter the username here. This does not have "
+#~ "to be a user on the system itself."
+#~ msgstr ""
+#~ "Pro poslech zpráv prostřednictvím vboxu (součást balíčku isdnvboxclient), "
+#~ "potřebujete znát uživatelské jméno a heslo. Zde zadejte uživatelské "
+#~ "jméno. Tím by neměl být uživatel na daném systému."
+
+#~ msgid "Please don't use ':' in it! The way it is stored cannot handle this."
+#~ msgstr ""
+#~ "Nepoužívejte prosím ':'! Způsob, jakým je tato informace uložena, to "
+#~ "nedokáže zpracovat."
+
+#, fuzzy
+#~| msgid "User doesn't exist!"
+#~ msgid "User doesn't exist"
+#~ msgstr "Uživatel neexistuje!"
+
+#~ msgid "You will have to fix this by hand."
+#~ msgstr "Měli byste to opravit ručně."
 
 #~ msgid "Which interface should debconf configure?"
 #~ msgstr "Které rozhraní má debconf nastavit?"
@@ -961,9 +1014,6 @@ msgstr ""
 
 #~ msgid "What country is this system in?"
 #~ msgstr "Jaký je kód země vašeho systému?"
-
-#~ msgid "What is used to indicate an international number?"
-#~ msgstr "Co se používá pro určení mezinárodního čísla?"
 
 #~ msgid "What is the countrycode for your country?"
 #~ msgstr "Jaký je kód oblasti vaší země?"

@@ -1,3 +1,33 @@
+isdnutils (1:3.9.20060704-5) unstable; urgency=low
+
+  * QA upload
+  * Allow build on sh4. Closes: #549878
+  * Use "set -e" in all config scripts
+  * Replace call to "/bin/kill" by "kill" in ipppd.prerm
+  * Replace call to "/sbin/MAKEDEV" by "MAKEDEV" in postinst scripts
+  * Replace call to "/sbin/init" by "init" in postinst scripts
+  * Add "${misc:Depends} to ippd dependencies to properly cope with
+    dependencies that might be triggered by debhelper utilities
+  * Drop useless calls to install-docs in prerm scripts
+  * Debconf templates and debian/control reviewed by the debian-l10n-
+    english team as part of the Smith review project. Closes: #550030
+  * Remove "Uploaders:" as the package is orphaned
+  * [Debconf translation updates]
+    - Czech (Martin Sin).  Closes: #550726
+    - Vietnamese (Clytie Siddall).  Closes: #550858
+    - Finnish (Esko Arajärvi).  Closes: #550876
+    - Vietnamese (Clytie Siddall).  Closes: #550941
+    - Basque (Iñaki Larrañaga Murgoitio).  Closes: #551060
+    - Swedish (Martin Bagge).  Closes: #551117
+    - Portuguese. Closes: #552166
+    - Italian (Luca Monducci).  Closes: #552217
+    - Spanish (Francisco Javier Cuadrado).  Closes: #552265
+    - Russian (Yuri Kozlov).  Closes: #552463, #547435
+    - Japanese (Hideki Yamane (Debian-JP)).  Closes: #553033
+    - German (Thomas Mueller).  Closes: #553078
+
+ -- Christian Perrier <bubulle@debian.org>  Sun, 01 Nov 2009 11:41:30 +0100
+
 isdnutils (1:3.9.20060704-4) unstable; urgency=low
 
   * Orphaning isdnutils, as I do not use it anymore in a way to be able to

@@ -1,13 +1,22 @@
+# These templates have been reviewed by the debian-l10n-english
+# team
+#
+# If modifications/additions/rewording are needed, please ask
+# debian-l10n-english@lists.debian.org for advice.
+#
+# Even minor modifications require translation updates and such
+# changes should be coordinated with translators and reviewers.
+
 Template: isdnvboxserver/msn
 Type: string
 Default: quit
 _Description: Number that vbox should answer:
- Vbox must know what number to listen to. Depending on your country's ISDN
- system, this may or may not include the areacode. It is usually without
- the leading 0.
+ Vbox must know what number to listen to. Depending on the country's ISDN
+ system, this may or may not include the area code. Leading "0" should most
+ often be dropped.
  .
  Leave the field blank if you want to configure by hand, or if you already
- have an existing (working) vbox
+ use an existing (working) vbox
  configuration from the time when this was still part of isdnutils (unless
  you want to create a new configuration).
 
@@ -15,64 +24,69 @@ Template: isdnvboxserver/rings
 Type: string
 Default: 4
 _Description: Number of rings for vbox to pick up the line:
- One ring is about 5 seconds. You can fine-tune the number of rings for
- certain phonenumbers manually, e.g. any salesmen you know the number of
- (or calls without caller-ID) can be dumped into the answering machine
- after one ring. See `man vbox.conf' for more information.
+ One ring is about 5 seconds. This setting can later be fine-tuned
+ for each incoming telephone number, for instance to aggressively
+ filter some incoming numbers.
+ .
+ You should read vbox.conf(5) for more information.
 
 Template: isdnvboxserver/attachmsg
 Type: boolean
 Default: true
-_Description: Should the message be attached to the email?
+_Description: Should incoming messages be attached to notification mails?
  When a message is recorded, an email notification is sent. If that
  email should contain the message as an attachment, choose the option.
- .
- Note: the attachment can be large.
 
 Template: isdnvboxserver/daemonuser
 Type: string
 Default: vboxdaemonuser
-_Description: User who runs the answering machine:
- vboxd runs with the privileges of a normal (non-root) user. This is
- typically your non-root login name. This user must be a member of the
- `dialout' group.
+_Description: Run the answering machine as:
+ The vboxd daemon should run as an unprivileged (non-root) user. It must be
+ a member of the "dialout" group.
 
 Template: isdnvboxserver/nosuchuser
 Type: text
-_Description: User ${Daemonuser} doesn't exist on the system
- The user who runs the answering machine should be a valid user name
- on this system.
+#flag:comment:1
+# Translators, do not translate "Daemonuser"
+_Description: ${Daemonuser} unknown
+ The user you chose does not exist on this machine. You must choose
+ a valid username.
 
 Template: isdnvboxserver/user
 Type: string
-_Description: Username which may connect to the vbox server:
- To listen to messages using vbox (from the isdnvboxclient package), you
- need a username and password. Enter the username here. This does not have
- to be a user on the system itself.
+_Description: Login for the answering machine:
+ Connections to the answering machine (using the vbox program provided
+ by the isdnvboxclient package) will be prompted for a username and
+ password.
+ .
+ The username you define here does not have to correspond to a login
+ account on this system.
 
 Template: isdnvboxserver/password
 Type: password
+#flag:comment:1,1
+# Translators, do not translate "${User}"
 _Description: Password for ${User}:
- Please don't use ':' in it! The way it is stored cannot handle this.
+ Please choose the password for the ${User} connection user.
 
 Template: isdnvboxserver/vboxnodir
 Type: error
 _Description: No home directory
- The home directory `${DIR}' for user `${USER}' doesn't exist. This means
- that the file `${DIR}/.vbox.conf' cannot be created.
+ The home directory "${DIR}" for user "${USER}" does not exist. This means
+ that the file "${DIR}/.vbox.conf" cannot be created.
 
 Template: isdnvboxserver/vboxnouser
 Type: error
-_Description: User doesn't exist
- The user `${USER}' doesn't exist on the system. Please rerun the
- configuration with `dpkg-reconfigure isdnvboxserver' to enter another
+_Description: Non-existing user
+ The user "${USER}" doesn't exist on the system. Please rerun the
+ configuration with "dpkg-reconfigure isdnvboxserver" to enter another
  username, or after creating the user.
 
 Template: isdnvboxserver/doinit
 Type: boolean
 Default: true
 _Description: Should vboxgetty be enabled?
- vboxgetty is in /etc/inittab, but not yet enabled. Choosing this option
+ A call for vboxgetty is defined in /etc/inittab, but not yet enabled. Choosing this option
  will enable it once this package is fully configured. Refuse this option
  if you want to tweak it manually.
 
@@ -84,7 +98,7 @@ _Description: Device in inittab doesn't agree with devfs mode
  name is used in inittab while devfs is not mounted, or the non-devfs name
  is used while devfs is mounted.
  .
- You will have to fix this by hand.
+ This problem has to be fixed manually.
 
 Template: isdnvboxserver/devfs_vboxgettyconf
 Type: error
@@ -94,7 +108,7 @@ _Description: Device in vboxgetty.conf doesn't agree with devfs mode
  (/dev/isdn/ttyIxx) name is used in vboxgetty.conf while devfs is not
  mounted, or the non-devfs name is used while devfs is mounted.
  .
- You will have to fix this by hand.
+ This problem has to be fixed manually.
 
 Template: isdnvboxserver/dummy
 Type: note

@@ -10,7 +10,7 @@ case "$1" in
 
         cd /dev
         echo "Note: running MAKEDEV to create CAPI devices in /dev..."
-        /sbin/MAKEDEV capi
+        MAKEDEV capi
 	;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

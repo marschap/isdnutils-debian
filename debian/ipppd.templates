@@ -1,47 +1,53 @@
+# These templates have been reviewed by the debian-l10n-english
+# team
+#
+# If modifications/additions/rewording are needed, please ask
+# debian-l10n-english@lists.debian.org for advice.
+#
+# Even minor modifications require translation updates and such
+# changes should be coordinated with translators and reviewers.
+
 Template: ipppd/ispwontdoit
 Type: error
-_Description: ISP dialup config already exists
- The files device.${IPPP0} and ipppd.${IPPP0} already exist. Therefore the
+_Description: ISP dialup configuration already exists
+ The device.${IPPP0} and ipppd.${IPPP0} files already exist. Therefore, the
  ipppd configuration phase won't touch anything there, as it looks like
- it's already been configured.
+ it has already been configured.
  .
  If it doesn't work yet, and you want to try the automatic configuration,
  stop all ISDN processes (use "/etc/init.d/isdnutils stop"), remove the
  files mentioned above, and rerun the configuration with "dpkg-reconfigure
- ipppd". After that, restart the ISDN processes: "/etc/init.d/isdnutils
+ ipppd". After that, restart the ISDN processes with "/etc/init.d/isdnutils
  start".
 
 Template: ipppd/whichif
 Type: string
 Default: ippp0
 _Description: Interface to configure:
- Most people should say "ippp0" here, as that is the default for a connection
- to an ISP. The default gateway will be ippp0.
+ The default setting should be safe for most configurations.
  .
- However, some people have special requirements, and they may choose
- another interface that will be configured (e.g. because they don't
- want this connection to be the default gateway).
+ However, if you have special requirements or want to choose
+ to configure another interface, please enter it here.
  .
- Note that currently at most one interface can be configured in this manner.
- Leave the field blank if you do not want to configure anything now for ipppd.
+ Leave the field blank if you do not want to configure anything now.
 
 Template: ipppd/wrongif
 Type: error
-_Description: Wrong interface name
- You can only give names starting with "ippp" followed by a number between
+_Description: Invalid interface name
+ Valid interface names begin with "ippp" followed by a number between
  0 and 63.
 
 Template: ipppd/ispphone
 Type: string
 Default: manual
-_Description: What is your ISP's telephone number?
+_Description: ISP's telephone number:
  At least one phone number has to be dialed in order to connect
- to your Internet service provider (ISP).
+ to an Internet service provider (ISP).
  .
- Enter the telephone number here, including dialing prefixes,
+ Please enter that telephone number here, including dialing prefixes,
  area codes, and so on, but without any spaces.
  .
- You can enter multiple telephone numbers, separated by spaces.
+ Multiple telephone numbers may be entered and should be separated by spaces.
  .
  Leave the field blank if you want to configure the connection manually.
 
@@ -58,26 +64,26 @@ _Description: Local MSN:
  .
  This may also be necessary if you want the costs to be registered to one
  particular MSN, in case you have more than one MSN and this is supported
- by your telco.
+ by your telecommunication providing company.
 
 Template: ipppd/isplogin
 Type: string
-_Description: User name for logging into your ISP:
- Most ISPs need a user name and password for authenticating you as a
- valid user before allowing access. Enter the user name here. The password
- will be asked for next.
+_Description: ISP account name:
+ Most ISPs require an account name and password to be provided when
+ connecting.
 
 Template: ipppd/isppasswd
 Type: password
-_Description: Password for logging into your ISP:
- The password you give here will be entered into /etc/ppp/pap-secrets and
- /etc/ppp/chap-secrets together with the username.
+_Description: ISP password:
+ Please enter the password to use when connecting to the ISP. This password
+ will be kept in /etc/ppp/pap-secrets and
+ /etc/ppp/chap-secrets together with the account name.
 
 Template: ipppd/isploginpapalreadythere
 Type: error
 _Description: ISP user name already in pap-secrets
  The user name you entered for logging into your ISP is already listed in
- the /etc/ppp/pap-secrets file. That's not a problem; the existing entry
+ the /etc/ppp/pap-secrets file. The existing entry
  will be commented out, and a new entry with the data you just entered will
  be inserted.
 
@@ -85,7 +91,7 @@ Template: ipppd/isploginchapalreadythere
 Type: error
 _Description: ISP user name already in chap-secrets
  The user name you entered for logging into your ISP is already listed in
- the /etc/ppp/chap-secrets file. That's not a problem; the existing entry
+ the /etc/ppp/chap-secrets file. The existing entry
  will be commented out, and a new entry with the data you just entered will
  be inserted.
 
@@ -93,8 +99,8 @@ Template: ipppd/isploginpapchapalreadythere
 Type: error
 _Description: ISP user name already in chap-secrets and pap-secrets
  The user name you entered for logging into your ISP is already listed in
- the chap-secrets and pap-secrets files in /etc/ppp/. That's not a problem;
- the existing entries will be commented out, and new entries with the data
+ the chap-secrets and pap-secrets files in /etc/ppp/.
+ The existing entries will be commented out, and new entries with the data
  you just entered will be inserted.
 
 Template: ipppd/oldipup
@@ -131,7 +137,7 @@ _Description: old /etc/ppp/ip-up.d and ip-down.d scripts still exist
 Template: ipppd/noisdnutilsinit
 Type: error
 _Description: (Re)start ipppd manually
- There is no /etc/init.d/isdnutils on your system; hence you will have to
+ There is no /etc/init.d/isdnutils on this system; hence you will have to
  stop and start any ipppd daemons manually.
 
 Template: ipppd/isdnutilsinitbad

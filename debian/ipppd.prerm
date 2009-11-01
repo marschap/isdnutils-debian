@@ -8,7 +8,7 @@ case "$1" in
         if [ -s /etc/init.d/isdnutils ]; then
             invoke-rc.d isdnutils stop ipppd
         else
-            /bin/kill `cat ipppd.ippp*.pid >/dev/null 2>&1` >/dev/null 2>&1
+            kill `cat ipppd.ippp*.pid >/dev/null 2>&1` >/dev/null 2>&1
         fi
         ;;
     upgrade|deconfigure)

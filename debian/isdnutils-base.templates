@@ -1,19 +1,28 @@
+# These templates have been reviewed by the debian-l10n-english
+# team
+#
+# If modifications/additions/rewording are needed, please ask
+# debian-l10n-english@lists.debian.org for advice.
+#
+# Even minor modifications require translation updates and such
+# changes should be coordinated with translators and reviewers.
+
 Template: isdnutils/firmware
 Type: select
 #flag:translate:1
 __Choices: none, ISAR.BIN
 Default: none
 _Description: Firmware to load:
- Some ISDN cards can't function properly until firmware has been
- downloaded. Notable example is the Sedlbauer SpeedFax+ PCI or Siemens
+ Some ISDN cards can't function properly until some firmware has been
+ loaded. A notable example is the Sedlbauer SpeedFax+ PCI or Siemens
  I-Surf, which need ISAR.BIN to be loaded. Choose "ISAR.BIN" if this is
- necessary. If you don't know what to answer here, choose "none".
+ necessary.
 
 Template: isdnutils/firmwarecards
 Type: string
 _Description: ISDN card numbers to load with the firmware:
- If you have more than one card, enter the number of the card(s) that have
- to be loaded with the firmware, starting with 1, separated by commas. If
- you have only one card, the obvious answer here is "1". If you have two
- cards which both have to be loaded with firmware, enter "1,2".
-
+ If you use more than one card, enter the number of the card(s) in need
+ of firmware.
+ .
+ Multiple entries should be separated by commas. Card numbers are integers
+ where "1" is the first card, "2" the second, etc.

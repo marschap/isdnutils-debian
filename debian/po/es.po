@@ -1,29 +1,46 @@
-# translation of ru.po to Russian
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# isdnutils po-debconf translation to Spanish
+# Copyright (C) 2009 Software in the Public Interest
+# This file is distributed under the same license as the isdnutils package.
 #
-# Yuri Kozlov <kozlov.y@gmail.com>, 2008.
-# Yuri Kozlov <yuray@komyakino.ru>, 2009.
+# Changes:
+#   - Initial translation
+#       Francisco Javier Cuadrado <fcocuadrado@gmail.com>, 2009
+#
+# Traductores, si no conocen el formato PO, merece la pena leer la
+# documentación de gettext, especialmente las secciones dedicadas a este
+# formato, por ejemplo ejecutando:
+#       info -n '(gettext)PO Files'
+#       info -n '(gettext)Header Entry'
+#
+# Equipo de traducción al español, por favor lean antes de traducir
+# los siguientes documentos:
+#
+#   - El proyecto de traducción de Debian al español
+#     http://www.debian.org/intl/spanish/
+#     especialmente las notas y normas de traducción en
+#     http://www.debian.org/intl/spanish/notas
+#
+#   - La guía de traducción de po's de debconf:
+#     /usr/share/doc/po-debconf/README-trans
+#     o http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: isdnutils 1:3.9.20060704-5\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
 "POT-Creation-Date: 2009-10-14 06:41+0200\n"
-"PO-Revision-Date: 2009-10-26 15:10+0300\n"
-"Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
-"Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
+"PO-Revision-Date: 2009-10-14 12:00+0200\n"
+"Last-Translator: Francisco Javier Cuadrado <fcocuadrado@gmail.com>\n"
+"Language-Team: Debian l10n Spanish <debian-l10n-spanish@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:2001
 msgid "ISP dialup configuration already exists"
-msgstr "Настройки для дозвона к провайдеру уже существуют"
+msgstr "La configuración del ISP de marcado ya existe"
 
 #. Type: error
 #. Description
@@ -33,8 +50,9 @@ msgid ""
 "ipppd configuration phase won't touch anything there, as it looks like it "
 "has already been configured."
 msgstr ""
-"Файлы device.${IPPP0} и ipppd.${IPPP0} уже существуют. Похоже, уже всё "
-"настроено, поэтому на этапе настройки ipppd ничего делаться не будет."
+"Los archivos «device.${IPPP0}» e «ipppd.${IPPP0}» ya existen. Por lo que la "
+"fase de configuración de ipppd no tocará nada más de eso, ya que parece que "
+"ya ha sido configurado."
 
 #. Type: error
 #. Description
@@ -46,23 +64,25 @@ msgid ""
 "ipppd\". After that, restart the ISDN processes with \"/etc/init.d/isdnutils "
 "start\"."
 msgstr ""
-"Если они раньше не работали, и вы хотите попытаться их настроить "
-"автоматически, то остановите все процессы ISDN (запустите \"/etc/init.d/"
-"isdnutils stop\"), удалите файлы, перечисленные ранее, и перезапустите "
-"настройку командой \"dpkg-reconfigure ipppd\". После этого, перезапустите "
-"процессы ISDN с помощью \"/etc/init.d/isdnutils start\"."
+"Si no funciona todavía, y quiere intentar la configuración automática, pare "
+"todos los procesos de ISDN (utilice «/etc/init.d/isdnutils stop»), borre los "
+"archivos mencionados anteriormente, y ejecute de nuevo el proceso de "
+"configuración mediante «dpkg-reconfigure ipppd». Después de esto, reinicie "
+"los procesos de ISDN mediante «/etc/init.d/isdnutils start»."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:3001
 msgid "Interface to configure:"
-msgstr "Настраиваемый интерфейс:"
+msgstr "Interfaz a configurar:"
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:3001
 msgid "The default setting should be safe for most configurations."
-msgstr "В большинстве случаев, подойдёт настройка по умолчанию."
+msgstr ""
+"El valor predeterminado debería ser seguro para la mayoría de las "
+"configuraciones."
 
 #. Type: string
 #. Description
@@ -71,20 +91,20 @@ msgid ""
 "However, if you have special requirements or want to choose to configure "
 "another interface, please enter it here."
 msgstr ""
-"Однако, если у вас есть специальные требования или вы хотите выбрать для "
-"настройки другой интерфейс, то введите его здесь."
+"Sin embargo, si tiene requisitos especiales o quiere escoger configurar otra "
+"interfaz, introdúzcala aquí."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:3001
 msgid "Leave the field blank if you do not want to configure anything now."
-msgstr "Оставьте поле пустым, если ничего не хотите настраивать сейчас."
+msgstr "Deje este campo en blanco si no quiere configurar nada ahora."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:4001
 msgid "Invalid interface name"
-msgstr "Неправильное имя интерфейса"
+msgstr "Nombre de interfaz inválido"
 
 #. Type: error
 #. Description
@@ -93,14 +113,14 @@ msgid ""
 "Valid interface names begin with \"ippp\" followed by a number between 0 and "
 "63."
 msgstr ""
-"Допускаются имена интерфейсов, которые начинаются с \"ippp\", за которым "
-"следует число от 0 до 63."
+"Los nombres de interfaz válidos comienzan por «ippp» seguidos de un número "
+"entre 0 y 63."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:5001
 msgid "ISP's telephone number:"
-msgstr "Номер телефона провайдера:"
+msgstr "Número de teléfono del ISP:"
 
 #. Type: string
 #. Description
@@ -109,8 +129,8 @@ msgid ""
 "At least one phone number has to be dialed in order to connect to an "
 "Internet service provider (ISP)."
 msgstr ""
-"Чтобы соединиться с провайдером сервиса интернет (ISP) нужно указать, как "
-"минимум, один номер телефона для набора."
+"Al menos se debe marcar un número de teléfono para poder conectar con un "
+"Proveedor de Servicio de Internet (ISP)."
 
 #. Type: string
 #. Description
@@ -119,27 +139,30 @@ msgid ""
 "Please enter that telephone number here, including dialing prefixes, area "
 "codes, and so on, but without any spaces."
 msgstr ""
-"Введите здесь номер телефона, включая префиксы набора, код региона и т.д, но "
-"без пробелов."
+"Introduzca el número de teléfono aquí, incluyendo los prefijos de marcado, "
+"códigos de área y demás, sin espacios."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:5001
 msgid ""
 "Multiple telephone numbers may be entered and should be separated by spaces."
-msgstr "Можно указать несколько телефонных номеров, разделяя их пробелами."
+msgstr ""
+"Se pueden introducir varios números de teléfonos separados por espacios."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:5001
 msgid "Leave the field blank if you want to configure the connection manually."
-msgstr "Оставьте поле пустым, если хотите настроить соединение вручную."
+msgstr ""
+"Deje este campo en blanco si quiere configurar la conexión manualmente."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:6001
 msgid "Local MSN:"
-msgstr "Локальный MSN:"
+msgstr ""
+"MSN («Multiple Subscriber Number», Número de Suscriptor Múltiple) local:"
 
 #. Type: string
 #. Description
@@ -151,12 +174,12 @@ msgid ""
 "MSN (often the extension number in this case) will cause the call-setup to "
 "fail. So, it is best to enter the correct local MSN here."
 msgstr ""
-"При звонке ISDN, в сообщении установления вызова должен быть задан MSN "
-"(телефонный номер), который осуществляет соединение. Так как, обычно, "
-"неправильный MSN будет заменён основным MSN ISDN линии, особенно на АТСах, "
-"неверные MSN (часто расширенный номер в данном случае) приводят к "
-"невозможности установления вызова. Поэтому лучше ввести здесь правильный "
-"локальный MSN."
+"Cuando se realiza una llamada al ISDN, el MSN (número de teléfono) que "
+"origina la llamada debe proporcionarse en el mensaje de configuración de la "
+"llamada. Un MSN incorrecto normalmente se reemplazará por el MSN principal "
+"para la línea del ISDN, especialmente en PABX, un MSN incorrecto (en este "
+"caso el número de extensión) provocará que la configuración falle. Por lo "
+"que es mejor introducir el MSN local correcto aquí."
 
 #. Type: string
 #. Description
@@ -166,15 +189,15 @@ msgid ""
 "particular MSN, in case you have more than one MSN and this is supported by "
 "your telecommunication providing company."
 msgstr ""
-"Это также может быть необходимо, если вы хотите считать стоимость звонков "
-"для определённого MSN в случае, если у вас более одного MSN и это "
-"поддерживает ваша телефонная компания."
+"Esto también puede ser necesario si quiere registrar los costes en un MSN "
+"particular, en el caso de que tenga más de un MSN y éste lo pueda usar su "
+"compañía de telecomunicaciones."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:7001
 msgid "ISP account name:"
-msgstr "Имя учётной записи пользователя у провайдера:"
+msgstr "Nombre de la cuenta del ISP:"
 
 #. Type: string
 #. Description
@@ -182,13 +205,15 @@ msgstr "Имя учётной записи пользователя у пров�
 msgid ""
 "Most ISPs require an account name and password to be provided when "
 "connecting."
-msgstr "Большинство провайдеров требует вводить имя и пароль при подключении."
+msgstr ""
+"La mayoría de los ISP necesitan proporcionar un nombre de cuenta y una "
+"contraseña al realizar la conexión."
 
 #. Type: password
 #. Description
 #: ../ipppd.templates:8001
 msgid "ISP password:"
-msgstr "Пароль у провайдера:"
+msgstr "Contraseña del ISP:"
 
 #. Type: password
 #. Description
@@ -198,15 +223,15 @@ msgid ""
 "will be kept in /etc/ppp/pap-secrets and /etc/ppp/chap-secrets together with "
 "the account name."
 msgstr ""
-"Введите пароль, требуемый для подключения к провайдеру. Этот пароль будет "
-"записан в файлы /etc/ppp/pap-secrets и /etc/ppp/chap-secrets вместе с именем "
-"учётной записи пользователя."
+"Introduzca la contraseña a usar al conectar con el ISP. Esta contraseña se "
+"guardará en «/etc/ppp/pap-secrets» y «/etc/ppp/chap-secrets» junto al nombre "
+"de la cuenta."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:9001
 msgid "ISP user name already in pap-secrets"
-msgstr "Имя пользователя для провайдера уже есть в pap-secrets"
+msgstr "El nombre de usuario del ISP ya está en el archivo «pap-secrets»"
 
 #. Type: error
 #. Description
@@ -216,15 +241,15 @@ msgid ""
 "the /etc/ppp/pap-secrets file. The existing entry will be commented out, and "
 "a new entry with the data you just entered will be inserted."
 msgstr ""
-"Указанное имя пользователя для подключения к провайдеру уже есть в файле /"
-"etc/ppp/pap-secrets. Существующая запись будет закомментирована, а новая "
-"запись с только что введёнными данными будет добавлена."
+"El nombre de usuario que introdujo para la identificación en su ISP ya está "
+"en el archivo «/etc/ppp/pap-secrets». Se comentará la entrada existente, y se "
+"insertará una nueva entrada con los datos que acaba de introducir."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:10001
 msgid "ISP user name already in chap-secrets"
-msgstr "Имя пользователя для провайдера уже есть в chap-secrets"
+msgstr "El nombre de usuario del ISP ya está en el archivo «chap-secrets»"
 
 #. Type: error
 #. Description
@@ -234,15 +259,16 @@ msgid ""
 "the /etc/ppp/chap-secrets file. The existing entry will be commented out, "
 "and a new entry with the data you just entered will be inserted."
 msgstr ""
-"Указанное имя пользователя для подключения к провайдеру уже есть в файле /"
-"etc/ppp/chap-secrets. Существующая запись будет закомментирована, а новая "
-"запись с только что введёнными данными будет добавлена."
+"El nombre de usuario que introdujo para la identificación en su ISP ya está "
+"en el archivo «/etc/ppp/chap-secrets». Se comentará la entrada existente, y "
+"se insertará una nueva entrada con los datos que acaba de introducir."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:11001
 msgid "ISP user name already in chap-secrets and pap-secrets"
-msgstr "Имя пользователя для провайдера уже есть в chap-secrets и pap-secrets"
+msgstr ""
+"El nombre de usuario ya está en los archivos «chap-secrets» y «pap-secrets»"
 
 #. Type: error
 #. Description
@@ -253,16 +279,16 @@ msgid ""
 "be commented out, and new entries with the data you just entered will be "
 "inserted."
 msgstr ""
-"Указанное имя пользователя для подключения к провайдеру уже есть в файлах "
-"chap-secrets и pap-secrets в каталоге /etc/ppp/. Существующие записи будут "
-"закомментированы, а новые записи с только что введёнными данными будут "
-"добавлены."
+"El nombre de usuario que introdujo para la identificación en su ISP ya está "
+"en los archivos «chap-secrets» y «pap-secrets» del directorio «/etc/ppp/». Se "
+"comentará la entrada existente, y se insertará una nueva entrada con los "
+"datos que acaba de introducir."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:12001
 msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
-msgstr "Найден файл /etc/ppp/ip-up.d/00-isdnutils"
+msgstr "Todavía existe el archivo «/etc/ppp/ip-up.d/00-isdnutils»"
 
 #. Type: error
 #. Description
@@ -273,10 +299,10 @@ msgid ""
 "changes in the 00-ipppd file (which is the new name). After that, please "
 "delete the old 00-isdnutils file."
 msgstr ""
-"Файл /etc/ppp/ip-up.d/00-isdnutils остался от старого пакета isdnutils. Если "
-"вы когда-либо изменяли этот файл, то вам может потребоваться перенести эти "
-"изменения в файл 00-ipppde (новое имя). После этого, удалите старый файл 00-"
-"isdnutils."
+"El archivo «/etc/ppp/ip-up.d/00-isdnutils» del antiguo paquete de isdnutils "
+"todavía existe. Si cambió ese archivo alguna vez, puede que necesite rehacer "
+"esos cambios en el archivo «00-ipppd» (que es el nuevo nombre). Después de "
+"esto, borre el antiguo archivo «00-isdnutils»."
 
 #. Type: error
 #. Description
@@ -285,13 +311,13 @@ msgstr ""
 #: ../ipppd.templates:12001 ../ipppd.templates:13001
 msgid "Until it is deleted, it will still be used. This may cause conflicts."
 msgstr ""
-"Пока он не удалён, он будет использован. Это может привести к конфликтам."
+"Hasta que se borre, se seguirá utilizando. Esto puede causar problemas."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:13001
 msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
-msgstr "Найден файл /etc/ppp/ip-down.d/99-isdnutils"
+msgstr "Todavía existe el archivo «/etc/ppp/ip-down.d/99-isdnutils»"
 
 #. Type: error
 #. Description
@@ -302,16 +328,17 @@ msgid ""
 "those changes in the 99-ipppd file (which is the new name). After that, "
 "please delete the old 99-isdnutils file."
 msgstr ""
-"Файл /etc/ppp/ip-down.d/99-isdnutils остался от старого пакета isdnutils. "
-"Если вы когда-либо изменяли этот файл, то вам может потребоваться перенести "
-"эти изменения в файл 99-ipppd (новое имя). После этого, удалите старый файл "
-"99-isdnutils."
+"El archivo «/etc/ppp/ip-up.d/99-isdnutils» del antiguo paquete de isdnutils "
+"todavía existe. Si cambió ese archivo alguna vez, puede que necesite rehacer "
+"esos cambios en el archivo «99-ipppd» (que es el nuevo nombre). Después de "
+"esto, borre el antiguo archivo «99-isdnutils»."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:14001
 msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
-msgstr "Найдены старые сценарии /etc/ppp/ip-up.d и ip-down.d"
+msgstr ""
+"Todavía existen los antiguos scripts «/etc/ppp/ip-up.d/» y «/etc/ppp/ip-down.d»"
 
 #. Type: error
 #. Description
@@ -323,11 +350,11 @@ msgid ""
 "files (which are the new names). After that, please delete the old 00-"
 "isdnutils and 99-isdnutils files."
 msgstr ""
-"Файлы /etc/ppp/ip-up.d/00-isdnutils и /etc/ppp/ip-down.d/99-isdnutils "
-"остались от старого пакета isdnutils. Если вы когда-либо изменяли эти файлы, "
-"то вам может потребоваться перенести эти изменения в файлы 00-ipppd и 99-"
-"ipppd (новые имена). После этого, удалите старые файлы 00-isdnutils и 99-"
-"isdnutils."
+"Los archivos «/etc/ppp/ip-up.d/00-isdnutils» y «/etc/ppp/ip-up.d/99-isdnutils» "
+"del antiguo paquete isdnutils todavía existen. Si cambió esos archivos "
+"alguna vez, puede que necesite rehacer esos cambios en los archivos «00-"
+"ipppd» y «99-ipppd» (que son sus nuevos nombres). Después de esto, borre los "
+"antiguos archivos «00-isdnutils» y «99-isdnutils»."
 
 #. Type: error
 #. Description
@@ -335,13 +362,13 @@ msgstr ""
 msgid ""
 "Until they are deleted, they will still be used. This may cause conflicts."
 msgstr ""
-"Пока они не удалены, они будут использованы. Это может привести к конфликтам."
+"Hasta que se borren, se seguirán utilizando. Esto puede causar problemas."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:15001
 msgid "(Re)start ipppd manually"
-msgstr "(Пере)запуск ipppd вручную"
+msgstr "(Re)inicie ipppd manualmente"
 
 #. Type: error
 #. Description
@@ -350,14 +377,14 @@ msgid ""
 "There is no /etc/init.d/isdnutils on this system; hence you will have to "
 "stop and start any ipppd daemons manually."
 msgstr ""
-"В системе нет файла /etc/init.d/isdnutils; следовательно, вам придётся "
-"останавливать и запускать все службы ipppd вручную."
+"No hay «/etc/init.d/isdnutils» en este sistema, de modo que tendrá que parar "
+"e iniciar cualquier demonio ipppd manualmente."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:16001
 msgid "Error running isdnutils init script"
-msgstr "Ошибка в работе сценария запуска isdnutils"
+msgstr "Se produjo un error al ejecutar el script de inicio de isdnutils"
 
 #. Type: error
 #. Description
@@ -368,64 +395,64 @@ msgid ""
 "Perhaps moving /etc/init.d/isdnutils.dpkg-dist (if it exists) to /etc/init.d/"
 "isdnutils will also help."
 msgstr ""
-"Сценарий /etc/init.d/isdnutils выполнился с ошибками. Проверьте установку "
-"пакета isdnutils-base; переустановите его, если нужно. Возможно также "
-"поможет перемещение /etc/init.d/isdnutils.dpkg-dist (если он есть) в /etc/"
-"init.d/isdnutils."
+"El script «/etc/init.d/isdnutils» falló al ejecutarse. Compruebe la "
+"instalación del paquete isdnutils-base, reinstale dicho paquete si es "
+"necesario. Quizá mover «/etc/init.d/isdnutils.dpkg-dist» (si existe) a «/etc/"
+"init.d/isdnutils» pueda ayudar."
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:2001
 msgid "Austria"
-msgstr "Австрия"
+msgstr "Austria"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:2001
 msgid "France"
-msgstr "Франция"
+msgstr "Francia"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:2001
 msgid "Germany"
-msgstr "Германия"
+msgstr "Alemania"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:2001
 msgid "Luxembourg"
-msgstr "Люксембург"
+msgstr "Luxemburgo"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:2001
 msgid "Netherlands"
-msgstr "Голландия"
+msgstr "Holanda"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:2001
 msgid "Norway"
-msgstr "Норвегия"
+msgstr "Noruega"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:2001
 msgid "Spain"
-msgstr "Испания"
+msgstr "España"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:2001
 msgid "Switzerland"
-msgstr "Швейцария"
+msgstr "Suiza"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:2001
 msgid "other"
-msgstr "другая"
+msgstr "otro"
 
 #. Type: select
 #. DefaultChoice
@@ -455,13 +482,13 @@ msgstr "другая"
 #. msgstr "Italia"
 #: ../isdnlog.templates:2002
 msgid "other[ default country]"
-msgstr "other"
+msgstr "Spain"
 
 #. Type: select
 #. Description
 #: ../isdnlog.templates:2003
 msgid "Country:"
-msgstr "Страна:"
+msgstr "País:"
 
 #. Type: select
 #. Description
@@ -470,51 +497,51 @@ msgid ""
 "Please choose the local country. This will be used to set the rate table to "
 "use for calculating the costs of calls."
 msgstr ""
-"Укажите вашу страну. Она используется для настройки таблицы тарифов по "
-"расчёту стоимости звонка."
+"Escoja el país local. Éste se utilizará para configurar la tabla de tasas "
+"utilizada para calcular los costes de las llamadas."
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:4001
 msgid "Prefix to dial before international number:"
-msgstr "Префикс перед международным номером:"
+msgstr "Prefijo de marcado antes del número internacional:"
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:5001
 msgid "Country ITU code:"
-msgstr "ITU-код страны:"
+msgstr "Código ITU del país:"
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:5001
 msgid "Please enter the international code for the local country."
-msgstr "Введите международный код вашей страны."
+msgstr "Introduzca el código internacional del país local."
 
 #. Type: string
 #. Description
 #. Translators: do not translate ${default_countrycode} and ${default_country}
 #: ../isdnlog.templates:5001
 msgid "Example: ${default_countrycode} for ${default_country}"
-msgstr "Пример: ${default_countrycode} для ${default_country}"
+msgstr "Ejemplo: ${default_countrycode} para ${default_country}"
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:6001
 msgid "Prefix for area code, if applicable:"
-msgstr "Префикс для кода региона (если применяется):"
+msgstr "Prefijo para el código de área, si se aplica:"
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:7001
 msgid "Local area code, if applicable:"
-msgstr "Локальный код региона (если применяется):"
+msgstr "Código del área local, si se aplica:"
 
 #. Type: boolean
 #. Description
 #: ../isdnlog.templates:8001
 msgid "Run isdnrate as a daemon?"
-msgstr "Запускать isdnrate как службу?"
+msgstr "¿Desea ejecutar isdnrate como un demonio?"
 
 #. Type: boolean
 #. Description
@@ -525,10 +552,10 @@ msgid ""
 "call basis. Having it run as a daemon speeds things up as then it only has "
 "to load all the data once."
 msgstr ""
-"Утилита isdnrate подсчитывает стоимость соединений на заданный телефонный "
-"номер, используется, например, в LCR системах для поиска самой дешёвой "
-"службы на основе звонок по цепочке (call-by-call). Запуск в виде службы "
-"ускорит процесс, так как все данные будут загружены только однажды."
+"La herramienta isdnrate calcula los costes de una conexión para un número de "
+"teléfono dado, se utiliza en sistemas LCR para encontrar el proveedor más "
+"barato en una llamada por llamada. Teniéndolo en ejecución como un demonio "
+"mejora la velocidad ya que sólo tiene que cargar todos los datos una vez."
 
 #. Type: boolean
 #. Description
@@ -537,20 +564,20 @@ msgid ""
 "This setting is only useful for special setups, such as for an ISDN-to-H.323 "
 "gateway."
 msgstr ""
-"Эта настройка используется только в особых случаях, например для шлюза ISDN-"
-"to-H.323."
+"Este valor sólo es útil para configuraciones especiales, tales como una "
+"puerta de enlace de ISDN a H.323."
 
 #. Type: select
 #. Choices
 #: ../isdnutils-base.templates:2001
 msgid "none"
-msgstr "нет"
+msgstr "ninguno"
 
 #. Type: select
 #. Description
 #: ../isdnutils-base.templates:2002
 msgid "Firmware to load:"
-msgstr "Микропрограмма для загрузки:"
+msgstr "Firmware a cargar:"
 
 #. Type: select
 #. Description
@@ -560,16 +587,16 @@ msgid ""
 "A notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which "
 "need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is necessary."
 msgstr ""
-"Некоторые ISDN карты не могут работать правильно, пока не будет загружена их "
-"микропрограмма. Ярким примером служит карта Sedlbauer SpeedFax+ PCI или "
-"Siemens I-Surf, в которые нужно загружать ISAR.BIN. Выберите \"ISAR.BIN\", "
-"если это необходимо."
+"Algunas tarjetas ISDN no funcionan adecuadamente hasta que se carga algún "
+"firmware. Un ejemplo claro es el Sedlbauer SpeedFax+ PCI o el Siemens I-"
+"Surf, que necesitan cargar el firmware «ISAR.BIN». Escoja «ISAR.BIN» si esto "
+"es necesario."
 
 #. Type: string
 #. Description
 #: ../isdnutils-base.templates:3001
 msgid "ISDN card numbers to load with the firmware:"
-msgstr "Номера ISDN карт, в которые нужно загружать микропрограмму:"
+msgstr "Número de tarjeta(s) ISDN que cargan el firmware:"
 
 #. Type: string
 #. Description
@@ -578,8 +605,8 @@ msgid ""
 "If you use more than one card, enter the number of the card(s) in need of "
 "firmware."
 msgstr ""
-"Если используется одной карты, то введите номер(а) карты, которой требуется "
-"микропрограмма."
+"Si utiliza más de una tarjeta, introduzca el número de tarjeta(s) que "
+"necesitan el firmware."
 
 #. Type: string
 #. Description
@@ -588,14 +615,14 @@ msgid ""
 "Multiple entries should be separated by commas. Card numbers are integers "
 "where \"1\" is the first card, \"2\" the second, etc."
 msgstr ""
-"Несколько записей указывается через запятую. Номера карт -- это числа, где "
-"\"1\" -- это первая карта, \"2\" -- вторая карта и т.д."
+"Se pueden introducir varias entradas separadas por comas. Los números de las "
+"tarjetas son enteros, siendo «1» la primera tarjeta, «2» la segunda, etc."
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:2001
 msgid "Number that vbox should answer:"
-msgstr "Номер, на который должен отвечать vbox:"
+msgstr "Número al que vbox debería contestar:"
 
 #. Type: string
 #. Description
@@ -605,9 +632,9 @@ msgid ""
 "system, this may or may not include the area code. Leading \"0\" should most "
 "often be dropped."
 msgstr ""
-"Для Vbox нужно указать, какой номер должен прослушиваться. В зависимости от "
-"ISDN системы, используемой в стране, он может включать код региона. Обычно, "
-"он вводится без начального \"0\"."
+"Vbox debe conocer a que número escuchar. Dependiendo del país del sistema "
+"ISDN, este puede o no incluir el código de área. El cero inicial normalmente "
+"se debería quitar."
 
 #. Type: string
 #. Description
@@ -617,15 +644,15 @@ msgid ""
 "use an existing (working) vbox configuration from the time when this was "
 "still part of isdnutils (unless you want to create a new configuration)."
 msgstr ""
-"Оставьте поле пустым, если хотите выполнить настройку вручную, или если у "
-"вас уже настроен (и работает) vbox с того времени, когда он был ещё частью "
-"isdnutils (если вы не хотите создать новую настройку)."
+"Deje este campo en blanco si quiere configurarlo manualmente, o si ya "
+"utiliza una configuración existente (y funcional) de vbox de cuando todavía "
+"era parte de isdnutils (a menos que quiera crear una nueva configuración)."
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:3001
 msgid "Number of rings for vbox to pick up the line:"
-msgstr "Число звонков, после которого vbox должен захватывать линию:"
+msgstr "Número de tonos para que la vbox coja la línea:"
 
 #. Type: string
 #. Description
@@ -635,21 +662,22 @@ msgid ""
 "incoming telephone number, for instance to aggressively filter some incoming "
 "numbers."
 msgstr ""
-"Один звонок -- это около 5 секунд. Позже это значение можно подстроить для "
-"определённых номеров вручную, например для принудительной фильтрации "
-"некоторых входящих номеров."
+"Un tono dura unos 5 segundos. Este valor se puede ajustar más tarde para "
+"cada número de teléfono entrante, por ejemplo para filtrar de modo agresivo "
+"algunos números entrantes."
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:3001
 msgid "You should read vbox.conf(5) for more information."
-msgstr "Подробности смотрите в vbox.conf(5)."
+msgstr "Debería leer el manual vbox.conf(5) para más información."
 
 #. Type: boolean
 #. Description
 #: ../isdnvboxserver.templates:4001
 msgid "Should incoming messages be attached to notification mails?"
-msgstr "Вкладывать входящие сообщения в уведомительные электронные письма?"
+msgstr ""
+"¿Se deberían adjuntar los mensajes entrantes a correos de notificación?"
 
 #. Type: boolean
 #. Description
@@ -658,15 +686,15 @@ msgid ""
 "When a message is recorded, an email notification is sent. If that email "
 "should contain the message as an attachment, choose the option."
 msgstr ""
-"Когда сообщение записано, отправляется уведомление по электронной почте. "
-"Если в отправляемое письмо нужно вложить это сообщение, то ответьте "
-"утвердительно."
+"Cuando un mensaje se graba, se envía un correo electrónico de notificación. "
+"Si dicho correo electrónico debería contener el mensaje como un adjunto, "
+"escoja la opción."
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:5001
 msgid "Run the answering machine as:"
-msgstr "Запускать автоответчик как:"
+msgstr "Ejecutar la máquina respondedora como:"
 
 #. Type: string
 #. Description
@@ -675,15 +703,15 @@ msgid ""
 "The vboxd daemon should run as an unprivileged (non-root) user. It must be a "
 "member of the \"dialout\" group."
 msgstr ""
-"Служба vboxd должна работать, имея права простого (не-root) пользователя. "
-"Данная учётная запись должна входить в группу dialout."
+"El demonio vboxd se debería ejecutar con un usuario sin privilegios (no "
+"«root»). Debe ser miembro del grupo «dialout»."
 
 #. Type: text
 #. Description
 #. Translators, do not translate "Daemonuser"
 #: ../isdnvboxserver.templates:6001
 msgid "${Daemonuser} unknown"
-msgstr "Пользователь ${Daemonuser} неизвестен"
+msgstr "${Daemonuser} desconocido"
 
 #. Type: text
 #. Description
@@ -692,14 +720,14 @@ msgid ""
 "The user you chose does not exist on this machine. You must choose a valid "
 "username."
 msgstr ""
-"Указанная учётная запись пользователя не существует на данной машине. Вы "
-"должны указать правильное имя пользователя."
+"El usuario que escogió no existe en esta máquina. Debe escoger un nombre de "
+"usuario válido."
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:7001
 msgid "Login for the answering machine:"
-msgstr "Учётная запись для подключения к автоответчику:"
+msgstr "Nombre de usuario para la máquina respondedora:"
 
 #. Type: string
 #. Description
@@ -708,8 +736,9 @@ msgid ""
 "Connections to the answering machine (using the vbox program provided by the "
 "isdnvboxclient package) will be prompted for a username and password."
 msgstr ""
-"При подключении к автоответчику (используется программа vbox из пакета "
-"isdnvboxclient) будет предложено ввести имя пользователя и пароль."
+"Las conexiones para la máquina respondedora (utilizando el programa vbox que "
+"proporciona el paquete isdnvboxclient) deberán proporcionar un nombre de "
+"usuario y una contraseña."
 
 #. Type: string
 #. Description
@@ -718,27 +747,27 @@ msgid ""
 "The username you define here does not have to correspond to a login account "
 "on this system."
 msgstr ""
-"Указываемое здесь имя пользователя не должно совпадать с именами "
-"пользователей этой системы."
+"El nombre de usuario que defina aquí no tiene relación con la cuenta de "
+"identificación en este sistema."
 
 #. Type: password
 #. Description
 #. Translators, do not translate "${User}"
 #: ../isdnvboxserver.templates:8001
 msgid "Password for ${User}:"
-msgstr "Пароль для ${User}:"
+msgstr "Contraseña para ${User}:"
 
 #. Type: password
 #. Description
 #: ../isdnvboxserver.templates:8001
 msgid "Please choose the password for the ${User} connection user."
-msgstr "Введите пароль для подключения пользователя ${User}."
+msgstr "Escoja la contraseña para el usuario de conexión ${User}."
 
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:9001
 msgid "No home directory"
-msgstr "Отсутствует домашний каталог"
+msgstr "No hay directorio personal («home»)"
 
 #. Type: error
 #. Description
@@ -747,14 +776,14 @@ msgid ""
 "The home directory \"${DIR}\" for user \"${USER}\" does not exist. This "
 "means that the file \"${DIR}/.vbox.conf\" cannot be created."
 msgstr ""
-"Домашний каталог \"${DIR}\" для пользователя \"${USER}\" не существует. Это "
-"означает, что файл \"${DIR}/.vbox.conf\" не может быть создан."
+"No existe el directorio personal («home») «${DIR}» para el usuario «${USER}». "
+"Esto significa que el archivo «${DIR}/.vbox.conf» no se puede crear."
 
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:10001
 msgid "Non-existing user"
-msgstr "Пользователь не существует"
+msgstr "No existe el usuario"
 
 #. Type: error
 #. Description
@@ -764,15 +793,15 @@ msgid ""
 "configuration with \"dpkg-reconfigure isdnvboxserver\" to enter another "
 "username, or after creating the user."
 msgstr ""
-"Учётная запись \"${USER}\" не существует в системе. Перезапустите процесс "
-"настройки с помощью \"dpkg-reconfigure isdnvboxserver\", чтобы указать "
-"другое имя пользователя или после создания пользователя."
+"El usuario «${USER}» no existe en el sistema. Ejecute de nuevo el proceso de "
+"configuración mediante «dpkg-reconfigure isdnvboxserver» para introducir otro "
+"nombre de usuario, o después de haber creado el usuario."
 
 #. Type: boolean
 #. Description
 #: ../isdnvboxserver.templates:11001
 msgid "Should vboxgetty be enabled?"
-msgstr "Включить vboxgetty?"
+msgstr "¿Debería estar activado vboxgetty?"
 
 #. Type: boolean
 #. Description
@@ -782,15 +811,16 @@ msgid ""
 "Choosing this option will enable it once this package is fully configured. "
 "Refuse this option if you want to tweak it manually."
 msgstr ""
-"Вызов vboxgetty есть в /etc/inittab, но не включён. При утвердительном "
-"ответе он будет включён после завершения настройки пакета. Ответьте "
-"отрицательно, если хотите донастроить службу вручную."
+"Se ha definido una llamada para vboxgetty en «/etc/inittab», pero todavía no "
+"está activa. Escoja esta opción para activarla una vez el paquete se haya "
+"configurado por completo. Rechace esta opción si quiere ajustarla "
+"manualmente."
 
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:12001
 msgid "Device in inittab doesn't agree with devfs mode"
-msgstr "Устройство в inittab не согласуется с режимом devfs"
+msgstr "El dispositivo de inittab no concuerda con el modo devfs"
 
 #. Type: error
 #. Description
@@ -801,10 +831,11 @@ msgid ""
 "name is used in inittab while devfs is not mounted, or the non-devfs name is "
 "used while devfs is mounted."
 msgstr ""
-"В записи для vboxgetty в /etc/inittab используется имя устройства, которое "
-"не соответствует используемому в данный момент devfs; или в inittab "
-"используется имя (/dev/isdn/ttyIxx), хотя devfs не смонтирована, или "
-"используется не-devfs имя, хотя devfs смонтирована."
+"La entrada de vboxgetty en «/etc/inittab» utiliza un nombre de dispositivo "
+"que no se corresponde con el actual uso de devfs, o se está utilizando un "
+"nombre de devfs («/dev/isdn/ttyIxx») en inittab mientras que devfs no está "
+"montado, o se está utilizando un nombre que no es de devfs mientras devfs "
+"está montado."
 
 #. Type: error
 #. Description
@@ -812,13 +843,13 @@ msgstr ""
 #. Description
 #: ../isdnvboxserver.templates:12001 ../isdnvboxserver.templates:13001
 msgid "This problem has to be fixed manually."
-msgstr "Это нужно исправить вручную."
+msgstr "Este problema se tiene que arreglar manualmente."
 
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:13001
 msgid "Device in vboxgetty.conf doesn't agree with devfs mode"
-msgstr "Устройство в vboxgetty.conf не согласовано с режимом devfs"
+msgstr "El dispositivo de «vboxgetty.conf» no concuerda con el modo devfs."
 
 #. Type: error
 #. Description
@@ -829,7 +860,8 @@ msgid ""
 "name is used in vboxgetty.conf while devfs is not mounted, or the non-devfs "
 "name is used while devfs is mounted."
 msgstr ""
-"В записи об устройстве в /etc/isdn/vboxgetty.conf используется имя "
-"устройства, которое не соответствует используемому в данный момент devfs; "
-"или имя (/dev/isdn/ttyIxx) используется в vboxgetty.conf при не "
-"смонтированном devfs, или используется не-devfs имя, хотя devfs смонтирована."
+"La entrada de vboxgetty en «/etc/isdn/vboxgetty.conf» utiliza un nombre de "
+"dispositivo que no se corresponde con el actual uso de devfs, o se está "
+"utilizando un nombre de devfs («/dev/isdn/ttyIxx») en «vboxgetty.conf» "
+"mientras que devfs no está montado, o se está utilizando un nombre que no es "
+"de devfs mientras devfs está montado."

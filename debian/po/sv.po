@@ -1,211 +1,143 @@
+# Translation of isdnutils debconf template to Swedish
+# Copyright (C) 2009 Martin Bagge <brother@bsnet.se>
+# This file is distributed under the same license as the isdnutils package.
 #
-#    Translators, if you are not familiar with the PO format, gettext
-#    documentation is worth reading, especially sections dedicated to
-#    this format, e.g. by running:
-#         info -n '(gettext)PO Files'
-#         info -n '(gettext)Header Entry'
-#
-#    Some information specific to po-debconf are available at
-#            /usr/share/doc/po-debconf/README-trans
-#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
-#
-#    Developers do not need to manually edit POT or PO files.
-#
+# Martin Bagge <brother@bsnet.se>, 2008, 2009
 msgid ""
 msgstr ""
 "Project-Id-Version: isdnutils 1:3.8.2005-12-06-4\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
-"POT-Creation-Date: 2009-09-16 16:36+0200\n"
-"PO-Revision-Date: 2008-07-21 16:05+0100\n"
+"POT-Creation-Date: 2009-10-14 06:41+0200\n"
+"PO-Revision-Date: 2009-10-15 22:22+0100\n"
 "Last-Translator: Martin Bagge <brother@bsnet.se>\n"
-"Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
+"Language-Team: Swedish <debian-l10n.swedish@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:1001
-#, fuzzy
-#| msgid "ISP dialup config exists already"
-msgid "ISP dialup config already exists"
-msgstr "Uppringningskonfiguration existerar redan"
+#: ../ipppd.templates:2001
+msgid "ISP dialup configuration already exists"
+msgstr "Uppringningsinst√§llningar f√∂r Internetleverant√∂ren existerar redan"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:1001
+#: ../ipppd.templates:2001
 msgid ""
-"The files device.${IPPP0} and ipppd.${IPPP0} already exist. Therefore the "
-"ipppd configuration phase won't touch anything there, as it looks like it's "
-"already been configured."
+"The device.${IPPP0} and ipppd.${IPPP0} files already exist. Therefore, the "
+"ipppd configuration phase won't touch anything there, as it looks like it "
+"has already been configured."
 msgstr ""
-"Filerna device.${IPPP0} och ipppd.${IPPP0} existerar redan. D‰rfˆr kommer "
-"konfigurationsfasen av ipppd inte att rˆra dessa eftersom de ser ut att "
+"Filerna device.${IPPP0} och ipppd.${IPPP0} existerar redan. D√§rf√∂r kommer "
+"konfigurationsfasen av ipppd inte att r√∂ra dessa eftersom de ser ut att "
 "redan vara konfigurerade."
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:1001
+#: ../ipppd.templates:2001
 msgid ""
 "If it doesn't work yet, and you want to try the automatic configuration, "
 "stop all ISDN processes (use \"/etc/init.d/isdnutils stop\"), remove the "
 "files mentioned above, and rerun the configuration with \"dpkg-reconfigure "
-"ipppd\". After that, restart the ISDN processes: \"/etc/init.d/isdnutils "
+"ipppd\". After that, restart the ISDN processes with \"/etc/init.d/isdnutils "
 "start\"."
 msgstr ""
-"Om det ‰nnu inte fungerar och du vill fˆrsˆka med den automatiska "
-"konfigurationen, stoppa alla ISDN-processer (anv‰nd \"/etc/init.d/isdnutils "
-"stop\"), ta bort filerna som n‰mns ovan och kˆr konfigurationen igen med "
-"\"dpkg-reconfigure ipppd\". Efter det, starta om ISDN-processerna: \"/etc/"
-"init.d/isdnutils start\"."
+"Om det √§nnu inte fungerar och du vill f√∂rs√∂ka med den automatiska "
+"konfigurationen, stoppa alla ISDN-processer (anv√§nd \"/etc/init.d/isdnutils "
+"stop\") och k√∂r konfigurationen igen med \"dpkg-reconfigure ipppd\". Efter "
+"det, starta om ISDN-processerna: \"/etc/init.d/isdnutils start\"."
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:2001
-#, fuzzy
-#| msgid "Which interface should be configured?"
+#: ../ipppd.templates:3001
 msgid "Interface to configure:"
-msgstr "Vilket gr‰nssnitt ska konfigureras?"
+msgstr "Gr√§nssnitt att konfigurera:"
 
 #. Type: string
-#. Description
-#: ../ipppd.templates:2001
-#, fuzzy
-#| msgid ""
-#| "Most people will say \"ippp0\" here, as that is the default for a "
-#| "connection to an ISP. The default gateway will be ippp0."
-msgid ""
-"Most people should say \"ippp0\" here, as that is the default for a "
-"connection to an ISP. The default gateway will be ippp0."
-msgstr ""
-"De flesta personer kommer att svara \"ippp0\" h‰r eftersom det ‰r standard "
-"fˆr en anslutning till en Internet-leverantˆr. Standardgateway kommer att "
-"vara ippp0."
-
-#. Type: string
-#. Description
-#: ../ipppd.templates:2001
-#, fuzzy
-#| msgid ""
-#| "However, some people have special requirements, and they may choose "
-#| "another interface that debconf will configure (e.g. because they don't "
-#| "want this connection to be the default gateway)."
-msgid ""
-"However, some people have special requirements, and they may choose another "
-"interface that will be configured (e.g. because they don't want this "
-"connection to be the default gateway)."
-msgstr ""
-"Dock har vissa personer speciella krav och de kanske v‰ljer andra gr‰nssnitt "
-"fˆr debconf att konfigurera (exempelvis att de inte vill att den h‰r "
-"anslutningen ska vara en standardgateway)."
-
-#. Type: string
-#. Description
-#: ../ipppd.templates:2001
-#, fuzzy
-#| msgid ""
-#| "Note that debconf will currently only configure at most one interface. "
-#| "Enter \"none\" if you do not want debconf to configure anything for ipppd."
-msgid ""
-"Note that currently at most one interface can be configured in this manner. "
-"Leave the field blank if you do not want to configure anything now for ipppd."
-msgstr ""
-"Notera att debconf kommer fˆr n‰rvarande endast att konfigurera ett "
-"gr‰nssnitt. Ange \"none\" om du inte vill att debconf ska konfigurera nÂgot "
-"fˆr ipppd."
-
-#. Type: error
 #. Description
 #: ../ipppd.templates:3001
-#, fuzzy
-#| msgid "wrong interface name"
-msgid "Wrong interface name"
-msgstr "felaktigt gr‰nssnittsnamn"
+msgid "The default setting should be safe for most configurations."
+msgstr "Standardvalen b√∂r vara helt okej f√∂r de flesta installationer."
 
-#. Type: error
+#. Type: string
 #. Description
 #: ../ipppd.templates:3001
 msgid ""
-"You can only give names starting with \"ippp\" followed by a number between "
-"0 and 63."
+"However, if you have special requirements or want to choose to configure "
+"another interface, please enter it here."
 msgstr ""
-"Du kan endast ange namn som startar med \"ippp\" fˆljt av en siffra mellan 0 "
-"och 63."
+"Om du har s√§rskilda krav eller vill g√∂ra inst√§llningar f√∂r ett annat "
+"gr√§nssnitt, ange d√• detta h√§r."
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4001
-msgid "What is your ISP's telephone number?"
-msgstr "Vad ‰r telefonnumret till din Internet-leverantˆr?"
+#: ../ipppd.templates:3001
+msgid "Leave the field blank if you do not want to configure anything now."
+msgstr "L√§mna f√§ltet blankt om du inte vill g√∂ra n√•gra inst√§llningar nu."
 
-#. Type: string
+#. Type: error
 #. Description
 #: ../ipppd.templates:4001
-#, fuzzy
-#| msgid ""
-#| "What telephone number(s) must be dialed in order to connect to your "
-#| "Internet service provider (ISP)?"
+msgid "Invalid interface name"
+msgstr "Felaktigt gr√§nssnittsnamn"
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:4001
 msgid ""
-"At least one phone number has to be dialed in order to connect to your "
+"Valid interface names begin with \"ippp\" followed by a number between 0 and "
+"63."
+msgstr "Korrekta namn b√∂rjar med \"ippp\" f√∂ljt av en siffra mellan 0 och 63."
+
+#. Type: string
+#. Description
+#: ../ipppd.templates:5001
+msgid "ISP's telephone number:"
+msgstr "Internetleverant√∂rens telefonnummer:"
+
+#. Type: string
+#. Description
+#: ../ipppd.templates:5001
+msgid ""
+"At least one phone number has to be dialed in order to connect to an "
 "Internet service provider (ISP)."
 msgstr ""
-"Vilket telefonnummer ska ringas upp fˆr att ansluta till din Internet-"
-"leverantˆr?"
+"√Ötminstone ett telefonnummer m√•ste ringas f√∂r att kunna ansluta till en "
+"Internetleverant√∂r (ISP)."
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4001
-#, fuzzy
-#| msgid ""
-#| "Enter the telephone number here, including dialing prefixes, area codes, "
-#| "and so on. Enter the number without any spaces."
+#: ../ipppd.templates:5001
 msgid ""
-"Enter the telephone number here, including dialing prefixes, area codes, and "
-"so on, but without any spaces."
+"Please enter that telephone number here, including dialing prefixes, area "
+"codes, and so on, but without any spaces."
 msgstr ""
-"Ange telefonnumret h‰r, inklusive prefix, riktnummer och sÂ vidare. Ange "
-"numret utan nÂgra blanksteg."
+"Ange telefonnumret h√§r, inklusive prefix, riktnummer och s√• vidare. Ange "
+"numret utan n√•gra blanksteg."
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4001
-#, fuzzy
-#| msgid ""
-#| "You can enter multiple telephone numbers. If you do so then separate them "
-#| "with spaces."
-msgid "You can enter multiple telephone numbers, separated by spaces."
-msgstr ""
-"Du kan ange flera telefonnummer. Om du gˆr det, separera dem med blanksteg."
+#: ../ipppd.templates:5001
+msgid ""
+"Multiple telephone numbers may be entered and should be separated by spaces."
+msgstr "Du kan ange flera telefonnummer, separera dem med blanksteg."
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:4001
-#, fuzzy
-#| msgid ""
-#| "Enter the word \"manual\" or leave the field blank if you want to "
-#| "configure the connection manually."
+#: ../ipppd.templates:5001
 msgid "Leave the field blank if you want to configure the connection manually."
-msgstr ""
-"Ange ordet \"manuell\" eller l‰mna f‰ltet blankt om du vill konfigurera "
-"anslutningen manuellt."
+msgstr "L√§mna f√§ltet blankt om du vill konfigurera anslutningen manuellt."
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:5001
+#: ../ipppd.templates:6001
 msgid "Local MSN:"
-msgstr ""
+msgstr "Lokal MSN:"
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:5001
-#, fuzzy
-#| msgid ""
-#| "When making a call with ISDN, the MSN (phone number) that is originating "
-#| "the call must be given in the call-setup message. While usually a wrong "
-#| "MSN will be replaced by the main MSN for the ISDN line, especially on "
-#| "PABXes a wrong MSN (often the extension number in this case) will cause "
-#| "the call-setup to fail. So, it is best to enter the correct local MSN "
-#| "here."
+#: ../ipppd.templates:6001
 msgid ""
 "When making a call with ISDN, the MSN (phone number) that is originating the "
 "call must be given in the call-setup message. While a wrong MSN will usually "
@@ -213,189 +145,176 @@ msgid ""
 "MSN (often the extension number in this case) will cause the call-setup to "
 "fail. So, it is best to enter the correct local MSN here."
 msgstr ""
-"N‰r man ringer med ISDN, mÂste man skicka med MSN (telefonnummer) i "
-"uppkopplingsmeddelandet. Vanligtvis ers‰tts ett felaktigt MSN med huvud-MSN "
-"fˆr ISDN-linjen, speciellt pÂ PABX:er orsaker felaktiga MSN att "
-"uppkopplingen misslyckas. SÂ det ‰r b‰sta att ange korrekt lokal MSN h‰r."
+"Vid uppringning med ISDN m√•ste MSN (telefonnummer) skickas med i det "
+"utg√•ende uppringningsmeddelandet. Ett felaktigt MSN kommer vanligen att "
+"ers√§ttas med huvud-MSN f√∂r ISDN-linjen. Speciellt p√• PABX:er kommer ett "
+"felaktigt MSN (vanligt anknytningsnummer i detta fallet) att inneb√§ra att "
+"uppringen misslyckas. Det √§r helt enkelt rekomenderat att ange korrekt "
+"lokalt MSN h√§r."
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:5001
+#: ../ipppd.templates:6001
 msgid ""
 "This may also be necessary if you want the costs to be registered to one "
 "particular MSN, in case you have more than one MSN and this is supported by "
-"your telco."
+"your telecommunication providing company."
 msgstr ""
-"Det kan ocksÂ vara nˆdv‰ndigt om du vill att kostnaderna ska registreras pÂ "
-"ett speciellt MSN om du har fler ‰n ett MSN och det h‰r stˆds av din "
-"leverantˆr."
+"Detta kan till√§mpas om du vill att kostnaderna ska registreras p√• ett "
+"speciellt MSN, om du har fler √§n ett MSN och den h√§r metoden st√∂ds av din "
+"leverant√∂r."
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:6001
-#, fuzzy
-#| msgid "What is the user name for logging into your ISP?"
-msgid "User name for logging into your ISP:"
-msgstr "Vad ‰r anv‰ndarnamnet fˆr inloggning mot din Internet-leverantˆr?"
+#: ../ipppd.templates:7001
+msgid "ISP account name:"
+msgstr "Anv√§ndarnamn hos Internetleverant√∂r:"
 
 #. Type: string
 #. Description
-#: ../ipppd.templates:6001
-#, fuzzy
-#| msgid ""
-#| "Most (all?) ISPs need a user name and password for authenticating you as "
-#| "a valid user before allowing access. Enter the user name here. The "
-#| "password will be asked for next."
+#: ../ipppd.templates:7001
 msgid ""
-"Most ISPs need a user name and password for authenticating you as a valid "
-"user before allowing access. Enter the user name here. The password will be "
-"asked for next."
+"Most ISPs require an account name and password to be provided when "
+"connecting."
 msgstr ""
-"De flesta (alla?) Internet-leverantˆrer behˆver ett anv‰ndarnamn och eller "
-"lˆsenord fˆr att autentisera dig som en giltig anv‰ndare fˆre tillgÂng "
-"godk‰nns. Ange anv‰ndarnamnet h‰r. Lˆsenordet kommer att frÂgas efter "
-"h‰rn‰st."
+"De flesta Internetleverant√∂rer kr√§ver att anv√§ndarnamn och l√∂senord anges "
+"vid anslutning."
 
 #. Type: password
 #. Description
-#: ../ipppd.templates:7001
-#, fuzzy
-#| msgid "What is the password for logging into your ISP?"
-msgid "Password for logging into your ISP:"
-msgstr "Vad ‰r lˆsenordet fˆr inloggning mot din Internet-leverantˆr?"
+#: ../ipppd.templates:8001
+msgid "ISP password:"
+msgstr "L√∂senord hos Internetleverant√∂r:"
 
 #. Type: password
 #. Description
-#: ../ipppd.templates:7001
+#: ../ipppd.templates:8001
 msgid ""
-"The password you give here will be entered into /etc/ppp/pap-secrets and /"
-"etc/ppp/chap-secrets together with the username."
+"Please enter the password to use when connecting to the ISP. This password "
+"will be kept in /etc/ppp/pap-secrets and /etc/ppp/chap-secrets together with "
+"the account name."
 msgstr ""
-"Lˆsenordet du anger h‰r kommer att skrivas till /etc/ppp/pap-secrets och /"
-"etc/ppp/chap-secrets tillsammans med anv‰ndarnamnet."
+"Ange l√∂senordet som ska anv√§ndas vid anslutning till Internetleverant√∂ren. "
+"Detta l√∂senord kommer att lagras i /etc/ppp/pap-secrets och /etc/ppp/chap-"
+"secrets tillsammans med anv√§ndarnamnet."
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:8001
+#: ../ipppd.templates:9001
 msgid "ISP user name already in pap-secrets"
-msgstr "Anv‰ndarnamnet finns redan i pap-secrets"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:8001
-msgid ""
-"The user name you entered for logging into your ISP is already listed in "
-"the /etc/ppp/pap-secrets file. That's not a problem; the existing entry will "
-"be commented out, and a new entry with the data you just entered will be "
-"inserted."
-msgstr ""
-"Anv‰ndarnamnet du angav fˆr inloggning mot din Internet-leverantˆr ‰r redan "
-"listad i filen /etc/ppp/pap-secrets. Det h‰r ‰r inget problem; den "
-"existerande posten kommer att kommenteras ut och en ny post med det data du "
-"precis angav kommer att l‰ggas till."
+msgstr "Anv√§ndarnamnet finns redan i pap-secrets"
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:9001
+msgid ""
+"The user name you entered for logging into your ISP is already listed in "
+"the /etc/ppp/pap-secrets file. The existing entry will be commented out, and "
+"a new entry with the data you just entered will be inserted."
+msgstr ""
+"Anv√§ndarnamnet du angav f√∂r anslutning till din Internetleverant√∂r finns "
+"redan i filen /etc/ppp/pap-secrets. Den existerande posten kommer att "
+"kommenteras ut och en ny post med det data du precis angav kommer att l√§ggas "
+"till."
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:10001
 msgid "ISP user name already in chap-secrets"
-msgstr "Anv‰ndarnamnet finns redan i chap-secrets"
+msgstr "Anv√§ndarnamnet finns redan i chap-secrets"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:9001
+#: ../ipppd.templates:10001
 msgid ""
 "The user name you entered for logging into your ISP is already listed in "
-"the /etc/ppp/chap-secrets file. That's not a problem; the existing entry "
-"will be commented out, and a new entry with the data you just entered will "
-"be inserted."
+"the /etc/ppp/chap-secrets file. The existing entry will be commented out, "
+"and a new entry with the data you just entered will be inserted."
 msgstr ""
-"Anv‰ndarnamnet du angav fˆr inloggning mot din Internet-leverantˆr ‰r redan "
-"listad i filen /etc/ppp/chap-secrets. Det h‰r ‰r inget problem; den "
-"existerande posten kommer att kommenteras ut och en ny post med det data du "
-"precis angav kommer att l‰ggas till."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:10001
-msgid "ISP user name already in chap-secrets and pap-secrets"
-msgstr "Anv‰ndarnamnet finns redan i chap-secrets och pap-secrets"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:10001
-msgid ""
-"The user name you entered for logging into your ISP is already listed in the "
-"chap-secrets and pap-secrets files in /etc/ppp/. That's not a problem; the "
-"existing entries will be commented out, and new entries with the data you "
-"just entered will be inserted."
-msgstr ""
-"Anv‰ndarnamnet du angav fˆr inloggning mot din Internet-leverantˆr ‰r redan "
-"listad i filerna chap-secrets och pap-secrets i katalogen /etc/ppp/. Det h‰r "
-"‰r inget problem; de existerande posterna kommer att kommenteras ut och nya "
-"poster med det data du precis angav kommer att l‰ggas till."
+"Anv√§ndarnamnet du angav f√∂r anslutning till din Internetleverant√∂r finns "
+"redan i filen /etc/ppp/chap-secrets. Den existerande posten kommer att "
+"kommenteras ut och en ny post med det data du precis angav kommer att l√§ggas "
+"till."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:11001
+msgid "ISP user name already in chap-secrets and pap-secrets"
+msgstr "Anv√§ndarnamnet finns redan i chap-secrets och pap-secrets"
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:11001
+msgid ""
+"The user name you entered for logging into your ISP is already listed in the "
+"chap-secrets and pap-secrets files in /etc/ppp/. The existing entries will "
+"be commented out, and new entries with the data you just entered will be "
+"inserted."
+msgstr ""
+"Anv√§ndarnamnet du angav f√∂r anslutning till din Internetleverant√∂r finns "
+"redan i filerna chap-secrets och pap-secrets i katalogen /etc/ppp/. De "
+"existerande posterna kommer att kommenteras ut och nya poster med det data "
+"du precis angav kommer att l√§ggas till."
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:12001
 msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
 msgstr "/etc/ppp/ip-up.d/00-isdnutils existerar fortfarande"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:11001
+#: ../ipppd.templates:12001
 msgid ""
 "The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package still "
 "exists. If you changed that file at some point, you may need to redo those "
 "changes in the 00-ipppd file (which is the new name). After that, please "
 "delete the old 00-isdnutils file."
 msgstr ""
-"Filen /etc/ppp/ip-up.d/00-isdnutils frÂn det gamla isdnutils-paketet "
-"existerar fortfarande. Om du ‰ndrat den filen nÂgon gÂng behˆver du gˆra om "
-"de ‰ndringarna i filen 00-ipppd (vilket ‰r det nya namnet). Efter det, "
-"v‰nligen ta bort den gamla filen 00-isdnutils."
+"Filen /etc/ppp/ip-up.d/00-isdnutils fr√•n det gamla isdnutils-paketet "
+"existerar fortfarande. Om du √§ndrat den filen n√•gon g√•ng beh√∂ver du g√∂ra om "
+"de √§ndringarna i filen 00-ipppd (vilket √§r det nya namnet). Efter det, "
+"v√§nligen ta bort den gamla filen 00-isdnutils."
 
 #. Type: error
 #. Description
 #. Type: error
 #. Description
-#: ../ipppd.templates:11001 ../ipppd.templates:12001
-#, fuzzy
-#| msgid ""
-#| "Until it is deleted, it will still be used! This may cause conflicts."
+#: ../ipppd.templates:12001 ../ipppd.templates:13001
 msgid "Until it is deleted, it will still be used. This may cause conflicts."
 msgstr ""
-"Fram tills den blir borttagen kommer den att anv‰ndas! Detta kan orsaka "
+"Fram tills den blir borttagen kommer den att anv√§ndas! Detta kan orsaka "
 "konflikter."
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:12001
+#: ../ipppd.templates:13001
 msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
 msgstr "/etc/ppp/ip-down.d/99-isdnutils existerar fortfarande"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:12001
+#: ../ipppd.templates:13001
 msgid ""
 "The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package "
 "still exists. If you changed that file at some point, you may need to redo "
 "those changes in the 99-ipppd file (which is the new name). After that, "
 "please delete the old 99-isdnutils file."
 msgstr ""
-"Filen /etc/ppp/ip-down.d/99-isdnutils frÂn det gamla isdnutils-paketet "
-"existerar fortfarande. Om du ‰ndrat den filen nÂgon gÂng behˆver du gˆra om "
-"de ‰ndringarna i filen 99-ipppd (vilket ‰r det nya namnet). Efter det, "
-"v‰nligen ta bort den gamla filen 99-isdnutils."
+"Filen /etc/ppp/ip-down.d/99-isdnutils fr√•n det gamla isdnutils-paketet "
+"existerar fortfarande. Om du √§ndrat den filen n√•gon g√•ng beh√∂ver du g√∂ra om "
+"de √§ndringarna i filen 99-ipppd (vilket √§r det nya namnet). Efter det, "
+"v√§nligen ta bort den gamla filen 99-isdnutils."
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:13001
+#: ../ipppd.templates:14001
 msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
 msgstr "gamla skripten /etc/ppp/ip-up.d och ip-down.d existerar fortfarande"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:13001
+#: ../ipppd.templates:14001
 msgid ""
 "The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils files "
 "from the old isdnutils package still exist. If you changed those files at "
@@ -404,544 +323,665 @@ msgid ""
 "isdnutils and 99-isdnutils files."
 msgstr ""
 "Filerna /etc/ppp/ip-down.d/00-isdnutils och /etc/ppp/ip-down.d/99-isdnutils "
-"frÂn det gamla isdnutils-paketet existerar fortfarande. Om du ‰ndrat dessa "
-"filer nÂgon gÂng behˆver du gˆra om de ‰ndringarna i filerna 00-ipppd och 99-"
-"ipppd (vilket ‰r de nya namnen). Efter det, v‰nligen ta bort de gamla "
+"fr√•n det gamla isdnutils-paketet existerar fortfarande. Om du √§ndrat dessa "
+"filer n√•gon g√•ng beh√∂ver du g√∂ra om de √§ndringarna i filerna 00-ipppd och 99-"
+"ipppd (vilket √§r de nya namnen). Efter det, v√§nligen ta bort de gamla "
 "filerna 00-isdnutils och 99-isdnutils."
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:13001
-#, fuzzy
-#| msgid ""
-#| "Until they are deleted, they will still be used! This may cause conflicts."
+#: ../ipppd.templates:14001
 msgid ""
 "Until they are deleted, they will still be used. This may cause conflicts."
 msgstr ""
-"Fram tills de blir borttagna kommer de att anv‰ndas! Detta kan orsaka "
+"Fram tills de blir borttagna kommer de att anv√§ndas! Detta kan orsaka "
 "konflikter."
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:14001
-#, fuzzy
-#| msgid "(re)start ipppd by hand"
+#: ../ipppd.templates:15001
 msgid "(Re)start ipppd manually"
-msgstr "starta (om) ipppd pÂ egen hand"
+msgstr "Starta (om) ipppd p√• egen hand"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:14001
-#, fuzzy
-#| msgid ""
-#| "There is no /etc/init.d/isdnutils on your system; hence you will have to "
-#| "stop and start any ipppd daemons by hand."
+#: ../ipppd.templates:15001
 msgid ""
-"There is no /etc/init.d/isdnutils on your system; hence you will have to "
+"There is no /etc/init.d/isdnutils on this system; hence you will have to "
 "stop and start any ipppd daemons manually."
 msgstr ""
-"Det finns ingen /etc/init.d/isdnutils pÂ ditt system; d‰rav mÂste du stoppa "
-"och starta ipppd-demonerna fˆr hand."
+"Filen /etc/init.d/isdnutils finns inte p√• ditt system; d√§rf√∂r m√•ste du "
+"stoppa och starta ipppd-demonerna f√∂r hand."
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:15001
-#, fuzzy
-#| msgid "error running isdnutils init script"
+#: ../ipppd.templates:16001
 msgid "Error running isdnutils init script"
-msgstr "fel vid kˆrning av init-skriptet isdnutils"
+msgstr "Fel vid k√∂rning av init-skriptet isdnutils"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:15001
+#: ../ipppd.templates:16001
 msgid ""
 "The /etc/init.d/isdnutils script ran with errors. Please check the "
 "installation of the isdnutils-base package; reinstall it if necessary. "
 "Perhaps moving /etc/init.d/isdnutils.dpkg-dist (if it exists) to /etc/init.d/"
 "isdnutils will also help."
 msgstr ""
-"Skriptet /etc/init.d/isdnutils kˆrdes och fel uppstod. V‰nligen kontrollera "
-"installationen av paketet isdnutils-base; installera om det om det behˆvs. "
+"Skriptet /etc/init.d/isdnutils k√∂rdes och fel uppstod. V√§nligen kontrollera "
+"installationen av paketet isdnutils-base; installera om det om det beh√∂vs. "
 "Kanske flyttning av /etc/init.d/isdnutils.dpkg-dist (den den existerar) "
-"till /etc/init.d/isdnutils kan hj‰lpa."
+"till /etc/init.d/isdnutils kan hj√§lpa."
 
 #. Type: select
 #. Choices
-#: ../isdnlog.templates:1001
+#: ../isdnlog.templates:2001
+msgid "Austria"
+msgstr "√ñsterrike"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "France"
+msgstr "Frankrike"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Germany"
+msgstr "Tyskland"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Luxembourg"
+msgstr "Luxemburg"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Netherlands"
+msgstr "Nederl√§nderna"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Norway"
+msgstr "Norge"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Spain"
+msgstr "Spanien"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Switzerland"
+msgstr "Schweiz"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
 msgid "other"
 msgstr "annat"
 
 #. Type: select
-#. Default
-#. Translators: If your 2-letter code country is in the following list:
-#. "AT, CH, DE, ES, FR, LU, NL, NO"
-#. translate this string by this code. Otherwise, just write "other" (but
-#. do not translate it).
-#: ../isdnlog.templates:1002
+#. DefaultChoice
+#. Translators:
+#. You must NOT translate this string, but you can change its value.
+#. The comment between brackets is used to distinguish this msgid
+#. from the one in the Choices list; you do not have to worry about
+#. them, and have to simply choose a msgstr among the English values
+#. listed in the Choices field above, e.g. msgstr "Dutch (nl)"
+#.
+#. Please choose among
+#. "Austria, France, Germany, Luxembourg, Netherlands, Norway, Spain, Switzerland, other"
+#. In short, if your country is one of those, put its name
+#. in the msgstr and put it *in English*
+#. If your country is another one, put "other"....still in English
+#. Ignore the part that's between brackets, ie do NOT translate it
+#. Valid examples:
+#. ## Choice of the Dutch translator
+#. msgid "other[ default country]"
+#. msgstr "Netherlands"
+#. ## Choice of the Russian translator
+#. msgid "other[ default country]"
+#. msgstr "Russia"
+#. Invalid examples
+#. # Choice of the Italian translator
+#. msgid "other"
+#. msgstr "Italia"
+#: ../isdnlog.templates:2002
 msgid "other[ default country]"
-msgstr ""
+msgstr "other"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:1003
+#: ../isdnlog.templates:2003
 msgid "Country:"
-msgstr ""
+msgstr "Land"
 
 #. Type: select
 #. Description
-#: ../isdnlog.templates:1003
+#: ../isdnlog.templates:2003
 msgid ""
-"This is used for setting a number of defaults, e.g. what rate tables to use "
-"for calculating the cost of a call."
+"Please choose the local country. This will be used to set the rate table to "
+"use for calculating the costs of calls."
 msgstr ""
-"Det h‰r anv‰nds fˆr att st‰lla in ett antal standardv‰rden, exempelvis "
-"vilken kostnadstabell som anv‰nds fˆr att ber‰kna samtalskostnader."
-
-#. Type: string
-#. Description
-#: ../isdnlog.templates:2001
-#, fuzzy
-#| msgid "Enter the ISO two-letter code for your country"
-msgid "ISO two-letter code for your country:"
-msgstr "Ange ISO-koden (2 bokst‰ver) fˆr ditt land"
-
-#. Type: string
-#. Description
-#: ../isdnlog.templates:2001
-msgid ""
-"This can't really be used for setting any defaults, but maybe some day..."
-msgstr ""
-"Detta kan egentligen inte anv‰ndas fˆr att st‰lla in standardv‰rden men "
-"kanske en dag..."
-
-#. Type: string
-#. Description
-#: ../isdnlog.templates:2001
-msgid ""
-"Note that you will probably have to edit /etc/isdn/isdn.conf before isdnlog "
-"will be able to work."
-msgstr ""
-"Notera att du behˆver antagligen redigera /etc/isdn/isdn.conf fˆre isdnlog "
-"kommer att fungera."
-
-#. Type: string
-#. Description
-#: ../isdnlog.templates:3001
-msgid "Prefix for international number:"
-msgstr ""
+"Ange aktuellt land. Detta anv√§nds f√∂r att inst√§llningarna f√∂r "
+"kostnadsber√§kning ska bli korrekt."
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:4001
-msgid "Code of your country:"
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../isdnlog.templates:4001
-msgid "e.g. ${default_countrycode} for ${default_country}"
-msgstr "exempelvis, ${default_countrycode} fˆr ${default_country}"
+msgid "Prefix to dial before international number:"
+msgstr "Prefix som inleder ett internationellt nummer:"
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:5001
-#, fuzzy
-#| msgid "What is your local areacode, if applicable?"
-msgid "Prefix for areacode, if applicable:"
-msgstr "Vad ‰r ditt lokala riktnummer, om det anv‰nds?"
+msgid "Country ITU code:"
+msgstr "Landets ITU-kod:"
+
+#. Type: string
+#. Description
+#: ../isdnlog.templates:5001
+msgid "Please enter the international code for the local country."
+msgstr "Ange internationell kod f√∂r aktuellt land."
+
+#. Type: string
+#. Description
+#. Translators: do not translate ${default_countrycode} and ${default_country}
+#: ../isdnlog.templates:5001
+msgid "Example: ${default_countrycode} for ${default_country}"
+msgstr "Exempelvis, ${default_countrycode} f√∂r ${default_country}"
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:6001
-#, fuzzy
-#| msgid "What is your local areacode, if applicable?"
-msgid "Local areacode, if applicable:"
-msgstr "Vad ‰r ditt lokala riktnummer, om det anv‰nds?"
+msgid "Prefix for area code, if applicable:"
+msgstr "Prefix f√∂r lokalt riktnummer, om det anv√§nds:"
+
+#. Type: string
+#. Description
+#: ../isdnlog.templates:7001
+msgid "Local area code, if applicable:"
+msgstr "Lokalt riktnummer, om det anv√§nds:"
 
 #. Type: boolean
 #. Description
-#: ../isdnlog.templates:7001
+#: ../isdnlog.templates:8001
 msgid "Run isdnrate as a daemon?"
-msgstr "Kˆra isdnrate som en demon?"
+msgstr "K√∂ra isdnrate som en demon?"
 
 #. Type: boolean
 #. Description
-#: ../isdnlog.templates:7001
-#, fuzzy
-#| msgid ""
-#| "isdnrate is a utility to calculate the costs of a connection to a given "
-#| "phone number, used e.g. for LCR systems to find the cheapest carrier on a "
-#| "call-by-call basis. Having it run as a daemon speeds things up as then it "
-#| "only has to load all the data just once."
+#: ../isdnlog.templates:8001
 msgid ""
-"isdnrate is a utility to calculate the costs of a connection to a given "
-"phone number, used e.g. for LCR systems to find the cheapest carrier on a "
-"call-by-call basis. Having it run as a daemon speeds things up as then it "
-"only has to load all the data once."
+"The isdnrate utility calculates the costs of a connection to a given phone "
+"number, used e.g. for LCR systems to find the cheapest carrier on a call-by-"
+"call basis. Having it run as a daemon speeds things up as then it only has "
+"to load all the data once."
 msgstr ""
-"isdnrate ‰r ett verktyg fˆr att ber‰kna kostnaderna fˆr en anslutning till "
-"ett angivet telefonnummer, anv‰nds till exempel fˆr LCR-system fˆr att hitta "
-"den billigaste b‰raren pÂ samtal-fˆr-samtalbasis. Att lÂta den kˆra som en "
-"demon snabbar upp saker och ting eftersom den dÂ endast behˆver l‰sa in data "
-"en gÂng."
+"isdnrate anv√§nds f√∂r att ber√§kna kostnaderna f√∂r en anslutning till ett "
+"angivet telefonnummer, anv√§nds till exempel f√∂r LCR-system f√∂r att hitta den "
+"billigaste b√§raren p√• samtal-f√∂r-samtalbasis. Att l√•ta den k√∂ra som en demon "
+"snabbar upp saker och ting eftersom den d√• endast beh√∂ver l√§sa in data en "
+"g√•ng."
 
 #. Type: boolean
 #. Description
-#: ../isdnlog.templates:7001
-#, fuzzy
-#| msgid ""
-#| "This is only for people with special requirements, such as those using "
-#| "the isdn2h323 package. Hence most people should say \"no\"."
+#: ../isdnlog.templates:8001
 msgid ""
-"This is only for people with special requirements, such as those using the "
-"isdn2h323 package. Hence most people should not choose this option."
+"This setting is only useful for special setups, such as for an ISDN-to-H.323 "
+"gateway."
 msgstr ""
-"Det h‰r ‰r endast fˆr personer med speciella krav sÂsom de som anv‰nder "
-"paketet isdn2h323. D‰rfˆr kan de flesta svara \"nej\"."
+"Denna inst√§llning anv√§nds bara vid specialinstallationer, exempelvis f√∂r "
+"ISDN-till-H.323-brygga."
 
 #. Type: select
 #. Choices
-#: ../isdnutils-base.templates:1001
+#: ../isdnutils-base.templates:2001
 msgid "none"
-msgstr ""
+msgstr "ingen"
 
 #. Type: select
 #. Description
-#: ../isdnutils-base.templates:1002
-#, fuzzy
-#| msgid "Does firmware need to be loaded?"
+#: ../isdnutils-base.templates:2002
 msgid "Firmware to load:"
-msgstr "Behˆver firmware l‰sas in?"
+msgstr "Inb√§ddad mjukvara att l√§sa in:"
 
 #. Type: select
 #. Description
-#: ../isdnutils-base.templates:1002
-#, fuzzy
-#| msgid ""
-#| "Some ISDN cards can't function properly until firmware has been "
-#| "downloaded. Notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-"
-#| "Surf, which need ISAR.BIN to be loaded. (I don't know of any others at "
-#| "this time.) Choose \"ISAR.BIN\" if this is necessary. If you don't know "
-#| "what I'm talking about, choose \"none\"."
+#: ../isdnutils-base.templates:2002
 msgid ""
-"Some ISDN cards can't function properly until firmware has been downloaded. "
-"Notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which need "
-"ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is necessary. If you "
-"don't know what to answer here, choose \"none\"."
+"Some ISDN cards can't function properly until some firmware has been loaded. "
+"A notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which "
+"need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is necessary."
 msgstr ""
-"Vissa ISDN-kort kan inte fungera korrekt fˆrr‰n firmware har laddats ned. "
-"Exempel ‰r Sedlbauer SpeedFax+ PCI eller Siemens I-Surf som behˆver l‰sa in "
-"ISAR.BIN. (Jag vet inte om nÂgra andra just nu.) V‰lj \"ISAR.BIN\" om det "
-"behˆvs. Om du inte vet vad jag pratar om, v‰lj \"ingen\"."
+"Vissa ISDN-kort kan inte fungera korrekt innan inb√§ddad mjukvara har "
+"laddats. Ett vanligt exempel √§r Sedlbauer SpeedFax+ PCI eller Siemens I-Surf "
+"som beh√∂ver l√§sa in ISAR.BIN. V√§lj \"ISAR.BIN\" om detta beh√∂vs."
 
 #. Type: string
 #. Description
-#: ../isdnutils-base.templates:2001
-#, fuzzy
-#| msgid "Which ISDN card numbers have to be loaded with the firmware?"
+#: ../isdnutils-base.templates:3001
 msgid "ISDN card numbers to load with the firmware:"
-msgstr "Vilka ISDN-kortnummer mÂste l‰sas in med firmware?"
+msgstr "ISDN-kortnummer som beh√∂ver inb√§ddad mjukvara vid laddning:"
 
 #. Type: string
 #. Description
-#: ../isdnutils-base.templates:2001
+#: ../isdnutils-base.templates:3001
 msgid ""
-"If you have more than one card, enter the number of the card(s) that have to "
-"be loaded with the firmware, starting with 1, separated by commas. If you "
-"have only one card, the obvious answer here is \"1\". If you have two cards "
-"which both have to be loaded with firmware, enter \"1,2\"."
+"If you use more than one card, enter the number of the card(s) in need of "
+"firmware."
 msgstr ""
-"Om du har fler ‰n ett kort, ange numret pÂ de kort som mÂste l‰sas in med "
-"firmware, bˆrja med 1, separera med kommatecken. Om du endast har ett kort "
-"‰r det sj‰lvklara svaret h‰r \"1\". Om du har tvÂ kort som bÂda mÂste l‰sas "
-"in med firmware, ange \"1,2\"."
+"Om duanv√§nder mer √§n ett kort ange nummer p√• de kort som beh√∂ver inb√§ddad "
+"mjukvara."
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:1001
-#, fuzzy
-#| msgid "What number should vbox answer?"
+#: ../isdnutils-base.templates:3001
+msgid ""
+"Multiple entries should be separated by commas. Card numbers are integers "
+"where \"1\" is the first card, \"2\" the second, etc."
+msgstr ""
+"Separera v√§rden med komma. Kortnummer √§r heltal. \"1\" √§r det f√∂rsta kortet, "
+"\"2\" det andra och s√• vidare."
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:2001
 msgid "Number that vbox should answer:"
-msgstr "Vilket nummer ska vbox svara pÂ?"
+msgstr "Nummer som vbox svarar p√•:"
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:1001
+#: ../isdnvboxserver.templates:2001
 msgid ""
-"Vbox must know what number to listen to. Depending on your country's ISDN "
-"system, this may or may not include the areacode. It is usually without the "
-"leading 0."
+"Vbox must know what number to listen to. Depending on the country's ISDN "
+"system, this may or may not include the area code. Leading \"0\" should most "
+"often be dropped."
 msgstr ""
-"Vbox mÂste veta vilket nummer som ska lyssnas pÂ. Beroende pÂ ditt lands "
-"ISDN-system kan det (eller inte) inkludera riktnumret. Det ‰r normalt sett "
-"utan inledande 0."
+"Vbox m√•ste veta vilket nummer som ska lyssnas p√•. Beroende p√• ditt lands "
+"ISDN-system kan det inkludera riktnummer. Inledande nolla ska vanligen "
+"utel√§mnas."
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:1001
-#, fuzzy
-#| msgid ""
-#| "Enter `quit' (or leave it blank) if you want to configure by hand, not "
-#| "via debconf. Also enter `quit' if you already have an existing (working) "
-#| "vbox configuration from the time when this was still part of isdnutils "
-#| "(unless you want to create a new configuration)."
+#: ../isdnvboxserver.templates:2001
 msgid ""
 "Leave the field blank if you want to configure by hand, or if you already "
-"have an existing (working) vbox configuration from the time when this was "
+"use an existing (working) vbox configuration from the time when this was "
 "still part of isdnutils (unless you want to create a new configuration)."
 msgstr ""
-"Ange \"quit\" (eller l‰mna blank) om du vill konfigurera fˆr hand och inte "
-"via debconf. Ange ‰ven \"quit\" om du redan har en existerande (fungerande) "
-"vbox-konfiguration frÂn den tid n‰r den fortfarande var en del av isdnutils "
-"(om du inte vill skapa en ny konfiguration)."
+"L√§mna f√§ltet blankt om du vill konfigurera f√∂r hand eller om du redan har en "
+"existerande (fungerande) vbox-konfiguration fr√•n tiden n√§r den fortfarande "
+"var en del av isdnutils (om du inte vill skapa en ny konfiguration)."
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:2001
-#, fuzzy
-#| msgid "After how many rings should vbox pick up the line?"
+#: ../isdnvboxserver.templates:3001
 msgid "Number of rings for vbox to pick up the line:"
-msgstr "Efter hur mÂnga ringsignaler ska vbox lyfta pÂ luren?"
+msgstr "Antal ringsignaler innan vbox svarar:"
 
 #. Type: string
 #. Description
-#: ../isdnvboxserver.templates:2001
-#, fuzzy
-#| msgid ""
-#| "One ring is about 5 seconds. You can fine-tune the number of rings for "
-#| "certain phonenumbers manually, e.g. any salesmen you know the number of "
-#| "(or calls without caller-ID) can be dumped into the answering machine "
-#| "after one ring. See `man vbox.conf' for more info."
+#: ../isdnvboxserver.templates:3001
 msgid ""
-"One ring is about 5 seconds. You can fine-tune the number of rings for "
-"certain phonenumbers manually, e.g. any salesmen you know the number of (or "
-"calls without caller-ID) can be dumped into the answering machine after one "
-"ring. See `man vbox.conf' for more information."
+"One ring is about 5 seconds. This setting can later be fine-tuned for each "
+"incoming telephone number, for instance to aggressively filter some incoming "
+"numbers."
 msgstr ""
-"En ringsignal ‰r ca 5 sekunder. Du kan finjustera antal ringsignaler fˆr "
-"vissa telefonnummer manuellt, exempelvis om nÂgon s‰ljare du vet numret till "
-"(eller samtal utan nummerpresentation) kan skickas direkt till "
-"telefonsvararen efter en signal. Se \"man vbox.conf\" fˆr mer information. "
+"En uppringning √§r ungef√§r fem sekunder. Denna inst√§llning kan finjusteras "
+"senare f√∂r varje uppringande telefonnummer, exempelvis f√∂r att filtrera bort "
+"aggressiva uppringare som √•terkommer ofta."
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:3001
+msgid "You should read vbox.conf(5) for more information."
+msgstr "L√§s manualsidan vbox.conf(5) f√∂r ytterligare information."
 
 #. Type: boolean
 #. Description
-#: ../isdnvboxserver.templates:3001
-msgid "Should the message be attached to the email?"
-msgstr "Ska meddelandet bifogas i e-postmeddelandet?"
+#: ../isdnvboxserver.templates:4001
+msgid "Should incoming messages be attached to notification mails?"
+msgstr "Ska inspelningen bifogas i e-postmeddelanden?"
 
 #. Type: boolean
 #. Description
-#: ../isdnvboxserver.templates:3001
-#, fuzzy
-#| msgid ""
-#| "When a message is recorded, an email notification is sent. If that email "
-#| "should contain the message as an attachment, choose \"yes\" here. Note: "
-#| "the attachment can be large!"
+#: ../isdnvboxserver.templates:4001
 msgid ""
 "When a message is recorded, an email notification is sent. If that email "
 "should contain the message as an attachment, choose the option."
 msgstr ""
-"N‰r ett meddelande spelas in kommer en notifiering att skickas ut. Om du "
-"vill att det e-postmeddelandet ska innehÂlla sj‰lva meddelandet som en "
-"bifogning, svara \"ja\" h‰r.  Notera: bifogade filen kan vara stor!"
-
-#. Type: boolean
-#. Description
-#: ../isdnvboxserver.templates:3001
-msgid "Note: the attachment can be large."
-msgstr ""
+"N√§r ett meddelande spelas in kommer en notifiering att skickas med e-post. "
+"Om det meddelandet ska inneh√•lla inspelningen som en bifogad fil ska detta "
+"alternativ anv√§ndas."
 
 #. Type: string
-#. Description
-#: ../isdnvboxserver.templates:4001
-#, fuzzy
-#| msgid "As what user should the answering machine run?"
-msgid "User who runs the answering machine:"
-msgstr "Som vilken anv‰ndare ska telefonsvararen kˆra som?"
-
-#. Type: string
-#. Description
-#: ../isdnvboxserver.templates:4001
-msgid ""
-"vboxd runs with the privileges of a normal (non-root) user. This is "
-"typically your non-root login name. This user must be a member of the "
-"`dialout' group."
-msgstr ""
-"vboxd kˆrs med samma privilegier som en normal (icke-root) anv‰ndare. Detta "
-"‰r normalt sett ditt inloggningsnamn (ej root). Den h‰r anv‰ndaren mÂste "
-"vara medlem i gruppen \"dialout\"."
-
-#. Type: text
 #. Description
 #: ../isdnvboxserver.templates:5001
-#, fuzzy
-#| msgid "The user ${Daemonuser} doesn't exist on the system."
-msgid "User ${Daemonuser} doesn't exist on the system"
-msgstr "Anv‰ndaren ${Daemonuser} existerar inte pÂ systemet."
+msgid "Run the answering machine as:"
+msgstr "K√∂r telefonsvararen som:"
 
-#. Type: text
+#. Type: string
 #. Description
 #: ../isdnvboxserver.templates:5001
 msgid ""
-"The user who runs the answering machine should be a valid user name on this "
-"system."
+"The vboxd daemon should run as an unprivileged (non-root) user. It must be a "
+"member of the \"dialout\" group."
 msgstr ""
+"Tj√§nsten vboxd ska k√∂ras som en normal (icke-root) anv√§ndare. Anv√§ndaren "
+"m√•ste vara medlem i gruppen \"dialout\"."
 
-#. Type: string
+#. Type: text
 #. Description
+#. Translators, do not translate "Daemonuser"
 #: ../isdnvboxserver.templates:6001
-#, fuzzy
-#| msgid "What username may connect to the vbox server?"
-msgid "Username which may connect to the vbox server:"
-msgstr "Vilket anv‰ndarnamn fÂr ansluta till vbox-servern?"
+msgid "${Daemonuser} unknown"
+msgstr "${Daemonuser} ok√§nd"
 
-#. Type: string
+#. Type: text
 #. Description
 #: ../isdnvboxserver.templates:6001
 msgid ""
-"To listen to messages using vbox (from the isdnvboxclient package), you need "
-"a username and password. Enter the username here. This does not have to be a "
-"user on the system itself."
+"The user you chose does not exist on this machine. You must choose a valid "
+"username."
 msgstr ""
-"Fˆr att lyssna pÂ meddelanden med vbox (frÂn paketet isdnvboxclient) behˆver "
-"du ett anv‰ndarnamn och lˆsenord. Ange anv‰ndarnamnet h‰r. Det behˆver inte "
-"vara en anv‰ndare pÂ sj‰lva systemet."
+"Anv√§ndarnamnet du angav existerar inte p√• maskinen. Ange ett giltigt "
+"anv√§ndarnamn."
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:7001
+msgid "Login for the answering machine:"
+msgstr "Inloggningsuppgift f√∂r telefonsvarare:"
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:7001
+msgid ""
+"Connections to the answering machine (using the vbox program provided by the "
+"isdnvboxclient package) will be prompted for a username and password."
+msgstr ""
+"Anslutningar till telefonsvararen (genom programmet vbox som finns i paketet "
+"isdnvboxclient) kommer att inneh√•lla en fr√•ga om anv√§ndarnamn och l√∂senord."
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:7001
+msgid ""
+"The username you define here does not have to correspond to a login account "
+"on this system."
+msgstr ""
+"Anv√§ndarnamnet du anger h√§r beh√∂ver inte vara ett konto p√• detta systemet."
 
 #. Type: password
 #. Description
-#: ../isdnvboxserver.templates:7001
-#, fuzzy
-#| msgid "Enter the password for ${User} here."
+#. Translators, do not translate "${User}"
+#: ../isdnvboxserver.templates:8001
 msgid "Password for ${User}:"
-msgstr "Ange lˆsenordet fˆr ${User} h‰r."
+msgstr "L√∂senord f√∂r ${User}:"
 
 #. Type: password
 #. Description
-#: ../isdnvboxserver.templates:7001
-msgid "Please don't use ':' in it! The way it is stored cannot handle this."
-msgstr ""
-"Anv‰nd inte \":\" i det! PÂ det s‰tt som lagringen gˆrs gÂr det inte anv‰nda "
-"det tecknet."
+#: ../isdnvboxserver.templates:8001
+msgid "Please choose the password for the ${User} connection user."
+msgstr "Ange l√∂senordet f√∂r anslutande anv√§ndare ${User}."
 
 #. Type: error
 #. Description
-#: ../isdnvboxserver.templates:8001
-#, fuzzy
-#| msgid "No home directory!"
+#: ../isdnvboxserver.templates:9001
 msgid "No home directory"
-msgstr "Ingen hemkatalog!"
-
-#. Type: error
-#. Description
-#: ../isdnvboxserver.templates:8001
-msgid ""
-"The home directory `${DIR}' for user `${USER}' doesn't exist. This means "
-"that the file `${DIR}/.vbox.conf' cannot be created."
-msgstr ""
-"Hemkatalogen \"${DIR}\" fˆr anv‰ndaren \"${USER}\" existerar inte. Det "
-"betyder att filen \"${DIR}/.vbox.conf\" inte kan skapas."
+msgstr "Ingen hemkatalog"
 
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:9001
-#, fuzzy
-#| msgid "User doesn't exist!"
-msgid "User doesn't exist"
-msgstr "Anv‰ndaren existerar inte!"
+msgid ""
+"The home directory \"${DIR}\" for user \"${USER}\" does not exist. This "
+"means that the file \"${DIR}/.vbox.conf\" cannot be created."
+msgstr ""
+"Hemkatalogen \"${DIR}\" f√∂r anv√§ndaren \"${USER}\" existerar inte. Detta "
+"inneb√§r att filen \"${DIR}/.vbox.conf\" inte kunde skapas."
 
 #. Type: error
-#. Description
-#: ../isdnvboxserver.templates:9001
-#, fuzzy
-#| msgid ""
-#| "The user `${USER}' doesn't exist on the system! Please rerun the "
-#| "configuration with `dpkg-reconfigure isdnvboxserver' to enter another "
-#| "username, or after creating the user."
-msgid ""
-"The user `${USER}' doesn't exist on the system. Please rerun the "
-"configuration with `dpkg-reconfigure isdnvboxserver' to enter another "
-"username, or after creating the user."
-msgstr ""
-"Anv‰ndaren \"${USER}\" existerar inte pÂ systemet! V‰nligen kˆr om "
-"konfigurationen med \"dpkg-reconfigure isdnvboxserver\" fˆr att ange ett "
-"annat anv‰ndarnamn eller efter skapandet av anv‰ndaren."
-
-#. Type: boolean
 #. Description
 #: ../isdnvboxserver.templates:10001
+msgid "Non-existing user"
+msgstr "Icke-existerande anv√§ndare"
+
+#. Type: error
+#. Description
+#: ../isdnvboxserver.templates:10001
+msgid ""
+"The user \"${USER}\" doesn't exist on the system. Please rerun the "
+"configuration with \"dpkg-reconfigure isdnvboxserver\" to enter another "
+"username, or after creating the user."
+msgstr ""
+"Anv√§ndaren \"${USER}\" existerar inte p√• systemet. V√§nligen k√∂r om "
+"konfigurationen med \"dpkg-reconfigure isdnvboxserver\" f√∂r att ange ett "
+"annat anv√§ndarnamn eller efter skapandet av anv√§ndaren."
+
+#. Type: boolean
+#. Description
+#: ../isdnvboxserver.templates:11001
 msgid "Should vboxgetty be enabled?"
 msgstr "Ska vboxgetty aktiveras?"
 
 #. Type: boolean
 #. Description
-#: ../isdnvboxserver.templates:10001
-#, fuzzy
-#| msgid ""
-#| "vboxgetty is in /etc/inittab, but not yet enabled. Answering `yes' here "
-#| "will enable it once this package is fully configured. Choose `no' if you "
-#| "want to tweak it manually."
+#: ../isdnvboxserver.templates:11001
 msgid ""
-"vboxgetty is in /etc/inittab, but not yet enabled. Choosing this option will "
-"enable it once this package is fully configured. Refuse this option if you "
-"want to tweak it manually."
+"A call for vboxgetty is defined in /etc/inittab, but not yet enabled. "
+"Choosing this option will enable it once this package is fully configured. "
+"Refuse this option if you want to tweak it manually."
 msgstr ""
-"vboxgetty finns i /etc/inittab men ‰r ‰nnu inte aktiv. Svara \"ja\" h‰r "
-"kommer att aktivera det n‰r det h‰r paketet ‰r fullt konfigurerat. V‰lj \"nej"
-"\" om du vill gˆra ‰ndringar manuellt."
+"I /etc/inittab finns en h√§nvisning till vboxgetty men √§r √§nnu inte "
+"aktiverad. Detta alternativ kommer att aktivera den n√§r paketet √§r "
+"f√§rdigkonfigurerat. Avb√∂j detta alternativ om du vill g√∂ra √§ndringar "
+"manuellt."
 
 #. Type: error
 #. Description
-#: ../isdnvboxserver.templates:11001
+#: ../isdnvboxserver.templates:12001
 msgid "Device in inittab doesn't agree with devfs mode"
-msgstr "Enhet i inittab kommer inte ˆverens med devfs"
+msgstr "Enhet i inittab kommer inte √∂verens med devfs"
 
 #. Type: error
 #. Description
-#: ../isdnvboxserver.templates:11001
+#: ../isdnvboxserver.templates:12001
 msgid ""
 "The entry for vboxgetty in /etc/inittab uses a device name that does not "
 "correspond to the current devfs usage; either a devfs (/dev/isdn/ttyIxx) "
 "name is used in inittab while devfs is not mounted, or the non-devfs name is "
 "used while devfs is mounted."
 msgstr ""
-"Posten fˆr vboxgetty i /etc/inittab anv‰nder ett enhetsnamn som inte st‰mmer "
-"med nuvarande anv‰ndning av devfs; antingen anv‰nds ett devfs-namn (/dev/"
-"isdn/ttyIxx) i inittab n‰r devfs inte ‰r monterat eller sÂ anv‰nds ett icke-"
-"devfs-namn n‰r devfs ‰r monterat."
+"Posten f√∂r vboxgetty i /etc/inittab anv√§nder ett enhetsnamn som inte st√§mmer "
+"med nuvarande anv√§ndning av devfs; antingen anv√§nds ett devfs-namn (/dev/"
+"isdn/ttyIxx) i inittab n√§r devfs inte √§r monterat eller s√• anv√§nds ett icke-"
+"devfs-namn n√§r devfs √§r monterat."
 
 #. Type: error
 #. Description
 #. Type: error
 #. Description
-#: ../isdnvboxserver.templates:11001 ../isdnvboxserver.templates:12001
-msgid "You will have to fix this by hand."
-msgstr "Du behˆver r‰tta till det h‰r pÂ egen hand."
+#: ../isdnvboxserver.templates:12001 ../isdnvboxserver.templates:13001
+msgid "This problem has to be fixed manually."
+msgstr "Detta problem m√•ste l√∂sas manuellt."
 
 #. Type: error
 #. Description
-#: ../isdnvboxserver.templates:12001
+#: ../isdnvboxserver.templates:13001
 msgid "Device in vboxgetty.conf doesn't agree with devfs mode"
-msgstr "Enhet i vboxgetty.conf kommer inte ˆverens med devfs"
+msgstr "Enhet i vboxgetty.conf kommer inte √∂verens med devfs"
 
 #. Type: error
 #. Description
-#: ../isdnvboxserver.templates:12001
+#: ../isdnvboxserver.templates:13001
 msgid ""
 "The device entry in /etc/isdn/vboxgetty.conf uses a device name that does "
 "not correspond to the current devfs usage; either a devfs (/dev/isdn/ttyIxx) "
 "name is used in vboxgetty.conf while devfs is not mounted, or the non-devfs "
 "name is used while devfs is mounted."
 msgstr ""
-"Enhetsposten i /etc/isdn/vboxgetty.conf anv‰nder ett enhetsnamn som inte "
-"st‰mmer med nuvarande anv‰ndning av devfs; antingen anv‰nds ett devfs-namn (/"
-"dev/isdn/ttyIxx) i vboxgetty.conf n‰r devfs inte ‰r monterat eller sÂ "
-"anv‰nds ett icke-devfs-namn n‰r devfs ‰r monterat."
+"Enhetsposten i /etc/isdn/vboxgetty.conf anv√§nder ett enhetsnamn som inte "
+"st√§mmer med nuvarande anv√§ndning av devfs; antingen anv√§nds ett devfs-namn (/"
+"dev/isdn/ttyIxx) i vboxgetty.conf n√§r devfs inte √§r monterat eller s√• "
+"anv√§nds ett icke-devfs-namn n√§r devfs √§r monterat."
+
+#~| msgid ""
+#~| "Most people will say \"ippp0\" here, as that is the default for a "
+#~| "connection to an ISP. The default gateway will be ippp0."
+#~ msgid ""
+#~ "Most people should say \"ippp0\" here, as that is the default for a "
+#~ "connection to an ISP. The default gateway will be ippp0."
+#~ msgstr ""
+#~ "De flesta personer kommer att svara \"ippp0\" h√§r eftersom det √§r "
+#~ "standard f√∂r en anslutning till en Internet-leverant√∂r. Standardgateway "
+#~ "kommer att vara ippp0."
+
+#~| msgid ""
+#~| "However, some people have special requirements, and they may choose "
+#~| "another interface that debconf will configure (e.g. because they don't "
+#~| "want this connection to be the default gateway)."
+#~ msgid ""
+#~ "However, some people have special requirements, and they may choose "
+#~ "another interface that will be configured (e.g. because they don't want "
+#~ "this connection to be the default gateway)."
+#~ msgstr ""
+#~ "Dock har vissa personer speciella krav och de kanske v√§ljer andra "
+#~ "gr√§nssnitt f√∂r debconf att konfigurera (exempelvis att de inte vill att "
+#~ "den h√§r anslutningen ska vara en standardgateway)."
+
+#~| msgid ""
+#~| "Note that debconf will currently only configure at most one interface. "
+#~| "Enter \"none\" if you do not want debconf to configure anything for "
+#~| "ipppd."
+#~ msgid ""
+#~ "Note that currently at most one interface can be configured in this "
+#~ "manner. Leave the field blank if you do not want to configure anything "
+#~ "now for ipppd."
+#~ msgstr ""
+#~ "Notera att debconf kommer f√∂r n√§rvarande endast att konfigurera ett "
+#~ "gr√§nssnitt. Ange \"none\" om du inte vill att debconf ska konfigurera "
+#~ "n√•got f√∂r ipppd."
+
+#~| msgid "What is the user name for logging into your ISP?"
+#~ msgid "User name for logging into your ISP:"
+#~ msgstr "Vad √§r anv√§ndarnamnet f√∂r inloggning mot din Internet-leverant√∂r?"
+
+#~| msgid ""
+#~| "Most (all?) ISPs need a user name and password for authenticating you as "
+#~| "a valid user before allowing access. Enter the user name here. The "
+#~| "password will be asked for next."
+#~ msgid ""
+#~ "Most ISPs need a user name and password for authenticating you as a valid "
+#~ "user before allowing access. Enter the user name here. The password will "
+#~ "be asked for next."
+#~ msgstr ""
+#~ "De flesta (alla?) Internet-leverant√∂rer beh√∂ver ett anv√§ndarnamn och "
+#~ "eller l√∂senord f√∂r att autentisera dig som en giltig anv√§ndare f√∂re "
+#~ "tillg√•ng godk√§nns. Ange anv√§ndarnamnet h√§r. L√∂senordet kommer att fr√•gas "
+#~ "efter h√§rn√§st."
+
+#~| msgid "What is the password for logging into your ISP?"
+#~ msgid "Password for logging into your ISP:"
+#~ msgstr "Vad √§r l√∂senordet f√∂r inloggning mot din Internet-leverant√∂r?"
+
+#~| msgid "Enter the ISO two-letter code for your country"
+#~ msgid "ISO two-letter code for your country:"
+#~ msgstr "Ange ISO-koden (2 bokst√§ver) f√∂r ditt land"
+
+#~ msgid ""
+#~ "This can't really be used for setting any defaults, but maybe some day..."
+#~ msgstr ""
+#~ "Detta kan egentligen inte anv√§ndas f√∂r att st√§lla in standardv√§rden men "
+#~ "kanske en dag..."
+
+#~ msgid ""
+#~ "Note that you will probably have to edit /etc/isdn/isdn.conf before "
+#~ "isdnlog will be able to work."
+#~ msgstr ""
+#~ "Notera att du beh√∂ver antagligen redigera /etc/isdn/isdn.conf f√∂re "
+#~ "isdnlog kommer att fungera."
+
+#~| msgid ""
+#~| "This is only for people with special requirements, such as those using "
+#~| "the isdn2h323 package. Hence most people should say \"no\"."
+#~ msgid ""
+#~ "This is only for people with special requirements, such as those using "
+#~ "the isdn2h323 package. Hence most people should not choose this option."
+#~ msgstr ""
+#~ "Det h√§r √§r endast f√∂r personer med speciella krav s√•som de som anv√§nder "
+#~ "paketet isdn2h323. D√§rf√∂r kan de flesta svara \"nej\"."
+
+#~ msgid ""
+#~ "If you have more than one card, enter the number of the card(s) that have "
+#~ "to be loaded with the firmware, starting with 1, separated by commas. If "
+#~ "you have only one card, the obvious answer here is \"1\". If you have two "
+#~ "cards which both have to be loaded with firmware, enter \"1,2\"."
+#~ msgstr ""
+#~ "Om du har fler √§n ett kort, ange numret p√• de kort som m√•ste l√§sas in med "
+#~ "firmware, b√∂rja med 1, separera med kommatecken. Om du endast har ett "
+#~ "kort √§r det sj√§lvklara svaret h√§r \"1\". Om du har tv√• kort som b√•da "
+#~ "m√•ste l√§sas in med firmware, ange \"1,2\"."
+
+#~| msgid ""
+#~| "One ring is about 5 seconds. You can fine-tune the number of rings for "
+#~| "certain phonenumbers manually, e.g. any salesmen you know the number of "
+#~| "(or calls without caller-ID) can be dumped into the answering machine "
+#~| "after one ring. See `man vbox.conf' for more info."
+#~ msgid ""
+#~ "One ring is about 5 seconds. You can fine-tune the number of rings for "
+#~ "certain phonenumbers manually, e.g. any salesmen you know the number of "
+#~ "(or calls without caller-ID) can be dumped into the answering machine "
+#~ "after one ring. See `man vbox.conf' for more information."
+#~ msgstr ""
+#~ "En ringsignal √§r ca 5 sekunder. Du kan finjustera antal ringsignaler f√∂r "
+#~ "vissa telefonnummer manuellt, exempelvis om n√•gon s√§ljare du vet numret "
+#~ "till (eller samtal utan nummerpresentation) kan skickas direkt till "
+#~ "telefonsvararen efter en signal. Se \"man vbox.conf\" f√∂r mer "
+#~ "information. "
+
+#~| msgid "The user ${Daemonuser} doesn't exist on the system."
+#~ msgid "User ${Daemonuser} doesn't exist on the system"
+#~ msgstr "Anv√§ndaren ${Daemonuser} existerar inte p√• systemet."
+
+#~| msgid "What username may connect to the vbox server?"
+#~ msgid "Username which may connect to the vbox server:"
+#~ msgstr "Vilket anv√§ndarnamn f√•r ansluta till vbox-servern?"
+
+#~ msgid ""
+#~ "To listen to messages using vbox (from the isdnvboxclient package), you "
+#~ "need a username and password. Enter the username here. This does not have "
+#~ "to be a user on the system itself."
+#~ msgstr ""
+#~ "F√∂r att lyssna p√• meddelanden med vbox (fr√•n paketet isdnvboxclient) "
+#~ "beh√∂ver du ett anv√§ndarnamn och l√∂senord. Ange anv√§ndarnamnet h√§r. Det "
+#~ "beh√∂ver inte vara en anv√§ndare p√• sj√§lva systemet."
+
+#~ msgid "Please don't use ':' in it! The way it is stored cannot handle this."
+#~ msgstr ""
+#~ "Anv√§nd inte \":\" i det! P√• det s√§tt som lagringen g√∂rs g√•r det inte "
+#~ "anv√§nda det tecknet."
+
+#~| msgid "User doesn't exist!"
+#~ msgid "User doesn't exist"
+#~ msgstr "Anv√§ndaren existerar inte!"
+
+#~ msgid "You will have to fix this by hand."
+#~ msgstr "Du beh√∂ver r√§tta till det h√§r p√• egen hand."
 
 #~ msgid "Which interface should debconf configure?"
-#~ msgstr "Vilket gr‰nssnitt ska konfigureras med debconf?"
+#~ msgstr "Vilket gr√§nssnitt ska konfigureras med debconf?"
 
 #~ msgid "What is your local MSN?"
-#~ msgstr "Vad ‰r ditt lokala MSN?"
+#~ msgstr "Vad √§r ditt lokala MSN?"
 
 #~ msgid "AT"
 #~ msgstr "AT"
@@ -970,20 +1010,17 @@ msgstr ""
 #~ msgid "What country is this system in?"
 #~ msgstr "Vilket land befinner sig systemet i?"
 
-#~ msgid "What is used to indicate an international number?"
-#~ msgstr "Vad anv‰nds fˆr att indikera ett internationellt nummer?"
-
 #~ msgid "What is the countrycode for your country?"
-#~ msgstr "Vad ‰r landskoden fˆr ditt land?"
+#~ msgstr "Vad √§r landskoden f√∂r ditt land?"
 
 #~ msgid "What is used to indicate an areacode, if applicable?"
-#~ msgstr "Vad anv‰nds fˆr att indikera ett riktnummer, om det anv‰nds?"
+#~ msgstr "Vad anv√§nds f√∂r att indikera ett riktnummer, om det anv√§nds?"
 
 #~ msgid "none, ISAR.BIN"
 #~ msgstr "ingen, ISAR.BIN"
 
 #~ msgid "Enter a valid user name here that's known to the system."
-#~ msgstr "Ange ett giltigt anv‰ndarnamn h‰r som ‰r k‰nt pÂ systemet."
+#~ msgstr "Ange ett giltigt anv√§ndarnamn h√§r som √§r k√§nt p√• systemet."
 
 #~ msgid "manual"
 #~ msgstr "manuell"
@@ -996,8 +1033,8 @@ msgstr ""
 #~ "number of settings. These are some or all (depending on the level you "
 #~ "have configured debconf with) of:"
 #~ msgstr ""
-#~ "Fˆr korrekt funktion av isdnlog behˆver den konfigureras med ett antal "
-#~ "inst‰llningar. Dessa ‰r nÂgra eller alla (beroende pÂ den nivÂ du "
+#~ "F√∂r korrekt funktion av isdnlog beh√∂ver den konfigureras med ett antal "
+#~ "inst√§llningar. Dessa √§r n√•gra eller alla (beroende p√• den niv√• du "
 #~ "konfigurerat debconf med) av:"
 
 #~ msgid ""
@@ -1005,34 +1042,34 @@ msgstr ""
 #~ "                    e.g. what rate tables to use for calculating\n"
 #~ "                    the cost of a call."
 #~ msgstr ""
-#~ " - land             detta anv‰nds fˆr att st‰lla in ett antal "
-#~ "standardv‰rden,\n"
-#~ "                    till exempel vilka kostnadstabeller som anv‰nds fˆr "
+#~ " - land             detta anv√§nds f√∂r att st√§lla in ett antal "
+#~ "standardv√§rden,\n"
+#~ "                    till exempel vilka kostnadstabeller som anv√§nds f√∂r "
 #~ "att \n"
-#~ "                    ber‰kna kostnaderna fˆr ett samtal."
+#~ "                    ber√§kna kostnaderna f√∂r ett samtal."
 
 #~ msgid " - country prefix   what is used to indicate an international number"
 #~ msgstr ""
-#~ " - landsprefix      vad som anv‰nds fˆr att indikera ett internationellt "
+#~ " - landsprefix      vad som anv√§nds f√∂r att indikera ett internationellt "
 #~ "nummer"
 
 #~ msgid ""
 #~ " - country code     the phone number for your country\n"
 #~ "                    (e.g. 49 for Germany)"
 #~ msgstr ""
-#~ " - landskod         numret fˆr ditt land\n"
-#~ "                    (exempelvis 46 fˆr Sverige)"
+#~ " - landskod         numret f√∂r ditt land\n"
+#~ "                    (exempelvis 46 f√∂r Sverige)"
 
 #~ msgid ""
 #~ " - areacode prefix  what is used to indicate an areacode,\n"
 #~ "                    if applicable in your country. Usually a 0 ."
 #~ msgstr ""
-#~ " - riktnummerprefix    vad som anv‰nds fˆr att indikera ett riktnummer,\n"
-#~ "                    om detta anv‰nds i ditt land. Normalt sett, 0 ."
+#~ " - riktnummerprefix    vad som anv√§nds f√∂r att indikera ett riktnummer,\n"
+#~ "                    om detta anv√§nds i ditt land. Normalt sett, 0 ."
 
 #~ msgid " - areacode         what your local areacode is (if applicable)"
 #~ msgstr ""
-#~ " - riktnummer       vad som ‰r ditt lokala riktnummer (om det anv‰nds)"
+#~ " - riktnummer       vad som √§r ditt lokala riktnummer (om det anv√§nds)"
 
 #, fuzzy
 #~ msgid ""
@@ -1040,18 +1077,18 @@ msgstr ""
 #~ "before isdnlog can work properly, although that file is set up with "
 #~ "reasonable defaults for most cases."
 #~ msgstr ""
-#~ "Efter installationen behˆver du redigera /etc/isdn/isdnlog.isdnctrl0 fˆre "
-#~ "isdnlog kan fungera korrekt, ‰ven om filen ‰r inst‰lld med rimliga "
-#~ "standardv‰rden fˆr de flesta fall."
+#~ "Efter installationen beh√∂ver du redigera /etc/isdn/isdnlog.isdnctrl0 f√∂re "
+#~ "isdnlog kan fungera korrekt, √§ven om filen √§r inst√§lld med rimliga "
+#~ "standardv√§rden f√∂r de flesta fall."
 
 #~ msgid ""
 #~ "If you previously had /etc/isdn/isdnlog.isdnctrl0, that will be preserved."
 #~ msgstr ""
-#~ "Om du tidigare haft /etc/isdn/isdnlog.isdnctrl0 kommer den att behÂllas."
+#~ "Om du tidigare haft /etc/isdn/isdnlog.isdnctrl0 kommer den att beh√•llas."
 
 #, fuzzy
 #~ msgid "isdnutils is now split up"
-#~ msgstr "ISDNUTILS ‰r nu uppdelad"
+#~ msgstr "ISDNUTILS √§r nu uppdelad"
 
 #~ msgid ""
 #~ "The old isdnutils package is now split up into smaller parts: isdnutils "
@@ -1059,7 +1096,7 @@ msgstr ""
 #~ "isdnlog isdnlog-data libcapi20-3 isdnactivecards pppdcapiplugin "
 #~ "isdneurofile"
 #~ msgstr ""
-#~ "Det gamla isdnutils-paketet ‰r nu uppdelat i mindre delar: isdnutils "
+#~ "Det gamla isdnutils-paketet √§r nu uppdelat i mindre delar: isdnutils "
 #~ "ipppd isdnutils-xtools isdnutils-doc isdnvboxserver isdnvboxclient "
 #~ "isdnlog isdnlog-data libcapi20-3 isdnactivecards pppdcapiplugin "
 #~ "isdneurofile"
@@ -1069,25 +1106,25 @@ msgstr ""
 #~ "one needs everything. Unfortunately there's no way of automatically "
 #~ "selecting those parts you need."
 #~ msgstr ""
-#~ "Det h‰r lÂter dig att l‰ttare v‰lja de delar som du vill installera, "
-#~ "n‰stan ingen behˆver alla delar. Tyv‰r finns det inget s‰tt att "
-#~ "automatiskt v‰lja de delar du behˆver."
+#~ "Det h√§r l√•ter dig att l√§ttare v√§lja de delar som du vill installera, "
+#~ "n√§stan ingen beh√∂ver alla delar. Tyv√§r finns det inget s√§tt att "
+#~ "automatiskt v√§lja de delar du beh√∂ver."
 
 #~ msgid ""
 #~ "You have ipppX interfaces configured, but you have not selected  ipppd to "
 #~ "be installed. This can be dangerous (leaving you with no way of obtaining "
 #~ "ipppd), so aborting the installation of this new isdnutils."
 #~ msgstr ""
-#~ "Du har ipppX-gr‰nssnitt konfigurerade men du har inte valt att ipppd ska "
-#~ "installeras. Det h‰r kan vara farligt (l‰mnar dig utan nÂgot s‰tt att "
-#~ "h‰mta ipppd) sÂ d‰rfˆr avslutas installationen av den nya isdnutils."
+#~ "Du har ipppX-gr√§nssnitt konfigurerade men du har inte valt att ipppd ska "
+#~ "installeras. Det h√§r kan vara farligt (l√§mnar dig utan n√•got s√§tt att "
+#~ "h√§mta ipppd) s√• d√§rf√∂r avslutas installationen av den nya isdnutils."
 
 #~ msgid ""
 #~ "If you really mean to not have ipppd, please remove the ipppd.* files "
 #~ "from /etc/isdn/, stop any ipppX interfaces, and reinstall isdnutils."
 #~ msgstr ""
-#~ "Om du verkligen menar att inte ha ipppd, v‰nligen ta bort filerna ipppd.* "
-#~ "frÂn /etc/isdn/, stoppa alla ipppX-gr‰nssnitt och installera om isdnutils."
+#~ "Om du verkligen menar att inte ha ipppd, v√§nligen ta bort filerna ipppd.* "
+#~ "fr√•n /etc/isdn/, stoppa alla ipppX-gr√§nssnitt och installera om isdnutils."
 
 #~ msgid ""
 #~ "If you used dselect, please select (+) ipppd, and any of the other parts "
@@ -1097,11 +1134,11 @@ msgstr ""
 #~ "install' first to configure any other packages that were unpacked but not "
 #~ "yet configured."
 #~ msgstr ""
-#~ "Om du anv‰nde dselect, v‰nligen v‰lj (+) ipppd och nÂgon av de andra "
-#~ "delarna du kan t‰nkas behˆva (exempelvis isdnlog, isdnvbox, isdnutils-"
-#~ "xtools), ‰ven om de bˆr ha valts automatiskt. Om du anv‰nde apt-get, "
-#~ "anv‰nd \"apt-get install isdnutils ipppd isdnlog ...\"; du kan behˆva att "
-#~ "kˆra \"apt-get -f install\" fˆrst fˆr att konfigurera de andra paketen "
+#~ "Om du anv√§nde dselect, v√§nligen v√§lj (+) ipppd och n√•gon av de andra "
+#~ "delarna du kan t√§nkas beh√∂va (exempelvis isdnlog, isdnvbox, isdnutils-"
+#~ "xtools), √§ven om de b√∂r ha valts automatiskt. Om du anv√§nde apt-get, "
+#~ "anv√§nd \"apt-get install isdnutils ipppd isdnlog ...\"; du kan beh√∂va att "
+#~ "k√∂ra \"apt-get -f install\" f√∂rst f√∂r att konfigurera de andra paketen "
 #~ "som packades upp men inte konfigurerades."
 
 #~ msgid "You have an (old) isdnvbox cron.weekly script"
@@ -1114,11 +1151,11 @@ msgstr ""
 #~ "existing cron script was not renamed. This can lead to two scripts "
 #~ "existing."
 #~ msgstr ""
-#~ "I tidiga versioner av isdnutils 3.1pre1b, vid uppgradering frÂn 3.0 fick "
-#~ "skriptet /etc/cron.weekly/isdnutils ett nytt namn, isdnvbox. Tyv‰rr blev "
+#~ "I tidiga versioner av isdnutils 3.1pre1b, vid uppgradering fr√•n 3.0 fick "
+#~ "skriptet /etc/cron.weekly/isdnutils ett nytt namn, isdnvbox. Tyv√§rr blev "
 #~ "isdnvbox uppdelad till isdnvboxserver och isdnvboxclient men det "
 #~ "existerande cron-skriptet fick inte ett nytt namn. Detta kan leda till "
-#~ "att tvÂ skript existerar."
+#~ "att tv√• skript existerar."
 
 #~ msgid ""
 #~ "Normally, at this point the old script could just be deleted, but it "
@@ -1128,16 +1165,16 @@ msgstr ""
 #~ "hand."
 #~ msgstr ""
 #~ "Normalt sett kan det gamla skriptet tas bort men det ser ut som om du har "
-#~ "redigerat skriptet manuellt. V‰nligen ta en titt pÂ /etc/cron.weekly/"
-#~ "isdnvbox fˆr att se om nÂgra ‰ndringar som gjorts ska behÂllas "
+#~ "redigerat skriptet manuellt. V√§nligen ta en titt p√• /etc/cron.weekly/"
+#~ "isdnvbox f√∂r att se om n√•gra √§ndringar som gjorts ska beh√•llas "
 #~ "(exempelvis i skriptet /etc/cron.weekly/isdnvboxserver) och sedan ta bort "
-#~ "det gamla skriptet fˆr hand."
+#~ "det gamla skriptet f√∂r hand."
 
 #~ msgid ""
 #~ "If you can't see anything that needs preserving, it is probably safe to "
 #~ "delete it."
 #~ msgstr ""
-#~ "Om du inte kan se nÂgot som behˆver behÂllas ‰r det antagligen inga "
+#~ "Om du inte kan se n√•got som beh√∂ver beh√•llas √§r det antagligen inga "
 #~ "problem att ta bort det."
 
 #~ msgid "/etc/cron.weekly/isdnutils renamed to isdnvboxserver"
@@ -1149,7 +1186,7 @@ msgstr ""
 #~ "version, the script only handled isdnvbox things)."
 #~ msgstr ""
 #~ "Det existerande skriptet /etc/cron.weekly/isdnutils har bytt namn till "
-#~ "isdnvboxserver fˆr att passa namnen av de uppdelade paketen (i gamla "
+#~ "isdnvboxserver f√∂r att passa namnen av de uppdelade paketen (i gamla "
 #~ "versionen hanterade skriptet endast isdnvbox-saker)."
 
 #~ msgid ""
@@ -1157,62 +1194,62 @@ msgstr ""
 #~ "isdnvboxserver, it is recommended to do so. If you have made any changes "
 #~ "to the script in the past, please put those changes into the new script."
 #~ msgstr ""
-#~ "N‰r paketsystemet frÂgor om filen /etc/cron.weekly/isdnvboxserver ska "
-#~ "ers‰ttas ‰r det rekommenderat att gˆra det. Om du har gjort nÂgra "
-#~ "‰ndringar i skriptet tidigare, v‰nligen gˆr de ‰ndringarna i det nya "
-#~ "skriptet ocksÂ."
+#~ "N√§r paketsystemet fr√•gor om filen /etc/cron.weekly/isdnvboxserver ska "
+#~ "ers√§ttas √§r det rekommenderat att g√∂ra det. Om du har gjort n√•gra "
+#~ "√§ndringar i skriptet tidigare, v√§nligen g√∂r de √§ndringarna i det nya "
+#~ "skriptet ocks√•."
 
 #~ msgid "You've chosen not to use debconf for isdnvboxserver"
-#~ msgstr "Du har valt att inte anv‰nda debconf fˆr isdnvboxserver"
+#~ msgstr "Du har valt att inte anv√§nda debconf f√∂r isdnvboxserver"
 
 #~ msgid ""
 #~ "If you change your mind, run \"dpkg-reconfigure isdnvboxserver\". To "
 #~ "finalize isdnvboxserver, you need to ensure that vboxgetty is running "
 #~ "from inittab, and that vboxd will run out of inetd."
 #~ msgstr ""
-#~ "Om du ‰ndrar dig senare, kˆr \"dpkg-reconfigure isdnvboxserver\". Fˆr att "
-#~ "f‰rdigst‰lla isdnvboxserver behˆver du se till att vboxgetty kˆrs frÂn "
-#~ "inittab och att vboxd kˆras i inetd."
+#~ "Om du √§ndrar dig senare, k√∂r \"dpkg-reconfigure isdnvboxserver\". F√∂r att "
+#~ "f√§rdigst√§lla isdnvboxserver beh√∂ver du se till att vboxgetty k√∂rs fr√•n "
+#~ "inittab och att vboxd k√∂ras i inetd."
 
 #~ msgid "spool directory created"
-#~ msgstr "kˆkatalog skapad"
+#~ msgstr "k√∂katalog skapad"
 
 #~ msgid ""
 #~ "The spool directory `${NEWSPOOL}' has been created, which is necessary "
 #~ "for proper working of vbox."
 #~ msgstr ""
-#~ "Kˆkatalogen \"${NEWSPOOL}\" har skapats vilken ‰r nˆdv‰ndig fˆr att vbox "
+#~ "K√∂katalogen \"${NEWSPOOL}\" har skapats vilken √§r n√∂dv√§ndig f√∂r att vbox "
 #~ "ska fungera korrekt."
 
 #~ msgid "vbox config file created"
-#~ msgstr "konfigurationsfil fˆr vbox skapad"
+#~ msgstr "konfigurationsfil f√∂r vbox skapad"
 
 #~ msgid ""
 #~ "The configuration file `${DIR}/.vbox.conf' has been created. See `man "
 #~ "vbox.conf' for information on changing this file."
 #~ msgstr ""
 #~ "Konfigurationsfilen \"${DIR}/.vbox.conf\" har skapats. Se \"man vbox.conf"
-#~ "\" fˆr information om hur man ‰ndrar denna fil."
+#~ "\" f√∂r information om hur man √§ndrar denna fil."
 
 #~ msgid "user `vbox' created"
-#~ msgstr "anv‰ndaren \"vbox\" skapad"
+#~ msgstr "anv√§ndaren \"vbox\" skapad"
 
 #~ msgid ""
 #~ "A user `vbox' was created, in group `dialout'. This is used as the ID "
 #~ "that the vbox daemons run under."
 #~ msgstr ""
-#~ "En anv‰ndare \"vbox\" skapades i gruppen \"dialout\". Detta anv‰nds som "
-#~ "det ID som vbox-demonerna kˆrs under."
+#~ "En anv√§ndare \"vbox\" skapades i gruppen \"dialout\". Detta anv√§nds som "
+#~ "det ID som vbox-demonerna k√∂rs under."
 
 #~ msgid "Failed to create user `vbox'"
-#~ msgstr "Misslyckades att skapa anv‰ndaren \"vbox\""
+#~ msgstr "Misslyckades att skapa anv√§ndaren \"vbox\""
 
 #~ msgid ""
 #~ "For optimal operation of vbox, a user `vbox' should be created, in group "
 #~ "`dialout'. However, creating that user failed with the following error(s):"
 #~ msgstr ""
-#~ "Fˆr optimal kˆrning av vbox bˆr en anv‰ndare \"vbox\" skapas i gruppen "
-#~ "\"dialout\". Dock misslyckades skapandet av den anv‰ndaren med fˆljande "
+#~ "F√∂r optimal k√∂rning av vbox b√∂r en anv√§ndare \"vbox\" skapas i gruppen "
+#~ "\"dialout\". Dock misslyckades skapandet av den anv√§ndaren med f√∂ljande "
 #~ "fel:"
 
 #~ msgid "${MSG}"
@@ -1222,7 +1259,7 @@ msgstr ""
 #~ "Please remedy this problem by hand, and then rerun the configuration with "
 #~ "`dpkg-reconfigure isdnvboxserver'."
 #~ msgstr ""
-#~ "V‰nligen r‰tta till det h‰r problemet fˆr hand och kˆr om konfigurationen "
+#~ "V√§nligen r√§tta till det h√§r problemet f√∂r hand och k√∂r om konfigurationen "
 #~ "med \"dpkg-reconfigure isdnvboxserver\"."
 
 #~ msgid "isdnvboxserver is being configured."

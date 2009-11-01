@@ -9,12 +9,6 @@ case "$1" in
 	rm -f /usr/share/doc/isdnutils-doc/*FAQ/.dhelp
         ;;
     upgrade|deconfigure)
-#       install-info --quiet --remove /usr/info/isdnutils.info.gz
-	if [ -x /usr/sbin/install-docs ]; then
-	    install-docs -r isdn4linux-FAQ-de
-	    install-docs -r isdn4linux-FAQ-en
-	    install-docs -r isdn4linux-MiniFAQ
-	fi 
         ;;
     failed-upgrade)
         ;;

@@ -1,52 +1,84 @@
+# These templates have been reviewed by the debian-l10n-english
+# team
+#
+# If modifications/additions/rewording are needed, please ask
+# debian-l10n-english@lists.debian.org for advice.
+#
+# Even minor modifications require translation updates and such
+# changes should be coordinated with translators and reviewers.
+
 Template: isdnlog/country
 Type: select
 #flag:translate:9
-__Choices: AT, CH, DE, ES, FR, LU, NL, NO, other
-# Translators: If your 2-letter code country is in the following list:
-#    "AT, CH, DE, ES, FR, LU, NL, NO"
-# translate this string by this code. Otherwise, just write "other" (but
-# do not translate it).
-_Default: other[ default country]
+Choices-C: AT, FR, DE, LU, NL, NO, ES, CH, other
+__Choices: Austria, France, Germany, Luxembourg, Netherlands, Norway, Spain, Switzerland, other
+# Translators: 
+#  You must NOT translate this string, but you can change its value.
+#  The comment between brackets is used to distinguish this msgid
+#  from the one in the Choices list; you do not have to worry about
+#  them, and have to simply choose a msgstr among the English values
+#  listed in the Choices field above, e.g. msgstr "Dutch (nl)"
+#
+# Please choose among 
+# "Austria, France, Germany, Luxembourg, Netherlands, Norway, Spain, Switzerland, other"
+# In short, if your country is one of those, put its name
+# in the msgstr and put it *in English*
+# If your country is another one, put "other"....still in English
+# Ignore the part that's between brackets, ie do NOT translate it
+# Valid examples:
+### Choice of the Dutch translator
+# msgid "other[ default country]"
+# msgstr "Netherlands"
+### Choice of the Russian translator
+# msgid "other[ default country]"
+# msgstr "Russia"
+# Invalid examples
+## Choice of the Italian translator
+# msgid "other"
+# msgstr "Italia"
+_DefaultChoice: other[ default country]
 _Description: Country:
- This is used for setting a number of defaults, e.g. what rate tables to
- use for calculating the cost of a call.
+ Please choose the local country. This will be used to set the rate table to
+ use for calculating the costs of calls.
 
 Template: isdnlog/country_manual
 Type: string
-_Description: ISO two-letter code for your country:
- This can't really be used for setting any defaults, but maybe some day...
- .
- Note that you will probably have to edit /etc/isdn/isdn.conf before
- isdnlog will be able to work.
+Description: Country's ISO two-letter code:
+ Please enter the ISO code of the local country. As no rate
+ tables are available, this setting will be unused.
 
 Template: isdnlog/countryprefix
 Type: string
 Default: +
-_Description: Prefix for international number:
+_Description: Prefix to dial before international number:
 
 Template: isdnlog/countrycode
 Type: string
 Default: 49
-_Description: Code of your country:
- e.g. ${default_countrycode} for ${default_country}
+#flag:comment:3
+# Translators: do not translate ${default_countrycode} and ${default_country}
+_Description: Country ITU code:
+ Please enter the international code for the local country.
+ .
+ Example: ${default_countrycode} for ${default_country}
 
 Template: isdnlog/areaprefix
 Type: string
 Default: 0
-_Description: Prefix for areacode, if applicable:
+_Description: Prefix for area code, if applicable:
 
 Template: isdnlog/areacode
 Type: string
-_Description: Local areacode, if applicable:
+_Description: Local area code, if applicable:
 
 Template: isdnlog/isdnrate-daemon
 Type: boolean
 Default: false
 _Description: Run isdnrate as a daemon?
- isdnrate is a utility to calculate the costs of a connection to a given
+ The isdnrate utility calculates the costs of a connection to a given
  phone number, used e.g. for LCR systems to find the cheapest carrier on a
  call-by-call basis. Having it run as a daemon speeds things up as then it
  only has to load all the data once.
  .
- This is only for people with special requirements, such as those using the
- isdn2h323 package. Hence most people should not choose this option.
+ This setting is only useful for special setups, such as for an
+ ISDN-to-H.323 gateway.
