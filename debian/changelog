@@ -1,3 +1,13 @@
+isdnutils (1:3.9.20060704-6) unstable; urgency=low
+
+  * QA upload
+  * Make "MAKEDEV" calls conditional in postinst scripts
+    Closes: #553692
+  * Replace libreadline5-dev by libreadline-dev in build dependencies
+    Closes: #553790
+
+ -- Christian Perrier <bubulle@debian.org>  Wed, 04 Nov 2009 19:57:31 +0100
+
 isdnutils (1:3.9.20060704-5) unstable; urgency=low
 
   * QA upload

@@ -12,9 +12,11 @@ if [ ! -c $DEVDIR/ttyI6 ]; then
     if grep 'type devfs' /proc/mounts >/dev/null; then
         DEVDIR=/dev/isdn
     else
-        cd /dev
-        echo "Note: running MAKEDEV to create ISDN tty devices in /dev..."
-        MAKEDEV isdn-tty
+    	if [ ! -c /dev/isdn-tty -a -e /dev/MAKEDEV ]; then
+	        cd /dev
+        	echo "Note: running MAKEDEV to create ISDN tty devices in /dev..."
+	        MAKEDEV isdn-tty
+	fi
     fi
 fi
 

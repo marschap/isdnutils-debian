@@ -3,7 +3,7 @@ Section: utils
 Priority: extra
 Maintainer: Debian QA Group <packages@qa.debian.org>
 Standards-Version: 3.7.3
-Build-Depends: debhelper (>=5), bzip2, libncurses5-dev | libncurses-dev, xutils-dev | imake, tcl8.3-dev, linuxdoc-tools (>=0.9.20), groff, libtool, libxaw7-dev, libreadline5-dev | libreadline-dev, libpcap0.8-dev, autotools-dev, automake1.4, automake1.7, automake1.9, autoconf2.13, autoconf, libssl-dev, psutils, lsb-release, po-debconf
+Build-Depends: debhelper (>=5), bzip2, libncurses5-dev | libncurses-dev, xutils-dev | imake, tcl8.3-dev, linuxdoc-tools (>=0.9.20), groff, libtool, libxaw7-dev, libreadline-dev, libpcap0.8-dev, autotools-dev, automake1.4, automake1.7, automake1.9, autoconf2.13, autoconf, libssl-dev, psutils, lsb-release, po-debconf
 
 Package: isdnutils
 Priority: optional
