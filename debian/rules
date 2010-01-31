@@ -33,6 +33,7 @@ auto-update-stamp: patch-stamp
 	for d in capi20; do \
 	  echo "Regenerating autotools files in $$d ..."; \
 	  cd $$d; \
+	  echo "  libtool"; libtoolize -c -f ; \
 	  echo "  aclocal-1.9"; aclocal-1.9; \
 	  echo "  automake-1.9"; automake-1.9 --add-missing; \
 	  cd ..; \

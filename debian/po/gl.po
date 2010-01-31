@@ -1,54 +1,43 @@
 # Galician translation of isdnutils's debconf templates
 # This file is distributed under the same license as the isdnutils package.
-# Jacobo Tarrio <jtarrio@debian.org>, 2007.
 #
+# Jacobo Tarrio <jtarrio@debian.org>, 2007.
+# Marce Villarino <mvillarino@gmail.com>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: isdnutils\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
 "POT-Creation-Date: 2009-10-14 06:41+0200\n"
-"PO-Revision-Date: 2007-02-26 16:37+0100\n"
-"Last-Translator: Jacobo Tarrio <jtarrio@debian.org>\n"
+"PO-Revision-Date: 2009-11-04 20:57+0100\n"
+"Last-Translator: Marce Villarino <mvillarino@gmail.com>\n"
 "Language-Team: Galician <proxecto@trasno.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.0\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:2001
-#, fuzzy
-#| msgid "ISP dialup config exists already"
 msgid "ISP dialup configuration already exists"
 msgstr "Xa existe a configuración dun provedor de Internet"
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:2001
-#, fuzzy
-#| msgid ""
-#| "The files device.${IPPP0} and ipppd.${IPPP0} already exist. Therefore the "
-#| "ipppd configuration phase won't touch anything there, as it looks like "
-#| "it's already been configured."
 msgid ""
 "The device.${IPPP0} and ipppd.${IPPP0} files already exist. Therefore, the "
 "ipppd configuration phase won't touch anything there, as it looks like it "
 "has already been configured."
 msgstr ""
-"Os ficheirod device.${IPPP0} e ippd.${IPPP0} xa existen. Polo tanto, a fase "
+"Os ficheiros device.${IPPP0} e ippd.${IPPP0} xa existen. Polo tanto, a fase "
 "de configuración de ipppd non ha tocar nada diso, xa que semella que xa está "
 "configurado."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:2001
-#, fuzzy
-#| msgid ""
-#| "If it doesn't work yet, and you want to try the automatic configuration, "
-#| "stop all ISDN processes (use \"/etc/init.d/isdnutils stop\"), remove the "
-#| "files mentioned above, and rerun the configuration with \"dpkg-"
-#| "reconfigure ipppd\". After that, restart the ISDN processes: \"/etc/init."
-#| "d/isdnutils start\"."
 msgid ""
 "If it doesn't work yet, and you want to try the automatic configuration, "
 "stop all ISDN processes (use \"/etc/init.d/isdnutils stop\"), remove the "
@@ -57,24 +46,23 @@ msgid ""
 "start\"."
 msgstr ""
 "Se aínda non funciona e quere probar a configuración automática, deteña "
-"tódolos procesos de RDSI (empregue \"/etc/init.d/isdnutils stop\"), elimine "
-"os ficheiros que se mencionan enriba e volva executar a configuración "
-"mediante \"dpkg-reconfigure ipppd\". Despois de facelo, volva iniciar os "
-"procesos de RDSI: \"/etc/init.d/isdnutils start\"."
+"todos os procesos de RDSI (empregue «/etc/init.d/isdnutils stop»), elimine os "
+"ficheiros que se mencionan enriba e volva executar a configuración mediante "
+"«dpkg-reconfigure ipppd». Despois de facelo, volva iniciar os procesos de "
+"RDSI: «/etc/init.d/isdnutils start»."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:3001
-#, fuzzy
-#| msgid "Which interface should be configured?"
 msgid "Interface to configure:"
-msgstr "¿Que interface se debe configurar?"
+msgstr "Interface a configurar:"
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:3001
 msgid "The default setting should be safe for most configurations."
 msgstr ""
+"A escolla predeterminada debera ser segura para a maioría das configuracións."
 
 #. Type: string
 #. Description
@@ -83,119 +71,81 @@ msgid ""
 "However, if you have special requirements or want to choose to configure "
 "another interface, please enter it here."
 msgstr ""
+"Porén, se ten requirimentos especiais ou desexa configurar outra interface "
+"indíqueo aquí."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:3001
-#, fuzzy
-#| msgid ""
-#| "Enter the word \"manual\" or leave the field blank if you want to "
-#| "configure the connection manually."
 msgid "Leave the field blank if you do not want to configure anything now."
 msgstr ""
-"Introduza a palabra \"manual\" ou deixe o campo en branco se quere "
-"configurar a conexión manualmente."
+"Deixe o campo en branco se non quer configurar agora a conexión manualmente."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:4001
-#, fuzzy
-#| msgid "wrong interface name"
 msgid "Invalid interface name"
-msgstr "Nome de interface incorrecto"
+msgstr "Nome de interface non válido"
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:4001
-#, fuzzy
-#| msgid ""
-#| "You can only give names starting with \"ippp\" followed by a number "
-#| "between 0 and 63."
 msgid ""
 "Valid interface names begin with \"ippp\" followed by a number between 0 and "
 "63."
 msgstr ""
-"Só pode dar nomes que comecen por \"ippp\" e vaian seguidos por un número "
+"Os nomes de interface válidos comezan por «ippp» e van seguidos por un número "
 "entre 0 e 63."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:5001
-#, fuzzy
-#| msgid "What is your ISP's telephone number?"
 msgid "ISP's telephone number:"
-msgstr "¿Cal é o número de teléfono do seu provedor de Internet?"
+msgstr "Número de teléfono do provedor de Internet:"
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:5001
-#, fuzzy
-#| msgid ""
-#| "What telephone number(s) must be dialed in order to connect to your "
-#| "Internet service provider (ISP)?"
 msgid ""
 "At least one phone number has to be dialed in order to connect to an "
 "Internet service provider (ISP)."
 msgstr ""
-"¿A que número(s) de teléfono hai que chamar para se conectar ao seu provedor "
-"de Internet?"
+"Debe chamarse polo menos un número de teléfono para se conectar ao provedor "
+"de Internet (ISP)."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:5001
-#, fuzzy
-#| msgid ""
-#| "Enter the telephone number here, including dialing prefixes, area codes, "
-#| "and so on. Enter the number without any spaces."
 msgid ""
 "Please enter that telephone number here, including dialing prefixes, area "
 "codes, and so on, but without any spaces."
 msgstr ""
-"Introduza aquí o número de teléfono, incluíndo tódolos prefixos. Introduza o "
-"número sen espazos."
-
-#. Type: string
-#. Description
-#: ../ipppd.templates:5001
-#, fuzzy
-#| msgid ""
-#| "You can enter multiple telephone numbers. If you do so then separate them "
-#| "with spaces."
-msgid ""
-"Multiple telephone numbers may be entered and should be separated by spaces."
-msgstr ""
-"Pode introducir varios números de teléfono. Se o fai, sepáreos mediante "
+"Introduza aquí o número de teléfono, incluíndo todos os prefixos, sen "
 "espazos."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:5001
-#, fuzzy
-#| msgid ""
-#| "Enter the word \"manual\" or leave the field blank if you want to "
-#| "configure the connection manually."
-msgid "Leave the field blank if you want to configure the connection manually."
+msgid ""
+"Multiple telephone numbers may be entered and should be separated by spaces."
 msgstr ""
-"Introduza a palabra \"manual\" ou deixe o campo en branco se quere "
-"configurar a conexión manualmente."
+"Pode introducir varios números de teléfono separándoos mediante espazos."
+
+#. Type: string
+#. Description
+#: ../ipppd.templates:5001
+msgid "Leave the field blank if you want to configure the connection manually."
+msgstr "Deixe o campo en branco se quer configurar a conexión manualmente."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:6001
 msgid "Local MSN:"
-msgstr ""
+msgstr "MSN local:"
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:6001
-#, fuzzy
-#| msgid ""
-#| "When making a call with ISDN, the MSN (phone number) that is originating "
-#| "the call must be given in the call-setup message. While usually a wrong "
-#| "MSN will be replaced by the main MSN for the ISDN line, especially on "
-#| "PABXes a wrong MSN (often the extension number in this case) will cause "
-#| "the call-setup to fail. So, it is best to enter the correct local MSN "
-#| "here."
 msgid ""
 "When making a call with ISDN, the MSN (phone number) that is originating the "
 "call must be given in the call-setup message. While a wrong MSN will usually "
@@ -204,20 +154,15 @@ msgid ""
 "fail. So, it is best to enter the correct local MSN here."
 msgstr ""
 "Ao chamar por RDSI, o MSN (número de teléfono) polo que se orixina a chamada "
-"debe indicarse na mensaxe de establecemento da chamada. Aínda que, "
+"debe indicarse na mensaxe de estabelecemento da chamada. Aínda que, "
 "normalmente, un MSN incorrecto se ha substituír polo MSN principal da liña "
 "RDSI, hai ocasións (principalmente en centraliñas) nas que un MSN incorrecto "
-"(o número da extensión, neste caso) ha facer que o establecemento da chamada "
-"falle. Polo tanto é mellor introducir o MSN local correcto."
+"(o número da extensión, neste caso) ha facer que o estabelecemento da "
+"chamada falle. Polo tanto é mellor introducir o MSN local correcto."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:6001
-#, fuzzy
-#| msgid ""
-#| "This may also be necessary if you want the costs to be registered to one "
-#| "particular MSN, in case you have more than one MSN and this is supported "
-#| "by your telco."
 msgid ""
 "This may also be necessary if you want the costs to be registered to one "
 "particular MSN, in case you have more than one MSN and this is supported by "
@@ -230,7 +175,7 @@ msgstr ""
 #. Description
 #: ../ipppd.templates:7001
 msgid "ISP account name:"
-msgstr ""
+msgstr "Nome da conta no provedor de internet:"
 
 #. Type: string
 #. Description
@@ -239,27 +184,26 @@ msgid ""
 "Most ISPs require an account name and password to be provided when "
 "connecting."
 msgstr ""
+"A maioría dos ISP piden que se forneza un nome de conta e o contrasinal "
+"cando se conecta."
 
 #. Type: password
 #. Description
 #: ../ipppd.templates:8001
 msgid "ISP password:"
-msgstr ""
+msgstr "Contrasinal no provedor:"
 
 #. Type: password
 #. Description
 #: ../ipppd.templates:8001
-#, fuzzy
-#| msgid ""
-#| "The password you give here will be entered into /etc/ppp/pap-secrets and /"
-#| "etc/ppp/chap-secrets together with the username."
 msgid ""
 "Please enter the password to use when connecting to the ISP. This password "
 "will be kept in /etc/ppp/pap-secrets and /etc/ppp/chap-secrets together with "
 "the account name."
 msgstr ""
-"O contrasinal que introduza aquí hase gravar nos ficheiros /etc/ppp/pap-"
-"secrets e /etc/ppp/chap-secrets xunto co nome de usuario."
+"Introduza o contrasinal a empregar cando se conecte co ISP. Este contrasinal "
+"hase gardar nos ficheiros /etc/ppp/pap-secrets e /etc/ppp/chap-secrets xunto "
+"co nome de usuario."
 
 #. Type: error
 #. Description
@@ -270,21 +214,14 @@ msgstr "O nome de usuario do provedor de Internet xa está en pap-secrets"
 #. Type: error
 #. Description
 #: ../ipppd.templates:9001
-#, fuzzy
-#| msgid ""
-#| "The user name you entered for logging into your ISP is already listed in "
-#| "the /etc/ppp/pap-secrets file. That's not a problem; the existing entry "
-#| "will be commented out, and a new entry with the data you just entered "
-#| "will be inserted."
 msgid ""
 "The user name you entered for logging into your ISP is already listed in "
 "the /etc/ppp/pap-secrets file. The existing entry will be commented out, and "
 "a new entry with the data you just entered will be inserted."
 msgstr ""
 "O nome de usuario que introduciu para se conectar ao provedor de Internet xa "
-"figura no ficheiro /etc/ppp/pap-secrets. Iso non é un problema; a entrada "
-"existente hase comentar, e hase engadir unha nova entrada cos datos que "
-"acaba de introducir."
+"figura no ficheiro /etc/ppp/pap-secrets. A entrada existente hase comentar, "
+"e hase engadir unha nova entrada cos datos que acaba de introducir."
 
 #. Type: error
 #. Description
@@ -295,21 +232,14 @@ msgstr "O nome de usuario do provedor de Internet xa está en chap-secrets"
 #. Type: error
 #. Description
 #: ../ipppd.templates:10001
-#, fuzzy
-#| msgid ""
-#| "The user name you entered for logging into your ISP is already listed in "
-#| "the /etc/ppp/chap-secrets file. That's not a problem; the existing entry "
-#| "will be commented out, and a new entry with the data you just entered "
-#| "will be inserted."
 msgid ""
 "The user name you entered for logging into your ISP is already listed in "
 "the /etc/ppp/chap-secrets file. The existing entry will be commented out, "
 "and a new entry with the data you just entered will be inserted."
 msgstr ""
 "O nome de usuario que introduciu para se conectar ao provedor de Internet xa "
-"figura no ficheiro /etc/ppp/chap-secrets. Iso non é un problema; a entrada "
-"existente hase comentar, e hase engadir unha nova entrada cos datos que "
-"acaba de introducir."
+"figura no ficheiro /etc/ppp/chap-secrets. A entrada existente hase comentar, "
+"e hase engadir unha nova entrada cos datos que acaba de introducir."
 
 #. Type: error
 #. Description
@@ -322,12 +252,6 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../ipppd.templates:11001
-#, fuzzy
-#| msgid ""
-#| "The user name you entered for logging into your ISP is already listed in "
-#| "the chap-secrets and pap-secrets files in /etc/ppp/. That's not a "
-#| "problem; the existing entries will be commented out, and new entries with "
-#| "the data you just entered will be inserted."
 msgid ""
 "The user name you entered for logging into your ISP is already listed in the "
 "chap-secrets and pap-secrets files in /etc/ppp/. The existing entries will "
@@ -335,9 +259,9 @@ msgid ""
 "inserted."
 msgstr ""
 "O nome de usuario que introduciu para se conectar ao provedor de Internet xa "
-"figura nos ficheiros pap-secrets e chap-secrets de /etc/ppp/. Iso non é un "
-"problema; as entradas existentes hanse comentar, e hanse engadir novas "
-"entrada cos datos que acaba de introducir."
+"figura nos ficheiros pap-secrets e chap-secrets de /etc/ppp/. As entradas "
+"existentes hanse comentar, e hanse engadir novas entrada cos datos que acaba "
+"de introducir."
 
 #. Type: error
 #. Description
@@ -355,20 +279,17 @@ msgid ""
 "delete the old 00-isdnutils file."
 msgstr ""
 "O ficheiro /etc/ppp/ip-up.d/00-isdnutils do antigo paquete isdnutils aínda "
-"existe. Se modificou ese ficheiro nalgún momento, ha ter que refacer eses "
-"cambios no ficheiro 00-ipppd (que é o novo nome). Despois de facelo, elimine "
-"o ficheiro 00-isdnutils antigo."
+"existe. Se modificou ese ficheiro nalgún momento, ha ter que refacer esas "
+"modificacións no ficheiro 00-ipppd (que é o novo nome). Despois de facelo, "
+"elimine o ficheiro 00-isdnutils antigo."
 
 #. Type: error
 #. Description
 #. Type: error
 #. Description
 #: ../ipppd.templates:12001 ../ipppd.templates:13001
-#, fuzzy
-#| msgid ""
-#| "Until it is deleted, it will still be used! This may cause conflicts."
 msgid "Until it is deleted, it will still be used. This may cause conflicts."
-msgstr "Ha seguir empregándose ata que o borre. Isto pode causar conflictos."
+msgstr "Ha seguir empregándose ata que o borre. Isto pode causar conflitos."
 
 #. Type: error
 #. Description
@@ -386,9 +307,9 @@ msgid ""
 "please delete the old 99-isdnutils file."
 msgstr ""
 "O ficheiro /etc/ppp/ip-down.d/99-isdnutils do antigo paquete isdnutils aínda "
-"existe. Se modificou ese ficheiro nalgún momento, ha ter que refacer eses "
-"cambios no ficheiro 99-ipppd (que é o novo nome). Despois de facelo, elimine "
-"o ficheiro 99-isdnutils antigo."
+"existe. Se modificou ese ficheiro nalgún momento, ha ter que refacer esas "
+"modificacións no ficheiro 99-ipppd (que é o novo nome). Despois de facelo, "
+"elimine o ficheiro 99-isdnutils antigo."
 
 #. Type: error
 #. Description
@@ -408,47 +329,36 @@ msgid ""
 msgstr ""
 "Os ficheiros /etc/ppp/ip-up.d/00-isdnutils e /etc/ppp/ip-down.d/99-isdnutils "
 "do antigo paquete isdnutils aínda existen. Se modificou eses ficheiros "
-"nalgún momento, ha ter que refacer eses cambios nos ficheiros 00-ipppd e 99-"
-"ipppd (que son os novos nomes). Despois de facelo, elimine os ficheiro 00-"
-"isdnutils e 99-isdnutils antigos."
+"nalgún momento, ha ter que refacer esas modificacións nos ficheiros 00-ipppd "
+"e 99-ipppd (que son os novos nomes). Despois de facelo, elimine os ficheiros "
+"00-isdnutils e 99-isdnutils antigos."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:14001
-#, fuzzy
-#| msgid ""
-#| "Until they are deleted, they will still be used! This may cause conflicts."
 msgid ""
 "Until they are deleted, they will still be used. This may cause conflicts."
-msgstr "Han seguir empregándose ata que os borre. Isto pode causar conflictos."
+msgstr "Han seguir empregándose ata que os borre. Isto pode causar conflitos."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:15001
-#, fuzzy
-#| msgid "(re)start ipppd by hand"
 msgid "(Re)start ipppd manually"
 msgstr "(Re)inicie ipppd á man"
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:15001
-#, fuzzy
-#| msgid ""
-#| "There is no /etc/init.d/isdnutils on your system; hence you will have to "
-#| "stop and start any ipppd daemons by hand."
 msgid ""
 "There is no /etc/init.d/isdnutils on this system; hence you will have to "
 "stop and start any ipppd daemons manually."
 msgstr ""
-"Non existe o ficheiro /etc/init.d/isdnutils no seu sistema; polo tanto, ha "
+"Non existe o ficheiro /etc/init.d/isdnutils neste sistema, polo tanto, ha "
 "ter que deter e iniciar os servizos ipppd á man."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:16001
-#, fuzzy
-#| msgid "error running isdnutils init script"
 msgid "Error running isdnutils init script"
 msgstr "Erro ao executar o script de inicio de isdnutils"
 
@@ -462,57 +372,56 @@ msgid ""
 "isdnutils will also help."
 msgstr ""
 "O script /etc/init.d/isdnutils tivo erros. Comprobe a instalación do paquete "
-"isdnutils-base; volva instalalo se é necesario. Se cadra, se traslada /etc/"
-"init.d/isdnutils.dpkg-dist (se existe) a /etc/init.d/isdnutils pode "
-"funcionar."
+"isdnutils-base; volva instalalo se é preciso. Se cadra, se move /etc/init.d/"
+"isdnutils.dpkg-dist (de existir) a /etc/init.d/isdnutils pode funcionar."
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:2001
 msgid "Austria"
-msgstr ""
+msgstr "Austria"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:2001
 msgid "France"
-msgstr ""
+msgstr "Franza"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:2001
 msgid "Germany"
-msgstr ""
+msgstr "Alemaña"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:2001
 msgid "Luxembourg"
-msgstr ""
+msgstr "Luxemburgo"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:2001
 msgid "Netherlands"
-msgstr ""
+msgstr "Países Baixos"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:2001
 msgid "Norway"
-msgstr ""
+msgstr "Noruega"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:2001
 msgid "Spain"
-msgstr ""
+msgstr "España"
 
 #. Type: select
 #. Choices
 #: ../isdnlog.templates:2001
 msgid "Switzerland"
-msgstr ""
+msgstr "Suíza"
 
 #. Type: select
 #. Choices
@@ -554,92 +463,78 @@ msgstr ""
 #. Description
 #: ../isdnlog.templates:2003
 msgid "Country:"
-msgstr ""
+msgstr "País:"
 
 #. Type: select
 #. Description
 #: ../isdnlog.templates:2003
 #, fuzzy
 #| msgid ""
-#| "This is used for setting a number of defaults, e.g. what rate tables to "
-#| "use for calculating the cost of a call."
+#| "Please choose the local country. This will be used to set the rate table "
+#| "to use for calculating the costs of costs."
 msgid ""
 "Please choose the local country. This will be used to set the rate table to "
 "use for calculating the costs of calls."
 msgstr ""
-"Emprégase para establecer varios valores por defecto, coma as táboas de "
-"tarifas a empregar para calcular o custo dunha chamada."
+"Escolla o país local. Empregarase para definir as táboas de tarifas a "
+"empregar para calcular o custo dunha chamada."
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:4001
-#, fuzzy
-#| msgid "What is used to indicate an international number?"
 msgid "Prefix to dial before international number:"
-msgstr "¿Que prefixo se emprega para indicar un número internacional?"
+msgstr "Prefixo a marcar antes dun número internacional:"
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:5001
 msgid "Country ITU code:"
-msgstr ""
+msgstr "Código ITU do país:"
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:5001
 msgid "Please enter the international code for the local country."
-msgstr ""
+msgstr "Indique o código internacional do seu país."
 
 #. Type: string
 #. Description
 #. Translators: do not translate ${default_countrycode} and ${default_country}
 #: ../isdnlog.templates:5001
-#, fuzzy
-#| msgid "e.g. ${default_countrycode} for ${default_country}"
 msgid "Example: ${default_countrycode} for ${default_country}"
-msgstr "por exemplo, ${default_countrycode} para ${default_country}"
+msgstr "Exemplo: ${default_countrycode} para ${default_country}"
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:6001
-#, fuzzy
-#| msgid "What is your local areacode, if applicable?"
 msgid "Prefix for area code, if applicable:"
-msgstr "¿Cal é o seu prefixo, se ten un?"
+msgstr "Prefixo da área, se é aplicábel:"
 
 #. Type: string
 #. Description
 #: ../isdnlog.templates:7001
-#, fuzzy
-#| msgid "What is your local areacode, if applicable?"
 msgid "Local area code, if applicable:"
-msgstr "¿Cal é o seu prefixo, se ten un?"
+msgstr "Código de área local, se é aplicábel:"
 
 #. Type: boolean
 #. Description
 #: ../isdnlog.templates:8001
 msgid "Run isdnrate as a daemon?"
-msgstr "¿Executar isdnrate coma servizo?"
+msgstr "Desexa executar isdnrate como un servizo?"
 
 #. Type: boolean
 #. Description
 #: ../isdnlog.templates:8001
-#, fuzzy
-#| msgid ""
-#| "isdnrate is a utility to calculate the costs of a connection to a given "
-#| "phone number, used e.g. for LCR systems to find the cheapest carrier on a "
-#| "call-by-call basis. Having it run as a daemon speeds things up as then it "
-#| "only has to load all the data just once."
 msgid ""
 "The isdnrate utility calculates the costs of a connection to a given phone "
 "number, used e.g. for LCR systems to find the cheapest carrier on a call-by-"
 "call basis. Having it run as a daemon speeds things up as then it only has "
 "to load all the data once."
 msgstr ""
-"isdnrate é unha utilidade para calcular o custo dunha conexión a un número "
-"de teléfono determinado, que se emprega, por exemplo, en sistemas LCR para "
-"buscar a operadora máis barata en cada chamada. Se o executa coma servizo "
-"hase acelerar todo, xa que só ha ter que cargar os datos unha vez."
+"A utilidade isdnrate calcula o custo dunha conexión a un número de teléfono "
+"determinado, que se emprega, por exemplo, en sistemas LCR para buscar a "
+"operadora máis barata en cada chamada. Se o executa como servizo hase "
+"acelerar todo, xa que só ha ter que cargar os datos unha vez."
 
 #. Type: boolean
 #. Description
@@ -648,49 +543,39 @@ msgid ""
 "This setting is only useful for special setups, such as for an ISDN-to-H.323 "
 "gateway."
 msgstr ""
+"Este parámetro só é útil en configuracións especiais, como nunha pasarela de "
+"RDSI para H.323."
 
 #. Type: select
 #. Choices
 #: ../isdnutils-base.templates:2001
 msgid "none"
-msgstr ""
+msgstr "ningún"
 
 #. Type: select
 #. Description
 #: ../isdnutils-base.templates:2002
-#, fuzzy
-#| msgid "Does firmware need to be loaded?"
 msgid "Firmware to load:"
-msgstr "¿Hai que cargar algún firmware?"
+msgstr "Firmware para cargar:"
 
 #. Type: select
 #. Description
 #: ../isdnutils-base.templates:2002
-#, fuzzy
-#| msgid ""
-#| "Some ISDN cards can't function properly until firmware has been "
-#| "downloaded. Notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-"
-#| "Surf, which need ISAR.BIN to be loaded. (I don't know of any others at "
-#| "this time.) Choose \"ISAR.BIN\" if this is necessary. If you don't know "
-#| "what I'm talking about, choose \"none\"."
 msgid ""
 "Some ISDN cards can't function properly until some firmware has been loaded. "
 "A notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which "
 "need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is necessary."
 msgstr ""
-"Algunhas tarxetas RDSI non funcionan correctamente ata que carguen firmware. "
-"Un exemplo habitual é o Sedlbauer SpeedFax+ PCI ou o Siemens I-Suft, que "
-"precisan de cargar o ficheiro ISAR.BIN (agora mesmo non se coñecen máis). "
-"Escolla \"ISAR.BIN\" se isto é necesario. Se non sabe a que vén isto, "
-"escolla \"ningún\"."
+"Algunhas tarxetas RDSI non funcionan correctamente ata que carguen algún "
+"firmware. Un exemplo habitual é o Sedlbauer SpeedFax+ PCI ou o Siemens I-"
+"Suft, que precisan de cargar o ficheiro ISAR.BIN. Escolla «ISAR.BIN» se isto "
+"é necesario."
 
 #. Type: string
 #. Description
 #: ../isdnutils-base.templates:3001
-#, fuzzy
-#| msgid "Which ISDN card numbers have to be loaded with the firmware?"
 msgid "ISDN card numbers to load with the firmware:"
-msgstr "¿Que números de tarxeta ISDN hai que cargar co firmware?"
+msgstr "Números de tarxeta RDSI para cargar xunto co firmware:"
 
 #. Type: string
 #. Description
@@ -699,6 +584,8 @@ msgid ""
 "If you use more than one card, enter the number of the card(s) in need of "
 "firmware."
 msgstr ""
+"Se emprega máis dunha tarxeta indique o número das tarxetas que precisan de "
+"firmware."
 
 #. Type: string
 #. Description
@@ -707,58 +594,44 @@ msgid ""
 "Multiple entries should be separated by commas. Card numbers are integers "
 "where \"1\" is the first card, \"2\" the second, etc."
 msgstr ""
+"Pode separar múltiplas entradas mediante vírgulas. Os números das tarxetas "
+"son enteiros onde «1» é a primeira, «2» a segunda etc."
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:2001
-#, fuzzy
-#| msgid "What number should vbox answer?"
 msgid "Number that vbox should answer:"
-msgstr "¿En que número debe contestar vbox?"
+msgstr "Número que debe contestar vbox:"
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:2001
-#, fuzzy
-#| msgid ""
-#| "Vbox must know what number to listen to. Depending on your country's ISDN "
-#| "system, this may or may not include the areacode. It is usually without "
-#| "the leading 0."
 msgid ""
 "Vbox must know what number to listen to. Depending on the country's ISDN "
 "system, this may or may not include the area code. Leading \"0\" should most "
 "often be dropped."
 msgstr ""
 "Vbox debe saber que número ten que atender. Dependendo do sistema RDSI do "
-"seu país, este número pode incluír o prefixo ou non. Normalmente non inclúe "
-"o 0 do principio."
+"país, este número pode incluír o prefixo ou non. Xeralmente non se debe "
+"incluír o 0 do principio."
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:2001
-#, fuzzy
-#| msgid ""
-#| "Enter `quit' (or leave it blank) if you want to configure by hand, not "
-#| "via debconf. Also enter `quit' if you already have an existing (working) "
-#| "vbox configuration from the time when this was still part of isdnutils "
-#| "(unless you want to create a new configuration)."
 msgid ""
 "Leave the field blank if you want to configure by hand, or if you already "
 "use an existing (working) vbox configuration from the time when this was "
 "still part of isdnutils (unless you want to create a new configuration)."
 msgstr ""
-"Introduza \"quit\" (ou déixeo en branco) se quere configuralo á man, non "
-"mediante debconf. Introduza \"quit\" tamén se xa ten unha configuración "
-"(funcional) de vbox do tempo en que aínda formaba parte de isdnutils (a "
-"menos que queira crear unha nova configuración)."
+"Deixe o campo en branco se quer configuralo á man, ou se xa emprega unha "
+"configuración (funcional) de vbox do tempo no que aínda formaba parte de "
+"isdnutils (a non ser que queira crear unha nova configuración)."
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:3001
-#, fuzzy
-#| msgid "After how many rings should vbox pick up the line?"
 msgid "Number of rings for vbox to pick up the line:"
-msgstr "¿Despois de cantos timbres debe contestar vbox?"
+msgstr "Número de timbres para que vbox colla a liña:"
 
 #. Type: string
 #. Description
@@ -768,67 +641,54 @@ msgid ""
 "incoming telephone number, for instance to aggressively filter some incoming "
 "numbers."
 msgstr ""
+"Un timbre dura uns 5 segundos. Este parámetro pode ser axustado "
+"posteriormente segundo o número de teléfono que está a chamar, por exemplo "
+"para filtrar dun xeito agresivo algúns números entrantes."
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:3001
 msgid "You should read vbox.conf(5) for more information."
-msgstr ""
+msgstr "Debería ler vbox.conf(5) para máis información."
 
 #. Type: boolean
 #. Description
 #: ../isdnvboxserver.templates:4001
-#, fuzzy
-#| msgid "Should the message be attached to the email?"
 msgid "Should incoming messages be attached to notification mails?"
-msgstr "¿Debe anexarse a mensaxe ao email?"
+msgstr "Deben anexarse as mensaxes aos correos de notificación?"
 
 #. Type: boolean
 #. Description
 #: ../isdnvboxserver.templates:4001
-#, fuzzy
-#| msgid ""
-#| "When a message is recorded, an email notification is sent. If that email "
-#| "should contain the message as an attachment, choose \"yes\" here. Note: "
-#| "the attachment can be large!"
 msgid ""
 "When a message is recorded, an email notification is sent. If that email "
 "should contain the message as an attachment, choose the option."
 msgstr ""
-"Ao gravar unha mensaxe mándase un aviso por email. Se quere que ese email "
-"conteña a mensaxe nun anexo, escolla \"si\". Teña en conta que o anexo pode "
-"ser grande."
+"Ao gravar unha mensaxe mándase un aviso por correo. Se quere que ese correo "
+"conteña a mensaxe nun anexo, escolla esta opción."
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:5001
-#, fuzzy
-#| msgid "As what user should the answering machine run?"
 msgid "Run the answering machine as:"
-msgstr "¿Con que usuario debe executarse o contestador automático?"
+msgstr "Executar o contestador automático como:"
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:5001
-#, fuzzy
-#| msgid ""
-#| "vboxd runs with the privileges of a normal (non-root) user. This is "
-#| "typically your non-root login name. This user must be a member of the "
-#| "`dialout' group."
 msgid ""
 "The vboxd daemon should run as an unprivileged (non-root) user. It must be a "
 "member of the \"dialout\" group."
 msgstr ""
-"vboxd funciona cos privilexios dun usuario normal (non administrador). "
-"Normalmente é o seu usuario habitual non administrador. Ese usuario debe ser "
-"membro do grupo \"dialout\"."
+"O daemon vboxd debería executarse como un usuario sen privilexios (non "
+"root). Ese usuario debe ser membro do grupo «dialout»."
 
 #. Type: text
 #. Description
 #. Translators, do not translate "Daemonuser"
 #: ../isdnvboxserver.templates:6001
 msgid "${Daemonuser} unknown"
-msgstr ""
+msgstr "Non se coñece a ${Daemonuser}"
 
 #. Type: text
 #. Description
@@ -837,14 +697,14 @@ msgid ""
 "The user you chose does not exist on this machine. You must choose a valid "
 "username."
 msgstr ""
+"O usuario que escolleu non existe nesta máquina. Debe indicar un nome de "
+"usuario válido."
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:7001
-#, fuzzy
-#| msgid "As what user should the answering machine run?"
 msgid "Login for the answering machine:"
-msgstr "¿Con que usuario debe executarse o contestador automático?"
+msgstr "Usuario do contestador automático:"
 
 #. Type: string
 #. Description
@@ -853,6 +713,9 @@ msgid ""
 "Connections to the answering machine (using the vbox program provided by the "
 "isdnvboxclient package) will be prompted for a username and password."
 msgstr ""
+"As conexións co contestador automático (empregando o programa de vbox "
+"fornecido polo paquete isdnvboxclient) pedirán un nome de usuario e "
+"contrasinal."
 
 #. Type: string
 #. Description
@@ -861,89 +724,73 @@ msgid ""
 "The username you define here does not have to correspond to a login account "
 "on this system."
 msgstr ""
+"O usuario que indique aquí non se ten por que corresponder cunha conta de "
+"acceso a este sistema."
 
 #. Type: password
 #. Description
 #. Translators, do not translate "${User}"
 #: ../isdnvboxserver.templates:8001
-#, fuzzy
-#| msgid "Enter the password for ${User} here."
 msgid "Password for ${User}:"
-msgstr "Introduza o contrasinal para ${User}."
+msgstr "Contrasinal para ${User}:"
 
 #. Type: password
 #. Description
 #: ../isdnvboxserver.templates:8001
 msgid "Please choose the password for the ${User} connection user."
-msgstr ""
+msgstr "Escolla o contrasinal para o usuario de conexión ${User}."
 
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:9001
-#, fuzzy
-#| msgid "No home directory!"
 msgid "No home directory"
-msgstr "Non existe o directorio inicial"
+msgstr "Non existe o directorio persoal"
 
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:9001
-#, fuzzy
-#| msgid ""
-#| "The home directory `${DIR}' for user `${USER}' doesn't exist. This means "
-#| "that the file `${DIR}/.vbox.conf' cannot be created."
 msgid ""
 "The home directory \"${DIR}\" for user \"${USER}\" does not exist. This "
 "means that the file \"${DIR}/.vbox.conf\" cannot be created."
 msgstr ""
-"O directorio inicial \"${DIR}\" do usuario \"${USER}\" non existe. Isto "
-"significa que non se pode crear o ficheiro \"${DIR}/.vbox.conf\"."
+"Non existe o directorio persoal «${DIR}» do usuario «${USER}». Isto significa "
+"que non se pode crear o ficheiro «${DIR}/.vbox.conf»."
 
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:10001
 msgid "Non-existing user"
-msgstr ""
+msgstr "Usuario inexistente"
 
 #. Type: error
 #. Description
 #: ../isdnvboxserver.templates:10001
-#, fuzzy
-#| msgid ""
-#| "The user `${USER}' doesn't exist on the system! Please rerun the "
-#| "configuration with `dpkg-reconfigure isdnvboxserver' to enter another "
-#| "username, or after creating the user."
 msgid ""
 "The user \"${USER}\" doesn't exist on the system. Please rerun the "
 "configuration with \"dpkg-reconfigure isdnvboxserver\" to enter another "
 "username, or after creating the user."
 msgstr ""
-"O usuario ${USER} non existe no sistema. Volva executar a configuración "
-"mediante \"dpkg-reconfigure isdnvboxserver\" para introducir outro nome de "
+"O usuario «${USER}» non existe no sistema. Volva executar a configuración "
+"mediante «dpkg-reconfigure isdnvboxserver» para introducir outro nome de "
 "usuario, ou despois de crear o usuario."
 
 #. Type: boolean
 #. Description
 #: ../isdnvboxserver.templates:11001
 msgid "Should vboxgetty be enabled?"
-msgstr "¿Debería activarse vboxgetty?"
+msgstr "Debería activarse vboxgetty?"
 
 #. Type: boolean
 #. Description
 #: ../isdnvboxserver.templates:11001
-#, fuzzy
-#| msgid ""
-#| "vboxgetty is in /etc/inittab, but not yet enabled. Answering `yes' here "
-#| "will enable it once this package is fully configured. Choose `no' if you "
-#| "want to tweak it manually."
 msgid ""
 "A call for vboxgetty is defined in /etc/inittab, but not yet enabled. "
 "Choosing this option will enable it once this package is fully configured. "
 "Refuse this option if you want to tweak it manually."
 msgstr ""
-"vboxgetty está en /etc/inittab, pero aínda non está activado. Se resposta "
-"\"si\" ha activarse despois de configurar completamente este paquete. "
-"Resposte \"non\" se quere axustalo manualmente."
+"En /etc/inittab defínese unha chamada para vboxgetty, pero aínda non está "
+"activado. Se escolle esta opción activaraa despois de configurar "
+"completamente este paquete. Rexeite esta opción se quer axustalo manualmente."
 
 #. Type: error
 #. Description
@@ -971,7 +818,7 @@ msgstr ""
 #. Description
 #: ../isdnvboxserver.templates:12001 ../isdnvboxserver.templates:13001
 msgid "This problem has to be fixed manually."
-msgstr ""
+msgstr "Este problema debe ser corrixido manualmente."
 
 #. Type: error
 #. Description
