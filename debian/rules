@@ -397,7 +397,8 @@ debian_patches = \
 	capi20-msg2str-safety \
 	lsb-init-script \
 	bashisms \
-	isdneurofile-bashism
+	isdneurofile-bashism \
+	va_list
 
 ifeq ($(distribution),Ubuntu)
   debian_patches += no-imake
