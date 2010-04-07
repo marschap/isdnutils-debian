@@ -1,3 +1,10 @@
+isdnutils (1:3.9.20060704-10) unstable; urgency=low
+
+  * QA upload
+  * Add sparc64 and sh4 to the architectures lists.
+
+ -- Nobuhiro Iwamatsu <iwamatsu@debian.org>  Wed, 07 Apr 2010 13:48:24 +0900
+
 isdnutils (1:3.9.20060704-9) unstable; urgency=low
 
   * QA upload

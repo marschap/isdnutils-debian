@@ -38,7 +38,7 @@ Description: ISDN utilities - dependency package
 
 Package: isdnutils-base
 Priority: optional
-Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390
+Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390 sh4 sparc64
 Pre-Depends: debconf (>= 1.2.9) | debconf-2.0
 Depends: udev | makedev (>= 2.3.1-77), ${shlibs:Depends}, lsb-base (>= 1.3-9ubuntu3), ${misc:Depends}
 Suggests: ipppd, isdnlog, isdnutils-doc, isdnutils-xtools, isdnvboxserver, isdnvboxclient
@@ -49,7 +49,7 @@ Description: ISDN utilities - minimal set
  dependency package.
 
 Package: isdnutils-xtools
-Architecture: alpha amd64 arm armeb armel armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390
+Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390 sh4 sparc64
 Section: x11
 Depends: isdnutils-base (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Replaces: isdnutils (<<1:3.1pre1b-0)
@@ -63,7 +63,7 @@ Description: ISDN utilities - graphical tools
  in the suite to avoid dependencies on the X Window System.
 
 Package: ipppd
-Architecture: alpha amd64 arm armeb armel armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390
+Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390 sh4 sparc64
 Section: net
 Depends: isdnutils-base (= ${binary:Version}), debconf (>=1.2.9) | debconf-2.0, ppp, ${shlibs:Depends}, udev | makedev, ${misc:Depends}
 Suggests: pdnsd
@@ -75,7 +75,7 @@ Description: ISDN utilities - PPP daemon
  clients.
 
 Package: isdnlog
-Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390
+Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390 sh4 sparc64
 Depends: isdnutils-base (= ${binary:Version}), isdnlog-data (>= ${binary:Version}), debconf (>=1.2.9) | debconf-2.0, ${shlibs:Depends}, ${misc:Depends}
 Replaces: isdnutils (<<1:3.1pre1b-0)
 Description: ISDN utilities - connection logger
@@ -104,7 +104,7 @@ Description: ISDN utilities - documentation
  for the ISDN utilities suite, in English and German.
 
 Package: isdnvbox
-Architecture: alpha amd64 arm armeb armel armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390
+Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390 sh4 sparc64
 Conflicts: isdnutils (<<1:3.1pre1b-1)
 Depends: isdnvboxclient, isdnvboxserver, ${misc:Depends}
 Recommends: sox
@@ -116,7 +116,7 @@ Description: ISDN utilities - answering machine dependency package
  the messages are recorded) and the client (with which you listen to them).
 
 Package: isdnvboxclient
-Architecture: alpha amd64 arm armeb armel armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390
+Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390 sh4 sparc64
 Conflicts: isdnutils (<<1:3.1pre1b-1), isdnvbox (<<1:3.1pre1b-2)
 Depends: ${shlibs:Depends}, sox | nas-bin | alsa-utils, ${misc:Depends}
 Suggests: isdnvboxserver
@@ -130,7 +130,7 @@ Description: ISDN utilities - answering machine client
  accessible over the network).
 
 Package: isdnvboxserver
-Architecture: alpha amd64 arm armeb armel armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390
+Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390 sh4 sparc64
 Conflicts: isdnutils (<<1:3.1pre1b-1),isdnvbox (<<1:3.1pre1b-2)
 Depends: isdnutils-base (= ${binary:Version}), debconf (>=1.2.9) | debconf-2.0, ${shlibs:Depends}, openbsd-inetd | inet-superserver, udev | makedev, ${misc:Depends}
 Suggests: isdnvboxclient
@@ -145,7 +145,7 @@ Description: ISDN utilities - answering machine server
  the same system.
 
 Package: capiutils
-Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390
+Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390 sh4 sparc64
 Depends: libcapi20-3 (= ${binary:Version}), ${shlibs:Depends}, lsb-base (>= 1.3-9ubuntu3), udev | makedev, ${misc:Depends}
 Replaces: isdnactivecards (<< 1:3.6.2004-12-19-1)
 Section: net
@@ -156,7 +156,7 @@ Description: ISDN utilities - tools for CAPI-capable cards
  these cards.
 
 Package: libcapi20-3
-Architecture: alpha amd64 arm armeb armel armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390
+Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390 sh4 sparc64
 Section: libs
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Replaces: isdnutils (<<1:3.1pre1b-0), libcapi20, libcapi20-2
@@ -170,7 +170,7 @@ Description: ISDN utilities - CAPI support libraries
  This package will be installed automatically if needed.
 
 Package: libcapi20-dev
-Architecture: alpha amd64 arm armeb armel armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390
+Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390 sh4 sparc64
 Section: libdevel
 Depends: libcapi20-3 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Replaces: isdnutils (<<1:3.1pre1b-0), libcapi20, libcapi20-2
@@ -184,7 +184,7 @@ Description: ISDN utilities - CAPI development libraries
  This package provides files needed for development of CAPI-aware software.
 
 Package: pppdcapiplugin
-Architecture: alpha amd64 arm armeb armel armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390
+Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390 sh4 sparc64
 Depends: ppp (>=2.3.11), libcapi20-3 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Section: net
 Description: ISDN utilities - pppd plug-in for CAPI support
@@ -195,7 +195,7 @@ Description: ISDN utilities - pppd plug-in for CAPI support
  on such cards.
 
 Package: isdnactivecards
-Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390
+Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390 sh4 sparc64
 Depends: isdnutils-base (= ${binary:Version}), capiutils (>= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Replaces: isdnutils (<<1:3.1pre1b-0)
 Description: ISDN utilities - active ISDN card support
@@ -203,7 +203,7 @@ Description: ISDN utilities - active ISDN card support
  ISDN cards (the Eicon, Eicon Diva, IBM Active 2000, ICN, or PCBIT-D cards).
 
 Package: isdneurofile
-Architecture: alpha amd64 arm armeb armel armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390
+Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390 sh4 sparc64
 Section: comm
 Depends: isdnutils-base (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Description: ISDN utilities - EUROFILE support
