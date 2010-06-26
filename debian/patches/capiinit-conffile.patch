@@ -1,0 +1,11 @@
+--- isdnutils-3.3.orig/capiinit/capiinit.c
++++ isdnutils-3.3/capiinit/capiinit.c
+@@ -91,7 +91,7 @@
+ 
+ static int patchdebug = 0;	/* -d || -debug */
+ static int silent = 0;		/* -s || -silent */
+-char *configfilename = "/etc/capi.conf";
++char *configfilename = "/etc/isdn/capi.conf";
+ 
+ /* ---------------- utils -------------------------------------------- */
+ 

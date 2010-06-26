@@ -5,13 +5,13 @@
 	install -m 0755 scripts/isdncause                   debian/isdnutils-base/usr/bin/isdncause
 	install -m 0644 isdnctrl/README.libipt              debian/isdnutils-base/usr/share/doc/isdnutils-base/
 	rm -f             debian/tmp/etc/isdn/eftusers
-	ln -s ../ftpusers debian/isdneurofile/etc/isdn/eftusers
+	# ln -s ../ftpusers debian/isdneurofile/etc/isdn/eftusers
 	install -m 0444 Mini-FAQ/isdn-faq.*           debian/isdnutils-doc/usr/share/doc/isdnutils-doc/Mini-FAQ/
 	mv debian/tmp/usr/share/man/man1/xisdnload.1* debian/isdnutils-xtools/usr/man/man1/
 	mv debian/tmp/usr/bin/x*                      debian/isdnutils-xtools/usr/bin/
 	cp xmonisdn/README                            debian/isdnutils-xtools/usr/share/doc/isdnutils-xtools/README.xmonisdn
 	# move some extra stuff from upstream source into debian tree
-	cp ipppd/NOTES.IPPPD ipppd/README* debian/README.MPPP debian/ipppd/usr/share/doc/ipppd/
+	# cp ipppd/NOTES.IPPPD ipppd/README* debian/README.MPPP debian/ipppd/usr/share/doc/ipppd/
 	mkdir -p                                      debian/isdnlog/usr/share/doc/isdnlog
 	cp lib/README.Syntax.conffile                 debian/isdnlog/usr/share/doc/isdnlog/Syntax.conffile.de
 	cp isdnlog/BUGS	                              debian/isdnlog/usr/share/doc/isdnlog/BUGS.de
@@ -27,24 +27,24 @@
 	rm -f debian/tmp/etc/isdn/callerid.conf	\
 	      debian/tmp/etc/isdn/isdn.conf	\
 	      debian/tmp/etc/isdn/rate.conf
-	cp pcbit/README.pt                          debian/isdnactivecards/usr/share/doc/isdnactivecards/README.pcbit.pt
+	# cp pcbit/README.pt                          debian/isdnactivecards/usr/share/doc/isdnactivecards/README.pcbit.pt
 	# extra stuff, not originating from the upstream source
 	install -m 0755 debian/isdnconfig           debian/isdnutils-base/usr/sbin/
 	install -m 0644 debian/isdnconfig.8         debian/isdnutils-base/usr/share/man/man8/
 	install -m 0755 debian/x*-net*	            debian/isdnutils-xtools/etc/isdn/
 	install -m 0644 debian/init.d.functions     debian/isdnutils-base/etc/isdn/
-	install -m 0444 debian/ioptions		    debian/ipppd/etc/ppp/
-	install -m 0755 debian/ip-down.d            debian/ipppd/etc/ppp/ip-down.d/99-ipppd
-	install -m 0755 debian/ip-up.d	            debian/ipppd/etc/ppp/ip-up.d/00-ipppd
+	# install -m 0444 debian/ioptions		    debian/ipppd/etc/ppp/
+	# install -m 0755 debian/ip-down.d            debian/ipppd/etc/ppp/ip-down.d/99-ipppd
+	# install -m 0755 debian/ip-up.d	            debian/ipppd/etc/ppp/ip-up.d/00-ipppd
 	rmdir debian/isdnvboxserver/usr/share/doc/isdnvboxserver/examples || true # dont ask
 	mv debian/tmp/usr/share/doc/isdnvboxserver/* debian/isdnvboxserver/usr/share/doc/isdnvboxserver/.
 	rmdir debian/tmp/usr/share/doc/isdnvboxserver
 	# install examples
 	cp debian/device.DEVICE debian/isdnutils-base/usr/share/isdn/default/
-	for A in debian/ipppd.DEVICE \
-		debian/auth-down debian/auth-up ; do \
-	    cp $A debian/ipppd/usr/share/isdn/default/; \
-	done
+	# for A in debian/ipppd.DEVICE \
+	# 	debian/auth-down debian/auth-up ; do \
+	#     cp $A debian/ipppd/usr/share/isdn/default/; \
+	# done
 	for A in debian/callerid.conf debian/isdnlog.DEVICE; do \
 	    cp $A debian/isdnlog/usr/share/isdn/default/; \
 	done
@@ -62,7 +62,7 @@
 	ln -s HOWTO                          debian/isdnutils-base/usr/share/doc/isdnutils-base/HOWTO.isdnutils
 	install -m 0644 debian/README.HiSax  debian/isdnutils-base/usr/share/doc/isdnutils-base/
 	install -m 0644 debian/README.source debian/isdnutils-base/usr/share/doc/isdnutils-base/
-	install -m 0444 debian/ioptions      debian/ipppd/etc/ppp/
+	# install -m 0444 debian/ioptions      debian/ipppd/etc/ppp/
 	install -m 0644 isdnlog/rate-*.dat                 debian/isdnlog-data/usr/share/isdn/
 	install -m 0644 isdnlog/zone-*.cdb                 debian/isdnlog-data/usr/share/isdn/
 	install -m 0644 debian/isdnlog-data-README	   debian/isdnlog-data/usr/share/doc/isdnlog-data/README

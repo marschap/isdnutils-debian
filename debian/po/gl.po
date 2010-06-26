@@ -11,6 +11,7 @@ msgstr ""
 "PO-Revision-Date: 2009-11-04 20:57+0100\n"
 "Last-Translator: Marce Villarino <mvillarino@gmail.com>\n"
 "Language-Team: Galician <proxecto@trasno.net>\n"
+"Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -46,10 +47,10 @@ msgid ""
 "start\"."
 msgstr ""
 "Se aínda non funciona e quere probar a configuración automática, deteña "
-"todos os procesos de RDSI (empregue «/etc/init.d/isdnutils stop»), elimine os "
-"ficheiros que se mencionan enriba e volva executar a configuración mediante "
-"«dpkg-reconfigure ipppd». Despois de facelo, volva iniciar os procesos de "
-"RDSI: «/etc/init.d/isdnutils start»."
+"todos os procesos de RDSI (empregue «/etc/init.d/isdnutils stop»), elimine "
+"os ficheiros que se mencionan enriba e volva executar a configuración "
+"mediante «dpkg-reconfigure ipppd». Despois de facelo, volva iniciar os "
+"procesos de RDSI: «/etc/init.d/isdnutils start»."
 
 #. Type: string
 #. Description
@@ -94,8 +95,8 @@ msgid ""
 "Valid interface names begin with \"ippp\" followed by a number between 0 and "
 "63."
 msgstr ""
-"Os nomes de interface válidos comezan por «ippp» e van seguidos por un número "
-"entre 0 e 63."
+"Os nomes de interface válidos comezan por «ippp» e van seguidos por un "
+"número entre 0 e 63."
 
 #. Type: string
 #. Description
@@ -753,8 +754,8 @@ msgid ""
 "The home directory \"${DIR}\" for user \"${USER}\" does not exist. This "
 "means that the file \"${DIR}/.vbox.conf\" cannot be created."
 msgstr ""
-"Non existe o directorio persoal «${DIR}» do usuario «${USER}». Isto significa "
-"que non se pode crear o ficheiro «${DIR}/.vbox.conf»."
+"Non existe o directorio persoal «${DIR}» do usuario «${USER}». Isto "
+"significa que non se pode crear o ficheiro «${DIR}/.vbox.conf»."
 
 #. Type: error
 #. Description

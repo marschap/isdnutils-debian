@@ -11,6 +11,7 @@ msgstr ""
 "PO-Revision-Date: 2009-10-17 23:01+0200\n"
 "Last-Translator: Thomas Mueller <thomas.mueller@tmit.eu>\n"
 "Language-Team: Deutsch <debian-l10n-german@lists.debian.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -582,8 +583,8 @@ msgid ""
 msgstr ""
 "Manche ISDN-Karten funktionieren erst, wenn eine Firmware auf die Karte "
 "geladen wurde. Nennenswerte Beispiele sind »Sedlbauer SpeedFax+ PCI« oder "
-"»Siemens I-Surf«, welche ISAR.BIN benötigen. Wählen Sie »ISAR.BIN«, wenn dies "
-"notwendig sein sollte."
+"»Siemens I-Surf«, welche ISAR.BIN benötigen. Wählen Sie »ISAR.BIN«, wenn "
+"dies notwendig sein sollte."
 
 #. Type: string
 #. Description
@@ -772,8 +773,8 @@ msgid ""
 "The home directory \"${DIR}\" for user \"${USER}\" does not exist. This "
 "means that the file \"${DIR}/.vbox.conf\" cannot be created."
 msgstr ""
-"Das Home-Verzeichnis »${DIR}« für den Benutzer »${USER}« existiert nicht. Das "
-"bedeutet, dass die Datei »${DIR}/.vbox.conf« nicht erstellt werden kann."
+"Das Home-Verzeichnis »${DIR}« für den Benutzer »${USER}« existiert nicht. "
+"Das bedeutet, dass die Datei »${DIR}/.vbox.conf« nicht erstellt werden kann."
 
 #. Type: error
 #. Description

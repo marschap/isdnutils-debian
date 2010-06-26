@@ -22,8 +22,7 @@ endif
 distribution := $(shell lsb_release -is)
 
 auto: auto-update-stamp
-auto-update: auto-update-stamp
-auto-update-stamp: patch-stamp
+auto-update-stamp:
 	: # update autotools files
 	for d in capi20 isdnlog/client vbox3; do \
 	  cp -p /usr/share/misc/config.* $$d/; \
@@ -93,12 +92,12 @@ endif
 # autoheader doesn't work in vbox ... is it needed?
 #	  echo "  autoheader"; autoheader; \
 
-	cd ipppd && autoconf
+	# cd ipppd && autoconf
 
 	touch auto-update-stamp
 
 build: build-stamp
-build-stamp: patch-stamp auto-update-stamp
+build-stamp: auto-update-stamp
 	dh_testdir
 
 	# we need a path to the kernel sources.
@@ -112,7 +111,7 @@ build-stamp: patch-stamp auto-update-stamp
 	# sh debian/prepare-kernel-source $(DEB_HOST_ARCH)
 	-rm -f ../linux
 
-	cp debian/isdnactivecards.files.all     debian/isdnactivecards.files
+	# cp debian/isdnactivecards.files.all     debian/isdnactivecards.files
 	# we need a .config file. Try isdnutils.config in parent directory first
 	# so that local choice can be preserved.
 	test -f ../isdnutils.config && cp ../isdnutils.config .config || \
@@ -124,8 +123,8 @@ ifeq ($(some_arch_match),yes)
 		< debian/dotconfig.vboxclientonly > .config
 endif
 
-	: # ugh
-	touch eurofile/configure
+	# : # ugh
+	# touch eurofile/configure
 
 	$(MAKE) subconfig
 
@@ -151,24 +150,25 @@ clean:
 	#-rm -f `find . -name "*~"`
 	#-rm -rf debian/tmp* `find debian/* -type d ! -name CVS` debian/files* core
 	-rm -rf linux debian/linux debian/kernel-source-*
-	-rm -f  debian/isdnactivecards.files debian/isdnactivecards.conffiles
+	# -rm -f  debian/isdnactivecards.files debian/isdnactivecards.conffiles
 
-	: # remove updated autotools files
-	-find . -name config.sub -o -name config.guess | xargs rm -f
-	-find . -type l \
+	: # remove updated/added autotools files
+	find . -name config.sub -o -name config.guess -o \
+		-name autom4te.cache -o -name config.cache -o \
+		-name config.log -o -name config.status -o -name aclocal.m4 -o \
+		-name config.h -o -o -name ltmain.sh | xargs rm -f
+	rm -f capifax/configure capiinfo/configure capiinit/configure \
+		rcapid/configure vbox/configure eicon/configure
+	rm -f capi20/Makefile.in capifax/Makefile.in capiinfo/Makefile.in \
+		capiinit/Makefile.in rcapid/Makefile.in vbox/doc/Makefile.in \
+		vbox/doc/de/Makefile.in vbox/utils/Makefile.in
+	find . -type l \
 	    \( -name install-sh -o -name mkinstalldirs -o -name missing \
 	       -o -name compile -o -name depcomp \
 	    \) \
 		| xargs rm -f
-	-find . -type d -name autom4te.cache | xargs rm -rf
-	-find . -type d -name config.cache | xargs rm -rf
-	-find . -type d -name config.log | xargs rm -rf
-	-find . -type d -name config.status | xargs rm -rf
 
 	[ ! -f Makefile ] || $(MAKE) distclean
-
-	debian/rules unpatch
-
 
 	rm -f capiinit/stamp-h.in
 	rm -f vbox/src/stamp-h1
@@ -262,12 +262,12 @@ binary-arch: build install
 	dh_testroot
 	dh_installdebconf
 	dh_installdocs
-ifneq ($(some_arch_match),yes)
-	install -m 0644 debian/README.MPPP debian/README.multiple-ipppd \
-	    debian/ipppd/usr/share/doc/ipppd/
-	install -m 0644 debian/isdneurofile.README.Debian \
-	    debian/isdneurofile/usr/share/doc/isdneurofile/README.Debian
-endif
+# ifneq ($(some_arch_match),yes)
+# 	install -m 0644 debian/README.MPPP debian/README.multiple-ipppd \
+# 	    debian/ipppd/usr/share/doc/ipppd/
+# 	install -m 0644 debian/isdneurofile.README.Debian \
+# 	    debian/isdneurofile/usr/share/doc/isdneurofile/README.Debian
+# endif
 	dh_installexamples
 	dh_installmenu
 #	dh_installpam
@@ -299,9 +299,9 @@ endif
 	# - the upstream source contains junk, how am I supposed to change that?!
 	install -d debian/isdnutils/usr/share/lintian/overrides
 	install -m 644 debian/isdnutils.lintian-overrides debian/isdnutils/usr/share/lintian/overrides/isdnutils
-	# - INSTALL is not a compilation guide, it's a real usage guide.
-	install -d debian/isdneurofile/usr/share/lintian/overrides
-	install -m 644 debian/isdneurofile.lintian-overrides debian/isdneurofile/usr/share/lintian/overrides/isdneurofile
+	# # - INSTALL is not a compilation guide, it's a real usage guide.
+	# install -d debian/isdneurofile/usr/share/lintian/overrides
+	# install -m 644 debian/isdneurofile.lintian-overrides debian/isdneurofile/usr/share/lintian/overrides/isdneurofile
 	# - again, examples scripts that shouldn't be executable
 	# - and I *do* want a different default depending on the language!
 	install -d debian/isdnlog/usr/share/lintian/overrides
@@ -319,8 +319,8 @@ endif
 	install -m 644 debian/isdnvboxserver.lintian-overrides debian/isdnvboxserver/usr/share/lintian/overrides/isdnvboxserver
 	# - yet again, examples scripts that shouldn't be executable
 	# - db_input in postinst only in extreme situations
-	install -d debian/ipppd/usr/share/lintian/overrides
-	install -m 644 debian/ipppd.lintian-overrides debian/ipppd/usr/share/lintian/overrides/ipppd
+	# install -d debian/ipppd/usr/share/lintian/overrides
+	# install -m 644 debian/ipppd.lintian-overrides debian/ipppd/usr/share/lintian/overrides/ipppd
 
 	dh_installchangelogs
 	rm -rf debian/libcapi20-dev/usr/share/doc/libcapi20-dev
@@ -359,86 +359,6 @@ ifeq ($(some_arch_match),yes)
 	echo "Ignore any of the 'still existing files' listed below on this architecture."
 endif
 	if [ ! -z "`find debian/tmp ! -type d`" ]; then echo "The following files still exist in debian/tmp/:"; find debian/tmp ! -type d -ls; fi;
-
-# rules to patch the unpacked files in the source directory
-# ---------------------------------------------------------------------------
-# various rules to unpack addons and (un)apply patches.
-# 	- patch / apply-patches
-#	- unpatch / reverse-patches
-
-patchdir	= debian/patches
-
-# which patches should be applied?
-debian_patches = \
-	deb-build \
-	hisax-firmware \
-	ppdcapiplugin-dialmax \
-	capiinit-conffile \
-	capiinit-manpage \
-	capiinit-fwpath \
-	eicon-manpages \
-	eurofile-manpages \
-	rcapid-manpage \
-	isdnlog-diffs \
-	xisdnload-config \
-	ipppd-ms-chap \
-	vbox-vboxplay \
-	vbox-diffs \
-	vbox-autotools \
-	vbox-no-strict-aliasing \
-	capifax-manpages \
-	capi20-soname \
-	libtool \
-	imon-update \
-	gcc40-fixes \
-	ppp-2.4.4b1 \
-	vbox-little-endian \
-	toplevel-make \
-	capi20-msg2str-safety \
-	lsb-init-script \
-	bashisms \
-	isdneurofile-bashism \
-	va_list
-
-ifeq ($(distribution),Ubuntu)
-  debian_patches += no-imake
-endif
-
-patch: patch-stamp
-
-patch-stamp: $(foreach p,$(debian_patches),patch-stamp-$(p))
-	echo ""; echo "Patches applied in this version:" > pxxx
-	for i in $(debian_patches); do \
-	  echo "" >> pxxx; echo "$$i:" >> pxxx; \
-	  sed -n 's/^# *DP: */  /p' $(patchdir)/$$i.dpatch >> pxxx; \
-	done
-	mv -f pxxx $@
-
-reverse-patches: unpatch
-unpatch:
-	for stamp in none `ls -1t patch-stamp-* 2>/dev/null`; do \
-	  case "$$stamp" in none|patched-stamp|patched-\*) continue; esac; \
-	  patch=`echo $$stamp | sed -e 's,patch-stamp-,,'`; \
-	  echo "trying to revert patch $$patch ..."; \
-	  if [ -x $(patchdir)/$$patch.dpatch ]; then true; else \
-	    chmod +x $(patchdir)/$$patch.dpatch; fi; \
-	  if $(patchdir)/$$patch.dpatch -unpatch; then \
-	    echo "reverted $$patch patch."; \
-	    rm -f $$stamp; \
-	  else \
-	    echo "error in reverting $$patch patch."; \
-	    exit 1; \
-	  fi; \
-	done
-	rm -f patch-stamp
-
-patch-stamp-%: $(patchdir)/%.dpatch
-	if [ -x $< ]; then true; else chmod +x $<; fi
-	if [ -f $@ ]; then \
-	  echo "$* patches already applied."; exit 1; \
-	fi
-	$< -patch
-	echo "$* patches applied." > $@
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install

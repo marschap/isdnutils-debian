@@ -1,0 +1,8 @@
+--- isdnutils-3.3.orig/scripts/makedev.sh
++++ isdnutils-3.3/scripts/makedev.sh
+@@ -1,4 +1,5 @@
+ #!/bin/sh
++exit 0	# not done when building a package for debian
+ #
+ # $Id: makedev.sh,v 1.5 2000/02/24 13:29:26 paul Exp $
+ #

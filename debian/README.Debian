@@ -1,8 +1,7 @@
 isdnutils for Debian
 --------------------
 
-This is a completely new packaging of the ISDN utilities collection.
-isdnutils has now also been split up into different packages:
+isdnutils is split into different packages:
 
 - isdnutils
   Compatibility package for people upgrading from the previous version.
@@ -13,13 +12,8 @@ isdnutils has now also been split up into different packages:
 - isdnutils-base
   The base part, containing direct kernel support, e.g. isdnctrl
 
-- ipppd
-  Needed for connecting via syncPPP to e.g. an ISP.
-  Now supports MS-CHAP authentication.
-
 - pppdcapiplugin
-  If you have a CAPI-capable ISDN card, you can use this with the "normal"
-  PPP daemon to make a connection over ISDN instead of using ipppd.
+  Use this with the PPP daemon to make a connection over ISDN
 
 - isdnlog
   For logging ISDN connections, and optionally triggering actions upon events
@@ -46,9 +40,3 @@ isdnutils has now also been split up into different packages:
 
 - isdnactivecards
   utilities and firmware for active cards. Not needed by most people.
-
-- isdneurofile
-  Transfer files using "eurofile" protocol. Somewhat experimental
-
- -- Paul Slootman <paul@debian.org>, Wed, 23 Aug 2000 14:04:08 +0200
-    updated 8 Nov 2001

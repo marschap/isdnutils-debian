@@ -1,0 +1,11 @@
+--- a/vbox/src/vboxd.c~	2005-03-28 19:50:15.770709237 +0200
++++ b/vbox/src/vboxd.c	2005-03-28 19:58:56.780069971 +0200
+@@ -387,7 +387,7 @@
+ 	fd_set         rmask;
+ 	char          *stop;
+ 	int            p;
+-	int            c;
++	char           c;
+ 	int            rc;
+ 
+ 	*line = '\0';

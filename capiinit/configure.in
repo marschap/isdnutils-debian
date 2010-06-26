@@ -3,7 +3,7 @@ AC_INIT(capiinit.c)
 AM_INIT_AUTOMAKE(capiinit, 1.0)
 AC_PREFIX_DEFAULT(/)
 
-CONFIG_SBINDIR=${CONFIG_CARD_SBINDIR:-"/sbin"}
+CONFIG_SBINDIR$=${CONFIG_CARD_SBINDIR:-"/sbin"}
 
 
 dnl Checks for programs.

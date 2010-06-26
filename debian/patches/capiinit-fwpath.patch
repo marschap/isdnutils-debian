@@ -1,0 +1,47 @@
+--- a/capiinit/capiinit.c	2005-02-21 18:52:00.000000000 +0100
++++ b/capiinit/capiinit.c	2005-07-14 15:38:23.592997400 +0200
+@@ -87,6 +87,7 @@
+ #include <linux/capi.h>
+ #include <linux/kernelcapi.h>
+ #include <getopt.h>
++#include <sys/utsname.h>
+ 
+ #define MODPROBE	"/sbin/modprobe"
+ static char capidevnameold[] = "/dev/capi20";
+@@ -94,6 +95,7 @@
+ static char *capidevname = capidevnameold;
+ 
+ static char *firmwarepath[] = {
++	"/usr/share/isdn/release", /* replaced by kernel release */
+ 	"/lib/firmware/isdn",
+ 	"/usr/share/isdn",
+ 	"/usr/lib/isdn",
+@@ -136,6 +138,19 @@
+    return s;
+ }
+ 
++static int init_firmware_path(void)
++{
++   struct utsname uts;
++   char *path;
++
++   if (uname(&uts))
++      return 1;
++   path = (char *) malloc(strlen(firmwarepath[0]) + strlen(uts.release) + 1);
++   sprintf(path, "/usr/share/isdn/%s", uts.release);
++   firmwarepath[0] = path;
++   return 0;
++}
++
+ /* ---------------- load module -------------------------------------- */
+ 
+ static int is_module_loaded(char *module)
+@@ -1607,6 +1622,8 @@
+ 		}
+ 	}
+ 
++	init_firmware_path();
++
+  	if (optind == ac) {
+ 		return main_start(1, 0, 0);
+ 	} else if (optind+1 == ac) {

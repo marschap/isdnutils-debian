@@ -15,23 +15,23 @@
 	install -m 0644 debian/capi.conf debian/capiutils/etc/isdn/
 	# ln -s ../isdnutils-doc/FAQ       debian/isdnutils-doc/usr/share/doc/isdnutils/
 	# ln -s ../isdnutils-doc/Mini-FAQ  debian/isdnutils-doc/usr/share/doc/isdnutils/
-	mkdir -p debian/isdneurofile/usr/share/doc/isdneurofile/scripts
-	install -m 0644 eurofile/doc/README debian/isdneurofile/usr/share/doc/isdneurofile/
-	install -m 0644 eurofile/doc/FAQ    debian/isdneurofile/usr/share/doc/isdneurofile/
-	install -m 0644 eurofile/doc/INTERWORKING* debian/isdneurofile/usr/share/doc/isdneurofile/
-	install -m 0644 eurofile/doc/PROBLEME.eftd debian/isdneurofile/usr/share/doc/isdneurofile/
-	install -m 0644 eurofile/doc/design.txt debian/isdneurofile/usr/share/doc/isdneurofile/
-	install -m 0644 eurofile/doc/*.1 debian/isdneurofile/usr/share/man/man1/
-	install -m 0644 eurofile/doc/*.5 debian/isdneurofile/usr/share/man/man5/
-	install -m 0644 eurofile/doc/*.8 debian/isdneurofile/usr/share/man/man8/
-	install -m 0644 eurofile/CHANGES debian/isdneurofile/usr/share/doc/isdneurofile/changelog
-	install -m 0644 eurofile/INSTALL debian/isdneurofile/usr/share/doc/isdneurofile/
-	install -m 0644 eurofile/README* debian/isdneurofile/usr/share/doc/isdneurofile/
-	install -m 0644 eurofile/TODO debian/isdneurofile/usr/share/doc/isdneurofile/
-	install -m 0755 eurofile/scripts/check_system debian/isdneurofile/usr/share/doc/isdneurofile/scripts/
-	install -m 0755 eurofile/scripts/eft_useradd debian/isdneurofile/usr/share/doc/isdneurofile/scripts/
-	install -m 0755 eurofile/scripts/ix25test debian/isdneurofile/usr/share/doc/isdneurofile/scripts/
-	install -m 0755 eurofile/scripts/eftd.sh debian/isdneurofile/usr/share/doc/isdneurofile/scripts/
+	# mkdir -p debian/isdneurofile/usr/share/doc/isdneurofile/scripts
+	# install -m 0644 eurofile/doc/README debian/isdneurofile/usr/share/doc/isdneurofile/
+	# install -m 0644 eurofile/doc/FAQ    debian/isdneurofile/usr/share/doc/isdneurofile/
+	# install -m 0644 eurofile/doc/INTERWORKING* debian/isdneurofile/usr/share/doc/isdneurofile/
+	# install -m 0644 eurofile/doc/PROBLEME.eftd debian/isdneurofile/usr/share/doc/isdneurofile/
+	# install -m 0644 eurofile/doc/design.txt debian/isdneurofile/usr/share/doc/isdneurofile/
+	# install -m 0644 eurofile/doc/*.1 debian/isdneurofile/usr/share/man/man1/
+	# install -m 0644 eurofile/doc/*.5 debian/isdneurofile/usr/share/man/man5/
+	# install -m 0644 eurofile/doc/*.8 debian/isdneurofile/usr/share/man/man8/
+	# install -m 0644 eurofile/CHANGES debian/isdneurofile/usr/share/doc/isdneurofile/changelog
+	# install -m 0644 eurofile/INSTALL debian/isdneurofile/usr/share/doc/isdneurofile/
+	# install -m 0644 eurofile/README* debian/isdneurofile/usr/share/doc/isdneurofile/
+	# install -m 0644 eurofile/TODO debian/isdneurofile/usr/share/doc/isdneurofile/
+	# install -m 0755 eurofile/scripts/check_system debian/isdneurofile/usr/share/doc/isdneurofile/scripts/
+	# install -m 0755 eurofile/scripts/eft_useradd debian/isdneurofile/usr/share/doc/isdneurofile/scripts/
+	# install -m 0755 eurofile/scripts/ix25test debian/isdneurofile/usr/share/doc/isdneurofile/scripts/
+	# install -m 0755 eurofile/scripts/eftd.sh debian/isdneurofile/usr/share/doc/isdneurofile/scripts/
 
 	install -m 0644 debian/isdnutils-README.transitional debian/isdnutils/usr/share/doc/isdnutils/README.transitional
 	# ln -s isdnutils-base debian/isdnutils-base/usr/share/doc/isdnutils

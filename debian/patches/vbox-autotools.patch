@@ -1,0 +1,87 @@
+--- isdnutils-3.3.orig/vbox/Makefile.in
++++ isdnutils-3.3/vbox/Makefile.in
+@@ -287,6 +287,7 @@
+ 		  $(TOPDIR)/config.status \
+ 		  $(TOPDIR)/src/Makefile \
+ 		  $(TOPDIR)/src/config.h \
++		  $(TOPDIR)/autom4te.cache/*
+ 
+ clean:		  ignore
+ 		  @find $(TOPDIR)/ -name '*~' -exec $(RM) {} ';'
+@@ -296,7 +297,8 @@
+ distclean:	  clean programs-d scripts-d manuals-d
+ 		  @set -e; for i in `echo $(DISTCLEANOBJS)`; do \
+ 		     $(RM) -f $$i; \
+-		  done
++		  done; \
++		  $(RM) -rf $(TOPDIR)/autom4te.cache
+ 
+ #----------------------------------------------------------------------------#
+ #                                                                            #
+--- isdnutils-3.3.orig/vbox/acinclude.m4
++++ isdnutils-3.3/vbox/acinclude.m4
+@@ -47,7 +47,7 @@
+ 
+       AC_CHECK_LIB(m,
+          cos,
+-         AC_CHECK_LIB(dl,
++         [AC_CHECK_LIB(dl,
+             dlerror,
+             [AC_CHECK_LIB(${gnd_1st_tcl_lib_test},
+                Tcl_CreateInterp,
+@@ -91,12 +91,22 @@
+ 
+                HAVE_TCL_INCL="y"
+                LINK_TCL_INCL="${gnd_tcl_inc_dir}"
+-      else
++            else
+                AC_MSG_RESULT("no")
+             fi
++         else
++            AC_CHECK_HEADER(${gnd_1st_tcl_lib_test}/tcl.h, LINK_TCL_INCL="-I/usr/include/${gnd_1st_tcl_lib_test}";HAVE_TCL_INCL="y",
++                [ AC_CHECK_HEADER(${gnd_2nd_tcl_lib_test}/tcl.h, LINK_TCL_INCL="-I/usr/include/${gnd_2nd_tcl_lib_test}";HAVE_TCL_INCL="y",
++                    [ AC_CHECK_HEADER(${gnd_3rd_tcl_lib_test}/tcl.h, LINK_TCL_INCL="-I/usr/include/${gnd_3rd_tcl_lib_test}";HAVE_TCL_INCL="y")
++                    ])
++                ])
+          fi
+       fi
+ 
++         # gnd_1st_tcl_lib_test="tcl8.4"
++         # gnd_2nd_tcl_lib_test="tcl8.3"
++         # gnd_3rd_tcl_lib_test="tcl8.0"
++
+       if (test "${HAVE_TCL_LIBS}" = "y")
+       then
+          if (test "${HAVE_TCL_INCL}" = "y")
+--- isdnutils-3.3.orig/vbox/configure.in
++++ isdnutils-3.3/vbox/configure.in
+@@ -2,13 +2,14 @@
+ dnl     generate the file "configure", which is run during vbox installation
+ dnl     to configure the system for the local environment.
+ 
+-AC_INIT(src/vboxgetty.h)
+-AM_CONFIG_HEADER(src/config.h)
+-
+ dnl #------------------------------------------------------------------------#
+ dnl # Version of the vbox package. Theres no need to change this ;-)         #
+ dnl #------------------------------------------------------------------------#
+-AM_INIT_AUTOMAKE(vbox,'2.0.0BETA5')
++AC_INIT(vbox,'2.0.0BETA5')
++AM_INIT_AUTOMAKE
++AM_CONFIG_HEADER(src/config.h)
++AC_CONFIG_SRCDIR(src/vboxgetty.h)
++
+ VERDATE="17-NOV-98"
+ 
+ dnl #------------------------------------------------------------------------#
+@@ -17,8 +18,8 @@
+ 
+ AC_PREFIX_DEFAULT()
+ 
+-AC_DEFINE_UNQUOTED(PACKAGE, "${PACKAGE}")
+-AC_DEFINE_UNQUOTED(VERSION, "${VERSION}")
++AC_DEFINE_UNQUOTED(PACKAGE, "${PACKAGE_NAME}")
++AC_DEFINE_UNQUOTED(VERSION, "${PACKAGE_VERSION}")
+ AC_DEFINE_UNQUOTED(VERDATE, "${VERDATE}")
+ 
+ AC_SUBST(PACKAGE)

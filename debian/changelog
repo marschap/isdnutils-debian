@@ -1,3 +1,23 @@
+isdnutils (1:3.9.20060704+dfsg.1-1) unstable; urgency=low
+
+  * QA upload
+  * Change source package to 3.0 (quilt) format
+  * Remove some components that are not DFSG-compliant (Closes: #559425):
+    - act2000/firmware: no source code available
+    - eicon/firmware: no source code available
+    - eurofile/src/wuath: commercial use is forbidden
+    - hisax/ISAR.bin: no source code available
+    - icn/firmware: no source code available
+    - ipppd: incompatible licences (advertising clause vs GPL)
+    - isdnlog/isdnlog/ora*: commercial use is forbidden
+    - isdnlog/tools/telrate/tt.js: no licence stated
+    - pcbit/convhexbin.c: no licence stated
+  * Drop eurofile, ipppd and isdnactivecards packages
+    - isdnactivecards will be re-added in the non-free section
+  * Remove all modified autotools-generated files in 'clean' rule
+
+ -- Ben Hutchings <ben@decadent.org.uk>  Sat, 26 Jun 2010 12:47:04 +0100
+
 isdnutils (1:3.9.20060704-10) unstable; urgency=low
 
   * QA upload

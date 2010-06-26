@@ -32,6 +32,7 @@ msgstr ""
 "PO-Revision-Date: 2009-10-14 12:00+0200\n"
 "Last-Translator: Francisco Javier Cuadrado <fcocuadrado@gmail.com>\n"
 "Language-Team: Debian l10n Spanish <debian-l10n-spanish@lists.debian.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -242,8 +243,8 @@ msgid ""
 "a new entry with the data you just entered will be inserted."
 msgstr ""
 "El nombre de usuario que introdujo para la identificación en su ISP ya está "
-"en el archivo «/etc/ppp/pap-secrets». Se comentará la entrada existente, y se "
-"insertará una nueva entrada con los datos que acaba de introducir."
+"en el archivo «/etc/ppp/pap-secrets». Se comentará la entrada existente, y "
+"se insertará una nueva entrada con los datos que acaba de introducir."
 
 #. Type: error
 #. Description
@@ -280,8 +281,8 @@ msgid ""
 "inserted."
 msgstr ""
 "El nombre de usuario que introdujo para la identificación en su ISP ya está "
-"en los archivos «chap-secrets» y «pap-secrets» del directorio «/etc/ppp/». Se "
-"comentará la entrada existente, y se insertará una nueva entrada con los "
+"en los archivos «chap-secrets» y «pap-secrets» del directorio «/etc/ppp/». "
+"Se comentará la entrada existente, y se insertará una nueva entrada con los "
 "datos que acaba de introducir."
 
 #. Type: error
@@ -338,7 +339,8 @@ msgstr ""
 #: ../ipppd.templates:14001
 msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
 msgstr ""
-"Todavía existen los antiguos scripts «/etc/ppp/ip-up.d/» y «/etc/ppp/ip-down.d»"
+"Todavía existen los antiguos scripts «/etc/ppp/ip-up.d/» y «/etc/ppp/ip-down."
+"d»"
 
 #. Type: error
 #. Description
@@ -350,11 +352,11 @@ msgid ""
 "files (which are the new names). After that, please delete the old 00-"
 "isdnutils and 99-isdnutils files."
 msgstr ""
-"Los archivos «/etc/ppp/ip-up.d/00-isdnutils» y «/etc/ppp/ip-up.d/99-isdnutils» "
-"del antiguo paquete isdnutils todavía existen. Si cambió esos archivos "
-"alguna vez, puede que necesite rehacer esos cambios en los archivos «00-"
-"ipppd» y «99-ipppd» (que son sus nuevos nombres). Después de esto, borre los "
-"antiguos archivos «00-isdnutils» y «99-isdnutils»."
+"Los archivos «/etc/ppp/ip-up.d/00-isdnutils» y «/etc/ppp/ip-up.d/99-"
+"isdnutils» del antiguo paquete isdnutils todavía existen. Si cambió esos "
+"archivos alguna vez, puede que necesite rehacer esos cambios en los archivos "
+"«00-ipppd» y «99-ipppd» (que son sus nuevos nombres). Después de esto, borre "
+"los antiguos archivos «00-isdnutils» y «99-isdnutils»."
 
 #. Type: error
 #. Description
@@ -776,8 +778,9 @@ msgid ""
 "The home directory \"${DIR}\" for user \"${USER}\" does not exist. This "
 "means that the file \"${DIR}/.vbox.conf\" cannot be created."
 msgstr ""
-"No existe el directorio personal («home») «${DIR}» para el usuario «${USER}». "
-"Esto significa que el archivo «${DIR}/.vbox.conf» no se puede crear."
+"No existe el directorio personal («home») «${DIR}» para el usuario "
+"«${USER}». Esto significa que el archivo «${DIR}/.vbox.conf» no se puede "
+"crear."
 
 #. Type: error
 #. Description
@@ -794,8 +797,8 @@ msgid ""
 "username, or after creating the user."
 msgstr ""
 "El usuario «${USER}» no existe en el sistema. Ejecute de nuevo el proceso de "
-"configuración mediante «dpkg-reconfigure isdnvboxserver» para introducir otro "
-"nombre de usuario, o después de haber creado el usuario."
+"configuración mediante «dpkg-reconfigure isdnvboxserver» para introducir "
+"otro nombre de usuario, o después de haber creado el usuario."
 
 #. Type: boolean
 #. Description
