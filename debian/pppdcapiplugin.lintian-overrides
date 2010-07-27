@@ -1,6 +1,2 @@
-pppdcapiplugin: shared-lib-without-dependency-information ./usr/lib/pppd/2.3.11/userpass.so
-pppdcapiplugin: shared-lib-without-dependency-information ./usr/lib/pppd/2.4.0/userpass.so
-pppdcapiplugin: shared-lib-without-dependency-information ./usr/lib/pppd/2.4.1/userpass.so
-pppdcapiplugin: shared-lib-without-dependency-information ./usr/lib/pppd/2.4.1b1/userpass.so
-pppdcapiplugin: shared-lib-without-dependency-information ./usr/lib/pppd/2.4.1b2/userpass.so
-pppdcapiplugin: shared-lib-without-dependency-information ./usr/lib/pppd/2.4.2b3/userpass.so
+pppdcapiplugin: shared-lib-without-dependency-information ./usr/lib/pppd/2.4.4/userpass.so
+pppdcapiplugin: shared-lib-without-dependency-information ./usr/lib/pppd/2.4.5/userpass.so

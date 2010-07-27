@@ -1,6 +1,8 @@
---- isdnutils-3.3.orig/capiinit/capiinit.c
-+++ isdnutils-3.3/capiinit/capiinit.c
-@@ -91,7 +91,7 @@
+Index: isdnutils-3.9.20060704+dfsg.1/capiinit/capiinit.c
+===================================================================
+--- isdnutils-3.9.20060704+dfsg.1.orig/capiinit/capiinit.c	2010-07-27 21:23:05.017877743 +0200
++++ isdnutils-3.9.20060704+dfsg.1/capiinit/capiinit.c	2010-07-27 21:23:21.409879274 +0200
+@@ -107,7 +107,7 @@
  
  static int patchdebug = 0;	/* -d || -debug */
  static int silent = 0;		/* -s || -silent */
