@@ -1,3 +1,3 @@
 version=3
-opts="dversionmangle=s/.*\.//,uversionmangle=s/-//g" \
+opts="dversionmangle=s/.*(2[[:digit:]]+).dfsg.*/$1/,uversionmangle=s/-//g" \
   ftp://ftp.isdn4linux.de/pub/isdn4linux/CVS-Snapshots/isdn4k-utils-CVS-([-\d\.]*)\.tar\.bz2
