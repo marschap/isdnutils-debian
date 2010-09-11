@@ -1,2 +1,0 @@
-isdnvboxserver: killall-is-dangerous postinst:60
-isdnvboxserver: postinst-uses-db-input

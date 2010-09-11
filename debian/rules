@@ -309,14 +309,6 @@ endif
 	# - these shared libraries are only used by a single binary that knows all about them
 	install -d debian/pppdcapiplugin/usr/share/lintian/overrides
 	install -m 644 debian/pppdcapiplugin.lintian-overrides debian/pppdcapiplugin/usr/share/lintian/overrides/pppdcapiplugin
-	# - there's no -dev package, so shut up about the shlib symlink
-	# - No, I don't call ldconfig in an unsafe manner
-	install -d debian/libcapi20-3/usr/share/lintian/overrides
-	install -m 644 debian/libcapi20-3.lintian-overrides debian/libcapi20-3/usr/share/lintian/overrides/libcapi20-3
-	# - not much chance of more processed with the name "vboxgetty", and start-stop-daemon won't work
-	# - db_input in postinst only in extreme situations
-	install -d debian/isdnvboxserver/usr/share/lintian/overrides
-	install -m 644 debian/isdnvboxserver.lintian-overrides debian/isdnvboxserver/usr/share/lintian/overrides/isdnvboxserver
 	# - yet again, examples scripts that shouldn't be executable
 	# - db_input in postinst only in extreme situations
 	install -d debian/ipppd/usr/share/lintian/overrides
