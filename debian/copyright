@@ -1,4 +1,4 @@
-This package was debianized by Paul Slootman <paul@debian.org>
+This package was originally debianized by Paul Slootman <paul@debian.org>
 in the period June 2000 - September 2000.
 
 The source was downloaded from:
@@ -19,7 +19,8 @@ Debian Free Software Guidelines:
 - isdnlog/tools/telrate/tt.js: no licence stated
 - pcbit/convhexbin.c: no licence stated
 
-Changes for Debian were made by Paul Slootman <paul@debian.org> and
+Changes and packaging for Debian were prepared by Paul Slootman
+<paul@debian.org>, Rolf Leggewie <foss@rolf.leggewie.biz> and
 other Debian developers, and are licensed under GPL version 2.
 
 Specific copyrights etc. follow. If not listed, the component falls
