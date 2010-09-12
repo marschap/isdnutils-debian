@@ -367,3 +367,16 @@
  This manual page was written by Andreas Jellinghaus <aj@dungeon.inka.de>,
  for Debian GNU/Linux and isdn4linux.
 +Now maintained by Paul Slootman <paul@debian.org>.
+Index: isdnutils/vbox/doc/vbox_file.man
+===================================================================
+--- isdnutils.orig/vbox/doc/vbox_file.man       2010-09-12 18:45:11.000000000 +0200
++++ isdnutils/vbox/doc/vbox_file.man    2010-09-12 18:46:33.000000000 +0200
+@@ -2,7 +2,7 @@
+ .\" CHECKIN $Date: 2001/03/01 14:45:07 $
+ .TH vbox 5 "@MANDATE@" "ISDN 4 Linux @I4LVERSION@" "Linux System Administration"
+ .SH NAME
+-vbox files \- file format
++vbox \- file format
+ .SH FORMAT
+ With version 2.0.0 of vbox the recorded files have a new header, that
+ does not only include compression mode and connection information, but
