@@ -4,7 +4,7 @@ Priority: extra
 Maintainer: Rolf Leggewie <foss@rolf.leggewie.biz>
 Uploaders: Jan-Michael Brummer <jan.brummer@tabos.org>
 DM-Upload-Allowed: yes
-Standards-Version: 3.7.3
+Standards-Version: 3.9.1
 Build-Depends: debhelper (>=5), bzip2, libncurses5-dev | libncurses-dev,
  xutils-dev | imake, tcl-dev, linuxdoc-tools (>=0.9.20), groff, libtool,
  libxaw7-dev, libreadline-dev, libpcap0.8-dev, autotools-dev, automake1.4,
