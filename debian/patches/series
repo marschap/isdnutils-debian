@@ -29,3 +29,4 @@ capi20-h-needs-stddef-h.patch
 ipppd-replace-gpl-code.patch
 va_list.patch
 fix-manpage-section.patch
+debian-bts593136-fix-dest.cdb-spelling.patch

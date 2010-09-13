@@ -1,0 +1,18 @@
+Description: fix spelling mistake in dest.cdb (s/Appenweiler/Appenweier/)
+Author: Rolf Leggewie <foss@rolf.leggewie.biz>
+Debian-Bug: http://bugs.debian.org/593136
+Forwarded: no
+
+Index: isdnutils/isdnlog/tools/zone/de/code
+===================================================================
+--- isdnutils.orig/isdnlog/tools/zone/de/code	2010-09-13 04:14:05.000000000 +0200
++++ isdnutils/isdnlog/tools/zone/de/code	2010-09-13 04:14:26.000000000 +0200
+@@ -4195,7 +4195,7 @@
+ 7802	Oberkirch
+ 7803	Gengenbach
+ 7804	Oppenau
+-7805	Appenweiler
++7805	Appenweier
+ 7806	Bad Peterstal-Griesbach
+ 7807	Neuried
+ 7808	Hohberg
