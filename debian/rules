@@ -296,9 +296,6 @@ endif
 	# - duh, it's an example, why should it be executable
 	install -d debian/isdnutils-base/usr/share/lintian/overrides
 	install -m 644 debian/isdnutils-base.lintian-overrides debian/isdnutils-base/usr/share/lintian/overrides/isdnutils-base
-	# - the upstream source contains junk, how am I supposed to change that?!
-	install -d debian/isdnutils/usr/share/lintian/overrides
-	install -m 644 debian/isdnutils.lintian-overrides debian/isdnutils/usr/share/lintian/overrides/isdnutils
 	# # - INSTALL is not a compilation guide, it's a real usage guide.
 	# install -d debian/isdneurofile/usr/share/lintian/overrides
 	# install -m 644 debian/isdneurofile.lintian-overrides debian/isdneurofile/usr/share/lintian/overrides/isdneurofile
