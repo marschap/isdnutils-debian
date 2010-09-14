@@ -76,6 +76,12 @@ AC_DEFUN(AC_CHECK_MYSQLDB, [
 		fi
 		if test "$mydir" = "no" ; then
 			AC_MSG_RESULT("$mydir")
+			AC_MSG_CHECKING([for mysql in /usr])
+			AC_EGREP_HEADER(MYSQL,/usr/include/mysql/mysql.h,
+			mydir=/usr)
+		fi
+		if test "$mydir" = "no" ; then
+			AC_MSG_RESULT("$mydir")
 			AC_MSG_CHECKING([for mysql in /lib/mysql])
 			AC_EGREP_HEADER(MYSQL,/lib/mysql/include/mysql.h,
 			mydir=/lib/mysql)
@@ -89,7 +95,7 @@ AC_DEFUN(AC_CHECK_MYSQLDB, [
 		if test "$mydir" = "no" ; then
 			AC_MSG_RESULT("$mydir")
 			AC_MSG_CHECKING([for mysql in /usr/local/mysql])
-			AC_EGREP_HEADER(MYSQL,/usr/local/postgre95/include/mysql.h,
+			AC_EGREP_HEADER(MYSQL,/usr/local/mysql/include/mysql.h,
 			mydir=/usr/local/mysql)
 		fi
 		if test "$mydir" = "no" ; then
@@ -111,6 +117,28 @@ AC_DEFUN(AC_CHECK_MYSQLDB, [
 	AC_DEFINE_UNQUOTED(MYSQLDIR,"$mydir")
 	AC_SUBST(MYSQLDB)
 	AC_SUBST(MYSQLDIR)
+])
+
+dnl
+dnl Check for Oracle
+dnl
+
+AC_DEFUN(AC_CHECK_ORACLE, [
+	oradir="no"
+	if test "$ORACLE_HOME" != "" && test "$CONFIG_ISDNLOG_ORACLE" = "y" ; then
+		AC_MSG_CHECKING([for Oracle in ${ORACLE_HOME}])
+		if test -x ${ORACLE_HOME}/bin/proc ; then
+			oradir="yes"
+		fi
+	fi
+	if test "$oradir" != "no" ; then
+		AC_MSG_RESULT("yes")
+		ORACLE=1
+		AC_DEFINE_UNQUOTED(ORACLE,1)
+	else
+		AC_MSG_RESULT("no ORACLE DISABLED")
+	fi
+	AC_SUBST(ORACLE)
 ])
 
 sinclude(../etc/ackernel.m4)dnl

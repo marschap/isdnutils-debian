@@ -1,11 +1,34 @@
 /*
- * $Id: avmcapictrl.c,v 1.10 1998/07/15 15:08:20 calle Exp $
+ * $Id: avmcapictrl.c,v 1.16 2001/03/01 14:59:11 paul Exp $
  * 
  * AVM-B1-ISDN driver for Linux. (Control-Utility)
  * 
  * Copyright 1996 by Carsten Paeth (calle@calle.in-berlin.de)
  * 
  * $Log: avmcapictrl.c,v $
+ * Revision 1.16  2001/03/01 14:59:11  paul
+ * Various patches to fix errors when using the newest glibc,
+ * replaced use of insecure tempnam() function
+ * and to remove warnings etc.
+ *
+ * Revision 1.15  2000/03/08 13:40:33  calle
+ * check for /dev/isdn/capi20 if /dev/capi20 doesn't exist.
+ *
+ * Revision 1.14  2000/01/28 16:36:19  calle
+ * generic addcard (call add_card function of named driver)
+ *
+ * Revision 1.13  1999/12/06 17:01:51  calle
+ * more documentation and possible errors explained.
+ *
+ * Revision 1.12  1999/07/01 16:37:53  calle
+ * New command with new driver
+ *    avmcapictrl trace [contrnr] [off|short|on|full|shortnodate|nodata]
+ * to make traces of capi messages per controller.
+ *
+ * Revision 1.11  1999/06/21 15:30:45  calle
+ * extend error message if io port is out of range, now tell user that an
+ * AVM B1 PCI card must be added by loading module b1pci.
+ *
  * Revision 1.10  1998/07/15 15:08:20  calle
  * port and irq check changed.
  *
@@ -50,6 +73,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <ctype.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
@@ -59,6 +83,11 @@
 #include <linux/isdn.h>
 #include <linux/b1lli.h>
 #include <linux/capi.h>
+/* new ioctls */
+#include <linux/kernelcapi.h>
+
+static char capidevname[] = "/dev/capi20";
+static char capidevnamenew[] = "/dev/isdn/capi20";
 
 char *cmd;
 char *ctrldev;
@@ -72,6 +101,12 @@ void usage(void)
 	fprintf(stderr, "   or: %s load <bootcode> [contrnr [protocol [P2P | DN1:SPID1 [DN2:SPID2]]]] (load firmware)\n", cmd);
 	fprintf(stderr, "   or: %s reset [contrnr] (reset controller)\n", cmd);
 	fprintf(stderr, "   or: %s remove [contrnr] (reset controller)\n", cmd);
+#ifdef KCAPI_CMD_TRACE
+	fprintf(stderr, "   or: %s trace [contrnr] [off|short|on|full|shortnodate|nodata]\n", cmd);
+#endif
+#ifdef KCAPI_CMD_ADDCARD
+	fprintf(stderr, "   or: %s addcard <driver> <portbase> <irq> [ <membase> [ <cardnr> ] ]\n", cmd);
+#endif
 	exit(1);
 }
 
@@ -298,6 +333,7 @@ static int checkportandirq(int cardtype, int port, int irq)
 			for (i = 1; validports[i]; i++)
 				fprintf(stderr, ", 0x%x", validports[i]);
 			fprintf(stderr, "\n");
+			fprintf(stderr, "%s: to install a B1 PCI card load module b1pci.o\n", cmd);
 			return -1;
 		}
 		for (i = 0; validirqs[i] && irq != validirqs[i]; i++);
@@ -335,11 +371,12 @@ int main(int argc, char **argv)
 	} else
 		usage();
 	ac = argc - (arg_ofs - 1);
-	fd = open("/dev/capi20", O_RDWR);
+	if ((fd = open(capidevname, O_RDWR)) < 0 && errno == ENOENT)
+  	   fd = open(capidevnamenew, O_RDWR);
 	if (fd < 0) {
 		switch (errno) {
 		   case ENOENT:
-		      perror("Device file /dev/capi20 missing, use instdev");
+		      perror("Device file /dev/capi20 and /dev/isdn/capi20 missing, use instdev");
 		      exit(2);
 		   case ENODEV:
 		      perror("device capi20 not registered");
@@ -399,6 +436,7 @@ int main(int argc, char **argv)
 			ioctl_s.data = &newcard;
 			if ((ioctl(fd, CAPI_MANUFACTURER_CMD, &ioctl_s)) < 0) {
 				perror("ioctl ADDCARD");
+				fprintf(stderr, "%s: please also look at the kernel message, call command dmesg(8)\n", cmd);
 				exit(-1);
 			}
 			close(fd);
@@ -504,6 +542,7 @@ int main(int argc, char **argv)
 		ioctl_s.data = &ldef;
 		if ((ioctl(fd, CAPI_MANUFACTURER_CMD, &ioctl_s)) < 0) {
 			perror("\nioctl LOAD");
+			fprintf(stderr, "%s: please also look at the kernel message, call command dmesg(8)\n", cmd);
 			exit(2);
 		}
 		munmap(ldef.t4file.data, ldef.t4file.len);
@@ -522,13 +561,15 @@ int main(int argc, char **argv)
 		ioctl_s.cmd = AVMB1_RESETCARD;
 		ioctl_s.data = &rdef;
 		if ((ioctl(fd, CAPI_MANUFACTURER_CMD, &ioctl_s)) < 0) {
-			perror("\nioctl RESET");
+			fprintf(stderr, "%s: please also look at the kernel message, call command dmesg(8)\n", cmd);
+			perror("\nioctl RESETCARD");
 			exit(2);
 		}
 		close(fd);
 		return 0;
 	}
 	if (   !strcasecmp(argv[arg_ofs], "remove")
+            || !strcasecmp(argv[arg_ofs], "delete")
             || !strcasecmp(argv[arg_ofs], "del")) {
 		int contr = 1;
 
@@ -539,12 +580,128 @@ int main(int argc, char **argv)
 		ioctl_s.cmd = AVMB1_REMOVECARD;
 		ioctl_s.data = &rdef;
 		if ((ioctl(fd, CAPI_MANUFACTURER_CMD, &ioctl_s)) < 0) {
-			perror("\nioctl RESET");
+			fprintf(stderr, "%s: please also look at the kernel message, call command dmesg(8)\n", cmd);
+			perror("\nioctl REMOVECARD");
 			exit(2);
 		}
 		close(fd);
 		return 0;
 	}
+#ifdef KCAPI_CMD_TRACE
+	if (!strcasecmp(argv[arg_ofs], "trace")) {
+		kcapi_flagdef fdef;
+		char *s = 0;
+		fdef.contr = 1;
+		fdef.flag = 0;
+
+		if (ac > 2) {
+			s = argv[arg_ofs + 1];
+			if (isdigit(*s)) {
+			   fdef.contr = atoi(argv[arg_ofs + 1]);
+			   s = argv[arg_ofs + 2];
+			}
+		}
+		if (s) {
+			if (isdigit(*s)) {
+				fdef.flag = atoi(s);
+			} else if (strcasecmp(s, "off") == 0) {
+				fdef.flag = KCAPI_TRACE_OFF;
+			} else if (strcasecmp(s, "short") == 0) {
+				fdef.flag = KCAPI_TRACE_SHORT;
+			} else if (strcasecmp(s, "on") == 0) {
+				fdef.flag = KCAPI_TRACE_FULL;
+			} else if (strcasecmp(s, "full") == 0) {
+				fdef.flag = KCAPI_TRACE_FULL;
+			} else if (strcasecmp(s, "shortnodata") == 0) {
+				fdef.flag = KCAPI_TRACE_SHORT_NO_DATA;
+			} else if (strcasecmp(s, "nodata") == 0) {
+				fdef.flag = KCAPI_TRACE_FULL_NO_DATA;
+			} else {
+				usage();
+				exit(1);
+			}
+		}
+
+		ioctl_s.cmd = KCAPI_CMD_TRACE;
+		ioctl_s.data = &fdef;
+		if ((ioctl(fd, CAPI_MANUFACTURER_CMD, &ioctl_s)) < 0) {
+			perror("\nioctl TRACE");
+			exit(2);
+		}
+		close(fd);
+		if (fdef.flag != KCAPI_TRACE_OFF)
+		    printf("%s: trace switched on, look at the kernel messages, check dmesg(8)\n", cmd);
+	        else printf("%s: trace switched off\n", cmd);
+		return 0;
+	}
+#endif
+#ifdef KCAPI_CMD_ADDCARD
+	if (!strcasecmp(argv[arg_ofs], "addcard")) {
+		kcapi_carddef carddef;
+		char *s = 0;
+	        int port;
+		int irq;
+		int cardnr = 0;
+		unsigned long membase = 0;
+
+                memset(&carddef, 0, sizeof(carddef));
+
+		if (ac >= 5) {
+			s = argv[arg_ofs + 1];
+			if (strlen(s) > sizeof(carddef.driver)) {
+				fprintf(stderr, "%s: driver name > %lu\n",
+						cmd, (unsigned long)sizeof(carddef.driver));
+				exit(1);
+			}
+			strncpy(carddef.driver, s, sizeof(carddef.driver));
+
+			if (sscanf(argv[arg_ofs + 2], "%i", &port) != 1) {
+				fprintf(stderr, "%s: invalid port \"%s\"\n",
+						cmd, argv[arg_ofs + 2]);
+				exit(1);
+			}
+			carddef.port = port;
+
+			if (sscanf(argv[arg_ofs + 3], "%i", &irq) != 1) {
+				fprintf(stderr, "%s: invalid irq \"%s\"\n",
+						cmd, argv[arg_ofs + 3]);
+				exit(1);
+			}
+			carddef.irq = irq;
+
+			if (argv[arg_ofs + 4]) {
+			   if (sscanf(argv[arg_ofs + 4], "%li", &membase) != 1) {
+			   	fprintf(stderr, "%s: invalid membase \"%s\"\n",
+						cmd, argv[arg_ofs + 4]);
+				exit(1);
+			   }
+			   carddef.membase = membase;
+
+			   if (argv[arg_ofs + 5]) {
+			      if (sscanf(argv[arg_ofs + 5], "%i", &cardnr) != 1) {
+			   	fprintf(stderr, "%s: invalid cardnr \"%s\"\n",
+						cmd, argv[arg_ofs + 5]);
+				exit(1);
+			      }
+			      carddef.cardnr = cardnr;
+			   }
+			}
+		} else {
+			fprintf(stderr, "%s: missing arguments\n", cmd);
+			usage();
+			exit(1);
+		}
+
+		ioctl_s.cmd = KCAPI_CMD_ADDCARD;
+		ioctl_s.data = &carddef;
+		if ((ioctl(fd, CAPI_MANUFACTURER_CMD, &ioctl_s)) < 0) {
+			perror("\nioctl ADDCARD");
+			exit(2);
+		}
+		close(fd);
+		return 0;
+	}
+#endif
 	usage();
 	return 0;
 }

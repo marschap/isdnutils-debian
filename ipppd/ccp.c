@@ -25,22 +25,23 @@
  * OR MODIFICATIONS.
  */
 
-char ccp_rcsid[] = "$Id: ccp.c,v 1.10 1998/12/01 12:59:38 hipp Exp $";
+char ccp_rcsid[] = "$Id: ccp.c,v 1.15 2000/11/12 16:06:42 kai Exp $";
 
 #include <string.h>
 #include <syslog.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
+/* dummy decl for struct referenced but not defined in linux/ppp-comp.h */
+struct compstat;
+#include <linux/ppp-comp.h>
 
 #include "fsm.h"
 #include "ipppd.h"
 #include "ccp.h"
 
-#include <linux/ppp-comp.h>
-
 #include "compressions.h"
 
-#ifdef HAVE_LZSCOMP_H
+#if 0
 #include <linux/isdn_lzscomp.h>
 #else
 #include "../ipppcomp/isdn_lzscomp.h"
@@ -214,6 +215,7 @@ static void ccp_init(int unit)
 int ccp_getunit(int linkunit,int protocol)
 {
   int i;
+  char proto[64];
 
   if(protocol != PPP_CCP && protocol != PPP_LINK_CCP)
     return -1;
@@ -226,7 +228,12 @@ int ccp_getunit(int linkunit,int protocol)
       ccp_fsm[i].id = 0;
       ccp_fsm[i].unit = linkunit;
       ccp_fsm[i].protocol = protocol;
-      syslog(LOG_NOTICE,"CCP: got ccp-unit %d for link %d (protocol: %#x)",i,linkunit,protocol);
+      switch (protocol) {
+      case 0x80FD: strcpy(proto, "Compression Control Protocol"); break;
+      case 0x80FB: strcpy(proto, "Link Compression Control Protocol"); break;
+      default: sprintf(proto, "protocol: %#x", protocol);
+      }
+      syslog(LOG_NOTICE,"CCP: got ccp-unit %d for link %d (%s)",i,linkunit,proto);
       return i;
     }
   }
@@ -448,7 +455,6 @@ static void ccp_resetci(fsm *f)
 	opt_buf[4] = LZS_CMODE_SEQNO;
 	if(ccp_test(unit, opt_buf, CILEN_LZS_COMPRESS, 0) <= 0) {
 	    go->lzs = 0;
-	    syslog(LOG_NOTICE,"Kernel check for LZS failed\n");
 	}
     }
 }
@@ -1201,12 +1207,32 @@ static int ccp_printpkt(u_char *p,int plen,void (*printer)(void*,char*,...),void
 		}
 		break;
 	    case CI_LZS_COMPRESS:
-		if(optlen >= CILEN_LZS_COMPRESS) {
-		    printer(arg, "LZS hists %d check %d",
+		/* Make sure we differ real (RFC1974) from old pre-RFC
+		   implementations like Ascends. ISPs who never set up
+		   LZS on an Ascend Max will end up announcing the
+		   mode "Stac" which claims to be 0x11 - the same
+		   value used for RFC1974 conforming LZS - but has
+		   another format, primarily a length of 6 of the
+		   config element. While I know a bit about that mode
+		   I refrain from implementing it. Users who see that
+		   stuff announced should contact their ISPs and ask
+		   for RFC compliant compression. Usually, it is just
+		   an oversight at the ISP, no bad taste */
+		if(optlen == CILEN_LZS_COMPRESS) {
+		    printer(arg, "LZS (RFC) hists %d check %d",
 			    (p[2] << 16) | p[3], p[4]);
 		    p += CILEN_LZS_COMPRESS;
+		} else if(optlen == 6) {
+		    printer(arg, "LZS (Ascend pre-RFC)");
+		    p += optlen;
+		} else {
+		    printer(arg, "LZS (non-RFC)");
+		    p += optlen;
 		}
 		break;
+		/* Looks like the following default was missing. I added
+		   it, hopefully it is correct. ---abp */
+	    default:
 		while (p < optend)
 		    printer(arg, " %.2x", *p++);
 		printer(arg, ">");

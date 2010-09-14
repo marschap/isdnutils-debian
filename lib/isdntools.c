@@ -1,4 +1,4 @@
-/* $Id: isdntools.c,v 1.24 1998/12/16 20:57:30 akool Exp $
+/* $Id: isdntools.c,v 1.28 2001/08/18 11:59:01 paul Exp $
  *
  * ISDN accounting for isdn4linux. (Utilities)
  *
@@ -19,6 +19,27 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: isdntools.c,v $
+ * Revision 1.28  2001/08/18 11:59:01  paul
+ * Added missing endpwent() call that meant /etc/passwd was being kept open;
+ * reorganized num_match() a bit; made the arrays in expand_number() one byte
+ * bigger to prevent possible off-by-one buffer overflow.
+ *
+ * Revision 1.27  2000/09/05 08:05:03  paul
+ * Now isdnlog doesn't use any more ISDN_XX defines to determine the way it works.
+ * It now uses the value of "COUNTRYCODE = 999" to determine the country, and sets
+ * a variable mycountrynum to that value. That is then used in the code to set the
+ * way isdnlog works.
+ * It works for me, please check it! No configure.in / doc changes yet until
+ * it has been checked to work.
+ * So finally a version of isdnlog that can be compiled and distributed
+ * internationally.
+ *
+ * Revision 1.26  1999/08/20 19:43:46  akool
+ * removed avon-, vorwahl- and areacodes-support
+ *
+ * Revision 1.25  1999/06/11 15:46:54  akool
+ * not required references to libndbm removed
+ *
  * Revision 1.24  1998/12/16 20:57:30  akool
  *  - first try to add the 1999 tarif of the German Telekom
  *  - fix the areacode 2.0 support
@@ -204,15 +225,23 @@ typedef struct {
 /****************************************************************************/
 
 static int (*print_msg)(const char *, ...) = printf;
-static char *_get_avon(char *code, int *Len, int flag);
+#if 0 /* DELETE_ME AK:18-Aug-99 */
+#ifdef LIBAREA
 static char *_get_areacode(char *code, int *Len, int flag);
+#else
+static char *_get_avon(char *code, int *Len, int flag);
+#endif
+#endif
 static int create_runfile(const char *file, const char *format);
+#if 0 /* DELETE_ME AK:18-Aug-99 */
 static long int area_read_value(FILE *fp, int size);
 static int area_read_file(void);
 static int area_get_index(char *code);
+#endif
 
 /****************************************************************************/
 
+#if 0 /* DELETE_ME AK:18-Aug-99 */
 static char areacodes[][2][30] = {
 	{"+49130", "Toll-free"},
 	{"+491802", "Service 180-2 (0,12/Anruf)"},
@@ -259,6 +288,7 @@ static char *avonlib = NULL;
 static char *codelib = NULL;
 static s_areacode *codes = NULL;
 static int codes_number = 0;
+#endif
 
 /****************************************************************************/
 
@@ -267,7 +297,9 @@ void set_print_fct_for_lib(int (*new_print_msg)(const char *, ...))
 	print_msg = new_print_msg;
 	set_print_fct_for_conffile(new_print_msg);
 	set_print_fct_for_libtools(new_print_msg);
+#if 0 /* DELETE_ME AK:18-Aug-99 */
 	set_print_fct_for_avon(new_print_msg);
+#endif
 }
 
 /****************************************************************************/
@@ -278,23 +310,21 @@ int num_match(char* Pattern, char *number)
 	char **Ptr;
 	char **Array;
 
-	if (!strcmp(Pattern, number))
-		RetCode = 0;
-	else
-	if (strchr(Pattern,C_NUM_DELIM))
+	if (!strcmp(Pattern, number)) /* match */
+		return 0;
+
+	if (!strchr(Pattern,C_NUM_DELIM))
+    return match(expand_number(Pattern), number, 0);
+
+	Ptr = Array = String_to_Array(Pattern,C_NUM_DELIM);
+
+	while (*Ptr != NULL && RetCode != 0)
 	{
-		Ptr = Array = String_to_Array(Pattern,C_NUM_DELIM);
-
-		while (*Ptr != NULL && RetCode != 0)
-		{
-			RetCode = match(expand_number(*Ptr), number, 0);
-			Ptr++;
-		}
-
-		del_Array(Array);
+		RetCode = match(expand_number(*Ptr), number, 0);
+		Ptr++;
 	}
-	else
-		RetCode = match(expand_number(Pattern), number, 0);
+
+	del_Array(Array);
 
 	return RetCode;
 }
@@ -306,8 +336,8 @@ char *expand_number(char *s)
 	int all_allowed = 0;
 	char *Ptr;
 	int   Index = 0;
-	char Help[NUMBER_SIZE] = "";
-	static char Num[NUMBER_SIZE];
+	char Help[NUMBER_SIZE+1];
+	static char Num[NUMBER_SIZE+1];
 
 
 	Help[0] = '\0';
@@ -408,7 +438,9 @@ char *expand_file(char *s)
 		setpwent();
 		while((password = getpwent()) != NULL &&
 		      strcmp(password->pw_name,Help)  &&
-		      password->pw_uid != id            );
+		      password->pw_uid != id)
+        ;
+    endpwent();
 
 		if (password == NULL)
 			return NULL;
@@ -605,11 +637,46 @@ static int create_runfile(const char *file, const char *format)
 	return RetCode;
 } /* create_runfile */
 
-/****************************************************************************/
 
-/* Setzt die Laendercodes, die fuer die Lib gebraucht werden. Diese Funktion
-   muss von jedem Programm aufgerufen werden!!!
-*/
+/*****************************************************************************/
+/*
+ * set_country_behaviour() - different countries have small differences in
+ * ISDN implementations. Use the COUNTRYCODE setting to select the behaviour
+ */
+
+static void set_country_behaviour(char *mycountry)
+{
+	/* amazing, strtol will also accept "+0049" */
+	mycountrynum = strtol(mycountry, (char **)0, 10);
+/*
+ * There's no real point in testing for a known country code.
+ * Setting an unknown countrycode to 49 (DE) is probably the worst
+ * thing you can do if you're not actually in Germany. You might
+ * give a warning, but do we really want that?  So simply accept
+ * the given value  - Paul Slootman 20010818
+ */
+#if 0
+	switch (mycountrynum) {
+		case CCODE_NL:
+		case CCODE_CH:
+		case CCODE_AT:
+		case CCODE_DE:
+		case CCODE_LU:
+		/* any more special cases ? */
+			/* these only need to have mycountrynum set correctly */
+			break;
+		default:
+			mycountrynum = 49; /* use Germany as default for now */
+	}
+#endif /* 0 */
+}
+
+
+/****************************************************************************/
+/*
+ * Sets the country codes that are used for the lib. This function must
+ * be called by each program!
+ */
 
 #define _MAX_VARS 8
 
@@ -632,7 +699,7 @@ int Set_Codes(section* Section)
 
 	if ((SPtr = Get_Section(Section,CONF_SEC_GLOBAL)) == NULL)
 		return -1;
-
+#if 0 /* DELETE_ME AK:18-Aug-99 */
 	if ((Entry = Get_Entry(SPtr->entries,CONF_ENT_AREALIB)) != NULL &&
 	    Entry->value != NULL                                             )
 		ptr[0] = acFileName = strdup(Entry->value);
@@ -645,7 +712,7 @@ int Set_Codes(section* Section)
 		sprintf(s, "%s%c%s", confdir(), C_SLASH, AVON);
 		ptr[1] = avonlib = strdup(s);
 	}
-
+#endif
 	if ((Entry = Get_Entry(SPtr->entries,CONF_ENT_COUNTRY_PREFIX)) != NULL &&
 	    Entry->value != NULL                                             )
 		ptr[2] = countryprefix = strdup(Entry->value);
@@ -653,11 +720,11 @@ int Set_Codes(section* Section)
 	if ((Entry = Get_Entry(SPtr->entries,CONF_ENT_AREA_PREFIX)) != NULL &&
 	    Entry->value != NULL                                             )
 		ptr[3] = areaprefix = strdup(Entry->value);
-
+#if 0 /* DELETE_ME AK:18-Aug-99 */
 	if ((Entry = Get_Entry(SPtr->entries,CONF_ENT_CODELIB)) != NULL &&
 	    Entry->value != NULL                                             )
 		ptr[4] = codelib = strdup(Entry->value);
-
+#endif
 	if ((Entry = Get_Entry(SPtr->entries,CONF_ENT_AREA)) != NULL &&
 	    Entry->value != NULL                                          )
 	{
@@ -686,12 +753,15 @@ int Set_Codes(section* Section)
 			ptr2 = s;
 		}
 			
-		if ((ptr[6] = mycountry = strdup(ptr2)) != NULL)
+		if ((ptr[6] = mycountry = strdup(ptr2)) != NULL) {
 			RetCode++;
+			set_country_behaviour(mycountry);
+		}
 		else
 			print_msg("Error: Variable `%s' are not set!\n",CONF_ENT_COUNTRY);
 	}
 
+#if 0 /* DELETE_ME AK:18-Aug-99 */
 	if ((Entry = Get_Entry(SPtr->entries,CONF_ENT_AREADIFF)) != NULL &&
 	    Entry->value != NULL                                             )
 		ptr[7] = areadifffile = strdup(Entry->value);
@@ -712,7 +782,7 @@ int Set_Codes(section* Section)
 				ptr[7] = areadifffile;
 		}
 	}
-
+#endif
 	SPtr = Section;
 
 	while ((SPtr = Get_Section(SPtr,CONF_SEC_VAR)) != NULL)
@@ -735,6 +805,7 @@ int Set_Codes(section* Section)
 
 /****************************************************************************/
 
+#if 0 /* DELETE_ME AK:18-Aug-99 */
 char *get_areacode(char *code, int *Len, int flag)
 {
 	auto     char  *Ptr;
@@ -771,16 +842,20 @@ char *get_areacode(char *code, int *Len, int flag)
 		i++;
 	}
 
-	if (codelib != NULL && !strcasecmp(codelib,"AVON"))
-		Ptr = _get_avon(code,Len,flag);
-	else
+#if 0 /* DELETE_ME AK:18-Aug-99 */
+#ifdef LIBAREA
 	if (codelib != NULL && !strcasecmp(codelib,"AREACODE"))
 		Ptr = _get_areacode(code,Len,flag);
+#else
+	if (codelib != NULL && !strcasecmp(codelib,"AVON"))
+		Ptr = _get_avon(code,Len,flag);
+#endif
 	else
 #ifdef LIBAREA
 		Ptr = _get_areacode(code,Len,flag);
 #else
 		Ptr = _get_avon(code,Len,flag);
+#endif
 #endif
 
 	if (Ptr != NULL)
@@ -808,7 +883,10 @@ char *get_areacode(char *code, int *Len, int flag)
 }
 
 /****************************************************************************/
+#endif
 
+#if 0 /* DELETE_ME AK:18-Aug-99 */
+#ifndef LIBAREA
 static char *_get_avon(char *code, int *Len, int flag)
 {
 	static int opened = 0;
@@ -865,9 +943,12 @@ static char *_get_avon(char *code, int *Len, int flag)
 
 	return (s[0]?s:NULL);
 }
+#endif
+#endif
 
 /****************************************************************************/
 
+#if 0 /* DELETE_ME AK:18-Aug-99 */
 static char *_get_areacode(char *code, int *Len, int flag)
 {
 	auto     int    cc = 0;
@@ -916,6 +997,7 @@ static char *_get_areacode(char *code, int *Len, int flag)
 
 	return NULL;
 }
+#endif
 
 /****************************************************************************/
 
@@ -1024,6 +1106,7 @@ int paranoia_check(char *cmd)
 
 /****************************************************************************/
 
+#if 0 /* DELETE_ME AK:18-Aug-99 */
 static long int area_read_value(FILE *fp, int size)
 {
 	long value = 0;
@@ -1254,3 +1337,4 @@ static int area_read_file(void)
 }
 
 /****************************************************************************/
+#endif

@@ -1,5 +1,5 @@
 #
-# $Id: Makefile.in,v 1.20 1998/11/23 09:17:59 fritz Exp $
+# $Id: Makefile.in,v 1.24 2002/01/31 20:05:40 paul Exp $
 
 #----------------------------------------------------------------------------#
 # Things you can change to personalize the Makefile for your own site. Some  #
@@ -108,6 +108,11 @@ VBOX_PIDFILEDIR	= $(PIDFILEDIR)
 VBOX_LCKFILEDIR	= $(LCKFILEDIR)
 VBOX_SPOOLDIR	= $(SPOOLDIR)
 
+ifeq ($(VBOX_SUSPEND_ID),y)
+        VBOX_SUSPEND_DEF := -DVBOX_SUSPEND_VALUE=1
+endif
+
+
 #----------------------------------------------------------------------------#
 # Export variables needed by the other utilities...                          #
 #----------------------------------------------------------------------------#
@@ -131,6 +136,7 @@ export VBOX_PIDFILEDIR
 export VBOX_LCKFILEDIR
 export VBOX_SPOOLDIR
 export VBOX_SYSCONFDIR
+export VBOX_SUSPEND_DEF
 
 #----------------------------------------------------------------------------#
 #                                                                            #
@@ -166,11 +172,15 @@ programs-d:	  ignore
 programs-i:	  ignore
 		  @echo "Installing '$(DESTDIR)$(sbindir)/vboxgetty'..."
 		  @$(INSTALL_SBIN) $(TOPDIR)/src/vboxgetty $(DESTDIR)$(sbindir)/vboxgetty
+		  @echo "Installing '$(DESTDIR)$(sbindir)/vboxputty'..."
+		  @cd $(DESTDIR)$(sbindir); \
+		  $(LN) -f vboxgetty vboxputty
 		  @echo "Installing '$(DESTDIR)$(sbindir)/vboxd'..."
 		  @$(INSTALL_SBIN) $(TOPDIR)/src/vboxd $(DESTDIR)$(sbindir)/vboxd
 		  @echo "Installing '$(DESTDIR)$(bindir)/vboxcnvt'..."
 		  @$(INSTALL_BIN) $(TOPDIR)/src/vboxconvert $(DESTDIR)$(bindir)/vboxcnvt
 		  @cd $(DESTDIR)$(bindir); \
+		  $(LN) -f vboxcnvt rmdtovbox; \
 		  $(LN) -f vboxcnvt vboxtoau; \
 		  $(LN) -f vboxcnvt autovbox; \
 		  $(LN) -f vboxcnvt vboxmode
@@ -180,14 +190,14 @@ programs-i:	  ignore
 		  @$(INSTALL_UBIN) $(TOPDIR)/src/vboxbeep $(DESTDIR)$(bindir)/vboxbeep
 		  @echo "Installing '$(DESTDIR)$(bindir)/vbox'..."
 		  @$(INSTALL_BIN) $(TOPDIR)/src/vbox $(DESTDIR)$(bindir)/vbox
-		  @set -e; if [ -n "$(DESTDIR)" -o -f $(DESTDIR)$(sysconfdir)/vboxgetty.conf ]; then \
+		  @set -e; if [ -z "$(DESTDIR)" -a -f $(DESTDIR)$(sysconfdir)/vboxgetty.conf ]; then \
 			  echo "Installing '$(DESTDIR)$(sysconfdir)/vboxgetty.conf.new'..."; \
 			  $(INSTALL_SYSCONF) $(TOPDIR)/examples/vboxgetty.conf.example $(DESTDIR)$(sysconfdir)/vboxgetty.conf.new; \
 		  else \
 			  echo "Installing '$(DESTDIR)$(sysconfdir)/vboxgetty.conf'..."; \
 			  $(INSTALL_SYSCONF) $(TOPDIR)/examples/vboxgetty.conf.example $(DESTDIR)$(sysconfdir)/vboxgetty.conf; \
 		  fi
-		  @set -e; if [ -n "$(DESTDIR)" -o -f $(DESTDIR)$(sysconfdir)/vboxd.conf ]; then \
+		  @set -e; if [ -z "$(DESTDIR)" -a -f $(DESTDIR)$(sysconfdir)/vboxd.conf ]; then \
 			  echo "Installing '$(DESTDIR)$(sysconfdir)/vboxd.conf.new'..."; \
 			  $(INSTALL_SYSCONF) $(TOPDIR)/examples/vboxd.conf.example $(DESTDIR)$(sysconfdir)/vboxd.conf.new; \
 		  else \

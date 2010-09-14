@@ -1,5 +1,5 @@
 /*
-** $Id: vbox.c,v 1.9 1998/12/31 09:57:27 paul Exp $
+** $Id: vbox.c,v 1.11 2002/01/31 20:10:20 paul Exp $
 **
 ** Copyright (C) 1996, 1997 Michael 'Ghandi' Herold
 */
@@ -1381,7 +1381,8 @@ static void draw_message_line(int y, int nr, int selected)
 		mvprintw(y, 1, "%s", msgline->mtime > 0 ? "+" : "");
 		mvprintw(y, 1, "%s", msgline->delete ? "-" : "");
 		
-		strcpy(strtime, "??-???-???? ??:??:??");
+                /* I hate trigraphs */
+		strcpy(strtime, "??""-??""?-""??""??"" ??"":??"":??");
 
 		if ((msgtime = localtime(&msgline->ctime)))
 		{
@@ -1547,7 +1548,7 @@ static void draw_message_list(void)
 static void play_message(int msg)
 {
 	struct messageline *msgline;
-	char               *msgname;
+	char                msgname[sizeof("/tmp/vboxXXXXXX\0")];
 	char               *command;
 	char               *answer;
 	int                 size;
@@ -1557,19 +1558,15 @@ static void play_message(int msg)
 	if ((!messagesmp) || (messagesnr < 1)) return;
 
 	msgline = (struct messageline *)(messagesmp + (sizeof(struct messageline) * msg));
-	msgname = tmpnam(NULL);
-
-	if ((!msgline) || (!msgname))
+	if (!msgline)
 	{
-		message("\r\n", "Can't create temporary file! %s", "[RETURN]");
-
+		message("\r\n", "No message found! (can't happen?) %s", "[RETURN]");
 		return;
 	}
-
-	if ((fd = open(msgname, O_WRONLY|O_CREAT|O_TRUNC, S_IWUSR|S_IRUSR)) == -1)
+	strcpy(msgname, "/tmp/vboxXXXXXX");
+	if ((fd = mkstemp(msgname)) == -1)
 	{
 		message("\r\n", "Can't open temporary file! %s", "[RETURN]");
-
 		return;
 	}
 

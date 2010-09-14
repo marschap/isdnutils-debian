@@ -1,6 +1,6 @@
-.\" $Id: ttyI.man.in,v 1.6 1998/12/02 16:53:31 paul Exp $
+.\" $Id: ttyI.man.in,v 1.11 2002/01/31 18:52:12 paul Exp $
 .\"
-.\" CHECKIN $Date: 1998/12/02 16:53:31 $
+.\" CHECKIN $Date: 2002/01/31 18:52:12 $
 .\"
 .\" Process this file with
 .\" groff -man -Tascii ttyI.4 for ASCII output, or
@@ -8,25 +8,19 @@
 .\"
 .TH ttyi 4 "@MANDATE@" "ISDN 4 Linux @I4LVERSION@" "Special files"
 .SH NAME
-ttyI, cui \- ISDN character devices with modem emulator
+ttyI \- ISDN character devices with modem emulator
 .SH DESCRIPTION
 .IB ttyI [ 0-63 ]
-and
-.IB cui [ 0-63 ]
 are emulated tty devices of the Linux
 .SM ISDN
 subsystem.
 These devices can be used in the same way as the traditional serial
 devices
-.IR ttySx " and " cuax .
+.IR ttySx.
 The official major device numbers are
 .B 43
 for
-.I ttyI
-and
-.B 44
-for
-.IR cui .
+.I ttyI .
 The minor device numbers start with
 .B 0
 and end with
@@ -229,7 +223,7 @@ ASCII code of Backspace.
 Duration, in number of seconds, modem waits before dialling.
 .TP
 .BR 7 " (default 60)"
-Wait time for carrier in seconds (ignored).
+Wait time for carrier in seconds.
 .TP
 .BR 8 " (default 2)"
 Pause time for comma (',') in dial command in seconds (ignored).
@@ -319,27 +313,35 @@ Bit	Description
 .br
 	1 = RUNG on cancelled incoming call.
 .br
-7	0 = Disable CPN extended RING.
+7	0 = Disable display messages from net.
 .br
-	1 = Enable CPN extended RING.
+	1 = Enable disable messages from net.
 .TP
 .BR 14 " (default 0)
 Layer-2 protocol.
 .br
-0 = X75/LAPB with I-frames.
+ 0 = X75/LAPB with I-frames.
 .br
-1 = X75/LAPB with UI-frames.
+ 1 = X75/LAPB with UI-frames.
 .br
-2 = X75/LAPB with BUI-frames.
+ 2 = X75/LAPB with BUI-frames.
 .br
-3 = HDLC.
+ 3 = HDLC.
 .br
-4 = TRANSPARENT.
+ 4 = TRANSPARENT.
+.br
+10 = Analog Modem. (only if hardware supports this)
+.br
+11 = Fax G3. (only if hardware supports this)
 .TP
 .BR 15 " (default 0)"
 Layer-3 protocol.
 .br
 0 = transparent
+.br
+1 = transparent with audio features (e.g. DSP)
+.br
+2 = Fax G3
 .TP
 .BR 16 " (default 250)"
 Outgoing packet size / 16.
@@ -400,8 +402,33 @@ Bit-mapped register. Set on incoming call (during RING) to the
 value of octet 3a of calling party number Information Element (Screening info).
 See section
 .BR 4.5.10 " of " "ITU Q.931" .
+.TP
+.BR 23 " (default 0)"
+Bit-mapped register.
+.br
+Bit	Description
+.br
+0	0 = Disable CPN extended RING.
+.br
+	1 = Enable CPN extended RING.
+.br
+1	0 = Disable CPN extended FCON.
+.br
+	1 = Enable CPN extended FCON.
+.TP
+.SH NOTE
+There used also be
+.I cui
+devices (major device number 44), but since the
+.I cua
+devices for regular tty devices are no longer supported in the kernel,
+these are also no longer supported for ISDN4linux.
+
 .SH AUTHOR
-Fritz Elfert <fritz@wuemaus.franken.de>
+Fritz Elfert <fritz@isdn4linux.de>
+.br
+modified by Paul Slootman <paul@isdn4linux.de>
+
 .SH SEE ALSO
 .BR icnctrl "(8), " telesctrl "(8), " isdninfo "(4), " isdn_audio "(4), "
 .BR isdnctrl (8).

@@ -1,8 +1,8 @@
-/* $Id: actctrl.c,v 1.1 1997/09/25 21:41:37 fritz Exp $
+/* $Id: actctrl.c,v 1.3 2002/01/31 18:50:51 paul Exp $
 
  * IBM Active 2000 ISDN driver for Linux. (Control-Utility)
  *
- * Copyright 1994,95 by Fritz Elfert (fritz@wuemaus.franken.de)
+ * Copyright 1994,95 by Fritz Elfert (fritz@isdn4linux.de)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,12 +19,19 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: actctrl.c,v $
+ * Revision 1.3  2002/01/31 18:50:51  paul
+ * #include <stdlib.h> for prototypes against warnings.
+ *
+ * Revision 1.2  1999/09/06 08:03:23  fritz
+ * Changed my mail-address.
+ *
  * Revision 1.1  1997/09/25 21:41:37  fritz
  * Added actctrl.
  *
  *
  */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>

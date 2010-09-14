@@ -4,6 +4,8 @@
  * Copyright (c) 1989 Carnegie Mellon University.
  * All rights reserved.
  *
+ * 2000-07-25 Callback improvements by richard.kunze@web.de 
+ *
  * Redistribution and use in source and binary forms are permitted
  * provided that the above copyright notice and this paragraph are
  * duplicated in all such forms and that any documentation,
@@ -16,7 +18,7 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- * $Id: ipppd.h,v 1.17 1998/10/29 17:28:46 hipp Exp $
+ * $Id: ipppd.h,v 1.20 2000/07/25 20:23:51 kai Exp $
  */
 
 /*
@@ -179,6 +181,7 @@ extern char sys_rcsid[];
 
 extern int maxconnect;
 extern int      usefirstip,useifip,useifmtu;
+extern int      deldefaultroute;/* delete default gw, if it exists */
 extern int      numdev;		/* number of handled devices */
 extern int	debug;		/* Debug flag */
 extern int	kdebugflag;	/* Tell kernel to print debug messages */
@@ -272,8 +275,8 @@ int bad_ip_adrs(u_int32_t);
 int getword(FILE *,char *,int *,char *);
 void print_string(char *p,int len,void (*printer)(void *,char *,...),void *arg);
 int auth_ip_addr(int unit,u_int32_t addr);
-void auth_peer_fail(int,int);
-void auth_withpeer_fail(int unit,int protocol);
+void auth_peer_fail(int,int,int);
+void auth_withpeer_fail(int unit,int protocol,int reason);
 void auth_peer_success(int unit,int protocol);
 void auth_withpeer_success(int unit,int protocol);
 
@@ -323,7 +326,7 @@ int sifproxyarp (int unit, u_int32_t his_adr);
 int cifproxyarp (int unit, u_int32_t his_adr);
 int sipxfaddr (int unit, u_int32_t network, unsigned char * node );
 int cipxfaddr (int linkunit);
-int ppp_available(void);
+int ppp_available(char *dev);
 int logwtmputmp (int unit,char *line, char *name, char *host);
 int lock (char *dev);
 void unlock(void);
@@ -498,6 +501,14 @@ extern struct option_info devnam_info;
 #ifndef MAX
 #define MAX(a, b)	((a) > (b)? (a): (b))
 #endif
+
+/* error values for auth-fail script */
+#define AUTH_ERR_TIME  1      /* timeout sending auth requests */
+#define AUTH_ERR_PROT  2      /* auth protocol rejected */
+#define AUTH_ERR_USER  3      /* user or password illegal */ 
+#define AUTH_ERR_PAP   0      /* error in PAP-handling ored with reason */
+#define AUTH_ERR_CHAP  8      /* error in CHAP-handling ored with reason */
+
 
 #endif /* __IPPP_H__ */
 

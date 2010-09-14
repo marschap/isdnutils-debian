@@ -17,7 +17,7 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-char ipcp_rcsid[] = "$Id: ipcp.c,v 1.5 1998/05/05 08:51:20 hipp Exp $";
+char ipcp_rcsid[] = "$Id: ipcp.c,v 1.7 2000/01/10 21:22:56 kai Exp $";
 
 /*
  * TODO:
@@ -34,6 +34,7 @@ char ipcp_rcsid[] = "$Id: ipcp.c,v 1.5 1998/05/05 08:51:20 hipp Exp $";
 #include "ipppd.h"
 #include "ipcp.h"
 #include "pathnames.h"
+#include "environ.h"
 
 /* global vars */
 ipcp_options ipcp_wantoptions[NUM_PPP];	/* Options that we want to request */
@@ -90,6 +91,8 @@ static void ipcp_input __P((int, u_char *, int));
 static void ipcp_protrej __P((int));
 static int  ipcp_printpkt __P((u_char *, int,
                    void (*) __P((void *, char *, ...)), void *));
+
+static void create_resolv __P((u_int32_t, u_int32_t));
 
 struct protent ipcp_protent = {
     PPP_IPCP,
@@ -349,7 +352,11 @@ static int ipcp_cilen(fsm *f)
 	}
 
 	return (LENCIADDR(go->neg_addr, go->old_addrs) +
-		LENCIVJ(go->neg_vj, go->old_vj));
+		LENCIVJ(go->neg_vj, go->old_vj) +
+		LENCIADDR(go->neg_dns1, 0) +
+		LENCIADDR(go->neg_dns2, 0) +
+		LENCIADDR(go->neg_wins1, 0) +
+		LENCIADDR(go->neg_wins2, 0));
 }
 
 
@@ -400,6 +407,14 @@ static void ipcp_addci(fsm *f,u_char *ucp,int *lenp)
 
     ADDCIVJ(CI_COMPRESSTYPE, go->neg_vj, go->vj_protocol, go->old_vj,
 	    go->maxslotindex, go->cflag);
+
+	ADDCIADDR(CI_MS_DNS1, go->neg_dns1, 0, go->dnsaddr[0], 0);
+
+	ADDCIADDR(CI_MS_DNS2, go->neg_dns2, 0, go->dnsaddr[1], 0);
+
+	ADDCIADDR(CI_MS_WINS1, go->neg_wins1, 0, go->winsaddr[0], 0);
+
+	ADDCIADDR(CI_MS_WINS2, go->neg_wins2, 0, go->winsaddr[1], 0);
 
     *lenp -= len;
 }
@@ -476,6 +491,14 @@ static int ipcp_ackci(fsm *f,u_char *p,int len)
 
     ACKCIVJ(CI_COMPRESSTYPE, go->neg_vj, go->vj_protocol, go->old_vj,
 	    go->maxslotindex, go->cflag);
+
+    ACKCIADDR(CI_MS_DNS1, go->neg_dns1, 0, go->dnsaddr[0], 0);
+
+    ACKCIADDR(CI_MS_DNS2, go->neg_dns2, 0, go->dnsaddr[1], 0);
+
+    ACKCIADDR(CI_MS_WINS1, go->neg_wins1, 0, go->winsaddr[0], 0);
+
+    ACKCIADDR(CI_MS_WINS2, go->neg_wins2, 0, go->winsaddr[1], 0);
 
     /*
      * If there are any remaining CIs, then this packet is bad.
@@ -592,6 +615,15 @@ static int ipcp_nakci(fsm *f,u_char *p,int len)
 		}
 	    }
 	    );
+
+    NAKCIADDR(CI_MS_DNS1, neg_dns1, 0, try.dnsaddr[0]=ciaddr1; );
+
+    NAKCIADDR(CI_MS_DNS2, neg_dns2, 0, try.dnsaddr[1]=ciaddr1; );
+
+    NAKCIADDR(CI_MS_WINS1, neg_wins1, 0, try.winsaddr[0]=ciaddr1; );
+
+    NAKCIADDR(CI_MS_WINS2, neg_wins2, 0, try.winsaddr[1]=ciaddr1; );
+
 
     /*
      * There may be remaining CIs, if the peer is requesting negotiation
@@ -730,6 +762,14 @@ static int ipcp_rejci(fsm *f,u_char *p,int len)
 
     REJCIVJ(CI_COMPRESSTYPE, neg_vj, go->vj_protocol, go->old_vj,
 	    go->maxslotindex, go->cflag);
+
+	REJCIADDR(CI_MS_DNS1, neg_dns1, 0, go->dnsaddr[0], 0);
+
+	REJCIADDR(CI_MS_DNS2, neg_dns2, 0, go->dnsaddr[1], 0);
+
+	REJCIADDR(CI_MS_WINS1, neg_wins1, 0, go->winsaddr[0], 0);
+
+	REJCIADDR(CI_MS_WINS2, neg_wins2, 0, go->winsaddr[1], 0);
 
     /*
      * If there are any remaining CIs, then this packet is bad.
@@ -1088,6 +1128,28 @@ static void ipcp_up(fsm *f)
 		return;
 	}
 
+	script_unsetenv_prefix("MS_DNS");
+	if (go->dnsaddr[0] || go->dnsaddr[1]) {
+		script_setenv("USEPEERDNS", "1");
+		if (go->dnsaddr[0]) {
+			script_setenv("DNS1", ip_ntoa(go->dnsaddr[0]));
+			script_setenv("MS_DNS1", ip_ntoa(go->dnsaddr[0]));
+		}
+		if (go->dnsaddr[1]) {
+			script_setenv("DNS2", ip_ntoa(go->dnsaddr[1]));
+			script_setenv("MS_DNS2", ip_ntoa(go->dnsaddr[1]));
+		}
+		create_resolv(go->dnsaddr[0], go->dnsaddr[1]);
+	}
+
+	script_unsetenv_prefix("MS_WINS");
+
+	if ( go->winsaddr[0] )
+		script_setenv("MS_WINS1", ip_ntoa(go->winsaddr[0]));
+
+	if ( go->winsaddr[1] )
+		script_setenv("MS_WINS2", ip_ntoa(go->winsaddr[1]));
+
     /*
      * Check that the peer is allowed to use the IP address it wants.
      */
@@ -1296,6 +1358,34 @@ int ipcp_printpkt(u_char *p,int plen,void (*printer) __P((void *, char *, ...)),
 		    printer(arg, "addr %s", ip_ntoa(htonl(cilong)));
 		}
 		break;
+	    case CI_MS_DNS1:
+		if (olen == CILEN_ADDR) {
+		    p+=2;
+		    GETLONG(cilong,p);
+		    printer(arg, "ms-dns1 %s", ip_ntoa(htonl(cilong)));
+		}
+		break;
+	    case CI_MS_DNS2:
+		if (olen == CILEN_ADDR) {
+		    p+=2;
+		    GETLONG(cilong,p);
+		    printer(arg, "ms-dns2 %s", ip_ntoa(htonl(cilong)));
+		}
+		break;
+	    case CI_MS_WINS1:
+		if (olen == CILEN_ADDR) {
+		    p+=2;
+		    GETLONG(cilong,p);
+		    printer(arg, "ms-wins1 %s", ip_ntoa(htonl(cilong)));
+		}
+		break;
+	    case CI_MS_WINS2:
+		if (olen == CILEN_ADDR) {
+		    p+=2;
+		    GETLONG(cilong,p);
+		    printer(arg, "ms-wins2 %s", ip_ntoa(htonl(cilong)));
+		}
+		break;
 	    }
 	    while (p < optend) {
 		GETCHAR(code, p);
@@ -1326,3 +1416,29 @@ int ipcp_printpkt(u_char *p,int plen,void (*printer) __P((void *, char *, ...)),
 }
 
 
+/*
+ * create_resolv - create the replacement resolv.conf file
+ */
+static void
+create_resolv(peerdns1, peerdns2)
+    u_int32_t peerdns1, peerdns2;
+{
+    FILE *f;
+
+    f = fopen(_PATH_RESOLV, "w");
+    if (f == NULL) {
+	syslog(LOG_ERR, "Failed to create %s: %m", _PATH_RESOLV);
+        return;
+    }
+
+    if (peerdns1)
+        fprintf(f, "nameserver %s\n", ip_ntoa(peerdns1));
+
+    if (peerdns2)
+        fprintf(f, "nameserver %s\n", ip_ntoa(peerdns2));
+
+    if (ferror(f))
+        syslog(LOG_ERR, "Write failed to %s: %m", _PATH_RESOLV);
+
+    fclose(f);
+}

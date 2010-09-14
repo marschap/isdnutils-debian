@@ -22,7 +22,7 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-char sys_rcsid[] = "$Id: sys-linux.c,v 1.16 1998/11/05 09:42:37 hipp Exp $";
+char sys_rcsid[] = "$Id: sys-linux.c,v 1.25 2000/07/25 20:23:51 kai Exp $";
 
 #define _LINUX_STRING_H_
 
@@ -35,6 +35,7 @@ char sys_rcsid[] = "$Id: sys-linux.c,v 1.16 1998/11/05 09:42:37 hipp Exp $";
 #include <sys/stat.h>
 #include <sys/file.h>
 #include <sys/utsname.h>
+#include <sys/sysmacros.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -65,6 +66,9 @@ char sys_rcsid[] = "$Id: sys-linux.c,v 1.16 1998/11/05 09:42:37 hipp Exp $";
 #endif
 
 #include <linux/isdn_ppp.h>
+#if __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 1
+# include <netipx/ipx.h>
+#endif
 
 #include "fsm.h"
 #include "ipppd.h"
@@ -89,8 +93,12 @@ static void decode_version (char *buf, int *version,
 int sockfd;			/* socket for doing interface ioctls */
 
 static char *lock_file;
+static int kernel_version;
 
-#define MAX_IFS		5000
+#define SIN_ADDR(x)     (((struct sockaddr_in *) (&(x)))->sin_addr.s_addr)
+#define KVERSION(j,n,p) ((j)*1000000 + (n)*1000 + (p))
+
+#define MAX_IFS		4096
 
 #define FLAGS_GOOD (IFF_UP          | IFF_BROADCAST)
 #define FLAGS_MASK (IFF_UP          | IFF_BROADCAST | \
@@ -644,11 +652,23 @@ int sifaddr (int unit, int our_adr, int his_adr, int net_mask)
 			rt.rt_flags |= RTF_HOST;
 
 		if (ioctl(sockfd, SIOCADDRT, &rt) < 0) {
-			syslog (LOG_ERR, "ioctl(SIOCADDRT) device route (%s/%s/%08x): %m",
+			int severity;
+			/*
+			 * It's not fatal IMHO if the route already exists!
+			 * Give a notice, though...
+			 */
+			if (errno == EEXIST) {
+				severity = LOG_NOTICE;
+			}
+			else {
+				severity = LOG_ERR;
+			}
+			syslog (severity, "ioctl(SIOCADDRT) device route (%s/%s/%08x): %m",
 				rt.rt_dev,
 				inet_ntoa(((struct sockaddr_in *)&rt.rt_dst)->sin_addr),
 				ntohl(net_mask));
-            return (0);
+			if (severity == LOG_ERR)
+				return 0;
 		}
 
 	}
@@ -842,26 +862,35 @@ static int defaultroute_exists (void)
     int    result = 0;
 
     if (!open_route_table())
-      {
-        return 0;
-      }
+      return 0;
 
     while (read_route_table(&rt) != 0)
       {
+        if (kernel_version > KVERSION(2,1,0) && SIN_ADDR(rt.rt_genmask) != 0)
+	  continue;
+	
         if ((rt.rt_flags & RTF_UP) == 0)
-	  {
-	    continue;
-	  }
+          continue;
 
         if (((struct sockaddr_in *) &rt.rt_dst)->sin_addr.s_addr == 0L)
 	  {
             struct in_addr ina;
             ina.s_addr = ((struct sockaddr_in *) &rt.rt_gateway)->sin_addr.s_addr;
-	    syslog (LOG_ERR,
-		    "ppp not replacing existing default route to %s[%s]",
-		    rt.rt_dev, inet_ntoa (ina) );
-	    result = 1;
-	    break;
+	    if (!deldefaultroute)
+	      {
+	        syslog (LOG_ERR,
+		      "ppp not replacing existing default route to %s[%s]",
+		       rt.rt_dev, inet_ntoa (ina) );
+	        result = 1;
+	        break;
+	      }
+	    else
+	      {
+	        SET_SA_FAMILY (rt.rt_dst,     AF_INET);
+		SET_SA_FAMILY (rt.rt_gateway, AF_INET);
+		rt.rt_flags = RTF_UP | RTF_GATEWAY;
+		ioctl(sockfd, SIOCDELRT, &rt);
+	      }
 	  }
       }
 
@@ -888,8 +917,20 @@ int sifdefaultroute (int unit, int gateway)
     
 		rt.rt_flags = RTF_UP | RTF_GATEWAY;
 		if (ioctl(sockfd, SIOCADDRT, &rt) < 0) {
-			syslog (LOG_ERR, "default route ioctl(SIOCADDRT): %m");
-			return 0;
+			int severity;
+			/*
+			 * It's not fatal IMHO if the route already exists!
+			 * Give a notice, though...
+			 */
+			if (errno == EEXIST) {
+				severity = LOG_NOTICE;
+			}
+			else {
+				severity = LOG_ERR;
+			}
+			syslog (severity, "default route ioctl(SIOCADDRT): %m");
+			if (severity == LOG_ERR)
+				return 0;
 		}
 	}
 	has_default_route = 1;
@@ -1229,19 +1270,17 @@ static void decode_version (char *buf, int *version,
 	  }
       }
     
-    if (*buf != '\0')
+    if (*buf != '\0' && strncmp(buf, "-pre", 4) && strncmp(buf, "pre", 3))  /* ignore any "-preX" part */
       {
-	*version      =
-	*modification =
 	*patch        = 0;
       }
   }
 
 /*
  * ppp_available - check whether the system has any ppp interfaces
- * (in fact we check whether we can do an ioctl on ppp0).
+ * (in fact we check whether we can do an ioctl on devname).
  */
-int ppp_available(void)
+int ppp_available(char *devname)
 {
 	int s;
 	struct ifreq ifr;
@@ -1254,7 +1293,7 @@ int ppp_available(void)
 	if( (s = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 		return 0;
     
-	strncpy (ifr.ifr_name, "ippp0", sizeof (ifr.ifr_name));
+	strncpy (ifr.ifr_name, devname, sizeof (ifr.ifr_name));
 	if(ioctl(s, SIOCGIFFLAGS, (caddr_t) &ifr) < 0)
 		return 0;
 
@@ -1283,8 +1322,8 @@ int ppp_available(void)
 
 		sprintf(no_ppp_msg,
 			"Sorry - isdnPPP driver version %d.%d.%d is out of date.\n"
-			"Maybe ippp0 has no 'syncppp' encapsulation?\n",
-			driver_version, driver_modification, driver_patch);
+			"Maybe %s has no 'syncppp' encapsulation?\n",
+			driver_version, driver_modification, driver_patch, devname);
 		return 0;
 	}
     return 1;
@@ -1547,7 +1586,11 @@ void setifip(int ipcp_unit)
 # define _LINUX_SOCKET_H
 #endif
 
-#include <linux/ipx.h>
+#if (__GLIBC__ > 2) || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 1)
+  /* glibc-2.1 includes all the stuff via /usr/include/netipx/ipx.h */
+#else
+# include <linux/ipx.h>
+#endif
 
 /*
  * sipxfaddr - Config the interface IPX networknumber

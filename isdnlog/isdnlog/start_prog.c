@@ -1,4 +1,4 @@
-/* $Id: start_prog.c,v 1.13 1998/11/21 14:03:39 luethje Exp $
+/* $Id: start_prog.c,v 1.16 2000/04/13 15:44:20 paul Exp $
  *
  * ISDN accounting for isdn4linux.
  *
@@ -20,6 +20,17 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: start_prog.c,v $
+ * Revision 1.16  2000/04/13 15:44:20  paul
+ * Fix for $5, $7, $8, $9, $10, always having same value as $11
+ *
+ * Revision 1.15  1999/11/03 17:54:13  paul
+ * Fixed empty lines in syslog if program could not be started.
+ *
+ * Revision 1.14  1999/10/25 18:33:15  akool
+ * isdnlog-3.57
+ *   WARNING: Experimental version!
+ *   	   Please use isdnlog-3.56 for production systems!
+ *
  * Revision 1.13  1998/11/21 14:03:39  luethje
  * isdnctrl: added dialmode into the config file
  *
@@ -261,7 +272,8 @@ int Ring(info_args *Cmd, char *Opts[], int Die, int Async)
 		if (Async == 1)
 		{
 			while(fgets(String,LONG_STRING_SIZE,fp) != NULL)
-				print_msg(PRT_PROG_OUT,"%s\n",String);
+				if (!feof(fp) || String[0])
+					print_msg(PRT_PROG_OUT,"%s\n",String);
 
 			waitpid(pid,NULL,0);
 			fclose(fp);
@@ -559,8 +571,12 @@ static void KillCommand(int sock)
 
 	if (sock > 0)
 	{
-		while (fgets(String,LONG_STRING_SIZE,sockets[sock].fp))
-			print_msg(PRT_PROG_OUT,"%s\n",String);
+		if (!feof(sockets[sock].fp))
+		{
+			while (fgets(String,LONG_STRING_SIZE,sockets[sock].fp))
+				if (String[0])
+					print_msg(PRT_PROG_OUT,"%s\n",String);
+		}
 
 		kill(sockets[sock].pid, SIGTERM);
 		kill(sockets[sock].pid, SIGKILL);
@@ -703,7 +719,8 @@ int Print_Cmd_Output( int sock )
 
 	fgets(String,LONG_STRING_SIZE,sockets[sock].fp);
 
-	print_msg(PRT_PROG_OUT,"%s\n",String);
+	if (!feof(sockets[sock].fp) || String[0])
+		print_msg(PRT_PROG_OUT,"%s\n",String);
 
 	return 0;
 }
@@ -712,13 +729,13 @@ int Print_Cmd_Output( int sock )
 
 int Get_Sock_From_Info_Args( info_args *Ptr, int Cnt )
 {
-	if (socket_size(sockets) > Cnt || Cnt < 0)
+	if (socket_size(sockets) > Cnt || Cnt < 0) {
 		while (sockets[Cnt].descriptor != -2)
 			if (sockets[Cnt].info_arg == Ptr)
 				return Cnt;
 			else
 				Cnt++;
-
+	}
 	return -1;
 }
 
@@ -726,13 +743,13 @@ int Get_Sock_From_Info_Args( info_args *Ptr, int Cnt )
 
 int Get_Sock_From_Call( int chan, int Cnt )
 {
-	if (socket_size(sockets) > Cnt || Cnt < 0)
+	if (socket_size(sockets) > Cnt || Cnt < 0) {
 		while (sockets[Cnt].descriptor != -2)
 			if (sockets[Cnt].chan == chan)
 				return Cnt;
 			else
 				Cnt++;
-
+	}
 	return -1;
 }
 
@@ -740,13 +757,13 @@ int Get_Sock_From_Call( int chan, int Cnt )
 
 int Get_Sock_From_Call_And_Info_Args( int chan, info_args *Ptr, int Cnt )
 {
-	if (socket_size(sockets) > Cnt || Cnt < 0)
+	if (socket_size(sockets) > Cnt || Cnt < 0) {
 		while (sockets[Cnt].descriptor != -2)
 			if (sockets[Cnt].chan == chan && sockets[Cnt].info_arg == Ptr)
 				return Cnt;
 			else
 				Cnt++;
-
+	}
 	return -1;
 }
 
@@ -985,7 +1002,7 @@ static char *ArgToChar(int type, void* Ptr)
 		                     break;
 	}
 
-	return RetCode[Cnt];
+	return RetCode[Cnt++];
 }
 
 /****************************************************************************/
@@ -1079,12 +1096,13 @@ int Start_Ring(int chan, info_args *infoarg, int event, int intervalflag)
 
 	if (intervalflag & RING_INTERVAL)
 	{
-		if (f & RING_KILL)
+		if (f & RING_KILL) {
 			while ((sock = Get_Sock_From_Call_And_Info_Args(chan,infoarg,sock)) != -1)
 				if (sockets[sock].call_event == event)
 					Ring(NULL, NULL, sock++, 0);
 				else
 					sock++;
+		}			
 	}
 	else
 	{

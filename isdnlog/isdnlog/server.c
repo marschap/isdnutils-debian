@@ -1,8 +1,9 @@
-/* $Id: server.c,v 1.4 1998/09/22 20:59:22 luethje Exp $
+/* $Id: server.c,v 1.7 2002/03/11 16:17:10 paul Exp $
  *
  * ISDN accounting for isdn4linux.
  *
- * Copyright 1996 by Stefan Luethje (luethje@sl-gw.lake.de)
+ * Copyright 1996, 1999 by Stefan Luethje (luethje@sl-gw.lake.de)
+ * 	     	       and Andreas Kool (akool@isdn4linux.de)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +20,26 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: server.c,v $
+ * Revision 1.7  2002/03/11 16:17:10  paul
+ * DM -> EUR
+ *
+ * Revision 1.6  1999/10/25 18:33:15  akool
+ * isdnlog-3.57
+ *   WARNING: Experimental version!
+ *   	   Please use isdnlog-3.56 for production systems!
+ *
+ * Revision 1.5  1999/03/20 14:33:15  akool
+ * - isdnlog Version 3.08
+ * - more tesion)) Tarife from Michael Graw <Michael.Graw@bartlmae.de>
+ * - use "bunzip -f" from Franz Elsner <Elsner@zrz.TU-Berlin.DE>
+ * - show another "cheapest" hint if provider is overloaded ("OVERLOAD")
+ * - "make install" now makes the required entry
+ *     [GLOBAL]
+ *     AREADIFF = /usr/lib/isdn/vorwahl.dat
+ * - README: Syntax description of the new "rate-at.dat"
+ * - better integration of "sondernummern.c" from mario.joussen@post.rwth-aachen.de
+ * - server.c: buffer overrun fix from Michael.Weber@Post.RWTH-Aachen.DE (Michael Weber)
+ *
  * Revision 1.4  1998/09/22 20:59:22  luethje
  * isdnrep:  -fixed wrong provider report
  *           -fixed wrong html output for provider report
@@ -207,7 +228,7 @@ int new_client(int sock)
 				}
 			}
 
-	if (Old_Prints != NULL && User_Get_Message(sockets[sock].f_username,sockets[sock].f_hostname,NULL,T_PROTOCOL) == 0)
+	if (Old_Prints != NULL && User_Get_Message(sockets[sock].f_username,sockets[sock].f_hostname,NULL,T_PROTOCOL) == 0) {
 		for (Cnt = 0; Cnt < xlog; Cnt++)
 			if (Old_Prints[Cnt] != NULL)
 			{
@@ -222,7 +243,7 @@ int new_client(int sock)
 			}
 			else
 				break;
-
+	}
 
 	return 0;
 }
@@ -364,7 +385,7 @@ int print_from_server(char *String)
 	tm_time->tm_isdst = 0;
 
 	strftime(NewString,LONG_STRING_SIZE,"%b %d %X ",tm_time);
-	strcat(NewString,String);
+	strncat(NewString, String, sizeof(NewString) - strlen(NewString) - 1);
 
 	if ((RetCode = String_For_Output(NewString)) < 0)
 		return RetCode;
@@ -447,7 +468,7 @@ char *Build_Call_Info(CALL *call, int chan)
         (int)(call->connect?cur_time - call->connect:0), /* aktuelle Dauer - in Sekunden seit CONNECT */
         call->aoce,		     	                         /* Einheiten (negativ: laufende Impulse, positiv: AOCE) */
         double2str(abs(call->aoce) * currency_factor, 6, 2, DEB), /* kostet gerade */
-        currency_factor ? currency : "DM", 	       		       	 	      	       /* Waehrung */
+        currency_factor ? currency : "EUR", 	       		       	 	      	       /* Waehrung */
         call->ibytes,	     	 						       /* Frank's ibytes */
         call->obytes,	     	 						       /* Frank's obytes */
         call->ibps,									       /* Aktueller Durchsatz INPUT: Bytes/Sekunde */

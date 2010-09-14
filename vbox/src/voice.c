@@ -1,5 +1,5 @@
 /*
-** $Id: voice.c,v 1.12 1998/03/26 13:10:39 keil Exp $
+** $Id: voice.c,v 1.14 2002/01/31 20:12:16 paul Exp $
 **
 ** Copyright (C) 1996, 1997 Michael 'Ghandi' Herold
 */
@@ -205,7 +205,10 @@ int voice_put_message(char *message)
 	{
 		if ((byte_i = read(fd, line_i, MODEM_BUFFER_LEN)) <= 0)
 		{
-			log(L_DEBUG, "End of audio data (%s).\n", strerror(errno));
+			if (byte_i == 0)
+                            log(L_DEBUG, "End of audio data\n");
+                        else
+                            log(L_DEBUG, "End of audio data with error (%s)\n", strerror(errno));
 
 			break;
 		}
@@ -321,7 +324,12 @@ int voice_put_message(char *message)
 			printstring(line_o, "%c%c", DLE, ETX);
 			modem_raw_write(line_o, strlen(line_o));
 			if (modem_command("", "VCON")>0) {
-				if (modem_command("AT+S1", "OK") <= 0) {
+#ifdef VBOX_SUSPEND_VALUE
+				printstring(line_o, "AT+S%d", VBOX_SUSPEND_VALUE);
+#else
+				printstring(line_o, "AT+S");
+#endif
+				if (modem_command(line_o, "OK") <= 0) {
 					log(L_WARN, "Can't suspend call\n");
 				} else {
 					log(L_INFO, "Call suspended\n");
@@ -533,7 +541,12 @@ int voice_get_message(char *name, char *timestr, int save)
 			modem_raw_write(line_o, strlen(line_o));
 			modem_wait_sequence(line_i);
 			if (modem_command("", "VCON")>0) {
-				if (modem_command("AT+S1", "OK") <= 0) {
+#ifdef VBOX_SUSPEND_VALUE
+				printstring(line_o, "AT+S%d", VBOX_SUSPEND_VALUE);
+#else
+				printstring(line_o, "AT+S");
+#endif
+				if (modem_command(line_o, "OK") <= 0) {
 					log(L_WARN, "Can't suspend call\n");
 				} else {
 					log(L_INFO, "Call suspended\n");

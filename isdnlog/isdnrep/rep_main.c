@@ -1,8 +1,8 @@
-/* $Id: rep_main.c,v 1.6 1998/11/24 20:52:55 akool Exp $
+/* $Id: rep_main.c,v 1.15 2002/03/11 16:17:11 paul Exp $
  *
  * ISDN accounting for isdn4linux. (Report-module)
  *
- * Copyright 1995, 1998 by Andreas Kool (akool@isdn4linux.de)
+ * Copyright 1995 .. 2000 by Andreas Kool (akool@isdn4linux.de)
  *                     and Stefan Luethje (luethje@sl-gw.lake.de)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,78 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: rep_main.c,v $
+ * Revision 1.15  2002/03/11 16:17:11  paul
+ * DM -> EUR
+ *
+ * Revision 1.14  2000/08/17 21:34:44  akool
+ * isdnlog-4.40
+ *  - README: explain possibility to open the "outfile=" in Append-Mode with "+"
+ *  - Fixed 2 typos in isdnlog/tools/zone/de - many thanks to
+ *      Tobias Becker <tobias@talypso.de>
+ *  - detect interface (via IIOCNETGPN) _before_ setting CHARGEINT/HUPTIMEOUT
+ *  - isdnlog/isdnlog/processor.c ... fixed wrong init of IIOCNETGPNavailable
+ *  - isdnlog/isdnrep/isdnrep.c ... new option -S summary
+ *  - isdnlog/isdnrep/rep_main.c
+ *  - isdnlog/isdnrep/isdnrep.1.in
+ *  - isdnlog/tools/NEWS
+ *  - isdnlog/tools/cdb/debian ... (NEW dir) copyright and such from orig
+ *  - new "rate-de.dat" from sourceforge (hi and welcome: Who is "roro"?)
+ *
+ * Revision 1.13  2000/03/06 07:03:20  akool
+ * isdnlog-4.15
+ *   - isdnlog/tools/tools.h ... moved one_call, sum_calls to isdnrep.h
+ *     ==> DO A 'make clean' PLEASE
+ *   - isdnlog/tools/telnum.c ... fixed a small typo
+ *   - isdnlog/isdnrep/rep_main.c ... incl. dest.h
+ *   - isdnlog/isdnrep/isdnrep.c ... fixed %l, %L
+ *   - isdnlog/isdnrep/isdnrep.h ... struct one_call, sum_calls are now here
+ *
+ *   Support for Norway added. Many thanks to Tore Ferner <torfer@pvv.org>
+ *     - isdnlog/rate-no.dat  ... NEW
+ *     - isdnlog/holiday-no.dat  ... NEW
+ *     - isdnlog/samples/isdn.conf.no ... NEW
+ *     - isdnlog/samples/rate.conf.no ... NEW
+ *
+ * Revision 1.12  1999/12/31 13:57:19  akool
+ * isdnlog-4.00 (Millenium-Edition)
+ *  - Oracle support added by Jan Bolt (Jan.Bolt@t-online.de)
+ *  - resolved *any* warnings against rate-de.dat
+ *  - Many new rates
+ *  - CREDITS file added
+ *
+ * Revision 1.11  1999/12/17 22:51:55  akool
+ * isdnlog-3.79
+ *  - isdnlog/isdnrep/isdnrep.{c,h} ... error -handling, print_msg
+ *  - isdnlog/isdnrep/rep_main.c
+ *  - isdnlog/isdnrep/isdnrep.1.in
+ *  - isdnlog/tools/rate.c  ... dupl entry in rate.conf
+ *  - isdnlog/tools/NEWS
+ *  - isdnlog/tools/isdnrate.c
+ *  - isdnlog/tools/dest/configure{,.in}
+ *  - isdnlog/tools/zone/configure{,.in}
+ *
+ * Revision 1.10  1999/07/18 08:40:57  akool
+ * fix from Michael
+ *
+ * Revision 1.9  1999/07/12 11:37:38  calle
+ * Bugfix: isdnrep defined print_msg as function pointer, the object files
+ *         in tools directory, declare it as external function.
+ * 	compiler and linker did not detect the problem.
+ * 	Now print_msg is a function in rep_main.c and I copied
+ * 	print_in_modules from isdnconf. Also set_print_fct_for_isdnrep
+ * 	is removed from isdnrep.c. isdnrep didn´t crash now, but throw
+ * 	out warning messages about rate.dat and did´t generate output.
+ *
+ * Revision 1.8  1999/06/13 14:08:08  akool
+ * isdnlog Version 3.32
+ *
+ *  - new option "-U1" (or "ignoreCOLP=1") to ignore CLIP/COLP Frames
+ *  - TEI management decoded
+ *
+ * Revision 1.7  1999/01/24 19:02:33  akool
+ *  - second version of the new chargeint database
+ *  - isdnrep reanimated
+ *
  * Revision 1.6  1998/11/24 20:52:55  akool
  *  - changed my email-adress
  *  - new Option "-R" to supply the preselected provider (-R24 -> Telepassport)
@@ -153,11 +225,14 @@
  *
  */
 
+#define  _ISDNREP_C_
+#include "dest.h"
 #include "isdnrep.h"
 
 /*****************************************************************************/
 
-static int print_in_modules(int Level, const char *fmt, ...);
+int print_msg(int Level, const char *fmt, ...);
+int print_in_modules(const char *fmt, ...);
 static int set_linefmt(char *linefmt);
 
 /*****************************************************************************/
@@ -168,15 +243,14 @@ int main(int argc, char *argv[], char *envp[])
 	auto char  fnbuff[512] = "";
 	auto char  usage[]     = "%s: usage: %s [ -%s ]\n";
 	auto char  wrongdate[] = "unknown date: %s\n";
-	auto char  options[]   = "ac:d:f:hinop:s:t:uvw:NVF:M:R:";
+	auto char  options[]   = "ad:f:hinop:s:t:uvw:NVF:M:R:bES";
 	auto char *myname      = basename(argv[0]);
 	auto char *ptr         = NULL;
 	auto char *linefmt     = "";
 	auto char *htmlreq     = NULL;
 
 
-	set_print_fct_for_tools(printf);
-	set_print_fct_for_isdnrep(print_in_modules);
+	set_print_fct_for_tools(print_in_modules);
 
 	/* we don't need this at the moment:
 	new_args(&argc,&argv);
@@ -187,9 +261,6 @@ int main(int argc, char *argv[], char *envp[])
       case 'a' : timearea++;
                  begintime = 0;
 			           time(&endtime);
-      	       	 break;
-
-      case 'c' : compute = strtol(optarg, NIL, 0);
       	       	 break;
 
       case 'i' : incomingonly++;
@@ -221,6 +292,9 @@ int main(int argc, char *argv[], char *envp[])
       case 'v' : verbose++;
       	       	 break;
 
+      case 'E' : print_failed++;
+      	       	 break;
+
       case 'f' : strcpy(fnbuff, optarg);
                  break;
 
@@ -247,8 +321,14 @@ int main(int argc, char *argv[], char *envp[])
       case 'R' : preselect = (int)strtol(optarg, NIL, 0);
       	       	 break;
 
+      case 'b' : bill++;
+      	       	 break;
+
       case 'V' : print_version(myname);
                  exit(0);
+
+      case 'S' : summary++;
+      	       	 break;
 
       case '?' : printf(usage, argv[0], argv[0], options);
                  return(1);
@@ -292,7 +372,7 @@ int main(int argc, char *argv[], char *envp[])
 	}
 
   if (!currency_factor)
-    currency = "DM";
+    currency = "EUR";
 
   if (fnbuff[0])
 	  logfile = fnbuff;
@@ -301,19 +381,37 @@ int main(int argc, char *argv[], char *envp[])
 }
 
 /*****************************************************************************/
+int     print_msg(int Level, const char *fmt,...)
+{
+  auto va_list ap;
+  auto char String[BUFSIZ * 3];
 
-static int print_in_modules(int Level, const char *fmt, ...)
+  if ((Level > PRT_ERR && !verbose) || (Level > PRT_WARN && verbose < 2))
+    return (1);
+
+  va_start(ap, fmt);
+  (void) vsnprintf(String, BUFSIZ * 3, fmt, ap);
+  va_end(ap);
+
+  fprintf(stderr, "%s", String);
+
+  return (0);
+}				/* print_msg */
+
+/*****************************************************************************/
+
+int print_in_modules(const char *fmt, ...)
 {
 	auto va_list ap;
-	auto char    String[BUFSIZ*3];
+	auto char    String[LONG_STRING_SIZE];
 
 
 	va_start(ap, fmt);
-		(void)vsnprintf(String, BUFSIZ*3, fmt, ap);
+	(void)vsnprintf(String, LONG_STRING_SIZE, fmt, ap);
 	va_end(ap);
 
-	return fprintf(Level == PRT_ERR?stderr:stdout, "%s", String);
-} /* print_in_modules */
+	return print_msg(PRT_ERR, "%s", String);
+}
 
 /*****************************************************************************/
 

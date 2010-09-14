@@ -1,5 +1,5 @@
 
-/* $Id: libisdn.h,v 1.10 1998/10/13 21:53:33 luethje Exp $
+/* $Id: libisdn.h,v 1.14 2002/01/31 20:03:59 paul Exp $
  *
  * ISDN accounting for isdn4linux.
  *
@@ -20,6 +20,29 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: libisdn.h,v $
+ * Revision 1.14  2002/01/31 20:03:59  paul
+ * Add "#define CCODE_OTHER 9999" for defining behaviour in
+ * non-specified countries.
+ *
+ * Revision 1.13  2000/09/05 08:05:03  paul
+ * Now isdnlog doesn't use any more ISDN_XX defines to determine the way it works.
+ * It now uses the value of "COUNTRYCODE = 999" to determine the country, and sets
+ * a variable mycountrynum to that value. That is then used in the code to set the
+ * way isdnlog works.
+ * It works for me, please check it! No configure.in / doc changes yet until
+ * it has been checked to work.
+ * So finally a version of isdnlog that can be compiled and distributed
+ * internationally.
+ *
+ * Revision 1.12  1999/10/26 18:17:17  akool
+ * isdnlog-3.58
+ *   - big cleanup ( > 1.3 Mb removed!)
+ *   - v0.02 of destination support - better, but not perfect
+ *     (does't work with gcc-2.7.2.3 yet - use egcs!)
+ *
+ * Revision 1.11  1999/08/20 19:43:48  akool
+ * removed avon-, vorwahl- and areacodes-support
+ *
  * Revision 1.10  1998/10/13 21:53:33  luethje
  * isdnrep and lib: bugfixes
  *
@@ -60,8 +83,10 @@
 #include "policy.h"
 #include "conffile.h"
 
+#if 0 /* DELETE_ME AK:18-Aug-99 */
 #include "areacode/areacode.h"
 #include "avon/createDB.h"
+#endif
 
 /****************************************************************************/
 
@@ -120,12 +145,14 @@ extern char *basename __P((__const char *__name));
 # define S_AREA_PREFIX  "0"
 #endif
 
+#if 0 /* DELETE_ME AK:18-Aug-99 */
 #ifndef S_AREA_DIFF_FILE
 # define S_AREA_DIFF_FILE  "vorwahlen.dat"
 #endif
 
 #ifndef AVON
 # define AVON  "avon"
+#endif
 #endif
 
 /****************************************************************************/
@@ -135,10 +162,18 @@ extern char *basename __P((__const char *__name));
 #define CONF_ENT_AREA_PREFIX    "AREAPREFIX"
 #define CONF_ENT_COUNTRY        "COUNTRYCODE"
 #define CONF_ENT_AREA           "AREACODE"
+#if 0 /* Fixme: tools.h defines these - should they be global ??? */
+#define CONF_ENT_VBN            "VBN"
+#define CONF_ENT_VBNLEN         "VBNLEN"
+#define CONF_ENT_PRESELECT      "PRESELECTED"
+#endif
+
+#if 0 /* DELETE_ME AK:18-Aug-99 */
 #define CONF_ENT_AREALIB        "AREALIB"
 #define CONF_ENT_AVONLIB        "AVON"
 #define CONF_ENT_CODELIB        "CODELIB"
 #define CONF_ENT_AREADIFF       "AREADIFF"
+#endif
 
 #define CONF_SEC_VAR    "VARIABLES"
 
@@ -168,12 +203,24 @@ extern char *basename __P((__const char *__name));
 
 /****************************************************************************/
 
+/* some country codes to change behaviour of isdnlog in different countries */
+#define	CCODE_NL	 31
+#define	CCODE_CH	 41
+#define	CCODE_AT	 43
+#define	CCODE_DE	 49
+#define	CCODE_LU	352
+#define	CCODE_OTHER    9999
+
+/****************************************************************************/
+
+#if 0 /* DELETE_ME AK:18-Aug-99 */
 #define AREA_ERROR   -1
 #define AREA_UNKNOWN  0
 #define AREA_LOCAL    1
 #define AREA_R50      2
 #define AREA_FAR      3
 #define AREA_ABROAD   4
+#endif
 
 /****************************************************************************/
 
@@ -192,10 +239,13 @@ extern char *basename __P((__const char *__name));
 #endif
 
 _EXTERN char    *mycountry     SET_NULL;
+_EXTERN int	mycountrynum;
 _EXTERN char    *myarea        SET_NULL;
 _EXTERN char    *areaprefix    SET_AREA_PREFIX;
 _EXTERN char    *countryprefix SET_COUNTRY_PREFIX;
+#if 0 /* DELETE_ME AK:18-Aug-99 */
 _EXTERN char    *areadifffile  SET_NULL2;
+#endif
 
 _EXTERN void set_print_fct_for_lib(int (*new_print_msg)(const char *, ...));
 _EXTERN int num_match(char *Pattern, char *number);
@@ -204,11 +254,15 @@ _EXTERN char *expand_file(char *s);
 _EXTERN char *confdir(void);
 _EXTERN int handle_runfiles(const char *_progname, char **_devices, int flag);
 _EXTERN int Set_Codes(section* Section);
+#if 0 /* DELETE_ME AK:18-Aug-99 */
 _EXTERN char *get_areacode(char *code, int *Len, int flag);
+#endif
 _EXTERN int read_conffiles(section **Section, char *groupfile);
 _EXTERN int paranoia_check(char *cmd);
+#if 0 /* DELETE_ME AK:18-Aug-99 */
 _EXTERN int area_diff(char* _code, char *_diffcode);
 _EXTERN const char* area_diff_string(char* number1, char* number2);
+#endif
 
 #undef SET_NULL
 #undef SET_NULL2

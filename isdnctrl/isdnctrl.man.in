@@ -1,6 +1,6 @@
-.\" $Id: isdnctrl.man.in,v 1.16 1998/12/18 13:19:46 paul Exp $
+.\" $Id: isdnctrl.man.in,v 1.22 2002/02/07 10:43:24 paul Exp $
 .\"
-.\" CHECKIN $Date: 1998/12/18 13:19:46 $
+.\" CHECKIN $Date: 2002/02/07 10:43:24 $
 .\"
 .\" Process this file with
 .\" groff -man -Tascii isdnctrl.8 for ASCII output, or
@@ -322,7 +322,7 @@ raw ip encapsulation (default)
 .br
 IP + typefield encapsulation
 .LP
-.B cisco_h
+.B cisco-h
 .br
 Special mode for communicating with a Cisco in HDLC-mode with
 Cisco-keepalive switched off.
@@ -342,7 +342,7 @@ Synchronous PPP over
 .br
 raw ip with additional ui-header
 .LP
-.B cisco_hk
+.B cisco-hk
 .br
 Special mode for communicating with a Cisco in HDLC-mode with
 Cisco-keepalive switched on.
@@ -387,6 +387,38 @@ is
 .BR all ,
 then all interfaces are listed.
 .TP
+.BI status " name"
+Show the connection status for interface
+.IR name .
+The output can be one of the following types:
+.RS
+.LP
+.B
+ippp0 not connected
+.br
+There is no connection
+.LP
+.B
+ippp0 connected to 0123456789
+.br
+There is an outgoing connection to phone number 0123456789
+.LP
+.B
+ippp0 connected from 0123456789
+.br
+There is an incoming connection from phone number 0123456789
+.RE
+
+If the interface is connected, the exit status of the command is true,
+else it is false.
+.br
+If
+.I name
+is
+.BR all ,
+then the connection status for all interfaces is shown. The exit status is
+always true in this case.
+.TP
 .BI verbose " num"
 Set verbosity level to
 .IR num .
@@ -405,7 +437,7 @@ The
 identifies a specific S0-Port. The channels of a port start
 counting with zero. If 
 .B exclusive
-is given, other interfaces cannot use that interface anymore.
+is given, other interfaces cannot use that channel anymore.
 Otherwise, the channel may be used by other interfaces.
 .TP
 .BI unbind " name"
@@ -430,6 +462,7 @@ is called
 .BI pppunbind " name"
 Unbinds the previously bound interface
 .IR name .
+
 .TP
 .BI busreject " driverId " [on|off]
 If switched
@@ -448,6 +481,7 @@ enable this feature, if the
 adaptor is not the only device connected to the S0-bus.
 Otherwise it could happen, that isdn4linux rejects an incoming call
 which belongs to another device on the bus.
+
 .TP
 .BI addslave " name slave"
 Adds a slave interface named
@@ -472,6 +506,7 @@ If the "master" is already up, it has to be shutdown with
 otherwise the
 .B addslave
 command will be rejected.
+
 .TP
 .BI sdelay " name num"
 Set delay for slave-dialing.
@@ -481,7 +516,10 @@ has to have a load of more than
 .B trigger
 cps for at least
 .I num
-seconds, before it's slave starts dialing.
+seconds, before its slave starts dialing.
+.br
+Note that this only works for rawIP, not MPPP!
+
 .TP
 .BI trigger " name num"
 Set trigger level for slave-dialing.
@@ -492,6 +530,29 @@ has to have a load of more than
 cps for at least
 .B sdelay
 seconds, before its slave starts dialing.
+.br
+Note that this only works for rawIP, not MPPP!
+
+.TP
+.BI addlink " name"
+For MPPP, this adds a slave interface to the existing connection,
+i.e. connect the extra channel now. It is like a
+.B dial
+command for the extra channel.
+.br
+This also means that
+.B addlink
+will only work if the master interface
+.I name
+must already be connected! Also, the
+.B dialmode
+for the slave interface must be \fIauto\fR.
+
+.TP
+.BI removelink " name"
+For MPPP, this removes a slave interface from the existing connection,
+i.e. hangup the extra channel now.
+
 .TP
 .BI dial " name"
 Force dialing of interface
@@ -500,7 +561,6 @@ Force dialing of interface
 .BI mapping " driverId MSN0" [, MSN1 [, MSN2 "]] ... [," MSN9 ]
 Installs a mapping-table for MSN<->EAZ-mapping. See README for details.
 @MANINC_CONF@ @MAN8DIR@/.isdnctrl_conf.8
-@MANINC_TIMRU@ @MAN8DIR@/.isdnctrl_timru.8
 .SH WILDCARDS
 When using
 .BI "isdnctrl addphone " name " in " num
@@ -530,7 +590,7 @@ if this appears as the first character in a list, inverts the list.
 This man page is not complete.
 .LP
 .SH AUTHOR
-Fritz Elfert <fritz@wuemaus.franken.de>
+Fritz Elfert <fritz@isdn4linux.de>
 .LP
 .SH SEE ALSO
 .BR ttyI "(4), " isdnctrl "(4), " isdninfo "(4), " isdn_audio "(4), "

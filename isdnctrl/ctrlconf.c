@@ -1,4 +1,4 @@
-/* $Id: ctrlconf.c,v 1.9 1998/11/21 14:03:31 luethje Exp $
+/* $Id: ctrlconf.c,v 1.11 2001/05/23 14:48:23 kai Exp $
  *
  * ISDN accounting for isdn4linux. (Utilities)
  *
@@ -19,6 +19,13 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: ctrlconf.c,v $
+ * Revision 1.11  2001/05/23 14:48:23  kai
+ * make isdnctrl independent of the version of installed kernel headers,
+ * we have our own copy now.
+ *
+ * Revision 1.10  1999/11/02 20:41:21  keil
+ * make phonenumber ioctl compatible for ctrlconf too
+ *
  * Revision 1.9  1998/11/21 14:03:31  luethje
  * isdnctrl: added dialmode into the config file
  *
@@ -56,7 +63,6 @@
 #include <ctype.h>
 #include <sys/ioctl.h>
 #include <errno.h>
-#include <linux/isdn.h>
 
 #include "isdnctrl.h"
 #include "ctrlconf.h"
@@ -160,15 +166,11 @@ static char* readoptions(int fd, char *name, int is_master, section *CSec, secti
 	if (ioctl(fd, IIOCNETGCF, &cfg) < 0)
 		return NULL;
 
-	strcpy(PHONE(inphone)->name, name);
-	PHONE(inphone)->outgoing = 0;
-
+	set_isdn_net_ioctl_phone(PHONE(inphone), name, "", 0);
 	if (ioctl(fd, IIOCNETGNM, PHONE(inphone)) < 0)
 		return NULL;
 
-	strcpy(PHONE(outphone)->name, name);
-	PHONE(outphone)->outgoing = 1;
-
+	set_isdn_net_ioctl_phone(PHONE(outphone), name, "", 1);
 	if (ioctl(fd, IIOCNETGNM, PHONE(outphone)) < 0)
 		return NULL;
 
@@ -193,10 +195,8 @@ static char* readoptions(int fd, char *name, int is_master, section *CSec, secti
 	if (Set_Entry(SubSec,interface,CONF_ENT_SECURE, cfg.secure?"on":"off", C_OVERWRITE | C_WARN) == NULL)
 		return NULL;
 
-#ifdef ISDN_NET_DM_OFF
 	if (Set_Entry(SubSec,interface,CONF_ENT_DIALMODE, cfg.dialmode == ISDN_NET_DM_MANUAL?"manual":cfg.dialmode == ISDN_NET_DM_AUTO?"auto":"off", C_OVERWRITE | C_WARN) == NULL)
 		return NULL;
-#endif
 
 	if (cfg.callback)
 	{
@@ -398,7 +398,6 @@ int readconfig(int fd, char *file)
 				exec_args(fd,3,argv);
 			}
 			else
-#ifdef ISDN_NET_DM_OFF
 			if (!strcmp(Entry->name,CONF_ENT_DIALMODE))
 			{
 				argv[0] = cmds[DIALMODE].cmd;
@@ -408,7 +407,6 @@ int readconfig(int fd, char *file)
 				exec_args(fd,3,argv);
 			}
 			else
-#endif
 			if (!strcmp(Entry->name,CONF_ENT_CALLBACK))
 			{
 				argv[0] = cmds[CALLBACK].cmd;
@@ -647,9 +645,6 @@ static int set_all_numbers(int fd, char *name, int direction, char *numbers)
 
 	if (*phonestr != '\0')
 	{
-		strcpy(phone.name, name);
-		phone.outgoing = direction;
-
 		do
 		{
 			if ((ptr = strrchr(phonestr,' ')) == NULL)
@@ -660,8 +655,7 @@ static int set_all_numbers(int fd, char *name, int direction, char *numbers)
 				while (isspace(*ptr2) && ptr2 != phonestr) *ptr2-- = '\0';
 			}
 
-			strcpy(phone.phone, ptr);
-
+			set_isdn_net_ioctl_phone(&phone, name, ptr, direction);
 			if (*ptr != '\0')
 			{
 				if (ioctl(fd, IIOCNETANM, &phone) < 0)
@@ -690,9 +684,7 @@ static int del_all_numbers(int fd, char *name, int direction)
 	if (name == NULL)
 		return -1;
 
-	strcpy(PHONE(phonestr)->name, name);
-	PHONE(phonestr)->outgoing = direction;
-
+	set_isdn_net_ioctl_phone(PHONE(phonestr), name, "", direction);
 	if (ioctl(fd, IIOCNETGNM, PHONE(phonestr)) < 0)
 	{
 		perror(name);
@@ -701,9 +693,6 @@ static int del_all_numbers(int fd, char *name, int direction)
 
 	if (*phonestr != '\0')
 	{
-		strcpy(phone.name, name);
-		phone.outgoing = direction;
-
 		do
 		{
 			if ((ptr = strrchr(phonestr,' ')) == NULL)
@@ -716,8 +705,7 @@ static int del_all_numbers(int fd, char *name, int direction)
 
 			if (*ptr != '\0')
 			{
-				strcpy(phone.phone, ptr);
-
+				set_isdn_net_ioctl_phone(&phone, name, ptr, direction);
 				if (ioctl(fd, IIOCNETDNM, &phone) < 0)
 				{
 					perror(name);

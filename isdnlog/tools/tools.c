@@ -1,8 +1,8 @@
-/* $Id: tools.c,v 1.16 1998/12/09 20:40:19 akool Exp $
+/* $Id: tools.c,v 1.51 2001/12/30 17:17:41 akool Exp $
  *
  * ISDN accounting for isdn4linux. (Utilities)
  *
- * Copyright 1995, 1998 by Andreas Kool (akool@isdn4linux.de)
+ * Copyright 1995 .. 2000 by Andreas Kool (akool@isdn4linux.de)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,292 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: tools.c,v $
+ * Revision 1.51  2001/12/30 17:17:41  akool
+ * isdnlog-4.55:
+ *   Tatahhh: isdnlog speaks Euro :-)
+ *
+ * 	Many thanks to Bernhard Schmidt (berni@birkenwald.de)!
+ *
+ * 	** At least, you have to install "/usr/lib/isdn/rate-de.dat"
+ *   ** and modify your "/etc/isdn/isdn.conf" or "/etc/isdn/callerid.conf"
+ *   ** to read:
+ *   **   [ISDNLOG]
+ * 	**	   CURRENCY = 0.062,EUR
+ *
+ * I wish all of you a happy new year!
+ *
+ * Revision 1.50  2001/01/14 12:13:50  akool
+ * isdnlog-4.49
+ *  - added more Euracom decodings
+ *
+ *  - added new prefixes
+ *      0151 - Germany cellphone D1
+ *      0152 - Germany cellphone D2
+ *      0163 - Germany cellphone Eplus
+ *    to "country-de.dat"
+ *
+ *  - removed Freecall "0130" and "Germany cellphone C"
+ *
+ * Revision 1.49  2000/06/29 17:38:28  akool
+ *  - Ported "imontty", "isdnctrl", "isdnlog", "xmonisdn" and "hisaxctrl" to
+ *    Linux-2.4 "devfs" ("/dev/isdnctrl" -> "/dev/isdn/isdnctrl")
+ *
+ * Revision 1.48  2000/04/02 17:35:07  akool
+ * isdnlog-4.18
+ *  - isdnlog/isdnlog/isdnlog.8.in  ... documented hup3
+ *  - isdnlog/tools/dest.c ... _DEMD1 not recogniced as key
+ *  - mySQL Server version 3.22.27 support
+ *  - new rates
+ *
+ * Revision 1.47  2000/03/19 20:26:57  akool
+ * isdnlog-4.17
+ *  - new rates
+ *  - Provider 01080:Telegate aus "samples/rate.conf.de" entfernt, Dienst wurde
+ *    eingestellt
+ *  - isdnlog/tools/tools.c  ... fixed sarea ($17, $18)
+ *
+ * Revision 1.46  2000/01/16 12:36:59  akool
+ * isdnlog-4.03
+ *  - Patch from Gerrit Pape <pape@innominate.de>
+ *    fixes html-output if "-t" option of isdnrep is omitted
+ *  - Patch from Roland Rosenfeld <roland@spinnaker.de>
+ *    fixes "%p" in ILABEL and OLABEL
+ *
+ * Revision 1.45  2000/01/12 23:22:54  akool
+ * - isdnlog/tools/holiday.c ... returns ERVERYDAY for '*'
+ * - FAQ/configure{,.in} ...  test '==' => '='
+ * - isdnlog/tools/dest/configure{,.in} ...  test '==' => '='
+ * - isdnlog/tools/dest/Makefile.in ...  test '==' => '='
+ * - isdnlog/tools/zone/configure{,.in} ...  test '==' => '='
+ *
+ * - isdnlog/tools/rate-at.c ... P:1069
+ * - isdnlog/rate-at.dat ... P:1069
+ * - isdnlog/country-de.dat ... _DEMF
+ *
+ * - many new rates
+ * - more EURACOM sequences decoded
+ *
+ * Revision 1.44  2000/01/01 15:05:24  akool
+ * isdnlog-4.01
+ *  - first Y2K-Bug fixed
+ *
+ * Revision 1.43  1999/12/31 13:57:20  akool
+ * isdnlog-4.00 (Millenium-Edition)
+ *  - Oracle support added by Jan Bolt (Jan.Bolt@t-online.de)
+ *  - resolved *any* warnings against rate-de.dat
+ *  - Many new rates
+ *  - CREDITS file added
+ *
+ * Revision 1.42  1999/12/24 14:17:06  akool
+ * isdnlog-3.81
+ *  - isdnlog/tools/NEWS
+ *  - isdnlog/tools/telrate/info.html.in  ... bugfix
+ *  - isdnlog/tools/telrate/telrate.cgi.in ... new Service query
+ *  - isdnlog/tools/telrate/Makefile.in ... moved tmp below telrate
+ *  - isdnlog/samples/rate.conf.at ... fixed
+ *  - isdnlog/tools/rate-at.c ... some changes
+ *  - isdnlog/rate-at.dat ... ditto
+ *  - isdnlog/tools/Makefile ... added path to pp_rate
+ *  - isdnlog/tools/rate.{c,h}  ... getServiceNames, Date-Range in T:-Tag
+ *  - isdnlog/tools/isdnrate.c ... fixed sorting of services, -X52 rets service names
+ *  - isdnlog/tools/rate-files.man ... Date-Range in T:-Tag, moved from doc
+ *  - isdnlog/tools/isdnrate.man ... moved from doc
+ *  - doc/Makefile.in ... moved man's from doc to tools
+ *  - isdnlog/Makefile.in ... man's, install isdn.conf.5
+ *  - isdnlog/configure{,.in} ... sed, awk for man's
+ *  - isdnlog/tools/zone/Makefile.in ... dataclean
+ *  - isdnlog/tools/dest/Makefile.in ... dataclean
+ *  - isdnlog/isdnlog/isdnlog.8.in ... upd
+ *  - isdnlog/isdnlog/isdn.conf.5.in ... upd
+ *
+ * Revision 1.41  1999/11/07 13:29:29  akool
+ * isdnlog-3.64
+ *  - new "Sonderrufnummern" handling
+ *
+ * Revision 1.40  1999/10/30 18:03:31  akool
+ *  - fixed "-q" option
+ *  - workaround for "Sonderrufnummern"
+ *
+ * Revision 1.39  1999/10/29 08:17:02  akool
+ *  - new rates
+ *
+ * Revision 1.38  1999/10/28 18:36:49  akool
+ * isdnlog-3.59
+ *  - problems with gcc-2.7.2.3 fixed
+ *  - *any* startup-warning solved/removed (only 4u, Karsten!)
+ *  - many new rates
+ *
+ * Revision 1.37  1999/10/25 18:30:03  akool
+ * isdnlog-3.57
+ *   WARNING: Experimental version!
+ *   	   Please use isdnlog-3.56 for production systems!
+ *
+ * Revision 1.36  1999/09/19 14:16:27  akool
+ * isdnlog-3.53
+ *
+ * Revision 1.35  1999/09/13 09:09:44  akool
+ * isdnlog-3.51
+ *   - changed getProvider() to not return NULL on unknown providers
+ *     many thanks to Matthias Eder <mateder@netway.at>
+ *   - corrected zone-processing when doing a internal -> world call
+ *
+ * Revision 1.34  1999/08/29 10:29:15  akool
+ * isdnlog-3.48
+ *   cosmetics
+ *
+ * Revision 1.33  1999/08/20 19:29:12  akool
+ * isdnlog-3.45
+ *  - removed about 1 Mb of (now unused) data files
+ *  - replaced areacodes and "vorwahl.dat" support by zone databases
+ *  - fixed "Sonderrufnummern"
+ *  - rate-de.dat :: V:1.10-Germany [20-Aug-1999 21:23:27]
+ *
+ * Revision 1.32  1999/07/24 08:45:26  akool
+ * isdnlog-3.42
+ *   rate-de.dat 1.02-Germany [18-Jul-1999 10:44:21]
+ *   better Support for Ackermann Euracom
+ *   WEB-Interface for isdnrate
+ *   many small fixes
+ *
+ * Revision 1.31  1999/06/22 19:41:25  akool
+ * zone-1.1 fixes
+ *
+ * Revision 1.30  1999/06/16 19:13:03  akool
+ * isdnlog Version 3.34
+ *   fixed some memory faults
+ *
+ * Revision 1.29  1999/06/15 20:05:20  akool
+ * isdnlog Version 3.33
+ *   - big step in using the new zone files
+ *   - *This*is*not*a*production*ready*isdnlog*!!
+ *   - Maybe the last release before the I4L meeting in Nuernberg
+ *
+ * Revision 1.28  1999/06/03 18:51:22  akool
+ * isdnlog Version 3.30
+ *  - rate-de.dat V:1.02-Germany [03-Jun-1999 19:49:22]
+ *  - small fixes
+ *
+ * Revision 1.27  1999/05/22 10:19:33  akool
+ * isdnlog Version 3.29
+ *
+ *  - processing of "sonderrufnummern" much more faster
+ *  - detection for sonderrufnummern of other provider's implemented
+ *    (like 01929:FreeNet)
+ *  - Patch from Oliver Lauer <Oliver.Lauer@coburg.baynet.de>
+ *  - Patch from Markus Schoepflin <schoepflin@ginit.de>
+ *  - easter computing corrected
+ *  - rate-de.dat 1.02-Germany [22-May-1999 11:37:33] (from rate-CVS)
+ *  - countries-de.dat 1.02-Germany [22-May-1999 11:37:47] (from rate-CVS)
+ *  - new option "-B" added (see README)
+ *    (using "isdnlog -B16 ..." isdnlog now works in the Netherlands!)
+ *
+ * Revision 1.26  1999/05/09 18:24:28  akool
+ * isdnlog Version 3.25
+ *
+ *  - README: isdnconf: new features explained
+ *  - rate-de.dat: many new rates from the I4L-Tarifdatenbank-Crew
+ *  - added the ability to directly enter a country-name into "rate-xx.dat"
+ *
+ * Revision 1.25  1999/05/04 19:33:47  akool
+ * isdnlog Version 3.24
+ *
+ *  - fully removed "sondernummern.c"
+ *  - removed "gcc -Wall" warnings in ASN.1 Parser
+ *  - many new entries for "rate-de.dat"
+ *  - better "isdnconf" utility
+ *
+ * Revision 1.24  1999/04/14 13:17:28  akool
+ * isdnlog Version 3.14
+ *
+ * - "make install" now install's "rate-xx.dat", "rate.conf" and "ausland.dat"
+ * - "holiday-xx.dat" Version 1.1
+ * - many rate fixes (Thanks again to Michael Reinelt <reinelt@eunet.at>)
+ *
+ * Revision 1.23  1999/04/10 16:36:46  akool
+ * isdnlog Version 3.13
+ *
+ * WARNING: This is pre-ALPHA-dont-ever-use-Code!
+ * 	 "tarif.dat" (aka "rate-xx.dat"): the next generation!
+ *
+ * You have to do the following to test this version:
+ *   cp /usr/src/isdn4k-utils/isdnlog/holiday-de.dat /etc/isdn
+ *   cp /usr/src/isdn4k-utils/isdnlog/rate-de.dat /usr/lib/isdn
+ *   cp /usr/src/isdn4k-utils/isdnlog/samples/rate.conf.de /etc/isdn/rate.conf
+ *
+ * After that, add the following entries to your "/etc/isdn/isdn.conf" or
+ * "/etc/isdn/callerid.conf" file:
+ *
+ * [ISDNLOG]
+ * SPECIALNUMBERS = /usr/lib/isdn/sonderrufnummern.dat
+ * HOLIDAYS       = /usr/lib/isdn/holiday-de.dat
+ * RATEFILE       = /usr/lib/isdn/rate-de.dat
+ * RATECONF       = /etc/isdn/rate.conf
+ *
+ * Please replace any "de" with your country code ("at", "ch", "nl")
+ *
+ * Good luck (Andreas Kool and Michael Reinelt)
+ *
+ * Revision 1.22  1999/04/03 12:47:45  akool
+ * - isdnlog Version 3.12
+ * - "%B" tag in ILABEL/OLABEL corrected
+ * - isdnlog now register's incoming calls when there are no free B-channels
+ *   (idea from sergio@webmedia.es)
+ * - better "samples/rate.conf.de" (suppress provider without true call-by-call)
+ * - "tarif.dat" V:1.17 [03-Apr-99]
+ * - Added EWE-Tel rates from Reiner Klaproth <rk1@msjohan.dd.sn.schule.de>
+ * - isdnconf can now be used to generate a Least-cost-router table
+ *   (try "isdnconf -c .")
+ * - isdnlog now simulate a RELEASE COMPLETE if nothing happpens after a SETUP
+ * - CHARGEMAX Patches from Oliver Lauer <Oliver.Lauer@coburg.baynet.de>
+ *
+ * Revision 1.21  1999/03/20 16:55:22  akool
+ * isdnlog 3.09 : support for all Internet-by-call numbers
+ *
+ * Revision 1.20  1999/03/20 14:34:10  akool
+ * - isdnlog Version 3.08
+ * - more tesion)) Tarife from Michael Graw <Michael.Graw@bartlmae.de>
+ * - use "bunzip -f" from Franz Elsner <Elsner@zrz.TU-Berlin.DE>
+ * - show another "cheapest" hint if provider is overloaded ("OVERLOAD")
+ * - "make install" now makes the required entry
+ *     [GLOBAL]
+ *     AREADIFF = /usr/lib/isdn/vorwahl.dat
+ * - README: Syntax description of the new "rate-at.dat"
+ * - better integration of "sondernummern.c" from mario.joussen@post.rwth-aachen.de
+ * - server.c: buffer overrun fix from Michael.Weber@Post.RWTH-Aachen.DE (Michael Weber)
+ *
+ * Revision 1.19  1999/03/14 12:16:44  akool
+ * - isdnlog Version 3.04
+ * - general cleanup
+ * - new layout for "rate-xx.dat" and "holiday-xx.dat" files from
+ *     Michael Reinelt <reinelt@eunet.at>
+ *     unused by now - it's a work-in-progress !
+ * - bugfix for Wolfgang Siefert <siefert@wiwi.uni-frankfurt.de>
+ *     The Agfeo AS 40 (Software release 2.1b) uses AOC_AMOUNT, not AOC_UNITS
+ * - bugfix for Ralf G. R. Bergs <rabe@RWTH-Aachen.DE> - 0800/xxx numbers
+ *     are free of charge ;-)
+ * - tarif.dat V 1.08 - new mobil-rates DTAG
+ *
+ * Revision 1.18  1999/02/28 19:33:48  akool
+ * Fixed a typo in isdnconf.c from Andreas Jaeger <aj@arthur.rhein-neckar.de>
+ * CHARGEMAX fix from Oliver Lauer <Oliver.Lauer@coburg.baynet.de>
+ * isdnrep fix from reinhard.karcher@dpk.berlin.fido.de (Reinhard Karcher)
+ * "takt_at.c" fixes from Ulrich Leodolter <u.leodolter@xpoint.at>
+ * sondernummern.c from Mario Joussen <mario.joussen@post.rwth-aachen.de>
+ * Reenable usage of the ZONE entry from Schlottmann-Goedde@t-online.de
+ * Fixed a typo in callerid.conf.5
+ *
+ * Revision 1.17  1999/01/10 15:24:31  akool
+ *  - "message = 0" bug fixed (many thanks to
+ *    Sebastian Kanthak <sebastian.kanthak@muehlheim.de>)
+ *  - CITYWEEKEND via config-file possible
+ *  - fixes from Michael Reinelt <reinelt@eunet.at>
+ *  - fix a typo in the README from Sascha Ziemann <szi@aibon.ping.de>
+ *  - Charge for .at optimized by Michael Reinelt <reinelt@eunet.at>
+ *  - first alpha-Version of the new chargeinfo-Database
+ *    ATTENTION: This version requires the following manual steps:
+ *      cp /usr/src/isdn4k-utils/isdnlog/tarif.dat /usr/lib/isdn
+ *      cp /usr/src/isdn4k-utils/isdnlog/samples/tarif.conf /etc/isdn
+ *
  * Revision 1.16  1998/12/09 20:40:19  akool
  *  - new option "-0x:y" for leading zero stripping on internal S0-Bus
  *  - new option "-o" to suppress causes of other ISDN-Equipment
@@ -192,6 +478,7 @@
 /****************************************************************************/
 
 #include "tools.h"
+#include "telnum.h"
 
 /****************************************************************************/
 
@@ -262,7 +549,7 @@ time_t atom(register char *p)
   p += 4;
   *p = 0;
 
-  tm.tm_year = atoi(p1 + 2);
+  tm.tm_year = atoi(p1) - 1900;
 
 #ifdef DEBUG_1
   if (tm.tm_year < 1995) {
@@ -272,7 +559,7 @@ time_t atom(register char *p)
 #endif
 
   tm.tm_wday = tm.tm_yday;
-  tm.tm_isdst = -1;
+  tm.tm_isdst = UNKNOWN;
 
   return(mktime(&tm));
 } /* atom */
@@ -298,7 +585,7 @@ char *num2nam(char *num, int si)
     } /* for */
   } /* if */
 
-  cnf = -1;
+  cnf = UNKNOWN;
   return("");
 } /* num2nam */
 
@@ -328,7 +615,7 @@ char *double2str(double n, int l, int d, int flags)
   p = retstr[retnum] + l + 1;
   *p = 0;
 
-  dec = d ? d : -1;
+  dec = d ? d : UNKNOWN;
   dp = l - dec;
 
   *buf = '0';
@@ -390,6 +677,8 @@ char *double2str(double n, int l, int d, int flags)
     while (d-- > 0)
       *pd++ = *ps++;
   } /* if */
+
+  retstr[retnum][l + 1] = 0;
 
   if (flags & DEB) {
     p = retstr[retnum] + 1;
@@ -488,12 +777,18 @@ char *double2clock(double n)
 
 char *vnum(int chan, int who)
 {
-  register int    l = strlen(call[chan].num[who]), got = 0;
-  register int    flag = C_NO_WARN | C_NO_EXPAND;
-  auto     char  *ptr;
-  auto	   int    ll, lx;
+  register int    l = strlen(call[chan].num[who]);
+#if 0
+  register char  *p1, *p2;
+  auto	   int	  lx;
+#endif
+  auto	   int	  l1;
+#if 0
   auto	   int 	  prefix = strlen(countryprefix);
   auto	   int 	  cc_len = 2;   /* country code length defaults to 2 */
+#endif
+  auto	   TELNUM number;
+  auto	   char	  s[BUFSIZ];
 
 
   if (++retnum == MAXRET)
@@ -503,45 +798,115 @@ char *vnum(int chan, int who)
   *call[chan].rufnummer[who] =
   *call[chan].alias[who] =
   *call[chan].area[who] = 0;
-  call[chan].confentry[who] = -1;
+  call[chan].confentry[who] = UNKNOWN;
 
   if (!l) {       /* keine Meldung von der Vst (Calling party number fehlt) */
     sprintf(retstr[retnum], "%c", C_UNKNOWN);
     return(retstr[retnum]);
   } /* if */
 
+  if (*call[chan].num[who] == '#') { /* Euracom Befehl ... */
+    auto char arg1[BUFSIZ], arg2[BUFSIZ], arg3[BUFSIZ];
+
+    if (!memcmp(call[chan].num[who] + 1, "*421", 4)) {
+      Strncpy(arg1, call[chan].num[who] + 5, 4 + 1);
+      Strncpy(arg2, call[chan].num[who] + 9, 2 + 1);
+
+      if (!strcmp(arg2, "00"))
+        strcpy(arg3, "alle TN");
+      else {
+        strcpy(arg3, num2nam(arg2, 1));
+
+        if (cnf == UNKNOWN)
+          strcpy(arg3, arg2);
+      } /* else */
+
+      sprintf(retstr[retnum], "[TK:Morgen Terminruf um %c%c:%c%c Uhr an %s]",
+        arg1[0], arg1[1], arg1[2], arg1[3], arg3);
+
+      return(retstr[retnum]);
+    }
+    else if (!memcmp(call[chan].num[who] + 1, "*9999", 5)) {
+      sprintf(retstr[retnum], "[TK:Reset]");
+      return(retstr[retnum]);
+    }
+    else if (!memcmp(call[chan].num[who] + 1, "4", 1)) {
+      sprintf(retstr[retnum], "[TK:Pickup]");
+      return(retstr[retnum]);
+    }
+    else if (!memcmp(call[chan].num[who] + 1, "*481", 1)) {
+      switch (call[chan].num[who][5]) {
+        case '0' : sprintf(retstr[retnum], "[TK:LCR-Zeitprofil Automatik]"); break;
+        case '1' : sprintf(retstr[retnum], "[TK:LCR-Zeitprofil Werktag]");   break;
+        case '4' : sprintf(retstr[retnum], "[TK:LCR-Zeitprofil Feiertag]");  break;
+        default	 : sprintf(retstr[retnum], "[TK:LCR-Zeitprofil ???]");       break;
+      } /* switch */
+      return(retstr[retnum]);
+    }
+    else if (!memcmp(call[chan].num[who] + 1, "*002", 5)) {
+      register char *p = call[chan].num[who] + 5;
+
+      sprintf(retstr[retnum], "[TK:Uhrzeit:%c%c:%c%c]", *p, *(p + 1), *(p + 2), *(p + 3));
+      return(retstr[retnum]);
+    } /* else */
+  } /* if */
+
   strcpy(call[chan].alias[who], num2nam(call[chan].num[who], call[chan].si1));
 
-  if (cnf > -1) {                    /* Alias gefunden! */
+  if (cnf > UNKNOWN) {                    /* Alias gefunden! */
     call[chan].confentry[who] = cnf;
     strcpy(retstr[retnum], call[chan].alias[who]);
   } /* if */
 
-#ifdef Q931
-  if (q931dmp)
-    flag |= C_NO_ERROR;
-#endif
-
-  if ((call[chan].sondernummer[who] != -1) || call[chan].intern[who]) {
+  if ((call[chan].sondernummer[who] != UNKNOWN) || call[chan].intern[who]) {
     strcpy(call[chan].rufnummer[who], call[chan].num[who]);
 
-    if (cnf > -1)
+    if (cnf > UNKNOWN)
       strcpy(retstr[retnum], call[chan].alias[who]);
-    else if (call[chan].sondernummer[who] != -1)
-      strcpy(retstr[retnum], SN[call[chan].sondernummer[who]].sinfo);
+    else if (call[chan].sondernummer[who] != UNKNOWN) {
+      if ((l1 = call[chan].sondernummer[who]) < l) {
+        register char *p = call[chan].num[who] + l1;
+        register char  c = *p;
+
+
+        *call[chan].areacode[who] = *call[chan].area[who] = 0;
+
+        *p = 0;
+
+        sprintf(retstr[retnum], "%s - %c%s", call[chan].num[who], c, p + 1);
+	strcpy(call[chan].vorwahl[who], call[chan].num[who]);
+	strcpy(call[chan].rufnummer[who], p + 1);
+
+        *p = c;
+      }
+      else
+        sprintf(retstr[retnum], "%s", call[chan].num[who]);
+    }
     else
       sprintf(retstr[retnum], "TN %s", call[chan].num[who]);
 
     return(retstr[retnum]);
   }
   else {
-  if ((ptr = get_areacode(call[chan].num[who], &ll, flag)) != 0) {
-    strcpy(call[chan].area[who], ptr);
-    l = ll;
-    got++;
-  } /* if */
-  } /* else */
+    if (!q931dmp) {
+      normalizeNumber(call[chan].num[who], &number, TN_ALL);
 
+      strcpy(call[chan].areacode[who], number.country);
+      strcpy(call[chan].vorwahl[who], number.area);
+      strcpy(call[chan].area[who], number.sarea);
+      strcpy(call[chan].rufnummer[who], number.msn);
+
+      strcpy(s, formatNumber("%F", &number));
+    } /* if */
+
+    if (cnf > UNKNOWN)
+      strcpy(retstr[retnum], call[chan].alias[who]);
+    else
+      strcpy(retstr[retnum], s);
+
+    return(retstr[retnum]);
+  } /* else */
+#if 0 /* -lt- dead code ??? Fixme: */
   if (l > 1) {
     if (call[chan].num[who][prefix] == '1')
       cc_len = 1; /* USA is only country with country code length 1 */
@@ -562,7 +927,7 @@ char *vnum(int chan, int who)
     strcpy(call[chan].rufnummer[who], call[chan].num[who] + l);
   } /* if */
 
-  if (cnf > -1)
+  if (cnf > UNKNOWN)
     strcpy(retstr[retnum], call[chan].alias[who]);
   else if (l > 1)
     sprintf(retstr[retnum], "%s %s/%s, %s",
@@ -574,6 +939,7 @@ char *vnum(int chan, int who)
     strcpy(retstr[retnum], call[chan].num[who]);
 
   return(retstr[retnum]);
+#endif
 } /* vnum */
 
 /****************************************************************************/
@@ -681,7 +1047,7 @@ static char *ltoa(register unsigned long num, register char *p, register int rad
   while (--i);
 
   return(p);
-} 
+}
 */
 
 /****************************************************************************/
@@ -714,10 +1080,22 @@ int iprintf(char *obuf, int chan, register char *fmt, ...)
     } /* if */
 
     if (c != '%') {
-      *op++ = c;
+      if (c == '\\') {
+	c = *fmt++;
+	switch (c) {
+	case 't':
+	  *op++ = '\t';
+	  break;
+	default:
+	  *op++ = '\\';
+	  *op++ = c;
+	}
+      } else {
+	*op++ = c;
+      }
       continue;
     } /* if */
-
+    
     p = s = buf;
 
     ljust = 0;
@@ -800,7 +1178,7 @@ int iprintf(char *obuf, int chan, register char *fmt, ...)
       case 'C' : p = itoa(call[chan].cref, p, 10, 0);
       	       	 break;
 
-      case 'B' : p = itoa(chan, p, 10, 0);
+      case 'B' : p = itoa(call[chan].channel, p, 10, 0);
       	       	 break;
 
       case 'A' : s = sx;
@@ -811,6 +1189,7 @@ int iprintf(char *obuf, int chan, register char *fmt, ...)
                  p = s + strlen(s);
                  break;
 
+#if 0 /* DELETE_ME AK:18-Aug-99 */
       case 'z' : p = itoa(area_diff(NULL, call[chan].num[OTHER]), p, 10, 0);
       	       	 break;
 
@@ -821,6 +1200,12 @@ int iprintf(char *obuf, int chan, register char *fmt, ...)
                    *sx = 0;
                  p = s + strlen(s);
                  break;
+#else
+      case 'z' :
+      case 'Z' : s = "";
+      	         p = s + strlen(s);
+                 break;
+#endif
 
       case 'n' : who = ME;    goto go;
       case 'c' : who = CLIP;  goto go;
@@ -873,12 +1258,8 @@ go:   	         if (!ndigit)
 		 break;
 
       case 'p' : s = sx;
-      	         if (call[chan].provider != -1) {
-
-      		   if (call[chan].provider < 100)
-      	       	   sprintf(sx, "010%02d", call[chan].provider);
-      		   else
-		     sprintf(sx, "010%03d", call[chan].provider - 100);
+      	         if (call[chan].provider != UNKNOWN) {
+		   sprintf(sx, "%s", getProviderVBN(call[chan].provider));
       	         }
       		 else
                    *sx = 0;
@@ -886,12 +1267,15 @@ go:   	         if (!ndigit)
                  break;
 
       case 'P' : s = sx;
-      	         if (call[chan].provider != -1)
-      	       	   sprintf(sx, " via %s", Providername(call[chan].provider));
+      	         if (call[chan].provider != UNKNOWN)
+      	       	   sprintf(sx, " via %s", getProvider(call[chan].provider));
       		 else
                    *sx = 0;
                  p = s + strlen(s);
                  break;
+
+      case 'S' : p = itoa(call[chan].si1, p, 10, 0);
+      	       	 break;
 
       default  : *p++ = c;
 	         break;
@@ -931,13 +1315,10 @@ go:   	         if (!ndigit)
 
 int print_version(char *myname)
 {
-	_print_msg("%s Version %s, Copyright (C) 1995, 1996, 1997, 1998\n",myname,VERSION);
-	/*
-	_print_msg("                                   Andreas Kool (akool@isdn4linux.de)\n");
-	_print_msg("                               and Stefan Luethje (luethje@sl-gw.lake.de)\n\n");
-	*/
-	_print_msg("                                   Andreas Kool and Stefan Luethje\n");
-	_print_msg("                                   (i4l-isdnlog@franken.de)\n\n");
+	_print_msg("%s Version %s\n", myname, VERSION);
+	_print_msg("Copyright (C) 1995 .. 2002 by Andreas Kool (akool@isdn4linux.de)\n\n");
+	_print_msg("The isdnlog project is the work of many people;\n");
+	_print_msg("for at least a partial list see CREDITS.\n");
 	_print_msg("%s comes with ABSOLUTELY NO WARRANTY; for details see COPYING.\n", myname);
 	_print_msg("This is free software, and you are welcome to redistribute it\n");
 	_print_msg("under certain conditions; see COPYING for details.\n");

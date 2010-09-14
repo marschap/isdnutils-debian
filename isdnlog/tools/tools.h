@@ -1,8 +1,8 @@
-/* $Id: tools.h,v 1.24 1998/12/09 20:40:27 akool Exp $
+/* $Id: tools.h,v 1.57 2000/09/05 08:05:03 paul Exp $
  *
  * ISDN accounting for isdn4linux.
  *
- * Copyright 1995, 1998 by Andreas Kool (akool@isdn4linux.de)
+ * Copyright 1995 .. 2000 by Andreas Kool (akool@isdn4linux.de)
  *                     and Stefan Luethje (luethje@sl-gw.lake.de)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,302 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: tools.h,v $
+ * Revision 1.57  2000/09/05 08:05:03  paul
+ * Now isdnlog doesn't use any more ISDN_XX defines to determine the way it works.
+ * It now uses the value of "COUNTRYCODE = 999" to determine the country, and sets
+ * a variable mycountrynum to that value. That is then used in the code to set the
+ * way isdnlog works.
+ * It works for me, please check it! No configure.in / doc changes yet until
+ * it has been checked to work.
+ * So finally a version of isdnlog that can be compiled and distributed
+ * internationally.
+ *
+ * Revision 1.56  2000/08/06 13:06:53  akool
+ * isdnlog-4.38
+ *  - isdnlog now uses ioctl(IIOCNETGPN) to associate phone numbers, interfaces
+ *    and slots in "/dev/isdninfo".
+ *    This requires a Linux-Kernel 2.2.12 or better.
+ *    Support for older Kernel's are implemented.
+ *    If IIOCNETGPN is available, the entries "INTERFACE = xxx" in
+ *    "/etc/isdn/isdn.conf" are obsolete.
+ *  - added 01013:Tele2 totally Freecall on 12. and 13. August 2000
+ *  - resolved *any* warning's from "rate-de.dat" (once more ...)
+ *  - Patch from oliver@escape.de (Oliver Wellnitz) against
+ *  	 "Ziffernwahl verschluckt Nummern"
+ *
+ *    **Please "make clean" before using this version of isdnlog!!**
+ *
+ * Revision 1.55  2000/06/29 17:38:28  akool
+ *  - Ported "imontty", "isdnctrl", "isdnlog", "xmonisdn" and "hisaxctrl" to
+ *    Linux-2.4 "devfs" ("/dev/isdnctrl" -> "/dev/isdn/isdnctrl")
+ *
+ * Revision 1.54  2000/03/09 18:50:03  akool
+ * isdnlog-4.16
+ *  - isdnlog/samples/isdn.conf.no ... changed VBN
+ *  - isdnlog/isdnlog/isdnlog.c .. ciInterval
+ *  - isdnlog/isdnlog/processor.c .. ciInterval
+ *  - isdnlog/tools/tools.h .. ciInterval, abclcr conf option
+ *  - isdnlog/tools/isdnconf.c .. ciInterval, abclcr conf option
+ *  - isdnlog/tools/isdnrate.c .. removed a warning
+ *  - isdnlog/NEWS ... updated
+ *  - isdnlog/README ... updated
+ *  - isdnlog/isdnlog/isdnlog.8.in ... updated
+ *  - isdnlog/isdnlog/isdnlog.5.in ... updated
+ *  - isdnlog/samples/provider ... NEW
+ *
+ *    ==> Please run a make clean, and be sure to read isdnlog/NEWS for changes
+ *    ==> and new features.
+ *
+ * Revision 1.53  2000/03/06 07:03:21  akool
+ * isdnlog-4.15
+ *   - isdnlog/tools/tools.h ... moved one_call, sum_calls to isdnrep.h
+ *     ==> DO A 'make clean' PLEASE
+ *   - isdnlog/tools/telnum.c ... fixed a small typo
+ *   - isdnlog/isdnrep/rep_main.c ... incl. dest.h
+ *   - isdnlog/isdnrep/isdnrep.c ... fixed %l, %L
+ *   - isdnlog/isdnrep/isdnrep.h ... struct one_call, sum_calls are now here
+ *
+ *   Support for Norway added. Many thanks to Tore Ferner <torfer@pvv.org>
+ *     - isdnlog/rate-no.dat  ... NEW
+ *     - isdnlog/holiday-no.dat  ... NEW
+ *     - isdnlog/samples/isdn.conf.no ... NEW
+ *     - isdnlog/samples/rate.conf.no ... NEW
+ *
+ * Revision 1.52  2000/02/11 10:41:53  akool
+ * isdnlog-4.10
+ *  - Set CHARGEINT to 11 if < 11
+ *  - new Option "-dx" controls ABC_LCR feature (see README for infos)
+ *  - new rates
+ *
+ * Revision 1.51  1999/12/31 13:57:20  akool
+ * isdnlog-4.00 (Millenium-Edition)
+ *  - Oracle support added by Jan Bolt (Jan.Bolt@t-online.de)
+ *  - resolved *any* warnings against rate-de.dat
+ *  - Many new rates
+ *  - CREDITS file added
+ *
+ * Revision 1.50  1999/11/02 21:01:58  akool
+ * isdnlog-3.62
+ *  - many new rates
+ *  - next try to fix "Sonderrufnummern"
+ *
+ * Revision 1.49  1999/10/29 19:46:01  akool
+ * isdnlog-3.60
+ *  - sucessfully ported/tested to/with:
+ *      - Linux-2.3.24 SMP
+ *      - egcs-2.91.66
+ *    using -DBIG_PHONE_NUMBERS
+ *
+ *  - finally added working support for HFC-card in "echo mode"
+ *    try this:
+ *      hisaxctrl bri 10 1
+ *      hisaxctrl bri 12 1
+ *      isdnlog -21 -1
+ * -----------------^^ new option
+ *
+ * Revision 1.48  1999/10/25 18:30:04  akool
+ * isdnlog-3.57
+ *   WARNING: Experimental version!
+ *   	   Please use isdnlog-3.56 for production systems!
+ *
+ * Revision 1.47  1999/06/28 19:16:54  akool
+ * isdnlog Version 3.38
+ *   - new utility "isdnrate" started
+ *
+ * Revision 1.46  1999/06/16 23:38:09  akool
+ * fixed zone-processing
+ *
+ * Revision 1.45  1999/06/15 20:05:22  akool
+ * isdnlog Version 3.33
+ *   - big step in using the new zone files
+ *   - *This*is*not*a*production*ready*isdnlog*!!
+ *   - Maybe the last release before the I4L meeting in Nuernberg
+ *
+ * Revision 1.44  1999/06/13 14:08:28  akool
+ * isdnlog Version 3.32
+ *
+ *  - new option "-U1" (or "ignoreCOLP=1") to ignore CLIP/COLP Frames
+ *  - TEI management decoded
+ *
+ * Revision 1.43  1999/06/03 18:51:25  akool
+ * isdnlog Version 3.30
+ *  - rate-de.dat V:1.02-Germany [03-Jun-1999 19:49:22]
+ *  - small fixes
+ *
+ * Revision 1.42  1999/05/22 10:19:36  akool
+ * isdnlog Version 3.29
+ *
+ *  - processing of "sonderrufnummern" much more faster
+ *  - detection for sonderrufnummern of other provider's implemented
+ *    (like 01929:FreeNet)
+ *  - Patch from Oliver Lauer <Oliver.Lauer@coburg.baynet.de>
+ *  - Patch from Markus Schoepflin <schoepflin@ginit.de>
+ *  - easter computing corrected
+ *  - rate-de.dat 1.02-Germany [22-May-1999 11:37:33] (from rate-CVS)
+ *  - countries-de.dat 1.02-Germany [22-May-1999 11:37:47] (from rate-CVS)
+ *  - new option "-B" added (see README)
+ *    (using "isdnlog -B16 ..." isdnlog now works in the Netherlands!)
+ *
+ * Revision 1.41  1999/05/13 11:40:11  akool
+ * isdnlog Version 3.28
+ *
+ *  - "-u" Option corrected
+ *  - "ausland.dat" removed
+ *  - "countries-de.dat" fully integrated
+ *      you should add the entry
+ *      "COUNTRYFILE = /usr/lib/isdn/countries-de.dat"
+ *      into section "[ISDNLOG]" of your config file!
+ *  - rate-de.dat V:1.02-Germany [13-May-1999 12:26:24]
+ *  - countries-de.dat V:1.02-Germany [13-May-1999 12:26:26]
+ *
+ * Revision 1.40  1999/05/09 18:24:31  akool
+ * isdnlog Version 3.25
+ *
+ *  - README: isdnconf: new features explained
+ *  - rate-de.dat: many new rates from the I4L-Tarifdatenbank-Crew
+ *  - added the ability to directly enter a country-name into "rate-xx.dat"
+ *
+ * Revision 1.39  1999/05/04 19:33:50  akool
+ * isdnlog Version 3.24
+ *
+ *  - fully removed "sondernummern.c"
+ *  - removed "gcc -Wall" warnings in ASN.1 Parser
+ *  - many new entries for "rate-de.dat"
+ *  - better "isdnconf" utility
+ *
+ * Revision 1.38  1999/04/30 19:08:27  akool
+ * isdnlog Version 3.23
+ *
+ *  - changed LCR probing duration from 181 seconds to 153 seconds
+ *  - "rate-de.dat" filled with May, 1. rates
+ *
+ * Revision 1.37  1999/04/16 14:40:07  akool
+ * isdnlog Version 3.16
+ *
+ * - more syntax checks for "rate-xx.dat"
+ * - isdnrep fixed
+ *
+ * Revision 1.36  1999/04/14 13:17:30  akool
+ * isdnlog Version 3.14
+ *
+ * - "make install" now install's "rate-xx.dat", "rate.conf" and "ausland.dat"
+ * - "holiday-xx.dat" Version 1.1
+ * - many rate fixes (Thanks again to Michael Reinelt <reinelt@eunet.at>)
+ *
+ * Revision 1.35  1999/04/10 16:36:48  akool
+ * isdnlog Version 3.13
+ *
+ * WARNING: This is pre-ALPHA-dont-ever-use-Code!
+ * 	 "tarif.dat" (aka "rate-xx.dat"): the next generation!
+ *
+ * You have to do the following to test this version:
+ *   cp /usr/src/isdn4k-utils/isdnlog/holiday-de.dat /etc/isdn
+ *   cp /usr/src/isdn4k-utils/isdnlog/rate-de.dat /usr/lib/isdn
+ *   cp /usr/src/isdn4k-utils/isdnlog/samples/rate.conf.de /etc/isdn/rate.conf
+ *
+ * After that, add the following entries to your "/etc/isdn/isdn.conf" or
+ * "/etc/isdn/callerid.conf" file:
+ *
+ * [ISDNLOG]
+ * SPECIALNUMBERS = /usr/lib/isdn/sonderrufnummern.dat
+ * HOLIDAYS       = /usr/lib/isdn/holiday-de.dat
+ * RATEFILE       = /usr/lib/isdn/rate-de.dat
+ * RATECONF       = /etc/isdn/rate.conf
+ *
+ * Please replace any "de" with your country code ("at", "ch", "nl")
+ *
+ * Good luck (Andreas Kool and Michael Reinelt)
+ *
+ * Revision 1.34  1999/04/03 12:47:50  akool
+ * - isdnlog Version 3.12
+ * - "%B" tag in ILABEL/OLABEL corrected
+ * - isdnlog now register's incoming calls when there are no free B-channels
+ *   (idea from sergio@webmedia.es)
+ * - better "samples/rate.conf.de" (suppress provider without true call-by-call)
+ * - "tarif.dat" V:1.17 [03-Apr-99]
+ * - Added EWE-Tel rates from Reiner Klaproth <rk1@msjohan.dd.sn.schule.de>
+ * - isdnconf can now be used to generate a Least-cost-router table
+ *   (try "isdnconf -c .")
+ * - isdnlog now simulate a RELEASE COMPLETE if nothing happpens after a SETUP
+ * - CHARGEMAX Patches from Oliver Lauer <Oliver.Lauer@coburg.baynet.de>
+ *
+ * Revision 1.33  1999/03/24 19:39:06  akool
+ * - isdnlog Version 3.10
+ * - moved "sondernnummern.c" from isdnlog/ to tools/
+ * - "holiday.c" and "rate.c" integrated
+ * - NetCologne rates from Oliver Flimm <flimm@ph-cip.uni-koeln.de>
+ * - corrected UUnet and T-Online rates
+ *
+ * Revision 1.32  1999/03/20 16:55:27  akool
+ * isdnlog 3.09 : support for all Internet-by-call numbers
+ *
+ * Revision 1.31  1999/03/20 14:34:17  akool
+ * - isdnlog Version 3.08
+ * - more tesion)) Tarife from Michael Graw <Michael.Graw@bartlmae.de>
+ * - use "bunzip -f" from Franz Elsner <Elsner@zrz.TU-Berlin.DE>
+ * - show another "cheapest" hint if provider is overloaded ("OVERLOAD")
+ * - "make install" now makes the required entry
+ *     [GLOBAL]
+ *     AREADIFF = /usr/lib/isdn/vorwahl.dat
+ * - README: Syntax description of the new "rate-at.dat"
+ * - better integration of "sondernummern.c" from mario.joussen@post.rwth-aachen.de
+ * - server.c: buffer overrun fix from Michael.Weber@Post.RWTH-Aachen.DE (Michael Weber)
+ *
+ * Revision 1.30  1999/03/15 21:28:54  akool
+ * - isdnlog Version 3.06
+ * - README: explain some terms about LCR, corrected "-c" Option of "isdnconf"
+ * - isdnconf: added a small LCR-feature - simply try "isdnconf -c 069"
+ * - isdnlog: dont change CHARGEINT, if rate is't known!
+ * - sonderrufnummern 1.02 [15-Mar-99] :: added WorldCom
+ * - tarif.dat 1.09 [15-Mar-99] :: added WorldCom
+ * - isdnlog now correctly handles the new "Ortstarif-Zugang" of UUnet
+ *
+ * Revision 1.29  1999/03/14 14:27:37  akool
+ * - isdnlog Version 3.05
+ * - new Option "-u1" (or "ignoreRR=1")
+ * - added version information to "sonderrufnummern.dat"
+ * - added debug messages if sonderrufnummern.dat or tarif.dat could not be opened
+ * - sonderrufnummern.dat V 1.01 - new 01805 rates
+ *
+ * Revision 1.28  1999/03/07 18:20:11  akool
+ * - new 01805 tarif of DTAG
+ * - new March 1999 tarife
+ * - added new provider "01051 Telecom"
+ * - fixed a buffer overrun from Michael Weber <Michael.Weber@Post.RWTH-Aachen.DE>
+ * - fixed a bug using "sondernnummern.c"
+ * - fixed chargeint change over the time
+ * - "make install" now install's "sonderrufnummern.dat", "tarif.dat",
+ *   "vorwahl.dat" and "tarif.conf"! Many thanks to
+ *   Mario Joussen <mario.joussen@post.rwth-aachen.de>
+ * - Euracom Frames would now be ignored
+ * - fixed warnings in "sondernnummern.c"
+ * - "10plus" messages no longer send to syslog
+ *
+ * Revision 1.27  1999/02/28 19:33:52  akool
+ * Fixed a typo in isdnconf.c from Andreas Jaeger <aj@arthur.rhein-neckar.de>
+ * CHARGEMAX fix from Oliver Lauer <Oliver.Lauer@coburg.baynet.de>
+ * isdnrep fix from reinhard.karcher@dpk.berlin.fido.de (Reinhard Karcher)
+ * "takt_at.c" fixes from Ulrich Leodolter <u.leodolter@xpoint.at>
+ * sondernummern.c from Mario Joussen <mario.joussen@post.rwth-aachen.de>
+ * Reenable usage of the ZONE entry from Schlottmann-Goedde@t-online.de
+ * Fixed a typo in callerid.conf.5
+ *
+ * Revision 1.26  1999/01/24 19:02:51  akool
+ *  - second version of the new chargeint database
+ *  - isdnrep reanimated
+ *
+ * Revision 1.25  1999/01/10 15:24:36  akool
+ *  - "message = 0" bug fixed (many thanks to
+ *    Sebastian Kanthak <sebastian.kanthak@muehlheim.de>)
+ *  - CITYWEEKEND via config-file possible
+ *  - fixes from Michael Reinelt <reinelt@eunet.at>
+ *  - fix a typo in the README from Sascha Ziemann <szi@aibon.ping.de>
+ *  - Charge for .at optimized by Michael Reinelt <reinelt@eunet.at>
+ *  - first alpha-Version of the new chargeinfo-Database
+ *    ATTENTION: This version requires the following manual steps:
+ *      cp /usr/src/isdn4k-utils/isdnlog/tarif.dat /usr/lib/isdn
+ *      cp /usr/src/isdn4k-utils/isdnlog/samples/tarif.conf /etc/isdn
+ *
  * Revision 1.24  1998/12/09 20:40:27  akool
  *  - new option "-0x:y" for leading zero stripping on internal S0-Bus
  *  - new option "-o" to suppress causes of other ISDN-Equipment
@@ -279,6 +575,9 @@
 
 #include "policy.h"
 #include "libisdn.h"
+#include "holiday.h"
+#include "country.h"
+#include "rate.h"
 
 /****************************************************************************/
 
@@ -304,7 +603,7 @@
 
 /****************************************************************************/
 
-#define LOG_VERSION "3.1"
+#define LOG_VERSION "3.2"
 
 /****************************************************************************/
 
@@ -313,6 +612,9 @@
 #define max(a,b)        (((a) > (b)) ? (a) : (b))
 #define min(a,b)        (((a) < (b)) ? (a) : (b))
 #define	abs(x)		(((x) < 0) ? -(x) : (x))
+
+#define UNKNOWN		-1
+#define	UNDEFINED	-2
 
 /****************************************************************************/
 
@@ -325,19 +627,49 @@
 
 /****************************************************************************/
 
-#define NUMSIZE      20
-#define	FNSIZE	     64
-#define RETSIZE     128
-#define MAXRET	      5
-#define MAXZONES      6
-#define MAXCHAN       7
-#define MAXCARDS      2
+#define NUMSIZE    (ISDN_MSNLEN + 1)
+#define	FNSIZE	      64
+#define RETSIZE      128
+#define MAXRET	       5
+#define MAXPROVIDER 1000
+#define MAXZONES     500
+#define MAXCHAN        7
+#define MAXCARDS       2
 
 #define DIGITS 	     17
 #define DEB           1
 
 #define MAXUNKNOWN   50
 #define MAXCONNECTS  50
+
+/****************************************************************************/
+#if 0 /* Fixme: remove */
+#define SONDERNUMMER -2 /* FIXME: set by readconfig(), but unused by now */
+#endif
+
+#define INTERN	      0
+#define FREECALL      0
+
+#if 0 /* Fixme: remove */
+#define	LOCALCALL     1
+#define CITYCALL      2
+#define REGIOCALL     3
+#define GERMANCALL    4
+#define C_MOBILBOX   10
+#define C_NETZ       10
+#define D1_NETZ      10
+#define D2_NETZ      10
+#define E_PLUS_NETZ  10
+#define E2_NETZ      10
+#define INTERNET    100
+#define	AUKUNFT_IN   40
+#define AUSKUNFT_AUS 41
+#endif
+
+/* this is specific to Germany */
+#define	DTAG	     33
+
+#define	LCR_DURATION 153
 
 /****************************************************************************/
 
@@ -416,9 +748,9 @@
 #define QUOTE   	       0200
 #define QMASK      (QCMASK &~QUOTE)
 #define NOT                     '!'
-
+#if 0 /* Fixme: remove */
 #define	AVON	             "avon"
-#define INFO	    "/dev/isdninfo"
+#endif
 
 #define	BIGBUFSIZ              2048
 
@@ -486,7 +818,6 @@
 #define CONF_ENT_NL			 "NEWLINE"
 #define CONF_ENT_WIDTH	 "WIDTH"
 #define CONF_ENT_WD			 "WATCHDOG"
-#define CONF_ENT_CW			 "CITYWEEKEND"
 #define CONF_ENT_AMT		 "AMT"
 #define CONF_ENT_DUAL		 "DUAL"
 #define CONF_ENT_Q931		 "Q931DUMP"
@@ -496,7 +827,13 @@
 #define CONF_ENT_PRESELECT "PRESELECTED"
 #define	CONF_ENT_TRIM	   "TRIM"
 #define	CONF_ENT_OTHER	   "OTHER"
-
+#define CONF_ENT_IGNORERR  "IGNORERR"
+#define CONF_ENT_IGNORECOLP "IGNORECOLP"
+#define	CONF_ENT_VBN	   "VBN"
+#define	CONF_ENT_VBNLEN	   "VBNLEN"
+#define CONF_ENT_CIINTERVAL "CIINTERVAL"
+#define CONF_ENT_ABCLCR	"ABCLCR"
+#define CONF_ENT_PROVIDERCHANGE "PROVIDERCHANGE"
 /****************************************************************************/
 
 /* Keywords for isdn.conf */
@@ -526,6 +863,14 @@
 
 #define CONF_ENT_CALLFILE "CALLFILE"
 #define CONF_ENT_CALLFMT  "CALLFMT"
+
+#define CONF_ENT_HOLIFILE    "HOLIDAYS"
+#define CONF_ENT_DESTFILE    "DESTFILE"
+#define CONF_ENT_COUNTRYFILE "COUNTRYFILE"
+#define CONF_ENT_ZONEFILE    "ZONEFILE"
+#define CONF_ENT_RATECONF    "RATECONF"
+#define CONF_ENT_RATEFILE    "RATEFILE"
+#define CONF_ENT_LCDFILE     "LCDFILE"
 
 #define CONF_ENT_VBOXVER  "VBOXVERSION"
 #define CONF_ENT_VBOXPATH "VBOXPATH"
@@ -589,6 +934,7 @@ typedef struct {
   char    vnum[MAXMSNS][256];
   int	  provider;
   int	  sondernummer[MAXMSNS];
+  int	  local[MAXMSNS];
   int	  intern[MAXMSNS];
   char    id[32];
   char	  usage[16];
@@ -612,7 +958,7 @@ typedef struct {
   char	  area[MAXMSNS][128];
   char	  money[64];
   char	  currency[32];
-  char    msg[128];
+  char    msg[BUFSIZ];
   int     stat;
   int	  version;
   int	  bchan;
@@ -621,17 +967,25 @@ typedef struct {
   int     huptimeout;
   char	  service[32];
   double  pay;
+  double  aocpay;
   char	  digits[NUMSIZE];
   int	  oc3;
   int	  takteChargeInt;
   int 	  card;
-  int	  knock; 
-  time_t  nextcint;
+  int	  knock;
+  time_t  lastcint;
+  time_t  lasteh;
   float	  cint;
   int     cinth;
   int	  ctakt;
-  int	  zone;
+  int	  zone; /* Fixme: zone is in Rate : _zone */
   int	  uid;
+  int	  hint;
+  int	  tz;
+  int	  tarifknown;
+  RATE    Rate;
+  char	  interface[10];
+  char    fnum[NUMSIZE];
 } CALL;
 
 /****************************************************************************/
@@ -660,7 +1014,7 @@ typedef struct {
   int	  usage[2];
   double  dur[2];
   int     eh;
-  double  dm;
+  double  pay;
   double  charge;
   double  rcharge;
   double  scharge;
@@ -674,41 +1028,6 @@ typedef struct {
   double  obytes[2];
 } KNOWN;
 
-/****************************************************************************/
-
-typedef struct {
-  int    in;
-  int    out;
-  int    eh;
-  int    err;
-  double din;
-  double dout;
-  double dm;
-  long	 ibytes;
-  long	 obytes;
-} sum_calls;
-
-/****************************************************************************/
-
-typedef struct {
-  int    eh;
-  int    cause;
-  time_t t;
-  int    dir;
-  double duration;
-  double dm;
-  char   num[2][NUMSIZE];
-  char   who[2][NUMSIZE];
-  long	 ibytes;
-  long	 obytes;
-  char   version[10];
-  int	 si;
-  int	 si1;
-  double currency_factor;
-  char	 currency[32];
-  double pay;
-  int	 provider;
-} one_call;
 
 /****************************************************************************/
 
@@ -727,18 +1046,6 @@ typedef struct {
   int  f;
   char n[20];
 } IFO;
-
-/****************************************************************************/
-
-typedef struct {
-  char  *msn;      /* Telefonnummer */
-  char  *sinfo;    /* Kurzbeschreibung */
-  int    tarif;    /* 0 = free, 1 = CityCall, -1 = see grund1 .. takt2 */
-  double grund1;   /* Grundtarif Werktage 9-18 Uhr */
-  double grund2;   /* Grundtarif uebrige Zeit */
-  double takt1;	   /* Zeittakt Werktage 9-18 Uhr */
-  double takt2;	   /* Zeittakt uebrige Zeit */
-} SonderNummern;
 
 /****************************************************************************/
 
@@ -777,13 +1084,29 @@ _EXTERN char    	idate[256];
 _EXTERN CALL    	call[MAXCHAN];
 #ifdef Q931
 _EXTERN int     	q931dmp;
+#else
+#define q931dmp 0
 #endif
+#if 0 /* Fixme: remove */
 _EXTERN int     	CityWeekend;
+#endif
+_EXTERN	int	 preselect;
 _EXTERN int	dual;
-_EXTERN char    	mlabel[BUFSIZ];
+_EXTERN int	hfcdual;
+_EXTERN int	abclcr;
+_EXTERN char  * providerchange;
+_EXTERN int	ciInterval;
+_EXTERN int	ehInterval;
+_EXTERN char    mlabel[BUFSIZ];
 _EXTERN char    *amtsholung;
-_EXTERN SonderNummern *SN;
-_EXTERN int	      nSN;
+_EXTERN int	ignoreRR;
+_EXTERN int	ignoreCOLP;
+_EXTERN int 	interns0;
+_EXTERN	char    *vbn;
+_EXTERN	char    *vbnlen;
+_EXTERN char	*mynum;
+_EXTERN int	myicountry;
+_EXTERN int	conf_country;	/* replaces the ISDN_xx defines */
 #undef _EXTERN
 
 /****************************************************************************/
@@ -802,6 +1125,13 @@ _EXTERN char* rebootcmd = REBOOTCMD;
 _EXTERN char* logfile   = LOGFILE;
 _EXTERN char* callfile  = NULL;
 _EXTERN char* callfmt   = NULL;
+_EXTERN char* holifile  = NULL;
+_EXTERN char* destfile  = NULL;
+_EXTERN char* countryfile = NULL;
+_EXTERN char* zonefile  = NULL;
+_EXTERN char* rateconf  = NULL;
+_EXTERN char* ratefile  = NULL;
+_EXTERN char* lcdfile   = NULL;
 _EXTERN int  (*_print_msg)(const char *, ...) = printf;
 _EXTERN int   use_new_config = 1;
 _EXTERN char ***lineformats = NULL;
@@ -820,6 +1150,13 @@ _EXTERN char* rebootcmd;
 _EXTERN char* logfile;
 _EXTERN char* callfile;
 _EXTERN char* callfmt;
+_EXTERN char* holifile;
+_EXTERN char* destfile;
+_EXTERN char* countryfile;
+_EXTERN char* zonefile;
+_EXTERN char* rateconf;
+_EXTERN char* ratefile;
+_EXTERN char* lcdfile;
 _EXTERN int  (*_print_msg)(const char *, ...);
 _EXTERN int   use_new_config;
 _EXTERN char ***lineformats;
@@ -841,11 +1178,10 @@ _EXTERN char  *time2str(time_t sec);
 _EXTERN char  *double2clock(double n);
 _EXTERN char  *vnum(int chan, int who);
 _EXTERN char  *i2a(int n, int l, int base);
-_EXTERN char  *Providername(int number);
 _EXTERN int    iprintf(char *obuf, int chan, register char *fmt, ...);
 _EXTERN char  *qmsg(int type, int version, int val);
 _EXTERN char  *Myname;
-
+_EXTERN	char  *zonen[MAXZONES];
 #undef _EXTERN
 
 /****************************************************************************/
@@ -859,8 +1195,6 @@ _EXTERN char  *Myname;
 _EXTERN int    readconfig(char *myname);
 _EXTERN void   setDefaults(void);
 _EXTERN void   discardconfig(void);
-_EXTERN char  *t2tz(int zeit);
-_EXTERN char  *z2s(int zone);
 _EXTERN section *read_isdnconf(section **_conf_dat);
 
 #undef _EXTERN
@@ -868,4 +1202,3 @@ _EXTERN section *read_isdnconf(section **_conf_dat);
 /****************************************************************************/
 
 #endif /* _TOOLS_H_ */
-

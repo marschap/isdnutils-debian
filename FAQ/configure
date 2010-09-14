@@ -447,7 +447,7 @@ echo > confdefs.h
 
 # A filename unique to this package, relative to the directory that
 # configure is in, which we can look for to find out if srcdir is correct.
-ac_unique_file=de-i4l-faq
+ac_unique_file=i4lfaq.sgml
 
 # Find the source files, if location was not specified.
 if test -z "$srcdir"; then
@@ -600,6 +600,36 @@ test -z "$INSTALL_PROGRAM" && INSTALL_PROGRAM='${INSTALL}'
 
 test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
 
+# Extract the first word of "tar", so it can be a program name with args.
+set dummy tar; ac_word=$2
+echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
+if eval "test \"`echo '$''{'ac_cv_path_C_TAR'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  case "$C_TAR" in
+  /*)
+  ac_cv_path_C_TAR="$C_TAR" # Let the user override the test with a path.
+  ;;
+  *)
+  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
+  for ac_dir in $PATH:/usr/sbin:/sbin:/usr/local/bin; do
+    test -z "$ac_dir" && ac_dir=.
+    if test -f $ac_dir/$ac_word; then
+      ac_cv_path_C_TAR="$ac_dir/$ac_word"
+      break
+    fi
+  done
+  IFS="$ac_save_ifs"
+  ;;
+esac
+fi
+C_TAR="$ac_cv_path_C_TAR"
+if test -n "$C_TAR"; then
+  echo "$ac_t""$C_TAR" 1>&6
+else
+  echo "$ac_t""no" 1>&6
+fi
+
 # Extract the first word of "zip", so it can be a program name with args.
 set dummy zip; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
@@ -660,36 +690,71 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-# Extract the first word of "perl", so it can be a program name with args.
-set dummy perl; ac_word=$2
+# Extract the first word of "sgml2html", so it can be a program name with args.
+set dummy sgml2html; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-if eval "test \"`echo '$''{'ac_cv_path_C_PERL'+set}'`\" = set"; then
+if eval "test \"`echo '$''{'ac_cv_path_C_SGML2HTML'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
-  case "$C_PERL" in
+  case "$C_SGML2HTML" in
   /*)
-  ac_cv_path_C_PERL="$C_PERL" # Let the user override the test with a path.
+  ac_cv_path_C_SGML2HTML="$C_SGML2HTML" # Let the user override the test with a path.
   ;;
   *)
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
   for ac_dir in $PATH:/usr/sbin:/sbin:/usr/local/bin; do
     test -z "$ac_dir" && ac_dir=.
     if test -f $ac_dir/$ac_word; then
-      ac_cv_path_C_PERL="$ac_dir/$ac_word"
+      ac_cv_path_C_SGML2HTML="$ac_dir/$ac_word"
       break
     fi
   done
   IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_C_SGML2HTML" && ac_cv_path_C_SGML2HTML="sgml2html-not-found-or-installed"
   ;;
 esac
 fi
-C_PERL="$ac_cv_path_C_PERL"
-if test -n "$C_PERL"; then
-  echo "$ac_t""$C_PERL" 1>&6
+C_SGML2HTML="$ac_cv_path_C_SGML2HTML"
+if test -n "$C_SGML2HTML"; then
+  echo "$ac_t""$C_SGML2HTML" 1>&6
 else
   echo "$ac_t""no" 1>&6
 fi
 
+# Extract the first word of "sgml2txt", so it can be a program name with args.
+set dummy sgml2txt; ac_word=$2
+echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
+if eval "test \"`echo '$''{'ac_cv_path_C_SGML2TXT'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  case "$C_SGML2TXT" in
+  /*)
+  ac_cv_path_C_SGML2TXT="$C_SGML2TXT" # Let the user override the test with a path.
+  ;;
+  *)
+  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
+  for ac_dir in $PATH:/usr/sbin:/sbin:/usr/local/bin; do
+    test -z "$ac_dir" && ac_dir=.
+    if test -f $ac_dir/$ac_word; then
+      ac_cv_path_C_SGML2TXT="$ac_dir/$ac_word"
+      break
+    fi
+  done
+  IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_C_SGML2TXT" && ac_cv_path_C_SGML2TXT="sgml2txt-not-found-or-installed"
+  ;;
+esac
+fi
+C_SGML2TXT="$ac_cv_path_C_SGML2TXT"
+if test -n "$C_SGML2TXT"; then
+  echo "$ac_t""$C_SGML2TXT" 1>&6
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+if test "$C_SGML2HTML" = "sgml2html-not-found-or-installed" ; then
+	{ echo "configure: error: sgml2html not found please install it." 1>&2; exit 1; }
+fi
 
 # Check whether --with-dest or --without-dest was given.
 if test "${with_dest+set}" = set; then
@@ -831,9 +896,11 @@ s%@infodir@%$infodir%g
 s%@mandir@%$mandir%g
 s%@INSTALL_PROGRAM@%$INSTALL_PROGRAM%g
 s%@INSTALL_DATA@%$INSTALL_DATA%g
+s%@C_TAR@%$C_TAR%g
 s%@C_ZIP@%$C_ZIP%g
 s%@C_GZIP@%$C_GZIP%g
-s%@C_PERL@%$C_PERL%g
+s%@C_SGML2HTML@%$C_SGML2HTML%g
+s%@C_SGML2TXT@%$C_SGML2TXT%g
 s%@TARGET_DIR@%$TARGET_DIR%g
 
 CEOF
