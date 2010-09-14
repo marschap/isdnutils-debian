@@ -1,7 +1,32 @@
 /*
- * $Id: convert.c,v 1.13 2004/10/06 15:24:43 calle Exp $
+ * $Id: convert.c,v 1.19 2005/05/09 08:23:01 calle Exp $
  *
  * $Log: convert.c,v $
+ * Revision 1.19  2005/05/09 08:23:01  calle
+ * - added SendingComplete to CONNECT_RESP (no funktions changed).
+ *
+ * Revision 1.18  2005/03/08 07:26:47  keil
+ * - add SENDING_COMPLETE to INFO_REQ CONNECT_REQ and CONNECT_IND
+ * - remove SENDING_COMPLETE parameter (always NULL) from capi_fill_DISCONNECT_REQ
+ *
+ * Revision 1.17  2005/03/04 11:45:12  calle
+ * SendingComplete was missing for DISCONNECT_REQ ...
+ *
+ * Revision 1.16  2005/03/04 10:57:05  calle
+ * Bugfix: CAPI_LIBRARY_V2 sone ifdef/ifndef where wrong.
+ *
+ * Revision 1.15  2005/02/22 11:39:43  keil
+ * for backward compatibility the libcapi20 can now compiled to support the
+ * old (buggy) version2 ABI. This is not for future developments. This is only
+ * to support old binaries, which are linked against the old V2 lib.
+ *
+ * Revision 1.14  2005/02/21 17:37:07  keil
+ * libcapi20 version 3.0.0
+ *  - add SENDING COMPLETE in ALERT_REQ
+ *  - add Globalconfiguration to CONNECT_REQ/RESP and SELECT_B_PROTOCOL_REQ
+ *
+ * * NOTE: incompatible to 2.X.Y versions
+ *
  * Revision 1.13  2004/10/06 15:24:43  calle
  * - "SendingComplete"-Patch reverted => 2.0.8 was not binaer compartible
  * - Bugfix: capi20_register() with MaxB3Connection == 0 results in a
@@ -341,20 +366,41 @@ static _cdef cdef[] = {
     /*2f*/{_CWORD,      offsetof(_cmsg, Reject)},
     /*30*/{_CSTRUCT,    offsetof(_cmsg, Useruserdata)},
     /*31*/{_CQWORD,     offsetof(_cmsg, Data64)},
+#ifndef CAPI_LIBRARY_V2
+    /*32*/{_CSTRUCT,    offsetof(_cmsg, SendingComplete)},
+    /*33*/{_CSTRUCT,    offsetof(_cmsg, Globalconfiguration)},
+#endif
 };
 
 static unsigned char *cpars[] = {
     /*00*/ 0,
+#ifndef CAPI_LIBRARY_V2
+    /*01 ALERT_REQ*/            (unsigned char*)"\x03\x04\x0c\x28\x30\x1c\x32\x01\x01",
+    /*02 CONNECT_REQ*/          (unsigned char*)"\x03\x14\x0e\x10\x0f\x11\x0d\x06\x08\x0a\x05\x07\x09\x33\x01\x0b\x29\x23\x04\x0c\x28\x30\x1c\x32\x01\x01",
+#else
     /*01 ALERT_REQ*/            (unsigned char*)"\x03\x04\x0c\x28\x30\x1c\x01\x01",
     /*02 CONNECT_REQ*/          (unsigned char*)"\x03\x14\x0e\x10\x0f\x11\x0d\x06\x08\x0a\x05\x07\x09\x01\x0b\x29\x23\x04\x0c\x28\x30\x1c\x01\x01",
+#endif
     /*03*/ 0,
+#ifndef CAPI_LIBRARY_V2
+    /*04 DISCONNECT_REQ*/       (unsigned char*)"\x03\x04\x0c\x28\x30\x1c\x32\x01\x01",
+#else
     /*04 DISCONNECT_REQ*/       (unsigned char*)"\x03\x04\x0c\x28\x30\x1c\x01\x01",
+#endif
     /*05 LISTEN_REQ*/           (unsigned char*)"\x03\x26\x12\x13\x10\x11\x01",
     /*06*/ 0,
     /*07*/ 0,
+#ifndef CAPI_LIBRARY_V2
+    /*08 INFO_REQ*/             (unsigned char*)"\x03\x0e\x04\x0c\x28\x30\x1c\x32\x01\x01",
+#else
     /*08 INFO_REQ*/             (unsigned char*)"\x03\x0e\x04\x0c\x28\x30\x1c\x01\x01",
+#endif
     /*09 FACILITY_REQ*/         (unsigned char*)"\x03\x20\x1e\x01",
+#ifndef CAPI_LIBRARY_V2
+    /*0a SELECT_B_PROTOCOL_REQ*/ (unsigned char*)"\x03\x0d\x06\x08\x0a\x05\x07\x09\x33\x01\x01",
+#else
     /*0a SELECT_B_PROTOCOL_REQ*/ (unsigned char*)"\x03\x0d\x06\x08\x0a\x05\x07\x09\x01\x01",
+#endif
     /*0b CONNECT_B3_REQ*/       (unsigned char*)"\x03\x2c\x01",
     /*0c*/ 0,
     /*0d DISCONNECT_B3_REQ*/    (unsigned char*)"\x03\x2c\x01",
@@ -382,7 +428,11 @@ static unsigned char *cpars[] = {
     /*23*/ 0,
     /*24*/ 0,
     /*25*/ 0,
+#ifndef CAPI_LIBRARY_V2
+    /*26 CONNECT_IND*/          (unsigned char*)"\x03\x14\x0e\x10\x0f\x11\x0b\x29\x23\x04\x0c\x28\x30\x1c\x32\x01\x01",
+#else
     /*26 CONNECT_IND*/          (unsigned char*)"\x03\x14\x0e\x10\x0f\x11\x0b\x29\x23\x04\x0c\x28\x30\x1c\x01\x01",
+#endif
     /*27 CONNECT_ACTIVE_IND*/   (unsigned char*)"\x03\x16\x17\x29\x01",
     /*28 DISCONNECT_IND*/       (unsigned char*)"\x03\x2d\x01",
     /*29*/ 0,
@@ -400,7 +450,11 @@ static unsigned char *cpars[] = {
     /*35 CONNECT_B3_T90_ACTIVE_IND*/ (unsigned char*)"\x03\x2c\x01",
     /*36*/ 0,
     /*37*/ 0,
+#ifndef CAPI_LIBRARY_V2
+    /*38 CONNECT_RESP*/         (unsigned char*)"\x03\x2f\x0d\x06\x08\x0a\x05\x07\x09\x33\x01\x16\x17\x29\x04\x0c\x28\x30\x1c\x32\x01\x01",
+#else
     /*38 CONNECT_RESP*/         (unsigned char*)"\x03\x2f\x0d\x06\x08\x0a\x05\x07\x09\x01\x16\x17\x29\x04\x0c\x28\x30\x1c\x01\x01",
+#endif
     /*39 CONNECT_ACTIVE_RESP*/  (unsigned char*)"\x03\x01",
     /*3a DISCONNECT_RESP*/      (unsigned char*)"\x03\x01",
     /*3b*/ 0,
@@ -824,6 +878,10 @@ static char *pnames[] = {
     /*2f*/"Reject",
     /*30*/"Useruserdata",
     /*31*/"Data64",
+#ifndef CAPI_LIBRARY_V2
+    /*32*/"SendingComplete",
+    /*33*/"GlobalConfiguration",
+#endif
 };
 
 static char buf[8192];

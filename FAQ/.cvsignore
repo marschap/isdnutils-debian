@@ -1,0 +1,4 @@
+config.*
+*.html
+*.txt
+Makefile

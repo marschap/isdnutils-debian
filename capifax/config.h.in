@@ -1,4 +1,4 @@
-/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+/* config.h.in.  Generated automatically from configure.in by autoheader 2.13.  */
 
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
@@ -22,3 +22,7 @@
 
 /* we have SENDING_COMPLETE in ALERT_REQ */
 #undef HAVE_ALERT_SENDING_COMPLETE
+
+/* we have GLOBALCONFIGURATION in BProtocol */
+#undef HAVE_GLOBALCONFIGURATION
+

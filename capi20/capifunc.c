@@ -1,7 +1,23 @@
 /*
- * $Id: capifunc.c,v 1.6 2004/10/06 15:24:43 calle Exp $
+ * $Id: capifunc.c,v 1.9 2005/03/08 07:26:47 keil Exp $
  *
  * $Log: capifunc.c,v $
+ * Revision 1.9  2005/03/08 07:26:47  keil
+ * - add SENDING_COMPLETE to INFO_REQ CONNECT_REQ and CONNECT_IND
+ * - remove SENDING_COMPLETE parameter (always NULL) from capi_fill_DISCONNECT_REQ
+ *
+ * Revision 1.8  2005/02/22 11:39:43  keil
+ * for backward compatibility the libcapi20 can now compiled to support the
+ * old (buggy) version2 ABI. This is not for future developments. This is only
+ * to support old binaries, which are linked against the old V2 lib.
+ *
+ * Revision 1.7  2005/02/21 17:37:06  keil
+ * libcapi20 version 3.0.0
+ *  - add SENDING COMPLETE in ALERT_REQ
+ *  - add Globalconfiguration to CONNECT_REQ/RESP and SELECT_B_PROTOCOL_REQ
+ *
+ * * NOTE: incompatible to 2.X.Y versions
+ *
  * Revision 1.6  2004/10/06 15:24:43  calle
  * - "SendingComplete"-Patch reverted => 2.0.8 was not binaer compartible
  * - Bugfix: capi20_register() with MaxB3Connection == 0 results in a
@@ -30,12 +46,19 @@ unsigned ALERT_REQ (_cmsg *cmsg, _cword ApplId, _cword Messagenumber,
                     _cstruct BChannelinformation,
                     _cstruct Keypadfacility,
                     _cstruct Useruserdata,
-                    _cstruct Facilitydataarray) {
+                    _cstruct Facilitydataarray
+#ifndef CAPI_LIBRARY_V2
+                    ,_cstruct SendingComplete
+#endif
+                    ) {
     capi_cmsg_header (cmsg,ApplId,0x01,0x80,Messagenumber,adr);
     cmsg->BChannelinformation = BChannelinformation;
     cmsg->Keypadfacility = Keypadfacility;
     cmsg->Useruserdata = Useruserdata;
     cmsg->Facilitydataarray = Facilitydataarray;
+#ifndef CAPI_LIBRARY_V2
+    cmsg->SendingComplete = SendingComplete;
+#endif
     return capi_put_cmsg (cmsg);
 }
 
@@ -52,13 +75,20 @@ unsigned CONNECT_REQ (_cmsg *cmsg, _cword ApplId, _cword Messagenumber,
                       _cstruct B1configuration,
                       _cstruct B2configuration,
                       _cstruct B3configuration,
+#ifndef CAPI_LIBRARY_V2
+                      _cstruct Globalconfiguration,
+#endif
                       _cstruct BC,
                       _cstruct LLC,
                       _cstruct HLC,
                       _cstruct BChannelinformation,
                       _cstruct Keypadfacility,
                       _cstruct Useruserdata,
-                      _cstruct Facilitydataarray) {
+                      _cstruct Facilitydataarray
+#ifndef CAPI_LIBRARY_V2
+                     ,_cstruct SendingComplete
+#endif
+                      ) {
     capi_cmsg_header (cmsg,ApplId,0x02,0x80,Messagenumber,adr);
     cmsg->CIPValue = CIPValue;
     cmsg->CalledPartyNumber = CalledPartyNumber;
@@ -71,6 +101,9 @@ unsigned CONNECT_REQ (_cmsg *cmsg, _cword ApplId, _cword Messagenumber,
     cmsg->B1configuration = B1configuration;
     cmsg->B2configuration = B2configuration;
     cmsg->B3configuration = B3configuration;
+#ifndef CAPI_LIBRARY_V2
+    cmsg->Globalconfiguration = Globalconfiguration;
+#endif
     cmsg->BC = BC;
     cmsg->LLC = LLC;
     cmsg->HLC = HLC;
@@ -78,6 +111,9 @@ unsigned CONNECT_REQ (_cmsg *cmsg, _cword ApplId, _cword Messagenumber,
     cmsg->Keypadfacility = Keypadfacility;
     cmsg->Useruserdata = Useruserdata;
     cmsg->Facilitydataarray = Facilitydataarray;
+#ifndef CAPI_LIBRARY_V2
+    cmsg->SendingComplete = SendingComplete;
+#endif
     return capi_put_cmsg (cmsg);
 }
 
@@ -122,6 +158,9 @@ unsigned DISCONNECT_REQ (_cmsg *cmsg, _cword ApplId, _cword Messagenumber,
     cmsg->Keypadfacility = Keypadfacility;
     cmsg->Useruserdata = Useruserdata;
     cmsg->Facilitydataarray = Facilitydataarray;
+#ifndef CAPI_LIBRARY_V2
+    cmsg->SendingComplete = NULL;
+#endif
     return capi_put_cmsg (cmsg);
 }
 
@@ -141,13 +180,20 @@ unsigned INFO_REQ (_cmsg *cmsg, _cword ApplId, _cword Messagenumber,
                    _cstruct BChannelinformation,
                    _cstruct Keypadfacility,
                    _cstruct Useruserdata,
-                   _cstruct Facilitydataarray) {
+                   _cstruct Facilitydataarray
+#ifndef CAPI_LIBRARY_V2
+                  ,_cstruct SendingComplete
+#endif
+                   ) {
     capi_cmsg_header (cmsg,ApplId,0x08,0x80,Messagenumber,adr);
     cmsg->CalledPartyNumber = CalledPartyNumber;
     cmsg->BChannelinformation = BChannelinformation;
     cmsg->Keypadfacility = Keypadfacility;
     cmsg->Useruserdata = Useruserdata;
     cmsg->Facilitydataarray = Facilitydataarray;
+#ifndef CAPI_LIBRARY_V2
+    cmsg->SendingComplete = SendingComplete;
+#endif
     return capi_put_cmsg (cmsg);
 }
 
@@ -196,7 +242,11 @@ unsigned SELECT_B_PROTOCOL_REQ (_cmsg *cmsg, _cword ApplId, _cword Messagenumber
                                 _cword B3protocol,
                                 _cstruct B1configuration,
                                 _cstruct B2configuration,
-                                _cstruct B3configuration) {
+                                _cstruct B3configuration
+#ifndef CAPI_LIBRARY_V2
+                                ,_cstruct Globalconfiguration
+#endif
+                                ) {
     capi_cmsg_header (cmsg,ApplId,0x41,0x80,Messagenumber,adr);
     cmsg->B1protocol = B1protocol;
     cmsg->B2protocol = B2protocol;
@@ -204,6 +254,9 @@ unsigned SELECT_B_PROTOCOL_REQ (_cmsg *cmsg, _cword ApplId, _cword Messagenumber
     cmsg->B1configuration = B1configuration;
     cmsg->B2configuration = B2configuration;
     cmsg->B3configuration = B3configuration;
+#ifndef CAPI_LIBRARY_V2
+    cmsg->Globalconfiguration = Globalconfiguration;
+#endif
     return capi_put_cmsg (cmsg);
 }
 
@@ -216,6 +269,9 @@ unsigned CONNECT_RESP (_cmsg *cmsg, _cword ApplId, _cword Messagenumber,
                        _cstruct B1configuration,
                        _cstruct B2configuration,
                        _cstruct B3configuration,
+#ifndef CAPI_LIBRARY_V2
+                       _cstruct Globalconfiguration,
+#endif
                        _cstruct ConnectedNumber,
                        _cstruct ConnectedSubaddress,
                        _cstruct LLC,
@@ -231,6 +287,9 @@ unsigned CONNECT_RESP (_cmsg *cmsg, _cword ApplId, _cword Messagenumber,
     cmsg->B1configuration = B1configuration;
     cmsg->B2configuration = B2configuration;
     cmsg->B3configuration = B3configuration;
+#ifndef CAPI_LIBRARY_V2
+    cmsg->Globalconfiguration = Globalconfiguration;
+#endif
     cmsg->ConnectedNumber = ConnectedNumber;
     cmsg->ConnectedSubaddress = ConnectedSubaddress;
     cmsg->LLC = LLC;
