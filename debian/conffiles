@@ -1,0 +1,4 @@
+/etc/ppp/ioptions
+/etc/cron.weekly/isdnutils
+/etc/init.d/isdnutils
+/usr/X11R6/lib/X11/app-defaults/XISDNLoad

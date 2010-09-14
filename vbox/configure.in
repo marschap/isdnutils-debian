@@ -1,0 +1,72 @@
+AC_INIT(src/vboxgetty.h)
+AM_CONFIG_HEADER(src/config.h)
+AM_INIT_AUTOMAKE(vbox,'2.0.0BETA4')
+
+AC_DEFINE(VERDATE,"02-Jun-97")
+
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_MAKE_SET
+AC_PROG_LN_S
+AC_PROG_RANLIB
+
+AC_HEADER_TIME
+AC_CHECK_HEADERS(sys/time.h)
+
+AC_C_CONST
+AC_C_INLINE
+
+AC_CHECK_FUNCS(vsnprintf)
+
+AC_ARG_WITH(include,\
+        [  --with-include=DIR              add include (for kernel headers)],
+        [ CPPFLAGS=" $CPPFLAGS -I$withval" ] )
+
+AC_ARG_WITH(tcl-libdir,\
+	[  --with-tcl-libdir=DIR		dir with tcl library ], \
+	[ LIBS="$LIBS -L${withval}" ] )
+
+AC_ARG_WITH(tcl-includedir,\
+	[  --with-tcl-includedir=DIR		dir with tcl include files ], \
+	[ CPPFLAGS="$CPPFLAGS -I${withval}" ] )
+
+AC_ARG_WITH(ncurses-libdir,\
+	[  --with-curses-libdir=DIR		dir with ncurses library ], \
+	[ LIBS="$LIBS -L${withval}" ] )
+
+AC_ARG_WITH(ncurses-includedir,\
+	[  --with-ncurses-includedir=DIR	dir with ncurses include files ], \
+	[ CPPFLAGS="$CPPFLAGS -I${withval}" ] )
+
+
+AC_CHECK_LIB(ncurses,initscr,\
+		NCLIB="-lncurses -lpanel", \
+		AC_MSG_ERROR("Could not find tcl. Giving up."))
+
+for tcllib in tcl8.0 tcl80 tcl7.6 tcl76 tcl; do
+	AC_CHECK_LIB(${tcllib},Tcl_CreateInterp,\
+		[ TCLLIB="-l${tcllib}" ; break ],,-lm -ldl)
+done
+
+if test -z "$TCLLIB"; then 
+	AC_MSG_ERROR("Could not find tcl. Giving up.")
+fi
+
+AC_SUBST(TCLLIB)
+AC_SUBST(NCLIB)
+
+AC_CHECK_HEADER(tcl.h,,AC_MSG_ERROR("could not find tcl.h header file"))
+
+AC_CHECK_HEADER(ncurses.h,,AC_MSG_ERROR("could not find ncurses.h header file"))
+AC_CHECK_HEADER(panel.h,,AC_MSG_ERROR("could not find panel.h header file"))
+
+AC_ARG_WITH(i4lconfdir, \
+        [  --with-i4lconfdir=DIR        global isdn configuration dir [/etc/isdn ] ], \
+        [ I4LCONFDIR=${withval} ], \
+        [ I4LCONFDIR="/etc/isdn" ] )
+
+AC_SUBST(I4LCONFDIR)
+AC_SUBST(VERDATE)
+
+AC_OUTPUT(Makefile src/Makefile doc/Makefile doc/de/Makefile \
+	utils/Makefile)

@@ -1,0 +1,68 @@
+export I4LVERSION = 2.1b1
+
+SUBDIRS=@SUBDIRS@
+
+#configure @CONFIGOPT@
+
+all:
+	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i all; done
+
+install: rootperm
+	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i install; done
+
+uninstall: rootperm 
+	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i uninstall; done
+
+clean: 
+	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i clean; done
+	-$(MAKE) -C scripts/lxdialog clean
+	
+distclean: 
+	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i distclean; done
+	-$(MAKE) -C scripts/lxdialog clean
+	-rm -f *~ .config .config.old .menuconfig Makefile \
+		.menuconfig.log scripts/defconfig.old .#* scripts/.#*
+	-rm -rf include
+
+#
+# only for maintainer : recreate aclocal, Makefile.in and configure
+#
+recreate:
+	# exclude loop
+	pushd FAQ; autoconf; popd
+	for i in areacode lib avmb1 doc icn imontty ipppstats iprofd \
+		isdnctrl  pcbit teles xisdnload xmonisdn ; \
+	do pushd $$i; aclocal && automake -a && autoconf ; popd; done
+	for i in imon ipppd isdnlog vbox ; \
+		do pushd $$i; aclocal && autoheader && automake -a && \
+		autoconf ; popd; done
+
+maintainer-clean:
+	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i maintainer-clean; done
+	$(MAKE) -C scripts/lxdialog clean
+	-rm -f *~ .config .config.old .menuconfig Makefile \
+		.menuconfig.log scripts/defconfig.old .#* scripts/.#*
+	-rm -rf include
+
+rootperm:
+        @if test root != "`whoami`" then \
+	echo -e "\n\n      Need root permission for (de)installation!\n\n"; \
+	exit 1; \
+	fi
+
+mrproper: distclean
+
+archive: distclean
+	@(cd .. ;\
+	ln -nfs isdn4k-utils isdn4k-utils-$(I4LVERSION) ;\
+	tar cvhzf distisdn/isdn4k-utils-$(I4LVERSION).tar.gz isdn4k-utils-$(I4LVERSION) ;\
+	rm isdn4k-utils-$(I4LVERSION) )
+
+distarch: distclean
+	(cd .. ;\
+	ln -nfs isdn4k-utils isdn4k-utils-$(I4LVERSION) ;\
+	tar -cvhz --exclude=CVS -f distisdn/isdn4k-utils-$(I4LVERSION).tar.gz \
+	isdn4k-utils-$(I4LVERSION) ;\
+	rm isdn4k-utils-$(I4LVERSION) )
+
+dist: distarch

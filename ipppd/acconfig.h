@@ -1,0 +1,8 @@
+#undef PACKAGE
+#undef VERSION
+#undef USE_MSCHAP
+#undef SHADOW
+#undef HAVE_LIBBSD
+#undef HAVE_LIBCRYPT
+#undef HAVE_LIBDES
+#undef HAVE_SHADOW_H

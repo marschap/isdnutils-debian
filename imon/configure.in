@@ -1,0 +1,48 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(imon.c)
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(imon,2.1b1)   
+
+AC_ARG_WITH(include,\
+        [  --with-include=DIR              add include (for kernel headers)],
+        [ CPPFLAGS=" $CPPFLAGS -I$withval" ] )
+
+AC_ARG_WITH(ncurses-libdir,\
+        [  --with-curses-libdir=DIR             dir with ncurses library ], \
+        [ LIBS="$LIBS -L${withval}" ] )
+
+AC_ARG_WITH(ncurses-includedir,\
+        [  --with-ncurses-includedir=DIR        dir with ncurses include files ] , \
+        [ CPPFLAGS="$CPPFLAGS -I${withval}" ] )
+                   
+dnl Checks for programs.
+AC_PROG_INSTALL
+AC_PROG_CC
+
+dnl Checks for libraries.
+AC_CHECK_LIB(ncurses, newpad,,
+	AC_CHECK_LIB(curses, newpad,,
+		AC_MSG_ERROR("Missing ncurses library")))
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS(sys/time.h unistd.h)
+AC_CHECK_HEADERS(ncurses.h,,
+	AC_CHECK_HEADERS(ncurses/curses.h,,
+		AC_CHECK_HEADERS(curses/ncurses.h,,
+			AC_CHECK_HEADERS(curses.h,,
+				AC_MSG_ERROR("Missing \(n\)curses.h")))))
+
+dnl Check for linux/isdn.h, give up if not found.
+AC_CHECK_HEADERS(linux/isdn.h,,
+	AC_MSG_ERROR("Missing linux/isdn.h. Kernel source installed?"))
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_HEADER_TIME
+AC_STRUCT_TM
+
+dnl Checks for library functions.
+AC_TYPE_SIGNAL
+AC_CHECK_FUNCS(select)
+
+AC_OUTPUT(Makefile)

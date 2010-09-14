@@ -1,0 +1,5 @@
+config.*
+*.o
+*.8
+avmcapictrl
+CVS

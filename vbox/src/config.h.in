@@ -1,0 +1,32 @@
+/* src/config.h.in.  Generated automatically from configure.in by autoheader.  */
+/* vbox spool directory */
+#define SPOOLDIR "/var/spool/vbox"
+
+/* directories for modem lock files */
+#define LOCKDIR "/var/lock"
+
+/* directories for vbox log files */
+#define LOGDIR "/var/log/isdn"
+
+/* directory for vbox .pid files */
+#define RUNDIR "/var/run"
+
+
+/* Define to empty if the keyword does not work.  */
+#undef const
+
+/* Define as __inline if that's what the C compiler calls it.  */
+#undef inline
+
+/* Define if you can safely include both <sys/time.h> and <time.h>.  */
+#undef TIME_WITH_SYS_TIME
+
+#undef VERSION
+#undef VERDATE
+#undef PACKAGE
+
+/* Define if you have the vsnprintf function.  */
+#undef HAVE_VSNPRINTF
+
+/* Define if you have the <sys/time.h> header file.  */
+#undef HAVE_SYS_TIME_H

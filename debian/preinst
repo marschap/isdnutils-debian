@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -e
+
+OLDPACKAGES="isdnlog ipppd xisdnutils"
+
+for i in $OLDPACKAGES 
+do 
+	dpkg -s $i \
+		| awk '/^Status/ { print $3 } ' \
+		| fgrep -v "ok" > /dev/null \
+		&& PACKAGES="$PACKAGES $i"; 
+done
+
+# any old package installed ?
+test -z "$PACKAGES" && exit 0
+
+# yes ...
+echo " I see that you have one or more of the old isdn packages installed:
+
+$PACKAGES
+
+These packages are integrated into isdnutils. You need to remove them
+before you can proceed to install isdnutils.
+
+This is how to do it:
+	From the commandline call:            
+	dpkg --remove --force-depends $PACKAGES
+
+Please press [RETURN]:"
+read
+exit 1                   
+

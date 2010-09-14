@@ -1,0 +1,17 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT()
+AM_INIT_AUTOMAKE(doc,2.1b1)
+
+I4LCONFDIR=${I4LCONFDIR:-"/etc/isdn"}
+I4LVERSION=${I4LVERSION:-"?.?"}
+
+AC_ARG_WITH(i4lconfdir, \
+        [  --with-i4lconfdir=DIR        global isdn configuration dir [/etc/isdn] ], \
+        [ I4LCONFDIR=${withval} ], \
+        [ I4LCONFDIR="/etc/isdn" ] )
+
+dnl Checks for programs.
+AC_PROG_INSTALL
+
+AC_SUBST(I4LCONFDIR)
+AC_OUTPUT(Makefile)

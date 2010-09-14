@@ -1,0 +1,17 @@
+etc/ppp
+etc/isdn
+usr/bin
+usr/sbin
+usr/X11R6/bin
+usr/X11R6/man/man1
+usr/X11R6/lib/X11/app-defaults
+usr/doc/isdnutils/ipppd
+usr/doc/isdnutils/lib
+usr/doc/isdnutils/examples
+usr/doc/isdnutils/examples/default
+usr/doc/isdnutils/examples/vbox
+usr/doc/isdnutils/examples/isdnlog
+usr/doc/isdnutils/isdnlog
+var/spool/vbox
+var/lib/isdn
+var/log/isdn

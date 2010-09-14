@@ -1,2 +1,0 @@
-
-I0:45:respawn:/usr/local/sbin/vboxgetty -d /dev/ttyI5 -i "ATZ&E7840514" -u michael

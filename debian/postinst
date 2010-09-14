@@ -1,0 +1,32 @@
+#!/bin/bash -e
+
+/dev/MAKEDEV isdn-tty isdn-io isdn-ippp 
+
+if [ -f /var/log/isdn/calls ];
+then
+	mv /var/log/isdn/calls* /var/lib/isdn
+fi
+
+touch /var/lib/isdn/calls
+
+if [ -e /etc/suid.conf -a -x /usr/sbin/suidregister ]; then
+        suidregister -s isdnutils /usr/bin/vboxbeep root root 755
+        suidregister -s isdnutils /usr/X11R6/bin/xmonisdn root root 755
+fi
+
+if ! dpkg --compare-versions "$2" ">=" "2.1"; then
+	echo "
+Isdnutils have changed a lot. Now all configuration files are stored in
+/etc/isdn. Many programs have new names, new options and new
+configuration files. Old configuration files will not work in many
+cases. For more information look at /usr/doc/isdnutils in particular
+'README.debian' and 'CONFIG'.
+
+There is a program called 'isdnconfig' that will install example config
+files for you. Start this program now (y/n) ?"
+	read answer
+	case $answer in
+		y*|Y*) isdnconfig;;
+	esac
+fi
+ 
