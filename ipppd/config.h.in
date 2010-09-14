@@ -1,5 +1,6 @@
 /* config.h.in.  Generated automatically from configure.in by autoheader.  */
 
+#ifndef CONFIG_H
 /* Define to empty if the keyword does not work.  */
 #undef const
 
@@ -30,15 +31,6 @@
 
 /* Define to `int' if <sys/types.h> doesn't define.  */
 #undef uid_t
-
-#undef PACKAGE
-#undef VERSION
-#undef USE_MSCHAP
-#undef SHADOW
-#undef HAVE_LIBBSD
-#undef HAVE_LIBCRYPT
-#undef HAVE_LIBDES
-#undef HAVE_SHADOW_H
 
 /* Define if you have the gethostname function.  */
 #undef HAVE_GETHOSTNAME
@@ -76,6 +68,9 @@
 /* Define if you have the <paths.h> header file.  */
 #undef HAVE_PATHS_H
 
+/* Define if you have the <shadow.h> header file.  */
+#undef HAVE_SHADOW_H
+
 /* Define if you have the <sys/file.h> header file.  */
 #undef HAVE_SYS_FILE_H
 
@@ -93,3 +88,11 @@
 
 /* Define if you have the bsd library (-lbsd).  */
 #undef HAVE_LIBBSD
+
+/* Define if you have the crypt library (-lcrypt).  */
+#undef HAVE_LIBCRYPT
+
+/* Define if you have the des library (-ldes).  */
+#undef HAVE_LIBDES
+
+#endif

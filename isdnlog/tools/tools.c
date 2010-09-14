@@ -1,8 +1,8 @@
-/* $Id: tools.c,v 1.8 1997/05/11 22:41:43 luethje Exp $
+/* $Id: tools.c,v 1.16 1998/12/09 20:40:19 akool Exp $
  *
  * ISDN accounting for isdn4linux. (Utilities)
  *
- * Copyright 1995, 1997 by Andreas Kool (akool@Kool.f.EUnet.de)
+ * Copyright 1995, 1998 by Andreas Kool (akool@isdn4linux.de)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,99 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: tools.c,v $
+ * Revision 1.16  1998/12/09 20:40:19  akool
+ *  - new option "-0x:y" for leading zero stripping on internal S0-Bus
+ *  - new option "-o" to suppress causes of other ISDN-Equipment
+ *  - more support for the internal S0-bus
+ *  - Patches from Jochen Erwied <mack@Joker.E.Ruhr.DE>, fixes TelDaFax Tarif
+ *  - workaround from Sebastian Kanthak <sebastian.kanthak@muehlheim.de>
+ *  - new CHARGEINT chapter in the README from
+ *    "Georg v.Zezschwitz" <gvz@popocate.hamburg.pop.de>
+ *
+ * Revision 1.15  1998/11/24 20:53:07  akool
+ *  - changed my email-adress
+ *  - new Option "-R" to supply the preselected provider (-R24 -> Telepassport)
+ *  - made Provider-Prefix 6 digits long
+ *  - full support for internal S0-bus implemented (-A, -i Options)
+ *  - isdnlog now ignores unknown frames
+ *  - added 36 allocated, but up to now unused "Auskunft" Numbers
+ *  - added _all_ 122 Providers
+ *  - Patch from Jochen Erwied <mack@Joker.E.Ruhr.DE> for Quante-TK-Anlagen
+ *    (first dialed digit comes with SETUP-Frame)
+ *
+ * Revision 1.14  1998/09/26 18:30:14  akool
+ *  - quick and dirty Call-History in "-m" Mode (press "h" for more info) added
+ *    - eat's one more socket, Stefan: sockets[3] now is STDIN, FIRST_DESCR=4 !!
+ *  - Support for tesion)) Baden-Wuerttemberg Tarif
+ *  - more Providers
+ *  - Patches from Wilfried Teiken <wteiken@terminus.cl-ki.uni-osnabrueck.de>
+ *    - better zone-info support in "tools/isdnconf.c"
+ *    - buffer-overrun in "isdntools.c" fixed
+ *  - big Austrian Patch from Michael Reinelt <reinelt@eunet.at>
+ *    - added $(DESTDIR) in any "Makefile.in"
+ *    - new Configure-Switches "ISDN_AT" and "ISDN_DE"
+ *      - splitted "takt.c" and "tools.c" into
+ *          "takt_at.c" / "takt_de.c" ...
+ *          "tools_at.c" / "takt_de.c" ...
+ *    - new feature
+ *        CALLFILE = /var/log/caller.log
+ *        CALLFMT  = %b %e %T %N7 %N3 %N4 %N5 %N6
+ *      in "isdn.conf"
+ *  - ATTENTION:
+ *      1. "isdnrep" dies with an seg-fault, if not HTML-Mode (Stefan?)
+ *      2. "isdnlog/Makefile.in" now has hardcoded "ISDN_DE" in "DEFS"
+ *      	should be fixed soon
+ *
+ * Revision 1.13  1998/06/21 11:53:23  akool
+ * First step to let isdnlog generate his own AOCD messages
+ *
+ * Revision 1.12  1998/06/07 21:09:57  akool
+ * - Accounting for the following new providers implemented:
+ *     o.tel.o, Tele2, EWE TEL, Debitel, Mobilcom, Isis, NetCologne,
+ *     TelePassport, Citykom Muenster, TelDaFax, Telekom, Hutchison Telekom,
+ *     tesion)), HanseNet, KomTel, ACC, Talkline, Esprit, Interoute, Arcor,
+ *     WESTCom, WorldCom, Viag Interkom
+ *
+ *     Code shamelessly stolen from G.Glendown's (garry@insider.regio.net)
+ *     program http://www.insider.org/tarif/gebuehr.c
+ *
+ * - Telekom's 10plus implemented
+ *
+ * - Berechnung der Gebuehrenzone implementiert
+ *   (CityCall, RegioCall, GermanCall, GlobalCall)
+ *   The entry "ZONE" is not needed anymore in the config-files
+ *
+ *   you need the file
+ *     http://swt.wi-inf.uni-essen.de/~omatthes/tgeb/vorwahl2.exe
+ *   and the new entry
+ *     [GLOBAL]
+ *       AREADIFF = /usr/lib/isdn/vorwahl.dat
+ *   for that feature.
+ *
+ *   Many thanks to Olaf Matthes (olaf.matthes@uni-essen.de) for the
+ *   Data-File and Harald Milz for his first Perl-Implementation!
+ *
+ * - Accounting for all "Sonderrufnummern" (0010 .. 11834) implemented
+ *
+ *   You must install the file
+ *     "isdn4k-utils/isdnlog/sonderrufnummern.dat.bz2"
+ *   as "/usr/lib/isdn/sonderrufnummern.dat"
+ *   for that feature.
+ *
+ * ATTENTION: This is *NO* production-code! Please test it carefully!
+ *
+ * Revision 1.11  1998/05/06 14:43:27  paul
+ * Assumption about country codes always being 2 digits long fixed for the
+ * USA case (caused strncpy to be called with length -1; ouch).
+ *
+ * Revision 1.10  1998/04/09 19:15:45  akool
+ *  - CityPlus Implementation from Oliver Lauer <Oliver.Lauer@coburg.baynet.de>
+ *  - dont change huptimeout, if disabled (via isdnctrl huptimeout isdnX 0)
+ *  - Support for more Providers (TelePassport, Tele 2, TelDaFax)
+ *
+ * Revision 1.9  1998/03/08 11:43:16  luethje
+ * I4L-Meeting Wuerzburg final Edition, golden code - Service Pack number One
+ *
  * Revision 1.8  1997/05/11 22:41:43  luethje
  * README completed
  * changed the E-mail address for the switch -V
@@ -94,8 +187,6 @@
 
 /****************************************************************************/
 
-
-#define  PUBLIC /**/
 #define  _TOOLS_C_
 
 /****************************************************************************/
@@ -108,7 +199,7 @@
 
 /****************************************************************************/
 
-char Months[12][4] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+char Months[][4] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
        	    	     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
 /****************************************************************************/
@@ -400,8 +491,9 @@ char *vnum(int chan, int who)
   register int    l = strlen(call[chan].num[who]), got = 0;
   register int    flag = C_NO_WARN | C_NO_EXPAND;
   auto     char  *ptr;
-  auto	   int    ll;
+  auto	   int    ll, lx;
   auto	   int 	  prefix = strlen(countryprefix);
+  auto	   int 	  cc_len = 2;   /* country code length defaults to 2 */
 
 
   if (++retnum == MAXRET)
@@ -430,18 +522,43 @@ char *vnum(int chan, int who)
     flag |= C_NO_ERROR;
 #endif
 
+  if ((call[chan].sondernummer[who] != -1) || call[chan].intern[who]) {
+    strcpy(call[chan].rufnummer[who], call[chan].num[who]);
+
+    if (cnf > -1)
+      strcpy(retstr[retnum], call[chan].alias[who]);
+    else if (call[chan].sondernummer[who] != -1)
+      strcpy(retstr[retnum], SN[call[chan].sondernummer[who]].sinfo);
+    else
+      sprintf(retstr[retnum], "TN %s", call[chan].num[who]);
+
+    return(retstr[retnum]);
+  }
+  else {
   if ((ptr = get_areacode(call[chan].num[who], &ll, flag)) != 0) {
     strcpy(call[chan].area[who], ptr);
     l = ll;
     got++;
   } /* if */
-
-  /* Die folgenden Zeilen basieren nur auf eine Annahme, das ein Laendercode
-     aus zwei Ziffern besteht!!!!!!!                                        */
+  } /* else */
 
   if (l > 1) {
-    strncpy(call[chan].areacode[who], call[chan].num[who], 2 + prefix);
-    strncpy(call[chan].vorwahl[who], call[chan].num[who] + 2 + prefix, l - 2 - prefix);
+    if (call[chan].num[who][prefix] == '1')
+      cc_len = 1; /* USA is only country with country code length 1 */
+    /*
+     * there should be code for country codes > 2 in length,
+     * but that at least doesn't cause a possible strncpy(x, y, -1) call!
+     */
+    lx = cc_len + prefix;
+
+    if (lx > 0)
+      strncpy(call[chan].areacode[who], call[chan].num[who], lx);
+
+    lx = l - cc_len - prefix;
+
+    if (lx > 0)
+      strncpy(call[chan].vorwahl[who], call[chan].num[who] + cc_len + prefix, lx);
+
     strcpy(call[chan].rufnummer[who], call[chan].num[who] + l);
   } /* if */
 
@@ -694,6 +811,17 @@ int iprintf(char *obuf, int chan, register char *fmt, ...)
                  p = s + strlen(s);
                  break;
 
+      case 'z' : p = itoa(area_diff(NULL, call[chan].num[OTHER]), p, 10, 0);
+      	       	 break;
+
+      case 'Z' : s = sx;
+      	         if (*call[chan].num[OTHER])
+      	       	   sprintf(sx, " %s", area_diff_string(NULL, call[chan].num[OTHER]));
+      	         else
+                   *sx = 0;
+                 p = s + strlen(s);
+                 break;
+
       case 'n' : who = ME;    goto go;
       case 'c' : who = CLIP;  goto go;
       case 'N' :
@@ -744,6 +872,27 @@ go:   	         if (!ndigit)
       	       	 p = s + strlen(s);
 		 break;
 
+      case 'p' : s = sx;
+      	         if (call[chan].provider != -1) {
+
+      		   if (call[chan].provider < 100)
+      	       	   sprintf(sx, "010%02d", call[chan].provider);
+      		   else
+		     sprintf(sx, "010%03d", call[chan].provider - 100);
+      	         }
+      		 else
+                   *sx = 0;
+                 p = s + strlen(s);
+                 break;
+
+      case 'P' : s = sx;
+      	         if (call[chan].provider != -1)
+      	       	   sprintf(sx, " via %s", Providername(call[chan].provider));
+      		 else
+                   *sx = 0;
+                 p = s + strlen(s);
+                 break;
+
       default  : *p++ = c;
 	         break;
     } /* switch */
@@ -782,9 +931,9 @@ go:   	         if (!ndigit)
 
 int print_version(char *myname)
 {
-	_print_msg("%s Version %s, Copyright (C) 1995, 1996, 1997\n",myname,VERSION);
+	_print_msg("%s Version %s, Copyright (C) 1995, 1996, 1997, 1998\n",myname,VERSION);
 	/*
-	_print_msg("                                   Andreas Kool (akool@Kool.f.EUnet.de)\n");
+	_print_msg("                                   Andreas Kool (akool@isdn4linux.de)\n");
 	_print_msg("                               and Stefan Luethje (luethje@sl-gw.lake.de)\n\n");
 	*/
 	_print_msg("                                   Andreas Kool and Stefan Luethje\n");
@@ -797,46 +946,3 @@ int print_version(char *myname)
 
 /****************************************************************************/
 
-char *t2tz(int zeit)
-{
-  switch (zeit) {
-    case  0 : return("Vormittag");    break;
-    case  1 : return("Nachmittag");   break;
-    case  2 : return("Freizeit");     break;
-    case  3 : return("Mondschein");   break;
-    case  4 : return("Nacht");        break;
-    case  5 : return("Standard");     break;
-    case  6 : return("Spartarif");    break;
-    case  7 : return("City Weekend"); break;
-    case  8 : return("City Plus");    break;
-    case  9 : return("Feiertag");     break;
-    default : return("");             break;
-  } /* switch */
-} /* t2tz */
-
-/****************************************************************************/
-
-char *z2s(int zone)
-{
-  switch (zone) {
-    case  1 : return("City");         break;
-    case  2 : return("R50");          break;
-    case  3 : return("R200");         break;
-    case  4 : return("Fern");         break;
-    case  5 : return("EuroC");        break;
-    case  6 : return("Vis1");         break;
-    case  7 : return("Vis2");         break;
-    case  8 : return("Vis3");         break;
-    case  9 : return("Welt1");        break;
-    case 10 : return("Welt2");        break;
-    case 11 : return("Welt3");        break;
-    case 12 : return("T-Online");     break;
-    case 13 : return("KONF");         break;
-    case 14 : return("Inmar");        break;
-    case 15 : return("C-Box");        break;
-    case 16 : return("T-Box");        break;
-    default : return("");             break;
-  } /* switch */
-} /* z2s */
-
-/****************************************************************************/

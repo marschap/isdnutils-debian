@@ -17,7 +17,7 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-char upap_rcsid[] = "$Id: upap.c,v 1.3 1997/05/19 10:16:30 hipp Exp $";
+char upap_rcsid[] = "$Id: upap.c,v 1.5 1998/04/29 14:29:50 hipp Exp $";
 
 /*
  * TODO:
@@ -421,10 +421,13 @@ static void upap_rauthreq(upap_state *u,u_char *inp,int id,int len)
 	strncpy(u->us_rpasswd,rpasswd,(int)rpasswdlen);
 	u->us_rpasswdlen = rpasswdlen;
 	u->us_ruserlen = ruserlen;
-
+#ifdef RADIUS
+        retcode = radius_check_passwd(u->us_unit, ruser, ruserlen, rpasswd,
+                       rpasswdlen, &msg, &msglen);
+#else
 	retcode = check_passwd(u->us_unit, ruser, ruserlen, rpasswd,
 		rpasswdlen, &msg, &msglen);
-
+#endif
 	upap_sresp(u, retcode, id, msg, msglen);
 
 	if (retcode == UPAP_AUTHACK) {
@@ -545,7 +548,7 @@ upap_sauthreq(u)
     PUTCHAR(u->us_passwdlen, outp);
     BCOPY(u->us_passwd, outp, u->us_passwdlen);
 
-    output(u->us_unit, outpacket_buf, outlen + PPP_HDRLEN);
+    output_ppp(u->us_unit, outpacket_buf, outlen + PPP_HDRLEN);
 
     UPAPDEBUG((LOG_INFO, "upap_sauth: Sent id %d.", u->us_id));
 
@@ -577,7 +580,7 @@ upap_sresp(u, code, id, msg, msglen)
     PUTSHORT(outlen, outp);
     PUTCHAR(msglen, outp);
     BCOPY(msg, outp, msglen);
-    output(u->us_unit, outpacket_buf, outlen + PPP_HDRLEN);
+    output_ppp(u->us_unit, outpacket_buf, outlen + PPP_HDRLEN);
 
     UPAPDEBUG((LOG_INFO, "upap_sresp: Sent code %d, id %d.", code, id));
 }

@@ -1,8 +1,8 @@
-/* $Id: tools.h,v 1.15 1997/05/25 19:41:16 luethje Exp $
+/* $Id: tools.h,v 1.24 1998/12/09 20:40:27 akool Exp $
  *
  * ISDN accounting for isdn4linux.
  *
- * Copyright 1995, 1997 by Andreas Kool (akool@Kool.f.EUnet.de)
+ * Copyright 1995, 1998 by Andreas Kool (akool@isdn4linux.de)
  *                     and Stefan Luethje (luethje@sl-gw.lake.de)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,110 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: tools.h,v $
+ * Revision 1.24  1998/12/09 20:40:27  akool
+ *  - new option "-0x:y" for leading zero stripping on internal S0-Bus
+ *  - new option "-o" to suppress causes of other ISDN-Equipment
+ *  - more support for the internal S0-bus
+ *  - Patches from Jochen Erwied <mack@Joker.E.Ruhr.DE>, fixes TelDaFax Tarif
+ *  - workaround from Sebastian Kanthak <sebastian.kanthak@muehlheim.de>
+ *  - new CHARGEINT chapter in the README from
+ *    "Georg v.Zezschwitz" <gvz@popocate.hamburg.pop.de>
+ *
+ * Revision 1.23  1998/11/24 20:53:10  akool
+ *  - changed my email-adress
+ *  - new Option "-R" to supply the preselected provider (-R24 -> Telepassport)
+ *  - made Provider-Prefix 6 digits long
+ *  - full support for internal S0-bus implemented (-A, -i Options)
+ *  - isdnlog now ignores unknown frames
+ *  - added 36 allocated, but up to now unused "Auskunft" Numbers
+ *  - added _all_ 122 Providers
+ *  - Patch from Jochen Erwied <mack@Joker.E.Ruhr.DE> for Quante-TK-Anlagen
+ *    (first dialed digit comes with SETUP-Frame)
+ *
+ * Revision 1.22  1998/11/01 08:50:35  akool
+ *  - fixed "configure.in" problem with NATION_*
+ *  - DESTDIR fixes (many thanks to Michael Reinelt <reinelt@eunet.at>)
+ *  - isdnrep: Outgoing calls ordered by Zone/Provider/MSN corrected
+ *  - new Switch "-i" -> running on internal S0-Bus
+ *  - more providers
+ *  - "sonderrufnummern.dat" extended (Frag Fred, Telegate ...)
+ *  - added AVM-B1 to the documentation
+ *  - removed the word "Teles" from the whole documentation ;-)
+ *
+ * Revision 1.21  1998/10/18 20:13:44  luethje
+ * isdnlog: Added the switch -K
+ *
+ * Revision 1.20  1998/09/26 18:30:18  akool
+ *  - quick and dirty Call-History in "-m" Mode (press "h" for more info) added
+ *    - eat's one more socket, Stefan: sockets[3] now is STDIN, FIRST_DESCR=4 !!
+ *  - Support for tesion)) Baden-Wuerttemberg Tarif
+ *  - more Providers
+ *  - Patches from Wilfried Teiken <wteiken@terminus.cl-ki.uni-osnabrueck.de>
+ *    - better zone-info support in "tools/isdnconf.c"
+ *    - buffer-overrun in "isdntools.c" fixed
+ *  - big Austrian Patch from Michael Reinelt <reinelt@eunet.at>
+ *    - added $(DESTDIR) in any "Makefile.in"
+ *    - new Configure-Switches "ISDN_AT" and "ISDN_DE"
+ *      - splitted "takt.c" and "tools.c" into
+ *          "takt_at.c" / "takt_de.c" ...
+ *          "tools_at.c" / "takt_de.c" ...
+ *    - new feature
+ *        CALLFILE = /var/log/caller.log
+ *        CALLFMT  = %b %e %T %N7 %N3 %N4 %N5 %N6
+ *      in "isdn.conf"
+ *  - ATTENTION:
+ *      1. "isdnrep" dies with an seg-fault, if not HTML-Mode (Stefan?)
+ *      2. "isdnlog/Makefile.in" now has hardcoded "ISDN_DE" in "DEFS"
+ *      	should be fixed soon
+ *
+ * Revision 1.19  1998/06/21 11:53:27  akool
+ * First step to let isdnlog generate his own AOCD messages
+ *
+ * Revision 1.18  1998/06/07 21:10:02  akool
+ * - Accounting for the following new providers implemented:
+ *     o.tel.o, Tele2, EWE TEL, Debitel, Mobilcom, Isis, NetCologne,
+ *     TelePassport, Citykom Muenster, TelDaFax, Telekom, Hutchison Telekom,
+ *     tesion)), HanseNet, KomTel, ACC, Talkline, Esprit, Interoute, Arcor,
+ *     WESTCom, WorldCom, Viag Interkom
+ *
+ *     Code shamelessly stolen from G.Glendown's (garry@insider.regio.net)
+ *     program http://www.insider.org/tarif/gebuehr.c
+ *
+ * - Telekom's 10plus implemented
+ *
+ * - Berechnung der Gebuehrenzone implementiert
+ *   (CityCall, RegioCall, GermanCall, GlobalCall)
+ *   The entry "ZONE" is not needed anymore in the config-files
+ *
+ *   you need the file
+ *     http://swt.wi-inf.uni-essen.de/~omatthes/tgeb/vorwahl2.exe
+ *   and the new entry
+ *     [GLOBAL]
+ *       AREADIFF = /usr/lib/isdn/vorwahl.dat
+ *   for that feature.
+ *
+ *   Many thanks to Olaf Matthes (olaf.matthes@uni-essen.de) for the
+ *   Data-File and Harald Milz for his first Perl-Implementation!
+ *
+ * - Accounting for all "Sonderrufnummern" (0010 .. 11834) implemented
+ *
+ *   You must install the file
+ *     "isdn4k-utils/isdnlog/sonderrufnummern.dat.bz2"
+ *   as "/usr/lib/isdn/sonderrufnummern.dat"
+ *   for that feature.
+ *
+ * ATTENTION: This is *NO* production-code! Please test it carefully!
+ *
+ * Revision 1.17  1998/03/08 11:43:18  luethje
+ * I4L-Meeting Wuerzburg final Edition, golden code - Service Pack number One
+ *
+ * Revision 1.16  1997/05/29 17:07:30  akool
+ * 1TR6 fix
+ * suppress some noisy messages (Bearer, Channel, Progress) - can be reenabled with log-level 0x1000
+ * fix from Bodo Bellut (bodo@garfield.ping.de)
+ * fix from Ingo Schneider (schneidi@informatik.tu-muenchen.de)
+ * limited support for Info-Element 0x76 (Redirection number)
+ *
  * Revision 1.15  1997/05/25 19:41:16  luethje
  * isdnlog:  close all files and open again after kill -HUP
  * isdnrep:  support vbox version 2.0
@@ -173,14 +277,34 @@
 
 /****************************************************************************/
 
-#include "config.h"
+#include "policy.h"
 #include "libisdn.h"
 
 /****************************************************************************/
 
+#ifndef OLDCONFFILE
+#	define OLDCONFFILE "isdnlog.conf"
+#endif
+
+#ifndef RELOADCMD
+#	define RELOADCMD "reload"
+#endif
+
+#ifndef STOPCMD
+#	define STOPCMD "stop"
+#endif
+
+#ifndef REBOOTCMD
+#	define REBOOTCMD "/sbin/reboot"
+#endif
+
+#ifndef LOGFILE
+#	define LOGFILE "/sbin/reboot"
+#endif
+
 /****************************************************************************/
 
-#define LOG_VERSION "3.0"
+#define LOG_VERSION "3.1"
 
 /****************************************************************************/
 
@@ -324,8 +448,11 @@
 #define  OTHER (call[chan].dialin ? CALLING : CALLED)
 #define  ME    (call[chan].dialin ? CALLED : CALLING)
 #define	 CLIP  2
+#define	 REDIR 3
 #define  _OTHER(call) (call->dialin ? CALLING : CALLED)
 #define  _ME(call)    (call->dialin ? CALLED : CALLING)
+
+#define	 MAXMSNS  (REDIR + 1)
 
 /****************************************************************************/
 
@@ -364,6 +491,11 @@
 #define CONF_ENT_DUAL		 "DUAL"
 #define CONF_ENT_Q931		 "Q931DUMP"
 #define CONF_ENT_OUTFILE "OUTFILE"
+#define CONF_ENT_KEYBOARD "KEYBOARD"
+#define CONF_ENT_INTERNS0 "INTERNS0"
+#define CONF_ENT_PRESELECT "PRESELECTED"
+#define	CONF_ENT_TRIM	   "TRIM"
+#define	CONF_ENT_OTHER	   "OTHER"
 
 /****************************************************************************/
 
@@ -391,6 +523,9 @@
 #define CONF_ENT_TIME     "TIME"
 
 #define CONF_ENT_REPFMT   "REPFMT"
+
+#define CONF_ENT_CALLFILE "CALLFILE"
+#define CONF_ENT_CALLFMT  "CALLFMT"
 
 #define CONF_ENT_VBOXVER  "VBOXVERSION"
 #define CONF_ENT_VBOXPATH "VBOXPATH"
@@ -440,6 +575,7 @@ typedef struct {
   int     tei;
   int	  dialin;
   int	  cause;
+  int	  loc;
   int	  aoce;
   int	  traffic;
   int	  channel;
@@ -447,13 +583,16 @@ typedef struct {
   int     bearer;
   int	  si1;     /* Service Indicator entsprechend i4l convention */
   int	  si11;	   /* if (si1 == 1) :: 0 = Telefon analog / 1 = Telefon digital */
-  char    onum[3][NUMSIZE];
+  char    onum[MAXMSNS][NUMSIZE];
   int	  screening;
-  char    num[3][NUMSIZE];
-  char    vnum[3][256];
+  char    num[MAXMSNS][NUMSIZE];
+  char    vnum[MAXMSNS][256];
+  int	  provider;
+  int	  sondernummer[MAXMSNS];
+  int	  intern[MAXMSNS];
   char    id[32];
   char	  usage[16];
-  int	  confentry[3];
+  int	  confentry[MAXMSNS];
   time_t  time;
   time_t  connect;
   time_t  t_duration;
@@ -466,11 +605,11 @@ typedef struct {
   long	  lobytes;
   double  ibps;
   double  obps;
-  char	  areacode[3][NUMSIZE];
-  char	  vorwahl[3][NUMSIZE];
-  char	  rufnummer[3][NUMSIZE];
-  char	  alias[3][NUMSIZE];
-  char	  area[3][128];
+  char	  areacode[MAXMSNS][NUMSIZE];
+  char	  vorwahl[MAXMSNS][NUMSIZE];
+  char	  rufnummer[MAXMSNS][NUMSIZE];
+  char	  alias[MAXMSNS][NUMSIZE];
+  char	  area[MAXMSNS][128];
   char	  money[64];
   char	  currency[32];
   char    msg[128];
@@ -485,9 +624,14 @@ typedef struct {
   char	  digits[NUMSIZE];
   int	  oc3;
   int	  takteChargeInt;
-  int	  aoc;
   int 	  card;
   int	  knock; 
+  time_t  nextcint;
+  float	  cint;
+  int     cinth;
+  int	  ctakt;
+  int	  zone;
+  int	  uid;
 } CALL;
 
 /****************************************************************************/
@@ -563,6 +707,7 @@ typedef struct {
   double currency_factor;
   char	 currency[32];
   double pay;
+  int	 provider;
 } one_call;
 
 /****************************************************************************/
@@ -585,37 +730,61 @@ typedef struct {
 
 /****************************************************************************/
 
-PUBLIC KNOWN    start_procs;
-PUBLIC KNOWN  **known;
-PUBLIC int      mymsns;
-PUBLIC int      knowns;
-PUBLIC int	currency_mode;
-PUBLIC double   currency_factor;
-PUBLIC double   chargemax;
-PUBLIC double   connectmax;
-PUBLIC double   bytemax;
-PUBLIC int   	connectmaxmode;
-PUBLIC int   	bytemaxmode;
-PUBLIC char    *currency;
-PUBLIC int      day;
-PUBLIC int      month;
-PUBLIC int      retnum;
-PUBLIC int      ln;
-PUBLIC char     retstr[MAXRET + 1][RETSIZE];
-PUBLIC char     Months[12][4];
-PUBLIC time_t   cur_time;
-PUBLIC section *conf_dat;
-PUBLIC char     ilabel[256];
-PUBLIC char    	olabel[256];
-PUBLIC char    	idate[256];
-PUBLIC CALL    	call[MAXCHAN];
+typedef struct {
+  char  *msn;      /* Telefonnummer */
+  char  *sinfo;    /* Kurzbeschreibung */
+  int    tarif;    /* 0 = free, 1 = CityCall, -1 = see grund1 .. takt2 */
+  double grund1;   /* Grundtarif Werktage 9-18 Uhr */
+  double grund2;   /* Grundtarif uebrige Zeit */
+  double takt1;	   /* Zeittakt Werktage 9-18 Uhr */
+  double takt2;	   /* Zeittakt uebrige Zeit */
+} SonderNummern;
+
+/****************************************************************************/
+
+#ifdef _TOOLS_C_
+#define _EXTERN
+#else
+#define _EXTERN extern
+
+_EXTERN char     Months[][4];
+
+#endif /* _TOOLS_C_ */
+
+_EXTERN KNOWN    start_procs;
+_EXTERN KNOWN  **known;
+_EXTERN int      mymsns;
+_EXTERN int      knowns;
+_EXTERN int	currency_mode;
+_EXTERN double   currency_factor;
+_EXTERN double   chargemax;
+_EXTERN double   connectmax;
+_EXTERN double   bytemax;
+_EXTERN int   	connectmaxmode;
+_EXTERN int   	bytemaxmode;
+_EXTERN char    *currency;
+_EXTERN int	 hour;
+_EXTERN int      day;
+_EXTERN int      month;
+_EXTERN int      retnum;
+_EXTERN int      ln;
+_EXTERN char     retstr[MAXRET + 1][RETSIZE];
+_EXTERN time_t   cur_time;
+_EXTERN section *conf_dat;
+_EXTERN char     ilabel[256];
+_EXTERN char    	olabel[256];
+_EXTERN char    	idate[256];
+_EXTERN CALL    	call[MAXCHAN];
 #ifdef Q931
-PUBLIC int     	q931dmp;
+_EXTERN int     	q931dmp;
 #endif
-PUBLIC int     	CityWeekend;
-PUBLIC int	dual;
-PUBLIC char    	mlabel[BUFSIZ];
-PUBLIC char    *amtsholung;
+_EXTERN int     	CityWeekend;
+_EXTERN int	dual;
+_EXTERN char    	mlabel[BUFSIZ];
+_EXTERN char    *amtsholung;
+_EXTERN SonderNummern *SN;
+_EXTERN int	      nSN;
+#undef _EXTERN
 
 /****************************************************************************/
 
@@ -626,12 +795,13 @@ extern char *optarg;
 
 #ifdef _TOOLS_C_
 #define _EXTERN
-#define _EXTERN
 
 _EXTERN char* reloadcmd = RELOADCMD;
 _EXTERN char* stopcmd   = STOPCMD;
 _EXTERN char* rebootcmd = REBOOTCMD;
 _EXTERN char* logfile   = LOGFILE;
+_EXTERN char* callfile  = NULL;
+_EXTERN char* callfmt   = NULL;
 _EXTERN int  (*_print_msg)(const char *, ...) = printf;
 _EXTERN int   use_new_config = 1;
 _EXTERN char ***lineformats = NULL;
@@ -648,6 +818,8 @@ _EXTERN char* reloadcmd;
 _EXTERN char* stopcmd;
 _EXTERN char* rebootcmd;
 _EXTERN char* logfile;
+_EXTERN char* callfile;
+_EXTERN char* callfmt;
 _EXTERN int  (*_print_msg)(const char *, ...);
 _EXTERN int   use_new_config;
 _EXTERN char ***lineformats;
@@ -669,6 +841,7 @@ _EXTERN char  *time2str(time_t sec);
 _EXTERN char  *double2clock(double n);
 _EXTERN char  *vnum(int chan, int who);
 _EXTERN char  *i2a(int n, int l, int base);
+_EXTERN char  *Providername(int number);
 _EXTERN int    iprintf(char *obuf, int chan, register char *fmt, ...);
 _EXTERN char  *qmsg(int type, int version, int val);
 _EXTERN char  *Myname;

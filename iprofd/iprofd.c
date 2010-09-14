@@ -1,4 +1,4 @@
-/* $Id: iprofd.c,v 1.2 1997/02/21 13:18:27 fritz Exp $
+/* $Id: iprofd.c,v 1.6 1998/07/22 19:07:13 keil Exp $
 
  * Daemon for saving ttyIx-profiles to a file.
  *
@@ -22,6 +22,20 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: iprofd.c,v $
+ * Revision 1.6  1998/07/22 19:07:13  keil
+ * Make it compiling with older I4L versions
+ *
+ * Revision 1.5  1998/06/26 15:20:13  fritz
+ * Added capability to save listener string.
+ *
+ * Revision 1.4  1998/04/28 08:34:23  paul
+ * Fixed compiler warnings from egcs.
+ *
+ * Revision 1.3  1998/04/24 09:19:23  paul
+ * Ignore empty file when starting up instead of generating error message
+ * about wrong signature, there is _no_ signature! iprofd writes new data
+ * anyway in that case.
+ *
  * Revision 1.2  1997/02/21 13:18:27  fritz
  * Reformatted, changed some error-messages.
  *
@@ -47,7 +61,11 @@ typedef unsigned char uchar;
 int isdnctrl_fd;
 char *modemsettings;
 
-#define BUFSZ ((ISDN_MODEM_ANZREG+ISDN_MSNLEN)*ISDN_MAX_CHANNELS)
+#ifndef ISDN_LMSNLEN
+#define ISDN_LMSNLEN 0
+#endif
+
+#define BUFSZ ((ISDN_MODEM_ANZREG+ISDN_MSNLEN+ISDN_LMSNLEN)*ISDN_MAX_CHANNELS)
 
 void
 dumpModem(int dummy)
@@ -90,6 +108,10 @@ readModem(void)
 		perror(modemsettings);
 		exit(-1);
 	}
+    if (len == 0) {     /* empty file, ignore it */
+        close(fd);
+        return;
+    }
 	if (strcmp(buffer, signature)) {
 		fprintf(stderr, "Version of iprofd (%d) does NOT match\n", TTY_DV);
 		fprintf(stderr, "signature of saved data!\n");
@@ -116,7 +138,7 @@ usage(void)
 	exit(-1);
 }
 
-void
+int
 main(int argc, char **argv)
 {
 
@@ -170,4 +192,5 @@ main(int argc, char **argv)
 		default:
 			break;
 	}
+	return 0;
 }

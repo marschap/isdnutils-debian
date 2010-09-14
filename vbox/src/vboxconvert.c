@@ -35,7 +35,6 @@
 
 #include "libvbox.h"
 #include "vboxconvert.h"
-#include "voice.h"
 
 /** Variables ************************************************************/
                 
@@ -99,18 +98,6 @@ static struct option args_vboxmode[] =
 	{ NULL        , 0                , NULL,  0  }
 };
 
-static struct option args_rmdtovbox[] =
-{
-	{ "help"    , no_argument       , NULL, 'h' },
-	{ "version" , no_argument       , NULL, 'v' },
-	{ "name"    , required_argument	, NULL, 'n' },
-	{ "callerid", required_argument , NULL, 'c' },
-	{ "phone"   , required_argument	, NULL, 'p' },
-	{ "location", required_argument	, NULL, 'l' },
-	
-	{ NULL      , 0                 , NULL,  0  }
-};
-
 static struct option args_autovbox[] =
 {
 	{ "help"      , no_argument      , NULL, 'h' },
@@ -134,15 +121,13 @@ static char *vboxtmpname   = NULL;
 /** Prototypes ***********************************************************/
 
 static int				start_vboxmode(char *, int);
-static void			        start_vboxtoau(int, int);
+static void			   start_vboxtoau(int, int);
 static void				start_autovbox(int, char *, char *, char *, char *);
-static void				start_rmdtovbox(char *, char *, char *, char *);
 static void				usage_vboxtoau(void);
 static void				usage_vboxmode(void);
 static void				usage_autovbox(void);
-static void				usage_rmdtovbox(void);
-static void          			leave_vboxtoau(int);
-static void          			leave_autovbox(int);
+static void          leave_vboxtoau(int);
+static void          leave_autovbox(int);
 static void				version(void);
 
 static int				convert_adpcm_to_pvf(int, FILE *, FILE *);
@@ -303,65 +288,6 @@ int main(int argc, char **argv)
 
 		start_autovbox(mode, name, "0", phone, location);
 	}
-	
-	/* Called as 'rmdtovbox' converts a rmd sample (vbox-1.1) */
-	/* to the new vbox message formats.													*/
-
-	if (strcasecmp(vbasename, "rmdtovbox") == 0)
-	{
-		name		= "*** Unknown ***";
-		phone		= "*** Unknown ***";
-		location	= "*** Unknown ***";
-
-		if (uname(&utsname) == 0) location = utsname.nodename;
-
-		if ((passwd = getpwuid(getuid())))
-		{
-			xstrncpy(realname, passwd->pw_gecos, VAH_MAX_NAME);
-			
-			for (i = 0; i < strlen(realname); i++)
-			{
-				if ((realname[i] == ',') || (realname[i] == ';'))
-				{
-					realname[i] = '\0';
-					
-					break;
-				}
-			}
-
-			name = realname;
-		}
-
-		while ((opts = getopt_long(argc, argv, "hv234un:c:p:l:", args_rmdtovbox, (int *)0)) != EOF)
-		{
-			switch (opts)
-			{
-					
-				case 'n':
-					name = optarg;
-					break;
-					
-				case 'p':
-					phone = optarg;
-					break;
-					
-				case 'l':
-					location = optarg;
-					break;
-
-				case 'v':
-					version();
-					break;
-
-				case 'h':
-				default:
-					usage_rmdtovbox();
-					break;
-			}
-		}
-
-		start_rmdtovbox(name, "0", phone, location);
-	}
 
 		/* Called as 'vboxmode' displays information about the sample	*/
 		/* format.																		*/
@@ -403,10 +329,9 @@ int main(int argc, char **argv)
 	fprintf(stderr, "\n");
 	fprintf(stderr, "The vbox converter can be called as:\n");
 	fprintf(stderr, "\n");
-	fprintf(stderr, "vboxtoau  - to convert vbox messages to au format.\n");
-	fprintf(stderr, "autovbox  - to convert au format samples to vbox messages.\n");
-	fprintf(stderr, "rmdtovbox - to convert rmd format samples (vbox-1.1) to vbox messages.\n");
-	fprintf(stderr, "vboxmode  - to display message information (works also with au).\n");
+	fprintf(stderr, "vboxtoau - to convert vbox messages to au format.\n");
+	fprintf(stderr, "autovbox - to convert au format samples to vbox messages.\n");
+	fprintf(stderr, "vboxmode - to display message information (works also with au).\n");
 	fprintf(stderr, "\n");
 
 	exit(255);
@@ -692,103 +617,8 @@ static void usage_autovbox(void)
 }
 
 /*************************************************************************/
-/** start_rmdtovbox(): Converts rmd samples (vbox-1.1) to vbox messages.				   **/
-/*************************************************************************/
-
-static void start_rmdtovbox(char *name, char *id, char *phone, char *location)
-{
-	vaheader_t	header;
-	RMD_header_t	RMD_header;
-	int		compression;
-	char		Byte;
-
-	signal(SIGINT , leave_autovbox);
-	signal(SIGQUIT, leave_autovbox);
-	signal(SIGTERM, leave_autovbox);
-	signal(SIGHUP , leave_autovbox);
-	signal(SIGPIPE, leave_autovbox);
-	
-	if (fread(&RMD_header, sizeof(RMD_header_t), 1, stdin) != 1)
-	{
-		fprintf(stderr, "%s: can't read  RMD header.\n", vbasename);
-
-		exit(20);
-	}
-
-	if (strncmp(RMD_header.Magic, VOICE_MAGIC, 4) != 0)
-	{
-		fprintf(stderr, "%s: unknown RMD header found.\n", vbasename);
-		
-		exit(21);
-	}
-
-	if ((strcmp(RMD_header.Modem, VOICE_MODEM) != 0) && (strcmp(RMD_header.Modem, VOICE_LISDN) != 0))
-	{
-		fprintf(stderr, "%s: unknown modem type found in RMD header.\n", vbasename);
-		
-		exit(22);
-	}
-
-	compression = ntohs(RMD_header.Compression);
-	
-	if ((compression < 2) || (compression > 6))
-	{
-		fprintf(stderr, "%s: unknown compression mode found in RMD header.\n", vbasename);
-		
-		exit(23);
-	}
-
-	xstrncpy(header.magic	, VAH_MAGIC	, VAH_MAX_MAGIC	);
-	xstrncpy(header.callerid, id		, VAH_MAX_CALLERID);
-	xstrncpy(header.name	, name		, VAH_MAX_NAME);
-	xstrncpy(header.phone	, phone		, VAH_MAX_PHONE);
-	xstrncpy(header.location, location	, VAH_MAX_LOCATION);
-	
-	header.time		= htonl(time(NULL));
-	header.compression	= htonl(compression);
-	
-	if (fwrite(&header, sizeof(vaheader_t), 1, stdout) != 1)
-	{
-		fprintf(stderr, "%s: can't write vbox audio header.\n", vbasename);
-		
-		leave_autovbox(255);
-	}
-
-	while (fread(&Byte, 1, 1, stdin) == 1)
-	{
-		if (fwrite(&Byte, 1, 1, stdout) != 1)
-		{
-			fprintf(stderr, "%s: can't write one byte to stdout.\n", vbasename);
-			
-			exit(25);
-		}
-	}
-	
-	exit(255);
-}
-
-/*************************************************************************/
-/** usage_rmdtovbox(): Usage message for "rmdtovbox".							**/
-/*************************************************************************/
-
-static void usage_rmdtovbox(void)
-{
-	fprintf(stderr, "\n");
-	fprintf(stderr, "Usage: %s OPTION [ OPTION ] [ ... ] <INFILE >OUTFILE\n", vbasename);
-	fprintf(stderr, "\n");
-	fprintf(stderr, "-n, --name NAME           Sets header information.\n");
-	fprintf(stderr, "-p, --phone PHONE         Sets header information.\n");
-	fprintf(stderr, "-l, --location LOCATION   Sets header information.\n");
-	fprintf(stderr, "-h, --help                Prints this usage message.\n");
-	fprintf(stderr, "-v, --version             Prints the package version.\n");
-	fprintf(stderr, "\n");
-
-	exit(255);
-}
-
-/*************************************************************************/
 /** convert_pvf_to_adpcm(): Converts protable voice format to adpcm-2	**/
-/**						adpcm-3 or adpcm-4.								   **/
+/**								 adpcm-3 or adpcm-4.								   **/
 /*************************************************************************/
 
 static int convert_pvf_to_adpcm(int nbits, FILE *in, FILE *out)

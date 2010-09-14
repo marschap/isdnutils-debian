@@ -1,5 +1,5 @@
 /*
-** $Id: rcgetty.c,v 1.8 1997/05/10 10:58:47 michael Exp $
+** $Id: rcgetty.c,v 1.9 1997/10/22 20:47:11 fritz Exp $
 **
 ** Copyright (C) 1996, 1997 Michael 'Ghandi' Herold
 */

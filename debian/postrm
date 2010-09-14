@@ -1,9 +1,0 @@
-#!/bin/bash
-
-if [ "$1" = "purge" ]
-then
-	rm -rf /var/spool/vbox/
-        rm -rf /var/log/isdn/ 
-        rm -rf /var/lib/isdn/ 
-	rm -rf /etc/isdn/
-fi                                                 

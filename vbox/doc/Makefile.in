@@ -1,8 +1,14 @@
-# Makefile.in generated automatically by automake 1.2 from Makefile.am
+# Makefile.in generated automatically by automake 1.3 from Makefile.am
 
-# Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
-# gives unlimited permission to copy, distribute and modify it.
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
 
 
 SHELL = /bin/sh
@@ -26,6 +32,8 @@ mandir = @mandir@
 includedir = @includedir@
 oldincludedir = /usr/include
 
+DISTDIR =
+
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -43,32 +51,54 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
 
-NORMAL_INSTALL = true
-PRE_INSTALL = true
-POST_INSTALL = true
-NORMAL_UNINSTALL = true
-PRE_UNINSTALL = true
-POST_UNINSTALL = true
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
 CC = @CC@
-I4LCONFDIR = @I4LCONFDIR@
+CONFIG_BINDIR = @CONFIG_BINDIR@
+CONFIG_I4LCONFDIR = @CONFIG_I4LCONFDIR@
+CONFIG_MANDIR = @CONFIG_MANDIR@
+CONFIG_SBINDIR = @CONFIG_SBINDIR@
+HAVE_NCURSES_PACK = @HAVE_NCURSES_PACK@
+HAVE_TCL_PACK = @HAVE_TCL_PACK@
+ISDN_GLOBAL_CONFIG = @ISDN_GLOBAL_CONFIG@
+LINK_NCURSES_INCL = @LINK_NCURSES_INCL@
+LINK_NCURSES_LIBS = @LINK_NCURSES_LIBS@
+LINK_TCL_INCL = @LINK_TCL_INCL@
+LINK_TCL_LIBS = @LINK_TCL_LIBS@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
-NCLIB = @NCLIB@
 PACKAGE = @PACKAGE@
-RANLIB = @RANLIB@
-TCLLIB = @TCLLIB@
+VBOX_AR = @VBOX_AR@
+VBOX_DOCDIR = @VBOX_DOCDIR@
+VBOX_LCKDIR = @VBOX_LCKDIR@
+VBOX_LOCKDIR = @VBOX_LOCKDIR@
+VBOX_LOGDIR = @VBOX_LOGDIR@
+VBOX_MAIL = @VBOX_MAIL@
+VBOX_MV = @VBOX_MV@
+VBOX_PIDDIR = @VBOX_PIDDIR@
+VBOX_RANLIB = @VBOX_RANLIB@
+VBOX_RM = @VBOX_RM@
+VBOX_SED = @VBOX_SED@
+VBOX_SPOOLDIR = @VBOX_SPOOLDIR@
 VERDATE = @VERDATE@
 VERSION = @VERSION@
 
 AUTOMAKE_OPTIONS=foreign no-dependencies
 SUBDIRS=de
-man_MANS= autovbox.1 rmdtovbox.1 vbox.1 vbox.5 vbox.conf.5 vboxbeep.1 vboxcnvt.1 vboxd.8 vboxd.conf.5 vboxgetty.8 vboxgetty.conf.5 vboxmode.1 vboxrc.5 vboxtcl.5 vboxtoau.1
+man_MANS=autovbox.1 rmdtovbox.1 vbox.5 vbox.conf.5 vboxbeep.1 vboxconvert.1 vboxd.8 vboxd.conf.5 vboxgetty.8 vboxgetty.conf.5 vboxmode.1 vboxrc.5 vboxtcl.5 vboxtoau.1 vboxctrl.1 vboxmail.8 vboxplay.1
 DISTCLEANFILES=${man_MANS}
-EXTRA_DIST= autovbox.man rmdtovbox.man vbox.conf.man vbox.man vboxbeep.man vboxcnvt.man vboxd.conf.man vboxd.man vboxgetty.conf.man vboxgetty.man vboxmode.man vboxrc.man vboxtcl.man vboxtoau.man
+EXTRA_DIST=autovbox.man rmdtovbox.man vbox.conf.man vbox.man vboxbeep.man vboxconvert.man vboxd.conf.man vboxd.man vboxgetty.conf.man vboxgetty.man vboxmode.man vboxrc.man vboxtcl.man vboxtoau.man vboxctrl.man vboxmail.man vboxplay.man
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../src/config.h
 CONFIG_CLEAN_FILES = 
-MANS = autovbox.1 rmdtovbox.1 vbox.1 vbox.5 vbox.conf.5 vboxbeep.1 vboxcnvt.1 vboxd.8 vboxd.conf.5 vboxgetty.8 vboxgetty.conf.5 vboxmode.1 vboxrc.5 vboxtcl.5 vboxtoau.1
+man1dir = $(mandir)/man1
+man5dir = $(mandir)/man5
+man8dir = $(mandir)/man8
+MANS = $(man_MANS)
 
 NROFF = nroff
 DIST_COMMON =  Makefile.am Makefile.in
@@ -78,145 +108,121 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-default: all
+all: all-recursive all-am
 
 .SUFFIXES:
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --foreign doc/Makefile
 
-Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
+
+install-man1:
+	$(mkinstalldirs) $(DESTDIR)$(man1dir)
+	@list='$(man1_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.1*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  if test -f $(srcdir)/$$i; then file=$(srcdir)/$$i; \
+	  else file=$$i; fi; \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man1dir)/$$inst"; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(man1dir)/$$inst; \
+	done
+
+uninstall-man1:
+	@list='$(man1_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.1*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " rm -f $(DESTDIR)$(man1dir)/$$inst"; \
+	  rm -f $(DESTDIR)$(man1dir)/$$inst; \
+	done
+
+install-man5:
+	$(mkinstalldirs) $(DESTDIR)$(man5dir)
+	@list='$(man5_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.5*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  if test -f $(srcdir)/$$i; then file=$(srcdir)/$$i; \
+	  else file=$$i; fi; \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man5dir)/$$inst"; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(man5dir)/$$inst; \
+	done
+
+uninstall-man5:
+	@list='$(man5_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.5*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " rm -f $(DESTDIR)$(man5dir)/$$inst"; \
+	  rm -f $(DESTDIR)$(man5dir)/$$inst; \
+	done
+
+install-man8:
+	$(mkinstalldirs) $(DESTDIR)$(man8dir)
+	@list='$(man8_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.8*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  if test -f $(srcdir)/$$i; then file=$(srcdir)/$$i; \
+	  else file=$$i; fi; \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man8dir)/$$inst"; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(man8dir)/$$inst; \
+	done
+
+uninstall-man8:
+	@list='$(man8_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.8*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " rm -f $(DESTDIR)$(man8dir)/$$inst"; \
+	  rm -f $(DESTDIR)$(man8dir)/$$inst; \
+	done
 install-man: $(MANS)
-	$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(mandir)/man1
-	$(mkinstalldirs) $(mandir)/man5
-	$(mkinstalldirs) $(mandir)/man8
-	@sect=1;				\
-	inst=`echo "autovbox" | sed '$(transform)'`.1; \
-	if test -f $(srcdir)/autovbox.1; then file=$(srcdir)/autovbox.1; \
-	else file=autovbox.1; fi; \
-	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
-	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
-	@sect=8;				\
-	inst=`echo "vboxgetty" | sed '$(transform)'`.8; \
-	if test -f $(srcdir)/vboxgetty.8; then file=$(srcdir)/vboxgetty.8; \
-	else file=vboxgetty.8; fi; \
-	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
-	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
-	@sect=5;				\
-	inst=`echo "vboxgetty.conf" | sed '$(transform)'`.5; \
-	if test -f $(srcdir)/vboxgetty.conf.5; then file=$(srcdir)/vboxgetty.conf.5; \
-	else file=vboxgetty.conf.5; fi; \
-	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
-	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
-	@sect=1;				\
-	inst=`echo "vboxmode" | sed '$(transform)'`.1; \
-	if test -f $(srcdir)/vboxmode.1; then file=$(srcdir)/vboxmode.1; \
-	else file=vboxmode.1; fi; \
-	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
-	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
-	@sect=5;				\
-	inst=`echo "vboxrc" | sed '$(transform)'`.5; \
-	if test -f $(srcdir)/vboxrc.5; then file=$(srcdir)/vboxrc.5; \
-	else file=vboxrc.5; fi; \
-	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
-	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
-	@sect=5;				\
-	inst=`echo "vboxtcl" | sed '$(transform)'`.5; \
-	if test -f $(srcdir)/vboxtcl.5; then file=$(srcdir)/vboxtcl.5; \
-	else file=vboxtcl.5; fi; \
-	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
-	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
-	@sect=1;				\
-	inst=`echo "vboxtoau" | sed '$(transform)'`.1; \
-	if test -f $(srcdir)/vboxtoau.1; then file=$(srcdir)/vboxtoau.1; \
-	else file=vboxtoau.1; fi; \
-	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
-	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
-	@sect=1;				\
-	inst=`echo "rmdtovbox" | sed '$(transform)'`.1; \
-	if test -f $(srcdir)/rmdtovbox.1; then file=$(srcdir)/rmdtovbox.1; \
-	else file=rmdtovbox.1; fi; \
-	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
-	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
-	@sect=1;				\
-	inst=`echo "vbox" | sed '$(transform)'`.1; \
-	if test -f $(srcdir)/vbox.1; then file=$(srcdir)/vbox.1; \
-	else file=vbox.1; fi; \
-	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
-	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
-	@sect=5;				\
-	inst=`echo "vbox" | sed '$(transform)'`.5; \
-	if test -f $(srcdir)/vbox.5; then file=$(srcdir)/vbox.5; \
-	else file=vbox.5; fi; \
-	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
-	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
-	@sect=5;				\
-	inst=`echo "vbox.conf" | sed '$(transform)'`.5; \
-	if test -f $(srcdir)/vbox.conf.5; then file=$(srcdir)/vbox.conf.5; \
-	else file=vbox.conf.5; fi; \
-	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
-	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
-	@sect=1;				\
-	inst=`echo "vboxbeep" | sed '$(transform)'`.1; \
-	if test -f $(srcdir)/vboxbeep.1; then file=$(srcdir)/vboxbeep.1; \
-	else file=vboxbeep.1; fi; \
-	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
-	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
-	@sect=1;				\
-	inst=`echo "vboxcnvt" | sed '$(transform)'`.1; \
-	if test -f $(srcdir)/vboxcnvt.1; then file=$(srcdir)/vboxcnvt.1; \
-	else file=vboxcnvt.1; fi; \
-	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
-	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
-	@sect=8;				\
-	inst=`echo "vboxd" | sed '$(transform)'`.8; \
-	if test -f $(srcdir)/vboxd.8; then file=$(srcdir)/vboxd.8; \
-	else file=vboxd.8; fi; \
-	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
-	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
-	@sect=5;				\
-	inst=`echo "vboxd.conf" | sed '$(transform)'`.5; \
-	if test -f $(srcdir)/vboxd.conf.5; then file=$(srcdir)/vboxd.conf.5; \
-	else file=vboxd.conf.5; fi; \
-	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
-	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
-
+	@$(NORMAL_INSTALL)
+	$(MAKE) install-man1 install-man5 install-man8
 uninstall-man:
-	$(NORMAL_UNINSTALL)
-	inst=`echo "autovbox" | sed '$(transform)'`.1; \
-	rm -f $(mandir)/man1/$$inst
-	inst=`echo "vboxgetty" | sed '$(transform)'`.8; \
-	rm -f $(mandir)/man8/$$inst
-	inst=`echo "vboxgetty.conf" | sed '$(transform)'`.5; \
-	rm -f $(mandir)/man5/$$inst
-	inst=`echo "vboxmode" | sed '$(transform)'`.1; \
-	rm -f $(mandir)/man1/$$inst
-	inst=`echo "vboxrc" | sed '$(transform)'`.5; \
-	rm -f $(mandir)/man5/$$inst
-	inst=`echo "vboxtcl" | sed '$(transform)'`.5; \
-	rm -f $(mandir)/man5/$$inst
-	inst=`echo "vboxtoau" | sed '$(transform)'`.1; \
-	rm -f $(mandir)/man1/$$inst
-	inst=`echo "rmdtovbox" | sed '$(transform)'`.1; \
-	rm -f $(mandir)/man1/$$inst
-	inst=`echo "vbox" | sed '$(transform)'`.1; \
-	rm -f $(mandir)/man1/$$inst
-	inst=`echo "vbox" | sed '$(transform)'`.5; \
-	rm -f $(mandir)/man5/$$inst
-	inst=`echo "vbox.conf" | sed '$(transform)'`.5; \
-	rm -f $(mandir)/man5/$$inst
-	inst=`echo "vboxbeep" | sed '$(transform)'`.1; \
-	rm -f $(mandir)/man1/$$inst
-	inst=`echo "vboxcnvt" | sed '$(transform)'`.1; \
-	rm -f $(mandir)/man1/$$inst
-	inst=`echo "vboxd" | sed '$(transform)'`.8; \
-	rm -f $(mandir)/man8/$$inst
-	inst=`echo "vboxd.conf" | sed '$(transform)'`.5; \
-	rm -f $(mandir)/man5/$$inst
-
+	@$(NORMAL_UNINSTALL)
+	$(MAKE) uninstall-man1 uninstall-man5 uninstall-man8
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -231,7 +237,7 @@ all-recursive install-data-recursive install-exec-recursive \
 installdirs-recursive install-recursive uninstall-recursive  \
 check-recursive installcheck-recursive info-recursive dvi-recursive:
 	@set fnord $(MAKEFLAGS); amf=$$2; \
-	for subdir in $(SUBDIRS); do \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
 	  target=`echo $@ | sed s/-recursive//`; \
 	  echo "Making $$target in $$subdir"; \
 	  (cd $$subdir && $(MAKE) $$target) \
@@ -241,7 +247,9 @@ check-recursive installcheck-recursive info-recursive dvi-recursive:
 mostlyclean-recursive clean-recursive distclean-recursive \
 maintainer-clean-recursive:
 	@set fnord $(MAKEFLAGS); amf=$$2; \
-	rev=''; for subdir in $(SUBDIRS); do rev="$$rev $$subdir"; done; \
+	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
+	  rev="$$subdir $$rev"; \
+	done; \
 	for subdir in $$rev; do \
 	  target=`echo $@ | sed s/-recursive//`; \
 	  echo "Making $$target in $$subdir"; \
@@ -255,24 +263,29 @@ tags-recursive:
 
 tags: TAGS
 
-ID: $(HEADERS) $(SOURCES)
-	here=`pwd` && cd $(srcdir) && mkid -f$$here/ID $(SOURCES) $(HEADERS)
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $(SOURCES) $(HEADERS) $(LISP)
 
-TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
+TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
 	list='$(SUBDIRS)'; for subdir in $$list; do \
 	  test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
 	done; \
-	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
 clean-tags:
 
 distclean-tags:
-	rm -f TAGS ID
+	-rm -f TAGS ID
 
 maintainer-clean-tags:
 
@@ -287,11 +300,11 @@ distdir: $(DISTFILES)
 	  || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	  || cp -p $$d/$$file $(distdir)/$$file; \
 	done
-	for subdir in $(SUBDIRS); do		\
-	  test -d $(distdir)/$$subdir		\
-	  || mkdir $(distdir)/$$subdir		\
-	  || exit 1;				\
-	  chmod 777 $(distdir)/$$subdir;	\
+	for subdir in $(SUBDIRS); do \
+	  test -d $(distdir)/$$subdir \
+	  || mkdir $(distdir)/$$subdir \
+	  || exit 1; \
+	  chmod 777 $(distdir)/$$subdir; \
 	  (cd $$subdir && $(MAKE) top_distdir=../$(top_distdir) distdir=../$(distdir)/$$subdir distdir) \
 	    || exit 1; \
 	done
@@ -317,28 +330,27 @@ install: install-recursive install-data-am
 
 uninstall: uninstall-recursive uninstall-am
 
-all: all-recursive all-am
-
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs: installdirs-recursive
-	$(mkinstalldirs)  $(mandir)/man1 $(mandir)/man5 $(mandir)/man8
+	$(mkinstalldirs)  $(DESTDIR)$(mandir)/man1 $(DESTDIR)$(mandir)/man5 \
+		$(DESTDIR)$(mandir)/man8
 
 
 mostlyclean-generic:
-	test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+	-test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
 
 clean-generic:
-	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
-	rm -f Makefile $(DISTCLEANFILES)
-	rm -f config.cache config.log stamp-h stamp-h[0-9]*
-	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+	-rm -f Makefile $(DISTCLEANFILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 
 maintainer-clean-generic:
-	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
-	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean-am:  mostlyclean-tags mostlyclean-generic
 
 clean-am:  clean-tags clean-generic mostlyclean-am
@@ -353,14 +365,15 @@ mostlyclean:  mostlyclean-recursive mostlyclean-am
 clean:  clean-recursive clean-am
 
 distclean:  distclean-recursive distclean-am
-	rm -f config.status
+	-rm -f config.status
 
 maintainer-clean:  maintainer-clean-recursive maintainer-clean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: default install-man uninstall-man install-data-recursive \
-uninstall-data-recursive install-exec-recursive \
+.PHONY: install-man1 uninstall-man1 install-man5 uninstall-man5 \
+install-man8 uninstall-man8 install-man uninstall-man \
+install-data-recursive uninstall-data-recursive install-exec-recursive \
 uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
 all-recursive check-recursive installcheck-recursive info-recursive \
 dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
@@ -373,20 +386,20 @@ mostlyclean distclean maintainer-clean
 
 
 %.1 %.5 %.8: %.man
-	MANDATE=`grep CHECKIN $< | awk '{print $4}'`    
+	MANDATE=`grep CHECKIN $< | awk '{print $$4}'`; \
 	sed \
-		-e "s#\@MANDATE\@#${MANDATE}#g" \
-		-e "s#\@I4LVERSION\@#@VERSION@#g" \
-        	-e "s#\@BINDIR\@#@bindir@#g" \
-        	-e "s#\@SBINDIR\@#@sbindir@#g" \
+		-e "s#\@MANDATE\@#$${MANDATE}#g" \
+		-e "s#\@I4LVERSION\@#$${I4LVERSION}#g" \
+        	-e "s#\@BINDIR\@#@CONFIG_BINDIR@#g" \
+        	-e "s#\@SBINDIR\@#@CONFIG_SBINDIR@#g" \
         	-e "s#\@VERSION\@#@VERSION@#g" \
         	-e "s#\@VERDATE\@#@VERDATE@#g" \
         	-e "s#\@PACKAGE\@#@PACKAGE@#g" \
-        	-e "s#\@SPOOLDIR\@#@SPOOLDIR@#g" \
-        	-e "s#\@I4LCONFDIR\@#@I4LCONFDIR@#g" \
-        	-e "s#\@LOGFILEDIR\@#@LOGFILEDIR@#g" \
-        	-e "s#\@PIDFILEDIR\@#@RUNDIR@#g" \
-        	-e "s#\@LCKFILEDIR\@#@LOCKDIR@#g" \
+        	-e "s#\@SPOOLDIR\@#@VBOX_SPOOLDIR@#g" \
+        	-e "s#\@I4LCONFDIR\@#@ISDN_GLOBAL_CONFIG@#g" \
+        	-e "s#\@LOGFILEDIR\@#@VBOX_LOGDIR@#g" \
+        	-e "s#\@PIDFILEDIR\@#@VBOX_PIDDIR@#g" \
+        	-e "s#\@LCKFILEDIR\@#@VBOX_LCKDIR@#g" \
 		< $< > $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

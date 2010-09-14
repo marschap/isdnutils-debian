@@ -1,78 +1,123 @@
-mainmenu_name "isdn4k-utils Configuration"    
+#
+# $Id: config.in,v 1.25 1998/12/07 13:28:22 fritz Exp $
+#
+# The whole configuration stuff is borrowed from the kernel
+# configuration.
+#
+# For a description of the syntax of this configuration file,
+# see the Menuconfig script.
+#
+CONFIG_HASX11=n
+if [ "`type -p xmkmf`" != "" ]; then
+CONFIG_HASX11=y
+fi
+mainmenu_name "isdn4k-utils Configuration"
 
-mainmenu_option	next_comment
-comment 'Program selection'
-comment 'General stuff'
-bool 'Install generic pages' CONFIG_DOC
-bool 'Generate FAQ' CONFIG_FAQ                        
-bool 'isdnctrl' CONFIG_ISDNCTRL        
-bool 'iprofd' CONFIG_IPROFD        
-comment 'isdn card drivers'
-bool 'telesctrl and hisaxctrl' CONFIG_TELES
-bool 'icnctrl' CONFIG_ICN           
-bool 'pcbitctl' CONFIG_PCBIT
-bool 'avmcapictrl' CONFIG_AVM      
-comment 'experimental card drivers'
-bool 'loopctrl' CONFIG_LOOP   
-comment 'info programs'
-bool 'imon' CONFIG_IMON
-bool 'imontty' CONFIG_IMONTTY
-comment 'x11 info programs'
-bool 'xisdnload' CONFIG_XISDNLOAD 
-bool 'xmonisdn' CONFIG_XMONISDN 
-comment 'applications'
-bool 'ipppd' CONFIG_IPPPD           
-bool 'ipppstats' CONFIG_IPPPSTATS         
-bool 'isdnlog' CONFIG_ISDNLOG             
-bool 'vbox' CONFIG_VBOX         
+mainmenu_option next_comment
+comment 'Code maturity level options'
+bool 'Prompt for development and/or incomplete code' CONFIG_EXPERIMENTAL
 endmenu
-
-mainmenu_option	next_comment
-comment 'Compile Options'
-
-comment 'General options'
-bool 'Enable debug-option' CONFIG_DEBUG 
-string 'Kernel source' CONFIG_KERNEL
-
-comment 'Options for loopctrl package'
-string 'Sourcedir of isdnloop module' CONFIG_LOOPDIR 
-
-comment 'Options for xmonisdn package'
-string 'NetUP command' CONFIG_UPCMD 
-string 'NetDOWN command' CONFIG_DOWNCMD 
- 
-comment 'Options for ipppd package'
-bool 'Support for MS chap secrets' CONFIG_MSCHAP 
-
-comment 'Options for vbox package'
-comment 'empty = search'
-string 'Directory with tcl lib files ' CONFIG_TCLLIB 
-string 'Directory with tcl include files' CONFIG_TCLINC 
-string 'Directory with ncurses lib files' CONFIG_NCLIB 
-string 'Directory with ncurses include files' CONFIG_NCINC 
-
-comment 'Options for isdnlog package'
-bool 'Support postgres95 SQL-Database' CONFIG_POSTGRES 
-string 'directory of postgres95' CONFIG_POSTGRESDIR 
-choice 'Country specific chargeinfo support' \
-        "DE CONFIG_CHARGE_DE \
-        NL CONFIG_CHARGE_NL \
-        CH CONFIG_CHARGE_CH" 
+mainmenu_option next_comment
+comment 'General configuration'
+comment 'Build options'
+dep_bool 'Build programs which need X11 installed' CONFIG_BUILDX11 $CONFIG_HASX11
+string 'Kernel source directory' CONFIG_KERNELDIR
+comment 'Destination directories'
+string 'Directory to install binaries' CONFIG_BINDIR
+string 'Directory to install admin binaries' CONFIG_SBINDIR
+string 'Directory to install man pages' CONFIG_MANDIR
+comment 'Runtime defaults'
+string 'Write .pid files here' CONFIG_RUNDIR
+string 'Write lock files here' CONFIG_LOCKDIR
+string 'Prefix for the lock file' CONFIG_LOCKFILE
+string 'General configuration directory' CONFIG_I4LCONFDIR
+string 'Global configuration file' CONFIG_CONFFILE
+string 'Global phone number file' CONFIG_CALLERIDFILE
+string 'User configuration file' CONFIG_USERCONFFILE
+comment 'Configuration library options'
+string 'Your country code' CONFIG_COUNTRYCODE
+string 'Your area code' CONFIG_AREACODE
+string 'Default country prefix' CONFIG_COUNTRY_PREFIX
+string 'Default area prefix' CONFIG_AREA_PREFIX
+string 'Directory to install fixed data' CONFIG_DATADIR
 choice 'Database for area codes' \
         "Areacode CONFIG_LIB_AREACODE \
         Avon CONFIG_LIB_AVON"
+if [ "$CONFIG_LIB_AVON" = "y" ]; then
+	string 'Directory to install avon database' CONFIG_AVON_DATA
+fi
 endmenu
-
-mainmenu_option	next_comment
-comment 'Directory Layout'
-comment 'Installation'
-string 'General configuration directory' CONFIG_I4LCONFDIR
-string 'Toplevel directory (prefix)' CONFIG_PREFIX
-comment 'Generic values, can be empty'
-string 'User binaries ($prefix/bin)' CONFIG_BINDIR
-string 'Admin binaries ($prefix/sbin)' CONFIG_SBINDIR
-string 'Man pages ($prefix/man)' CONFIG_MANDIR                  
-string 'FAQ ($prefix/doc/isdn4k-utils/)' CONFIG_FAQDIR
-string 'Areacode/Avon data dir ($prefix/lib/isdn)' CONFIG_ALIBDIR
+mainmenu_option nextcomment
+comment 'Runtime configuration tools'
+bool 'isdnctrl' CONFIG_ISDNCTRL
+if [ "$CONFIG_ISDNCTRL" = "y" ]; then
+#	bool 'Enable isdnctrl debug-option' CONFIG_ISDNCTRL_DEBUG
+	bool 'Enable configfile-option (uses dbm lib)' CONFIG_ISDNCTRL_CONF
+	bool 'Enable timru-controls' CONFIG_ISDNCTRL_TIMRU
+fi
+bool 'iprofd' CONFIG_IPROFD
 endmenu
-
+mainmenu_option nextcomment
+comment 'Card configuration tools'
+bool 'telesctrl' CONFIG_TELESCTRL
+bool 'hisaxctrl' CONFIG_HISAXCTRL
+bool 'icnctrl' CONFIG_ICNCTRL
+if [ "$CONFIG_ICNCTRL" = "y" ]; then
+	bool 'Enable icnctrl debug-option' CONFIG_ICNCTRL_DEBUG
+fi
+bool 'pcbitctl' CONFIG_PCBITCTL
+bool 'avmcapictrl' CONFIG_AVMCAPICTRL
+if [ -f $CONFIG_KERNELDIR/drivers/isdn/act2000/act2000.h ] ; then
+	bool 'actctrl' CONFIG_ACTCTRL
+fi
+if [ "$CONFIG_EXPERIMENTAL" = "y" ]; then
+	bool 'loopctrl' CONFIG_LOOPCTRL
+	if [ "$CONFIG_LOOPCTRL" = "y" ]; then
+		# string 'Sourcedir of isdnloop module' CONFIG_LOOPCTRL_LOOPDIR
+		bool 'Enable loopctrl debug-option' CONFIG_LOOPCTRL_DEBUG
+	fi
+fi
+endmenu
+mainmenu_option nextcomment
+comment 'Tools for monitoring activity'
+bool 'imon' CONFIG_IMON
+bool 'imontty' CONFIG_IMONTTY
+bool 'isdnlog' CONFIG_ISDNLOG
+if [ "$CONFIG_ISDNLOG" = "y" ] ; then
+	source isdnlog/.Config.in
+fi
+comment ''
+bool 'ipppstats' CONFIG_IPPPSTATS
+dep_bool 'xisdnload' CONFIG_XISDNLOAD $CONFIG_BUILDX11
+dep_bool 'xmonisdn' CONFIG_XMONISDN $CONFIG_BUILDX11
+if [ "$CONFIG_XMONISDN" = "y" ] ; then
+	mainmenu_option nextcomment
+	comment 'Options for xmonisdn'
+	string 'NetUP command' CONFIG_XMONISDN_UPCMD
+	string 'NetDOWN command' CONFIG_XMONISDN_DOWNCMD
+	endmenu
+fi
+endmenu
+mainmenu_option nextcomment
+comment 'Applications'
+bool 'vbox' CONFIG_VBOX
+if [ "$CONFIG_VBOX" = "y" ]; then
+	source vbox/.Config.in
+fi
+bool 'ipppd' CONFIG_IPPPD
+if [ "$CONFIG_IPPPD" = "y" ]; then
+	source ipppd/.Config.in
+fi
+if [ "$CONFIG_EXPERIMENTAL" = "y" ]; then
+	bool 'capifax' CONFIG_CAPIFAX
+	bool 'rcapid' CONFIG_RCAPID
+fi
+endmenu
+mainmenu_option nextcomment
+comment 'Documentation'
+bool 'Install generic pages' CONFIG_GENMAN
+bool 'Generate FAQ' CONFIG_FAQ
+if [ "$CONFIG_FAQ" = "y" ]; then
+	string 'Directory to install FAQ' CONFIG_FAQDIR
+fi
+endmenu

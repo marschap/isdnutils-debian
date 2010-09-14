@@ -1,5 +1,5 @@
-.\" $Id: vboxbeep.man,v 1.2 1997/08/28 15:19:54 aj Exp $
-.\" CHECKIN $Date: 1997/08/28 15:19:54 $
+.\" $Id: vboxbeep.man,v 1.1 1998/11/17 18:22:55 paul Exp $
+.\" CHECKIN $Date: 1998/11/17 18:22:55 $
 .TH vboxbeep 1  "@MANDATE@" "ISDN 4 Linux @I4LVERSION@" "Linux System Administration"
 .SH NAME
 vboxbeep \- isdn voice box (beeper)

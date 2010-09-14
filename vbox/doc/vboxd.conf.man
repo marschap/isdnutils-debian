@@ -1,5 +1,5 @@
-.\" $Id: vboxd.conf.man,v 1.3 1997/09/11 10:53:54 aj Exp $
-.\" CHECKIN $Date: 1997/09/11 10:53:54 $
+.\" $Id: vboxd.conf.man,v 1.1 1998/11/17 18:22:56 paul Exp $
+.\" CHECKIN $Date: 1998/11/17 18:22:56 $
 .TH vboxd.conf 5 "@MANDATE@" "ISDN 4 Linux @I4LVERSION@" "Linux System Administration"
 .PD 0
 .SH NAME

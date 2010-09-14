@@ -1,12 +1,12 @@
-.\" $Id: isdn_audio.man.in,v 1.1 1997/02/26 20:05:32 fritz Exp $
+.\" $Id: isdn_audio.man.in,v 1.3 1998/12/02 16:53:27 paul Exp $
 .\"
-.\" CHECKIN $Date: 1997/02/26 20:05:32 $
+.\" CHECKIN $Date: 1998/12/02 16:53:27 $
 .\"
 .\" Process this file with
 .\" groff -man -Tascii isdn_audio.4 for ASCII output, or
 .\" groff -man -Tps isdn_audio.4 for PostScript output
 .\"
-.TH ISDN_AUDIO 4 "@MANDATE@" Linux "Special files"
+.TH isdn_audio 4 "@MANDATE@" "ISDN 4 Linux @I4LVERSION@" "Special files"
 .SH NAME
 isdn_audio \- audio extension of ttyI ISDN character devices
 .SH DESCRIPTION
@@ -62,7 +62,7 @@ Disable audio mode (default). This command sets register
 .IR 18 " to " 4 .
 .TP
 .B AT+FCLASS=8
-Enable audio mode (default). This command sets register
+Enable audio mode. This command sets register
 .IR 18 " to " 5 .
 .TP
 .B AT+FCLASS=?

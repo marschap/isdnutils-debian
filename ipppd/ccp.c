@@ -1,4 +1,4 @@
-/*
+/* -*- mode: c; c-basic-offset: 4 -*-
  * ccp.c - PPP Compression Control Protocol.
  *
  * Copyright (c) 1994 The Australian National University.
@@ -25,20 +25,26 @@
  * OR MODIFICATIONS.
  */
 
-char ccp_rcsid[] = "$Id: ccp.c,v 1.3 1997/05/19 10:15:34 hipp Exp $";
+char ccp_rcsid[] = "$Id: ccp.c,v 1.10 1998/12/01 12:59:38 hipp Exp $";
 
 #include <string.h>
 #include <syslog.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
-#if 0
-#include <net/ppp_defs.h>
-#endif
-#include <linux/ppp-comp.h>
 
 #include "fsm.h"
 #include "ipppd.h"
 #include "ccp.h"
+
+#include <linux/ppp-comp.h>
+
+#include "compressions.h"
+
+#ifdef HAVE_LZSCOMP_H
+#include <linux/isdn_lzscomp.h>
+#else
+#include "../ipppcomp/isdn_lzscomp.h"
+#endif
 
 /*
  * Protocol entry points from main code.
@@ -49,11 +55,32 @@ static void ccp_close __P((int unit, char *));
 static void ccp_lowerup __P((int unit));
 static void ccp_lowerdown __P((int));
 static void ccp_input __P((int unit, u_char *pkt, int len));
+static void ccp_l_input __P((int unit, u_char *pkt, int len));
 static void ccp_protrej __P((int unit));
+static void ccp_l_protrej __P((int unit));
 static int  ccp_printpkt __P((u_char *pkt, int len,
                   void (*printer) __P((void *, char *, ...)),
                   void *arg));
 static void ccp_datainput __P((int unit, u_char *pkt, int len));
+static void ccp_l_datainput __P((int unit, u_char *pkt, int len));
+
+struct protent ccp_link_protent = {
+    PPP_LINK_CCP,
+    ccp_init,
+    ccp_l_input,
+    ccp_l_protrej,
+    ccp_lowerup,
+    ccp_lowerdown,
+    ccp_open,
+    ccp_close,
+    ccp_printpkt,
+    ccp_l_datainput,
+    0,	/* disabled */
+    "linkCCP",
+    NULL,
+    NULL,
+    NULL
+};
 
 struct protent ccp_protent = {
     PPP_CCP,
@@ -73,6 +100,14 @@ struct protent ccp_protent = {
     NULL
 };
 
+/*
+ * Remember that CCP is negotiating the _decompression_ method the peer
+ * asking for configuration is willing to do. More exactly spoken, if
+ * peer A sends a Configure-Request to peer B this request enumerates
+ * the _decompression_ methods A is willing to use on _receiving_ data
+ * from B, aka in direction B->A. The RFC does not use clear enough words
+ * to make this unmisunderstandable IMHO.
+ */
 
 fsm ccp_fsm[NUM_PPP];
 ccp_options ccp_wantoptions[NUM_PPP];	/* what to request the peer to use */
@@ -118,7 +153,8 @@ static fsm_callbacks ccp_callbacks = {
  * Do we want / did we get any compression?
  */
 #define ANY_COMPRESS(opt)	((opt).deflate || (opt).bsd_compress \
-				 || (opt).predictor_1 || (opt).predictor_2)
+				 || (opt).predictor_1 || (opt).predictor_2 \
+				 || (opt).lzs)
 
 /*
  * Local state (mainly for handling reset-reqs and reset-acks).
@@ -138,10 +174,10 @@ static void ccp_init(int unit)
 {
     fsm *f = &ccp_fsm[unit];
 
-	memset(f,0,sizeof(fsm));
+    memset(f,0,sizeof(fsm));
 
     f->unit = -1;
-    f->protocol = PPP_CCP;
+    f->protocol = PPP_CCP; /* we change this for link-CCP */
     f->callbacks = &ccp_callbacks;
     fsm_init(f);
 
@@ -161,21 +197,39 @@ static void ccp_init(int unit)
     ccp_allowoptions[unit].bsd_compress = 1;
     ccp_allowoptions[unit].bsd_bits = BSD_MAX_BITS;
     ccp_allowoptions[unit].predictor_1 = 1;
+
+    /* Are these 0/unit mixups intended or just typos ? */
+
+    /* What we want to decompress */
+    ccp_wantoptions[unit].lzs = 1;
+    ccp_wantoptions[unit].lzs_hists = LZS_DECOMP_DEF_HISTS;
+    ccp_wantoptions[unit].lzs_cmode = LZS_CMODE_SEQNO;
+
+    /* What we allow to compress */
+    ccp_allowoptions[unit].lzs = 1;
+    ccp_allowoptions[unit].lzs_hists = LZS_COMP_DEF_HISTS;
+    ccp_allowoptions[unit].lzs_cmode = LZS_CMODE_SEQNO;
 }
 
-int ccp_getunit(int linkunit)
+int ccp_getunit(int linkunit,int protocol)
 {
   int i;
-  for(i=0;i<NUM_PPP;i++)
-    if(!ccp_fsm[i].inuse)
-    {
+
+  if(protocol != PPP_CCP && protocol != PPP_LINK_CCP)
+    return -1;
+
+  for(i=0;i<NUM_PPP;i++) {
+    if(!ccp_fsm[i].inuse) {
       ccp_fsm[i].inuse = 1;
       ccp_fsm[i].state = INITIAL;
       ccp_fsm[i].flags = 0;
       ccp_fsm[i].id = 0;
       ccp_fsm[i].unit = linkunit;
+      ccp_fsm[i].protocol = protocol;
+      syslog(LOG_NOTICE,"CCP: got ccp-unit %d for link %d (protocol: %#x)",i,linkunit,protocol);
       return i;
     }
+  }
   syslog(LOG_ERR,"No more ccp_units available");
   return -1;
 }
@@ -194,8 +248,8 @@ static void ccp_open(int unit)
 {
     fsm *f = &ccp_fsm[unit];
 
-	if (f->state != OPENED)
-		ccp_flags_set(unit, 1, 0);
+    if (f->state != OPENED)
+      ccp_flags_set(unit, 1, 0);
 
     /*
      * Find out which compressors the kernel supports before
@@ -236,11 +290,10 @@ static void ccp_lowerdown(int unit)
 /*
  * ccp_input - process a received CCP packet.
  */
-static void ccp_input(int linkunit,u_char *p,int len)
+static void ccp_u_input(int unit,u_char *p,int len)
 {
-  int unit = lns[linkunit].ccp_unit;
+  fsm *f = &ccp_fsm[unit];
 
-    fsm *f = &ccp_fsm[unit];
     int oldstate;
 
     /*
@@ -259,11 +312,31 @@ static void ccp_input(int linkunit,u_char *p,int len)
 		ccp_close(unit,"No compression negotiated");
 }
 
+static void ccp_input(int linkunit,u_char *p,int len)
+{
+  int unit = lns[linkunit].ccp_unit;
+  ccp_u_input(unit,p,len);
+}
+
+static void ccp_l_input(int linkunit,u_char *p,int len)
+{
+  int unit = lns[linkunit].ccp_l_unit;
+  ccp_u_input(unit,p,len);
+}
+
 /*
  * Handle a CCP-specific code.
+ * With the new reset handling in the kernel, this code will become unused.
  */
 static int ccp_extcode(fsm *f,int code,int id,u_char *p,int len)
 {
+    int unit;
+
+    if(f->protocol == PPP_CCP)
+       unit = lns[f->unit].ccp_unit;
+    else
+       unit = lns[f->unit].ccp_l_unit;
+
     switch (code) {
     case CCP_RESETREQ:
 	if (f->state != OPENED)
@@ -274,8 +347,8 @@ static int ccp_extcode(fsm *f,int code,int id,u_char *p,int len)
 	break;
 
     case CCP_RESETACK:
-	if (ccp_localstate[lns[f->unit].ccp_unit] & RACK_PENDING && id == f->reqid) {
-	    ccp_localstate[lns[f->unit].ccp_unit] &= ~(RACK_PENDING | RREQ_REPEAT);
+	if (ccp_localstate[unit] & RACK_PENDING && id == f->reqid) {
+	    ccp_localstate[unit] &= ~(RACK_PENDING | RREQ_REPEAT);
 	    UNTIMEOUT(ccp_rack_timeout, (caddr_t) f);
 	}
 	break;
@@ -290,6 +363,13 @@ static int ccp_extcode(fsm *f,int code,int id,u_char *p,int len)
 /*
  * ccp_protrej - peer doesn't talk CCP.
  */
+static void ccp_l_protrej(int linkunit)
+{
+  int unit = lns[linkunit].ccp_l_unit;
+  ccp_flags_set(unit, 0, 0);
+  fsm_lowerdown(&ccp_fsm[unit]);
+}
+
 static void ccp_protrej(int linkunit)
 {
   int unit = lns[linkunit].ccp_unit;
@@ -302,21 +382,41 @@ static void ccp_protrej(int linkunit)
  */
 static void ccp_resetci(fsm *f)
 {
-    ccp_options *go = &ccp_gotoptions[lns[f->unit].ccp_unit];
+    ccp_options *go;
     u_char opt_buf[16];
+    unsigned long protos[8] = {0,};
+    int i,j,unit;
 
-    *go = ccp_wantoptions[lns[f->unit].ccp_unit];
-    all_rejected[lns[f->unit].ccp_unit] = 0;
+    if(f->protocol == PPP_CCP)
+      unit = lns[f->unit].ccp_unit;
+    else
+      unit = lns[f->unit].ccp_l_unit;
+
+    go = &ccp_gotoptions[unit];
+
+    ccp_get_compressors(unit,protos);
+    syslog(LOG_NOTICE,"ccp_resetci!\n");
+    for(j=0;j<8;j++) 
+      for(i=0;i<32;i++) {
+        if( protos[j] & (1<<i) )
+           syslog(LOG_NOTICE,"Compressor %s loaded!\n",
+             compression_names[j*32+i]?compression_names[j*32+i]:"UNKNWOWN");
+      }
+
+	/* copy config */
+    *go = ccp_wantoptions[unit];
+
+    all_rejected[unit] = 0;
 
     /*
      * Check whether the kernel knows about the various
-     * compression methods we might request.
+     * DEcompression methods we might request.
      */
     if (go->bsd_compress) {
 	opt_buf[0] = CI_BSD_COMPRESS;
 	opt_buf[1] = CILEN_BSD_COMPRESS;
 	opt_buf[2] = BSD_MAKE_OPT(BSD_CURRENT_VERSION, BSD_MIN_BITS);
-	if (ccp_test(lns[f->unit].ccp_unit, opt_buf, CILEN_BSD_COMPRESS, 0) <= 0)
+	if (ccp_test(unit, opt_buf, CILEN_BSD_COMPRESS, 0) <= 0)
 	    go->bsd_compress = 0;
     }
     if (go->deflate) {
@@ -324,20 +424,32 @@ static void ccp_resetci(fsm *f)
 	opt_buf[1] = CILEN_DEFLATE;
 	opt_buf[2] = DEFLATE_MAKE_OPT(DEFLATE_MIN_SIZE);
 	opt_buf[3] = DEFLATE_CHK_SEQUENCE;
-	if (ccp_test(lns[f->unit].ccp_unit, opt_buf, CILEN_DEFLATE, 0) <= 0)
+	if (ccp_test(unit, opt_buf, CILEN_DEFLATE, 0) <= 0)
 	    go->deflate = 0;
     }
     if (go->predictor_1) {
 	opt_buf[0] = CI_PREDICTOR_1;
 	opt_buf[1] = CILEN_PREDICTOR_1;
-	if (ccp_test(lns[f->unit].ccp_unit, opt_buf, CILEN_PREDICTOR_1, 0) <= 0)
+	if (ccp_test(unit, opt_buf, CILEN_PREDICTOR_1, 0) <= 0)
 	    go->predictor_1 = 0;
     }
     if (go->predictor_2) {
 	opt_buf[0] = CI_PREDICTOR_2;
 	opt_buf[1] = CILEN_PREDICTOR_2;
-	if (ccp_test(lns[f->unit].ccp_unit, opt_buf, CILEN_PREDICTOR_2, 0) <= 0)
+	if (ccp_test(unit, opt_buf, CILEN_PREDICTOR_2, 0) <= 0)
 	    go->predictor_2 = 0;
+    }
+
+    if(go->lzs) {
+	opt_buf[0] = CI_LZS_COMPRESS;
+	opt_buf[1] = CILEN_LZS_COMPRESS;
+	opt_buf[2] = LZS_HIST_BYTE1(LZS_DECOMP_DEF_HISTS);
+	opt_buf[3] = LZS_HIST_BYTE2(LZS_DECOMP_DEF_HISTS);
+	opt_buf[4] = LZS_CMODE_SEQNO;
+	if(ccp_test(unit, opt_buf, CILEN_LZS_COMPRESS, 0) <= 0) {
+	    go->lzs = 0;
+	    syslog(LOG_NOTICE,"Kernel check for LZS failed\n");
+	}
     }
 }
 
@@ -346,12 +458,18 @@ static void ccp_resetci(fsm *f)
  */
 static int ccp_cilen(fsm *f)
 {
-    ccp_options *go = &ccp_gotoptions[lns[f->unit].ccp_unit];
+    ccp_options *go;
+   
+    if(f->protocol == PPP_CCP)
+      go = &ccp_gotoptions[lns[f->unit].ccp_unit];
+    else
+      go = &ccp_gotoptions[lns[f->unit].ccp_l_unit];
 
     return (go->bsd_compress? CILEN_BSD_COMPRESS: 0)
 	+ (go->deflate? CILEN_DEFLATE: 0)
 	+ (go->predictor_1? CILEN_PREDICTOR_1: 0)
-	+ (go->predictor_2? CILEN_PREDICTOR_2: 0);
+	+ (go->predictor_2? CILEN_PREDICTOR_2: 0)
+	+ (go->lzs? CILEN_LZS_COMPRESS: 0);
 }
 
 /*
@@ -360,8 +478,16 @@ static int ccp_cilen(fsm *f)
 static void ccp_addci(fsm *f,u_char *p,int *lenp)
 {
     int res;
-    ccp_options *go = &ccp_gotoptions[lns[f->unit].ccp_unit];
+    ccp_options *go; 
     u_char *p0 = p;
+    int unit;
+
+    if(f->protocol == PPP_CCP) 
+      unit = lns[f->unit].ccp_unit;
+    else
+      unit = lns[f->unit].ccp_l_unit;
+
+    go = &ccp_gotoptions[unit];
 
     /*
      * Add the compression types that we can receive, in decreasing
@@ -374,7 +500,7 @@ static void ccp_addci(fsm *f,u_char *p,int *lenp)
 	p[2] = DEFLATE_MAKE_OPT(go->deflate_size);
 	p[3] = DEFLATE_CHK_SEQUENCE;
 	for (;;) {
-	    res = ccp_test(lns[f->unit].ccp_unit, p, CILEN_DEFLATE, 0);
+	    res = ccp_test(unit, p, CILEN_DEFLATE, 0);
 	    if (res > 0) {
 		p += CILEN_DEFLATE;
 		break;
@@ -395,7 +521,7 @@ static void ccp_addci(fsm *f,u_char *p,int *lenp)
 	    p += CILEN_BSD_COMPRESS;	/* not the first option */
 	} else {
 	    for (;;) {
-		res = ccp_test(lns[f->unit].ccp_unit, p, CILEN_BSD_COMPRESS, 0);
+		res = ccp_test(unit, p, CILEN_BSD_COMPRESS, 0);
 		if (res > 0) {
 		    p += CILEN_BSD_COMPRESS;
 		    break;
@@ -413,7 +539,7 @@ static void ccp_addci(fsm *f,u_char *p,int *lenp)
     if (go->predictor_1) {
 	p[0] = CI_PREDICTOR_1;
 	p[1] = CILEN_PREDICTOR_1;
-	if (p == p0 && ccp_test(lns[f->unit].ccp_unit, p, CILEN_PREDICTOR_1, 0) <= 0) {
+	if (p == p0 && ccp_test(unit, p, CILEN_PREDICTOR_1, 0) <= 0) {
 	    go->predictor_1 = 0;
 	} else {
 	    p += CILEN_PREDICTOR_1;
@@ -422,10 +548,24 @@ static void ccp_addci(fsm *f,u_char *p,int *lenp)
     if (go->predictor_2) {
 	p[0] = CI_PREDICTOR_2;
 	p[1] = CILEN_PREDICTOR_2;
-	if (p == p0 && ccp_test(lns[f->unit].ccp_unit, p, CILEN_PREDICTOR_2, 0) <= 0) {
+	if (p == p0 && ccp_test(unit, p, CILEN_PREDICTOR_2, 0) <= 0) {
 	    go->predictor_2 = 0;
 	} else {
 	    p += CILEN_PREDICTOR_2;
+	}
+    }
+    if(go->lzs) {
+	p[0] = CI_LZS_COMPRESS;
+	p[1] = CILEN_LZS_COMPRESS;
+	p[2] = LZS_HIST_BYTE1(go->lzs_hists);
+	p[3] = LZS_HIST_BYTE2(go->lzs_hists);
+	p[4] = go->lzs_cmode;
+	if(p == p0 && ccp_test(unit, p, CILEN_LZS_COMPRESS, 0) <= 0) {
+	    /* TODO: Try less histories and finally try cmode 4 until the
+	       kernel accepts a method before really wiping LZS */
+	    go->lzs = 0;
+	} else {
+	    p += CILEN_LZS_COMPRESS;
 	}
     }
 
@@ -440,8 +580,14 @@ static void ccp_addci(fsm *f,u_char *p,int *lenp)
  */
 static int ccp_ackci(fsm *f,u_char *p,int len)
 {
-    ccp_options *go = &ccp_gotoptions[lns[f->unit].ccp_unit];
+    ccp_options *go;
     u_char *p0 = p;
+
+    if(f->protocol == PPP_CCP)
+      go = &ccp_gotoptions[lns[f->unit].ccp_unit];
+    else
+      go = &ccp_gotoptions[lns[f->unit].ccp_l_unit];
+
     if (go->deflate) {
 	if (len < CILEN_DEFLATE
 	    || p[0] != CI_DEFLATE || p[1] != CILEN_DEFLATE
@@ -485,6 +631,17 @@ static int ccp_ackci(fsm *f,u_char *p,int len)
 	if (p == p0 && len == 0)
 	    return 1;
     }
+    if(go->lzs) {
+	if(len < CILEN_LZS_COMPRESS
+	   || p[0] != CI_LZS_COMPRESS || p[1] != CILEN_LZS_COMPRESS
+	   || LZS_HIST_WORD(p[2], p[3]) != go->lzs_hists
+	   || p[4] != go->lzs_cmode)
+	    return 0;	/* Brocken ack - line noise ? */
+	p += CILEN_LZS_COMPRESS;
+	len -= CILEN_LZS_COMPRESS;
+	if(p == p0 && len == 0)
+	    return 1;
+    }
     if (len != 0)
 	return 0;
     return 1;
@@ -496,9 +653,17 @@ static int ccp_ackci(fsm *f,u_char *p,int len)
  */
 static int ccp_nakci(fsm *f,u_char *p,int len)
 {
-    ccp_options *go = &ccp_gotoptions[lns[f->unit].ccp_unit];
+    ccp_options *go;
     ccp_options no;		/* options we've seen already */
     ccp_options try;		/* options to ask for next time */
+
+    int nb;
+
+    if(f->protocol == PPP_CCP)
+      go = &ccp_gotoptions[lns[f->unit].ccp_unit];
+    else
+      go = &ccp_gotoptions[lns[f->unit].ccp_l_unit];
+
 
     memset(&no, 0, sizeof(no));
     try = *go;
@@ -535,6 +700,26 @@ static int ccp_nakci(fsm *f,u_char *p,int len)
 	len -= CILEN_BSD_COMPRESS;
     }
 
+    if(go->lzs && len >= CILEN_LZS_COMPRESS && p[0] == CI_LZS_COMPRESS
+       && p[1] == CILEN_LZS_COMPRESS) {
+	no.lzs = 1;
+	/*
+	 * Peer wants us to use a different number of histories or
+	 * a different check mode.
+	 */
+	nb = LZS_HIST_WORD(p[2], p[3]);
+	if(nb != go->lzs_hists) {
+	    if(nb >= 0 && nb <= LZS_DECOMP_MAX_HISTS)
+		try.lzs_hists = nb;
+	    else
+		try.lzs = 0;
+	}
+	if(p[4] != go->lzs_cmode)
+	    try.lzs_cmode = p[4];
+	p += CILEN_LZS_COMPRESS;
+	len -= CILEN_LZS_COMPRESS;
+    }
+
     /*
      * Predictor-1 and 2 have no options, so they can't be Naked.
      *
@@ -554,8 +739,16 @@ static int ccp_nakci(fsm *f,u_char *p,int len)
  */
 static int ccp_rejci(fsm *f,u_char *p,int len)
 {
-    ccp_options *go = &ccp_gotoptions[lns[f->unit].ccp_unit];
+    ccp_options *go;
     ccp_options try;		/* options to request next time */
+    int unit;
+
+    if(f->protocol == PPP_CCP)
+      unit = lns[f->unit].ccp_unit;
+    else
+      unit = lns[f->unit].ccp_l_unit;
+
+    go = &ccp_gotoptions[unit];
 
     try = *go;
 
@@ -563,7 +756,7 @@ static int ccp_rejci(fsm *f,u_char *p,int len)
      * Cope with empty configure-rejects by ceasing to send
      * configure-requests.
      */
-    if (len == 0 && all_rejected[lns[f->unit].ccp_unit])
+    if (len == 0 && all_rejected[unit])
 	return -1;
 
     if (go->deflate && len >= CILEN_DEFLATE
@@ -595,6 +788,14 @@ static int ccp_rejci(fsm *f,u_char *p,int len)
 	p += CILEN_PREDICTOR_2;
 	len -= CILEN_PREDICTOR_2;
     }
+    if(go->lzs && len >= CILEN_LZS_COMPRESS
+       && p[0] == CI_LZS_COMPRESS && p[1] == CILEN_LZS_COMPRESS) {
+	if(LZS_HIST_WORD(p[2], p[3]) != go->lzs_hists || p[4] != go->lzs_cmode)
+	    return 0;
+	try.lzs = 0;
+	p += CILEN_LZS_COMPRESS;
+	len -= CILEN_LZS_COMPRESS;
+    }
 
     if (len != 0)
 	return 0;
@@ -615,8 +816,16 @@ static int ccp_reqci(fsm *f,u_char *p,int *lenp,int dont_nak)
     int ret, newret, res;
     u_char *p0, *retp;
     int len, clen, type, nb;
-    ccp_options *ho = &ccp_hisoptions[lns[f->unit].ccp_unit];
-    ccp_options *ao = &ccp_allowoptions[lns[f->unit].ccp_unit];
+    int unit;
+    ccp_options *ho,*ao;
+
+    if(f->protocol == PPP_CCP)
+      unit = lns[f->unit].ccp_unit;
+    else
+      unit = lns[f->unit].ccp_l_unit;
+
+    ho = &ccp_hisoptions[unit];
+    ao = &ccp_allowoptions[unit];
 
     ret = CONFACK;
     retp = p0 = p;
@@ -726,7 +935,7 @@ static int ccp_reqci(fsm *f,u_char *p,int *lenp,int dont_nak)
  		}
  
 		ho->predictor_1 = 1;
-		if (p == p0 && ccp_test(lns[f->unit].ccp_unit, p, CILEN_PREDICTOR_1, 1) <= 0) {
+		if (p == p0 && ccp_test(unit, p, CILEN_PREDICTOR_1, 1) <= 0) {
 		    newret = CONFREJ;
 		}
 		break;
@@ -738,7 +947,48 @@ static int ccp_reqci(fsm *f,u_char *p,int *lenp,int dont_nak)
 		}
 
 		ho->predictor_2 = 1;
-		if (p == p0 && ccp_test(lns[f->unit].ccp_unit, p, CILEN_PREDICTOR_2, 1) <= 0) {
+		if (p == p0 && ccp_test(unit, p, CILEN_PREDICTOR_2, 1) <= 0) {
+		    newret = CONFREJ;
+		}
+		break;
+
+	    case CI_LZS_COMPRESS:
+		if(!ao->lzs || clen != CILEN_LZS_COMPRESS) {
+		    newret = CONFREJ;
+		    break;
+		}
+		ho->lzs = 1;
+		ho->lzs_hists = nb = LZS_HIST_WORD(p[2], p[3]);
+		ho->lzs_cmode = p[4];
+		if(nb < 0 || nb > ao->lzs_hists) {
+		    newret = CONFNAK;
+		    if(!dont_nak) {
+			p[2] = LZS_HIST_BYTE1(ao->lzs_hists);
+			p[3] = LZS_HIST_BYTE2(ao->lzs_hists);
+			break;
+		    }
+		}
+		if(p[4] != ao->lzs_cmode) {
+		    /* Peer wants another checkmode - accept only EXT for now */
+		    if(p[4] != LZS_CMODE_EXT) {
+			newret = CONFNAK;
+			if(!dont_nak)
+			    p[4] = ao->lzs_cmode;
+			break;
+		    } else {
+			/* EXT is Ok but requires hists to be 1 */
+			if(nb != 1) {
+			    newret = CONFNAK;
+			    if(!dont_nak) {
+				p[2] = LZS_HIST_BYTE1(1);
+				p[3] = LZS_HIST_BYTE2(1);
+			    }
+			    break;
+			}
+		    }
+		}
+		/* Finally verify the kernel is thinking the same way */
+		if(p == p0 && ccp_test(unit, p, CILEN_LZS_COMPRESS, 1) <= 0) {
 		    newret = CONFREJ;
 		}
 		break;
@@ -766,7 +1016,7 @@ static int ccp_reqci(fsm *f,u_char *p,int *lenp,int dont_nak)
 
     if (ret != CONFACK) {
 	if (ret == CONFREJ && *lenp == retp - p0)
-	    all_rejected[lns[f->unit].ccp_unit] = 1;
+	    all_rejected[unit] = 1;
 	else
 	    *lenp = retp - p0;
     }
@@ -801,6 +1051,16 @@ static char *method_name(ccp_options *opt,ccp_options *opt2)
        return "Predictor 1";
     case CI_PREDICTOR_2:
        return "Predictor 2";
+    case CI_LZS_COMPRESS:
+	if (opt2 != NULL && (opt2->lzs_hists != opt->lzs_hists ||
+	    opt2->lzs_cmode != opt->lzs_cmode))
+	    sprintf(result, "LZS (hists %d check %d/hists %d check %d)",
+		    opt->lzs_hists, opt->lzs_cmode,
+		    opt2->lzs_hists, opt2->lzs_cmode);
+	else
+	    sprintf(result, "LZS (hists %d check %d)",
+		    opt->lzs_hists, opt->lzs_cmode);
+	break;
     default:
        sprintf(result, "Method %d", opt->method);
     }
@@ -812,27 +1072,36 @@ static char *method_name(ccp_options *opt,ccp_options *opt2)
  */
 static void ccp_up(fsm *f)
 {
-    ccp_options *go = &ccp_gotoptions[lns[f->unit].ccp_unit];
-    ccp_options *ho = &ccp_hisoptions[lns[f->unit].ccp_unit];
-	char method1[64];
+    int unit;
+    ccp_options *go;
+    ccp_options *ho;
+    char method1[64];
+   
+    if(f->protocol == PPP_CCP)
+       unit = lns[f->unit].ccp_unit;
+    else
+       unit = lns[f->unit].ccp_l_unit;
  
-    ccp_flags_set(lns[f->unit].ccp_unit, 1, 1);
+    go = &ccp_gotoptions[unit];
+    ho = &ccp_hisoptions[unit];
+
+    ccp_flags_set(unit, 1, 1);
     if (ANY_COMPRESS(*go)) {
        if (ANY_COMPRESS(*ho)) {
            if (go->method == ho->method) {
-               syslog(LOG_NOTICE, "%s compression enabled",
+               syslog(LOG_NOTICE, "[%d] %s compression enabled",f->unit,
                       method_name(go, ho));
            } else {
                strcpy(method1, method_name(go, NULL));
-               syslog(LOG_NOTICE, "%s / %s compression enabled",
+               syslog(LOG_NOTICE, "[%d] %s / %s compression enabled",f->unit,
                       method1, method_name(ho, NULL));
            }
        } else
-           syslog(LOG_NOTICE, "%s receive compression enabled",
+           syslog(LOG_NOTICE, "[%d] %s receive compression enabled",f->unit,
                   method_name(go, NULL));
     } else if (ANY_COMPRESS(*ho))
-       syslog(LOG_NOTICE, "%s transmit compression enabled",
-              method_name(ho, NULL));
+       syslog(LOG_NOTICE, "[%d] %s transmit compression enabled",f->unit,
+	 method_name(ho, NULL));
 }
 
 /*
@@ -840,10 +1109,17 @@ static void ccp_up(fsm *f)
  */
 static void ccp_down(fsm *f)
 {
-    if (ccp_localstate[lns[f->unit].ccp_unit] & RACK_PENDING)
+    int unit;
+
+    if(f->protocol == PPP_CCP)
+       unit = lns[f->unit].ccp_unit;
+    else
+       unit = lns[f->unit].ccp_l_unit;
+
+    if (ccp_localstate[unit] & RACK_PENDING)
 	UNTIMEOUT(ccp_rack_timeout, (caddr_t) f);
-    ccp_localstate[lns[f->unit].ccp_unit] = 0;
-    ccp_flags_set(lns[f->unit].ccp_unit, 1, 0);
+    ccp_localstate[unit] = 0;
+    ccp_flags_set(unit, 1, 0);
 }
 
 /*
@@ -924,10 +1200,17 @@ static int ccp_printpkt(u_char *p,int plen,void (*printer)(void*,char*,...),void
 		    p += CILEN_PREDICTOR_2;
 		}
 		break;
+	    case CI_LZS_COMPRESS:
+		if(optlen >= CILEN_LZS_COMPRESS) {
+		    printer(arg, "LZS hists %d check %d",
+			    (p[2] << 16) | p[3], p[4]);
+		    p += CILEN_LZS_COMPRESS;
+		}
+		break;
+		while (p < optend)
+		    printer(arg, " %.2x", *p++);
+		printer(arg, ">");
 	    }
-	    while (p < optend)
-		printer(arg, " %.2x", *p++);
-	    printer(arg, ">");
 	}
 	break;
 
@@ -949,23 +1232,11 @@ static int ccp_printpkt(u_char *p,int plen,void (*printer)(void*,char*,...),void
 }
 
 /*
- * We have received a packet that the decompressor failed to
- * decompress.  Here we would expect to issue a reset-request, but
- * Motorola has a patent on resetting the compressor as a result of
- * detecting an error in the decompressed data after decompression.
- * (See US patent 5,130,993; international patent publication number
- * WO 91/10289; Australian patent 73296/91.)
- *
- * So we ask the kernel whether the error was detected after
- * decompression; if it was, we take CCP down, thus disabling
- * compression :-(, otherwise we issue the reset-request.
  */
-static void ccp_datainput(int linkunit,u_char *pkt,int len)
+static void ccp_u_datainput(int unit,u_char *pkt,int len)
 {
-  int unit = lns[linkunit].ccp_unit;
-    fsm *f;
+    fsm *f = &ccp_fsm[unit];
 
-    f = &ccp_fsm[unit];
     if (f->state == OPENED) {
 	if (ccp_fatal_error(unit)) {
 	    /*
@@ -989,18 +1260,36 @@ static void ccp_datainput(int linkunit,u_char *pkt,int len)
     }
 }
 
+static void ccp_l_datainput(int linkunit,u_char *pkt,int len)
+{
+  int unit = lns[linkunit].ccp_l_unit;
+  ccp_u_datainput(unit,pkt,len);
+}
+
+static void ccp_datainput(int linkunit,u_char *pkt,int len)
+{
+  int unit = lns[linkunit].ccp_unit;
+  ccp_u_datainput(unit,pkt,len);
+}
+
 /*
  * Timeout waiting for reset-ack.
  */
 static void ccp_rack_timeout(caddr_t arg)
 {
     fsm *f = (fsm *) arg;
+    int unit;
 
-    if (f->state == OPENED && ccp_localstate[lns[f->unit].ccp_unit] & RREQ_REPEAT) {
+    if(f->protocol == PPP_CCP)
+       unit = lns[f->unit].ccp_unit;
+    else
+       unit = lns[f->unit].ccp_l_unit;
+
+    if (f->state == OPENED && ccp_localstate[unit] & RREQ_REPEAT) {
 	fsm_sdata(f, CCP_RESETREQ, f->reqid, NULL, 0);
 	TIMEOUT(ccp_rack_timeout, (caddr_t) f, RACKTIMEOUT);
-	ccp_localstate[lns[f->unit].ccp_unit] &= ~RREQ_REPEAT;
+	ccp_localstate[unit] &= ~RREQ_REPEAT;
     } else
-	ccp_localstate[lns[f->unit].ccp_unit] &= ~RACK_PENDING;
+	ccp_localstate[unit] &= ~RACK_PENDING;
 }
 

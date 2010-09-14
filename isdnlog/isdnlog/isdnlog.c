@@ -1,8 +1,8 @@
-/* $Id: isdnlog.c,v 1.12 1997/05/25 19:40:58 luethje Exp $
+/* $Id: isdnlog.c,v 1.32 1998/12/31 09:58:50 paul Exp $
  *
  * ISDN accounting for isdn4linux. (log-module)
  *
- * Copyright 1995, 1997 by Andreas Kool (akool@Kool.f.EUnet.de)
+ * Copyright 1995, 1998 by Andreas Kool (akool@isdn4linux.de)
  *                     and Stefan Luethje (luethje@sl-gw.lake.de)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -19,6 +19,148 @@
  * along with this program; if not, write to the Free Software
  *
  * $Log: isdnlog.c,v $
+ * Revision 1.32  1998/12/31 09:58:50  paul
+ * converted termio calls to termios
+ *
+ * Revision 1.31  1998/12/09 20:39:28  akool
+ *  - new option "-0x:y" for leading zero stripping on internal S0-Bus
+ *  - new option "-o" to suppress causes of other ISDN-Equipment
+ *  - more support for the internal S0-bus
+ *  - Patches from Jochen Erwied <mack@Joker.E.Ruhr.DE>, fixes TelDaFax Tarif
+ *  - workaround from Sebastian Kanthak <sebastian.kanthak@muehlheim.de>
+ *  - new CHARGEINT chapter in the README from
+ *    "Georg v.Zezschwitz" <gvz@popocate.hamburg.pop.de>
+ *
+ * Revision 1.30  1998/11/24 20:51:31  akool
+ *  - changed my email-adress
+ *  - new Option "-R" to supply the preselected provider (-R24 -> Telepassport)
+ *  - made Provider-Prefix 6 digits long
+ *  - full support for internal S0-bus implemented (-A, -i Options)
+ *  - isdnlog now ignores unknown frames
+ *  - added 36 allocated, but up to now unused "Auskunft" Numbers
+ *  - added _all_ 122 Providers
+ *  - Patch from Jochen Erwied <mack@Joker.E.Ruhr.DE> for Quante-TK-Anlagen
+ *    (first dialed digit comes with SETUP-Frame)
+ *
+ * Revision 1.29  1998/11/17 00:37:39  akool
+ *  - fix new Option "-i" (Internal-S0-Bus)
+ *  - more Providers (Nikoma, First Telecom, Mox)
+ *  - isdnrep-Bugfix from reinhard.karcher@dpk.berlin.fido.de (Reinhard Karcher)
+ *  - Configure.help completed
+ *
+ * Revision 1.28  1998/11/07 17:12:56  akool
+ * Final cleanup. This _is_ isdnlog-3.00
+ *
+ * Revision 1.27  1998/11/01 08:49:43  akool
+ *  - fixed "configure.in" problem with NATION_*
+ *  - DESTDIR fixes (many thanks to Michael Reinelt <reinelt@eunet.at>)
+ *  - isdnrep: Outgoing calls ordered by Zone/Provider/MSN corrected
+ *  - new Switch "-i" -> running on internal S0-Bus
+ *  - more providers
+ *  - "sonderrufnummern.dat" extended (Frag Fred, Telegate ...)
+ *  - added AVM-B1 to the documentation
+ *  - removed the word "Teles" from the whole documentation ;-)
+ *
+ * Revision 1.26  1998/10/26 20:21:14  paul
+ * thinko in check for symlink in /tmp
+ *
+ * Revision 1.25  1998/10/22 14:10:52  paul
+ * Check that /tmp/isdnctrl0 is not a symbolic link, which is a potential
+ * security threat (it can point to /etc/passwd or so!)
+ *
+ * Revision 1.24  1998/10/18 20:13:33  luethje
+ * isdnlog: Added the switch -K
+ *
+ * Revision 1.23  1998/10/06 12:50:57  paul
+ * As the exec is done within the signal handler, SIGHUP was blocked after the
+ * first time. Now SIGHUP is unblocked so that you can send SIGHUP more than once.
+ *
+ * Revision 1.22  1998/09/26 18:29:07  akool
+ *  - quick and dirty Call-History in "-m" Mode (press "h" for more info) added
+ *    - eat's one more socket, Stefan: sockets[3] now is STDIN, FIRST_DESCR=4 !!
+ *  - Support for tesion)) Baden-Wuerttemberg Tarif
+ *  - more Providers
+ *  - Patches from Wilfried Teiken <wteiken@terminus.cl-ki.uni-osnabrueck.de>
+ *    - better zone-info support in "tools/isdnconf.c"
+ *    - buffer-overrun in "isdntools.c" fixed
+ *  - big Austrian Patch from Michael Reinelt <reinelt@eunet.at>
+ *    - added $(DESTDIR) in any "Makefile.in"
+ *    - new Configure-Switches "ISDN_AT" and "ISDN_DE"
+ *      - splitted "takt.c" and "tools.c" into
+ *          "takt_at.c" / "takt_de.c" ...
+ *          "tools_at.c" / "takt_de.c" ...
+ *    - new feature
+ *        CALLFILE = /var/log/caller.log
+ *        CALLFMT  = %b %e %T %N7 %N3 %N4 %N5 %N6
+ *      in "isdn.conf"
+ *  - ATTENTION:
+ *      1. "isdnrep" dies with an seg-fault, if not HTML-Mode (Stefan?)
+ *      2. "isdnlog/Makefile.in" now has hardcoded "ISDN_DE" in "DEFS"
+ *      	should be fixed soon
+ *
+ * Revision 1.21  1998/06/21 11:52:46  akool
+ * First step to let isdnlog generate his own AOCD messages
+ *
+ * Revision 1.20  1998/06/07 21:08:31  akool
+ * - Accounting for the following new providers implemented:
+ *     o.tel.o, Tele2, EWE TEL, Debitel, Mobilcom, Isis, NetCologne,
+ *     TelePassport, Citykom Muenster, TelDaFax, Telekom, Hutchison Telekom,
+ *     tesion)), HanseNet, KomTel, ACC, Talkline, Esprit, Interoute, Arcor,
+ *     WESTCom, WorldCom, Viag Interkom
+ *
+ *     Code shamelessly stolen from G.Glendown's (garry@insider.regio.net)
+ *     program http://www.insider.org/tarif/gebuehr.c
+ *
+ * - Telekom's 10plus implemented
+ *
+ * - Berechnung der Gebuehrenzone implementiert
+ *   (CityCall, RegioCall, GermanCall, GlobalCall)
+ *   The entry "ZONE" is not needed anymore in the config-files
+ *
+ *   you need the file
+ *     http://swt.wi-inf.uni-essen.de/~omatthes/tgeb/vorwahl2.exe
+ *   and the new entry
+ *     [GLOBAL]
+ *       AREADIFF = /usr/lib/isdn/vorwahl.dat
+ *   for that feature.
+ *
+ *   Many thanks to Olaf Matthes (olaf.matthes@uni-essen.de) for the
+ *   Data-File and Harald Milz for his first Perl-Implementation!
+ *
+ * - Accounting for all "Sonderrufnummern" (0010 .. 11834) implemented
+ *
+ *   You must install the file
+ *     "isdn4k-utils/isdnlog/sonderrufnummern.dat.bz2"
+ *   as "/usr/lib/isdn/sonderrufnummern.dat"
+ *   for that feature.
+ *
+ * ATTENTION: This is *NO* production-code! Please test it carefully!
+ *
+ * Revision 1.19  1998/05/19 15:55:51  paul
+ * Moved config stuff for City Weekend from isdnlog.c to tools/isdnconf.c, so
+ * that isdnrep also understands a "cityweekend=y" line in isdn.conf.
+ *
+ * Revision 1.18  1998/05/19 15:47:03  paul
+ * If logfile name is specified with leading '+', the logfile is not truncated
+ * when isdnlog starts; instead, new messages are appended.
+ *
+ * Revision 1.17  1998/03/29 23:18:07  luethje
+ * mySQL-Patch of Sascha Matzke
+ *
+ * Revision 1.16  1998/03/08 12:13:38  luethje
+ * Patches by Paul Slootman
+ *
+ * Revision 1.15  1998/03/08 11:42:50  luethje
+ * I4L-Meeting Wuerzburg final Edition, golden code - Service Pack number One
+ *
+ * Revision 1.14  1998/02/08 09:36:51  calle
+ * fixed problems with FD_ISSET and glibc, if descriptor is not open.
+ *
+ * Revision 1.13  1997/06/22 23:03:23  luethje
+ * In subsection FLAGS it will be checked if the section name FLAG is korrect
+ * isdnlog recognize calls abroad
+ * bugfix for program starts
+ *
  * Revision 1.12  1997/05/25 19:40:58  luethje
  * isdnlog:  close all files and open again after kill -HUP
  * isdnrep:  support vbox version 2.0
@@ -58,10 +200,14 @@
 #define _ISDNLOG_C_
 
 #include <linux/limits.h>
+#include <termios.h>
 
 #include "isdnlog.h"
 #ifdef POSTGRES
 #include "postgres.h"
+#endif
+#ifdef MYSQLDB
+#include "mysqldb.h"
 #endif
 
 #define FD_SET_MAX(desc, set, max) { if (desc > max) max=desc; FD_SET(desc,set); }
@@ -71,6 +217,8 @@
  /* Letzte Exit-Nummer: 47 */
 
 /*****************************************************************************/
+
+#define X_FD_ISSET(fd, mask)    ((fd) >= 0 && FD_ISSET(fd,mask))
 
 static void loop(void);
 static void init_variables(int argc, char* argv[]);
@@ -84,13 +232,14 @@ static int read_param_file(char *FileName);
 
 static char     usage[]   = "%s: usage: %s [ -%s ] file\n";
 #ifdef Q931
-static char     options[] = "av:sp:x:m:l:rt:c:C:w:SVTDPMh:nW:H:f:bL:NqFA:2:O:";
+static char     options[] = "av:sp:x:m:l:rt:c:C:w:SVTDPMh:nW:H:f:bL:NqFA:2:O:Ki:R:0:o";
 #else
-static char     options[] = "av:sp:x:m:l:rt:c:C:w:SVTDPMh:nW:H:f:bL:NFA:2:O:";
+static char     options[] = "av:sp:x:m:l:rt:c:C:w:SVTDPMh:nW:H:f:bL:NFA:2:O:Ki:R:0:o";
 #endif
 static char     msg1[]    = "%s: Can't open %s (%s)\n";
 static char    *ptty = NULL;
 static section *opt_dat = NULL;
+static char	**hup_argv;	/* args to restart with */
 
 /*****************************************************************************/
 
@@ -105,35 +254,10 @@ static void exit_on_signal(int Sign)
 
 static void hup_handler(int isig)
 {
-  print_msg(PRT_INFO, "re-reading %s\n", CONFFILE);
-
-  discardconfig();
-  if (readconfig(myname) != 0)
-  	Exit(41);
-
-	if (fprot != NULL && tmpout != NULL && *tmpout != '\0')
-	{
-		fclose(fprot);
-
-		if ((fprot = fopen(tmpout,"a")) == NULL)
- 	 	{
- 	 		print_msg(PRT_ERR,"Can not open file `%s': %s!\n",tmpout, strerror(errno));
-			Exit(46);
-		}
-	}
-
-	if (fout != NULL && outfile != NULL && *outfile != '\0')
-	{
-		fclose(fout);
-
-		if ((fout = fopen(outfile,"a")) == NULL)
- 	 	{
- 	 		print_msg(PRT_ERR,"Can not open file `%s': %s!\n",outfile, strerror(errno));
-			Exit(47);
-		}
-	}
-
-  signal(SIGHUP, hup_handler);
+  print_msg(PRT_INFO, "restarting %s\n", myname);
+  Exit(-9);
+  execv(myname, hup_argv);
+  print_msg(PRT_ERR,"Cannot restart %s: %s!\n", myname, strerror(errno));
 } /* hup_handler */
 
 /*****************************************************************************/
@@ -218,8 +342,10 @@ static void loop(void)
 
       now();
 
+      processcint();
+
       for (Cnt = first_descr; Cnt < socket_size(sockets); Cnt++) {
-        if (FD_ISSET(sockets[Cnt].descriptor, &exceptmask)) {
+        if (X_FD_ISSET(sockets[Cnt].descriptor, &exceptmask)) {
           if (sockets[Cnt].fp == NULL) {
             disconnect_client(Cnt);
             break;
@@ -237,7 +363,7 @@ static void loop(void)
             break;
           } /* else */
         }
-        else if (FD_ISSET(sockets[Cnt].descriptor, &readmask))
+        else if (X_FD_ISSET(sockets[Cnt].descriptor, &readmask))
           if (sockets[Cnt].fp == NULL) {
             eval_message(Cnt);
             /* Arbeite immer nur ein Client ab, du weisst nicht, ob der
@@ -248,7 +374,7 @@ static void loop(void)
             Print_Cmd_Output(Cnt);
       } /* for */
 
-      if (xinfo && FD_ISSET(sockets[IN_PORT].descriptor, &readmask)) {
+      if (xinfo && X_FD_ISSET(sockets[IN_PORT].descriptor, &readmask)) {
         len = sizeof(incoming);
 
         if ((NewSocket = accept(sockets[IN_PORT].descriptor, &incoming, &len)) == -1)
@@ -265,15 +391,20 @@ static void loop(void)
           NewClient = queuenumber - 1;
         } /* else */
       }
-      else if (FD_ISSET(sockets[ISDNINFO].descriptor, &readmask))
+      else if (X_FD_ISSET(sockets[ISDNINFO].descriptor, &readmask))
         moreinfo();
-      else if (FD_ISSET(sockets[ISDNCTRL].descriptor, &readmask))
+      else if (X_FD_ISSET(sockets[ISDNCTRL].descriptor, &readmask))
         (void)morectrl(0);
-      else if (FD_ISSET(sockets[ISDNCTRL2].descriptor, &readmask))
+      else if (X_FD_ISSET(sockets[ISDNCTRL2].descriptor, &readmask))
         (void)morectrl(1);
+      else if (X_FD_ISSET(sockets[STDIN].descriptor, &readmask))
+        (void)morekbd();
+
     } /* else */
   } /* while */
 } /* loop */
+
+#undef X_FD_ISSET
 
 /*****************************************************************************/
 
@@ -324,12 +455,14 @@ static void init_variables(int argc, char* argv[])
   allflags = 0;
   newcps = 0;
   chans = 2;
-  hupctrl = 0;
-  hup1 = hup2 = 0;
+  hupctrl = hup1 = hup2 = 0;
+  trim = trimi = trimo = 0;
   bilingual = 0;
+  other = 0;
   mcalls = MAX_CALLS_IN_QUEUE;
   xlog = MAX_PRINTS_IN_QUEUE;
   outfile = NULL;
+  readkeyboard = 0;
 
   sockets = NULL;
   known = NULL;
@@ -347,6 +480,7 @@ static void init_variables(int argc, char* argv[])
   sprintf(mlabel, "%%s%s  %%s%%s", "%e.%b %T %I");
   amtsholung = NULL;
   dual = 0;
+  preselect = 33; /* Telekomik */
 
   myname = argv[0];
   myshortname = basename(myname);
@@ -501,12 +635,40 @@ int set_options(int argc, char* argv[])
       case 'O' : outfile = strdup(optarg);
       	       	 break;
 
+      case 'K' : readkeyboard++;
+      	       	 break;
+
+      case 'i' : interns0 = (int)strtol(optarg, NIL, 0);
+      	       	 break;
+
+      case 'R' : preselect = (int)strtol(optarg, NIL, 0);
+      	       	 break;
+
+      case '0' : trim++;
+
+      	       	 if ((p = strchr(optarg, ':'))) {
+                   *p = 0;
+                   trimi = atoi(optarg);
+                   trimo = atoi(p + 1);
+      	       	 }
+                 else
+                   trimi = trimo = atoi(optarg);
+      	       	 break;
+
+      case 'o' : other++;
+      	       	 break;
+
       case '?' : printf(usage, myshortname, myshortname, options);
 	         exit(1);
     } /* switch */
 
   if (newmessage)
     message = newmessage;
+
+  if (readkeyboard && isdaemon) {
+    printf("%s","Can read from standard input daemonized!\n");
+    exit(20);
+  } /* if */
 
   if (trace && isdaemon) {
     printf("%s","Can not trace daemonized!\n");
@@ -534,7 +696,9 @@ int set_options(int argc, char* argv[])
     /* Wenn message nicht explixit gesetzt wurde, dann gibt es beim daemon auch
        kein Output auf der Console/ttyx                                   */
 
-    if (!newmessage && ptty == NULL)
+    /* if (!newmessage && ptty == NULL)  -> FIXME: so geht das nicht, Stefan, wenn
+       	  	       	       	  	 -> "message" ueber das config-File
+                                         -> (CONF_ENT_STDOUT) gefuellt wird! */
       message = 0;
   } /* if */
 
@@ -625,6 +789,17 @@ static int read_param_file(char *FileName)
       	       	 		  } /* if */
 				}
 				else
+                                if (!strcmp(Ptr->name, CONF_ENT_TRIM)) {
+                                  trim++;
+                                  if ((p = strchr(Ptr->value, ':'))) {
+                                    *p = 0;
+                                    trimi = atoi(Ptr->value);
+                                    trimo = atoi(p + 1);
+                                  }
+                                  else
+                                    trimi = trimo = atoi(Ptr->value);
+                                }
+                                else
 				if (!strcmp(Ptr->name,CONF_ENT_BI))
 					bilingual = toupper(*(Ptr->value)) == 'Y'?1:0;
 				else
@@ -639,9 +814,6 @@ static int read_param_file(char *FileName)
 				else
 				if (!strcmp(Ptr->name,CONF_ENT_WIDTH))
 					width = (int)strtol(Ptr->value, NIL, 0);
-				else
-				if (!strcmp(Ptr->name,CONF_ENT_CW))
-					CityWeekend = toupper(*(Ptr->value)) == 'Y'?1:0;
 				else
 				if (!strcmp(Ptr->name,CONF_ENT_DUAL))
 					dual = (int)strtol(Ptr->value, NIL, 0);
@@ -663,6 +835,18 @@ static int read_param_file(char *FileName)
 				if (!strcmp(Ptr->name,CONF_ENT_OUTFILE))
 					outfile = Ptr->value;
 				else
+				if (!strcmp(Ptr->name,CONF_ENT_KEYBOARD))
+					readkeyboard = toupper(*(Ptr->value)) == 'Y'?1:0;
+				else
+				if (!strcmp(Ptr->name,CONF_ENT_INTERNS0))
+					interns0 = (int)strtol(Ptr->value, NIL, 0);
+				else
+                                if (!strcmp(Ptr->name,CONF_ENT_PRESELECT))
+				        preselect = (int)strtol(Ptr->value, NIL, 0);
+                                else
+                                if (!strcmp(Ptr->name,CONF_ENT_OTHER))
+				        other = toupper(*(Ptr->value)) == 'Y'?1:0;
+                                else
 					print_msg(PRT_ERR,"Error: Invalid entry `%s'!\n",Ptr->name);
 
 				Ptr = Ptr->next;
@@ -751,13 +935,36 @@ static void restoreCharge()
 
 /*****************************************************************************/
 
+void raw_mode(int state)
+{
+  static struct termios newterminfo, oldterminfo;
+
+
+  if (state) {
+    tcgetattr(fileno(stdin), &oldterminfo);
+    newterminfo = oldterminfo;
+
+    newterminfo.c_iflag &= ~(INLCR | ICRNL | IUCLC | ISTRIP);
+    newterminfo.c_lflag &= ~(ICANON | ECHO);
+    newterminfo.c_cc[VMIN] = 1;
+    newterminfo.c_cc[VTIME] = 1;
+
+    tcsetattr(fileno(stdin), TCSAFLUSH, &newterminfo);
+  }
+  else
+    tcsetattr(fileno(stdin), TCSANOW, &oldterminfo);
+} /* raw_mode */
+
+/*****************************************************************************/
+
 int main(int argc, char *argv[], char *envp[])
 {
   register char  *p;
-  register int 	  i, res = 0;
-  auto 	   int    lastarg;
-	auto     char   rlogfile[PATH_MAX];
-	auto     char **devices = NULL;
+  register int    i, res = 0;
+  auto     int    lastarg;
+  auto     char   rlogfile[PATH_MAX];
+  auto     char **devices = NULL;
+  sigset_t        unblock_set;
 #ifdef TESTCENTER
   extern   void   test_center(char*);
 #endif
@@ -769,6 +976,7 @@ int main(int argc, char *argv[], char *envp[])
   } /* if */
 
   set_print_fct_for_lib(print_in_modules);
+  hup_argv = argv;
   init_variables(argc, argv);
 
   lastarg = set_options(argc,argv);
@@ -786,7 +994,17 @@ int main(int argc, char *argv[], char *envp[])
 		}
 		else
 		{
-			if ((fout = fopen(outfile,"w")) == NULL)
+			char *openmode;
+			if (*outfile == '+')
+			{
+				outfile++;
+				openmode = "a";
+			}
+			else
+			{
+				openmode = "w";
+			}
+			if ((fout = fopen(outfile, openmode)) == NULL)
 			{
  	 			print_msg(PRT_ERR,"Can not open file `%s': %s!\n",outfile, strerror(errno));
  	  		Exit(45);
@@ -806,7 +1024,8 @@ int main(int argc, char *argv[], char *envp[])
 
     if (add_socket(&sockets, -1) ||  /* reserviert fuer isdnctrl */
         add_socket(&sockets, -1) ||  /* reserviert fuer isdnctrl2 */
-        add_socket(&sockets, -1)   ) /* reserviert fuer isdninfo */
+        add_socket(&sockets, -1) ||  /* reserviert fuer isdninfo */
+        add_socket(&sockets, -1) )   /* reserviert fuer stdin */
       Exit(19);
 
     if (replay) {
@@ -853,6 +1072,15 @@ int main(int argc, char *argv[], char *envp[])
     if (!(allflags & PRT_DEBUG_GENERAL))
       signal(SIGSEGV, exit_on_signal);
 
+    /*
+     * If hup_handler() already did an execve(), then SIGHUP is still
+     * blocked, and so you can only send a SIGHUP once. Here we unblock
+     * SIGHUP so that this feature can be used more than once.
+     */
+    sigemptyset(&unblock_set);
+    sigaddset(&unblock_set, SIGHUP);
+    sigprocmask(SIG_UNBLOCK, &unblock_set, NULL);
+
     sockets[ISDNCTRL].descriptor = !strcmp(isdnctrl, "-") ? fileno(stdin) : open(isdnctrl, O_RDONLY | O_NONBLOCK);
     if (*isdnctrl2)
       sockets[ISDNCTRL2].descriptor = open(isdnctrl2, O_RDONLY | O_NONBLOCK);
@@ -864,12 +1092,21 @@ int main(int argc, char *argv[], char *envp[])
 
       if ((ptty == NULL) || (fcons != (FILE *)NULL)) {
         if (verbose) {
+          struct stat st;
           if ((p = strrchr(isdnctrl, '/')))
             p++;
           else
             p = argv[lastarg];
 
           sprintf(tmpout, "%s/%s", TMPDIR, p);
+          /*
+           * If tmpout is a symlink, refuse to write to it (security hole).
+           * E.g. someone can create a link /tmp/isdnctrl0 -> /etc/passwd.
+           */
+          if (!lstat(tmpout, &st) && S_ISLNK(st.st_mode)) {
+            print_msg(PRT_ERR, "File \"%s\" is a symlink, not writing to it!\n", tmpout);
+            verbose = 0;
+          }
         } /* if */
 
         if (!verbose || ((fprot = fopen(tmpout, "a")) != (FILE *)NULL)) {
@@ -881,7 +1118,7 @@ int main(int argc, char *argv[], char *envp[])
           if (q931dmp) {
   	    mymsns         = 3;
   	    mycountry      = "+49";
-  	    myarea   	     = "6408";
+  	    myarea   	   = "6171";
         currency   	   = NULL;
         dual	         = 1;
   	    chargemax  	   = 0.0;
@@ -926,6 +1163,11 @@ int main(int argc, char *argv[], char *envp[])
 
           if (replay || ((sockets[ISDNINFO].descriptor = open(INFO, O_RDONLY | O_NONBLOCK)) >= 0)) {
 
+            if (readkeyboard) {
+							raw_mode(1);
+							sockets[STDIN].descriptor = dup(fileno(stdin));
+            } /* if */
+
             now();
 
 #ifdef Q931
@@ -936,6 +1178,12 @@ int main(int argc, char *argv[], char *envp[])
 #ifdef POSTGRES
             dbOpen();
 #endif
+#ifdef MYSQLDB
+	    mysql_dbOpen();
+#endif
+
+	    initSondernummern();
+
             loop();
 
             if (sockets[ISDNINFO].descriptor >= 0)
@@ -966,6 +1214,11 @@ int main(int argc, char *argv[], char *envp[])
         close(sockets[ISDNCTRL].descriptor);
       if (*isdnctrl2)
         close(sockets[ISDNCTRL2].descriptor);
+
+      if (readkeyboard) {
+        raw_mode(0);
+      	close(sockets[STDIN].descriptor);
+      } /* if */
     }
     else {
       print_msg(PRT_ERR, msg1, myshortname, isdnctrl, strerror(errno));

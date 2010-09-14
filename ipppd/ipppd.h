@@ -16,7 +16,7 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- * $Id: ipppd.h,v 1.6 1997/05/19 10:15:55 hipp Exp $
+ * $Id: ipppd.h,v 1.17 1998/10/29 17:28:46 hipp Exp $
  */
 
 /*
@@ -32,17 +32,61 @@
 #include <sys/param.h>		/* for MAXPATHLEN and BSD4_4, if defined */
 #include <sys/types.h>		/* for u_int32_t, if defined */
 #include <sys/bitypes.h>
-#include <linux/ppp_defs.h>
-#include <linux/isdn_ppp.h>
+#if defined __GLIBC__ && __GLIBC__ >= 2
+# include <net/ppp_defs.h>
+# include <linux/isdn_ppp.h>
+#else
+# include <linux/ppp_defs.h>
+# include <linux/isdn_ppp.h>
+#endif
 #include <stdio.h>
 #include <net/if.h>
 
-#define NUM_PPP	16		/* 16 PPP interface supported (per process) */
+#if defined __GLIBC__ && __GLIBC__ >= 2
+# include <utmp.h>
+#endif
+
+#include <linux/version.h>
+#if (LINUX_VERSION_CODE < ((0x020100)+88))
+#define ISDN_PPP_COMP_MAX_OPTIONS 16
+struct isdn_ppp_comp_data {
+        int num;
+        unsigned char options[ISDN_PPP_COMP_MAX_OPTIONS];
+        int optlen;
+        int flags;
+};
+#endif
+
+#ifndef PPP_LINK_CCP
+#define PPP_LINK_CCP 0x80fb
+#endif
+#ifndef IPPP_COMP_FLAG_XMIT
+#define IPPP_COMP_FLAG_XMIT 0x1
+#endif
+#ifndef IPPP_COMP_FLAG_LINK
+#define IPPP_COMP_FLAG_LINK 0x2
+#endif
+/* Old Linux Kernels don't have VERSION defined */
+#ifndef IPPP_VERSION
+#define IPPP_VERSION "2.2.0"
+#else
+#define NEW_VERS
+#endif
+
+#define NUM_PPP	64		/* 64 PPP interface supported (per process) */
 
 struct wordlist {
   struct wordlist *next;
   char word[1];
 };
+
+#ifdef RADIUS
+#define MAXUSERNAME 255
+#define MAXSESSIONID 32
+#define MAXCID 17
+extern int	useradius;      /* Use RADIUS server for PAP authentication */
+extern int	useradacct;     /* Use RADIUS server for accounting         */
+#endif
 
 struct link_struct {
   struct link_struct *bundle_next;
@@ -52,9 +96,11 @@ struct link_struct {
   int auth_pending;
   struct wordlist *addresses;
   int unit;     /* link unit */
+  int master;   /* 'master' link unit */
   int lcp_unit;
   int ipcp_unit;
   int ccp_unit;
+  int ccp_l_unit;
   int chap_unit;
   int upap_unit;
   int cbcp_unit;
@@ -73,6 +119,14 @@ struct link_struct {
   struct pppcallinfo pci;
   int has_proxy_arp;
   int attempts;
+#ifdef RADIUS
+  int radius_in ;
+  int rx_bytes;
+  int tx_bytes;  
+  time_t start_time;
+  char session_id[MAXSESSIONID+1];
+  char remote_number [MAXCID+1] ;
+#endif  
 };
 
 extern struct link_struct lns[NUM_PPP];
@@ -97,6 +151,10 @@ extern char	*progname;	/* Name of this program */
 extern char pidfilename[MAXPATHLEN];
 
 extern void set_userip(char *ruser,int ruserlen);
+#ifdef RADIUS
+int 	radius_acct_start() ;
+int 	radius_acct_stop() ;
+#endif
 
 extern char options_rcsid[];
 extern char auth_rcsid[];
@@ -168,34 +226,20 @@ extern int      hostroute;      /* Add a route to the host at the other end? */
  */
 struct protent {
     u_short protocol;       /* PPP protocol number */
-    /* Initialization procedure */
-    void (*init) __P((int unit));
-    /* Process a received packet */
-    void (*input) __P((int unit, u_char *pkt, int len));
-    /* Process a received protocol-reject */
-    void (*protrej) __P((int unit));
-    /* Lower layer has come up */
-    void (*lowerup) __P((int unit));
-    /* Lower layer has gone down */
-    void (*lowerdown) __P((int unit));
-    /* Open the protocol */
-    void (*open) __P((int unit));
-    /* Close the protocol */
-    void (*close) __P((int unit, char *reason));
-    /* Print a packet in readable form */
-    int  (*printpkt) __P((u_char *pkt, int len,
-              void (*printer) __P((void *, char *, ...)),
-              void *arg));
-    /* Process a received data packet */
-    void (*datainput) __P((int unit, u_char *pkt, int len));
-    int  enabled_flag;      /* 0 iff protocol is disabled */
+    void (*init) (int unit);
+    void (*input) (int unit, u_char *pkt, int len);
+    void (*protrej) (int unit);
+    void (*lowerup) (int unit);
+    void (*lowerdown) (int unit);
+    void (*open) (int unit);
+    void (*close) (int unit, char *reason);
+    int  (*printpkt) (u_char *pkt, int len, void (*printer) (void *, char *, ...), void *arg);
+    void (*datainput) (int unit, u_char *pkt, int len);
+    int  enabled_flag;  /* 0 iff protocol is disabled */
     char *name;         /* Text name of protocol */
-    /* Check requested options, assign defaults */
-    void (*check_options) __P((void));
-    /* Configure interface for demand-dial */
-    int  (*demand_conf) __P((int unit));
-    /* Say whether to bring up link for this pkt */
-    int  (*active_pkt) __P((u_char *pkt, int len));
+    void (*check_options) (void);
+    int  (*demand_conf) (int unit);
+    int  (*active_pkt) (u_char *pkt, int len);
 };
 
 /* Table of pointers to supported protocols */
@@ -204,24 +248,20 @@ extern struct protent *protocols[];
 /*
  * Prototypes.
  */
-void quit __P((void));	/* Cleanup and exit */
-void timeout __P((void (*)(), caddr_t, int));
-				/* Look-alike of kernel's timeout() */
-void untimeout __P((void (*)(), caddr_t));
-				/* Look-alike of kernel's untimeout() */
-void output __P((int, u_char *, int));
-				/* Output a PPP packet */
-void demuxprotrej __P((int,u_short));
-				/* Demultiplex a Protocol-Reject */
-int  check_passwd __P((int, char *, int, char *, int, char **, int *));
-				/* Check peer-supplied username/password */
-int  get_secret __P((int, char *, char *, char *, int *, int));
-				/* get "secret" for chap */
-u_int32_t GetMask __P((u_int32_t)); /* get netmask for address */
-void die __P((int));
-void check_access __P((FILE *, char *));
+void quit(void);	                /* Cleanup and exit */
+void timeout(void (*)(), caddr_t, int); /* Look-alike of kernel's timeout() */
+void untimeout (void (*)(), caddr_t);   /* Look-alike of kernel's untimeout() */
+void demuxprotrej (int,u_short);        /* Demultiplex a Protocol-Reject */
+int  check_passwd (int, char *, int, char *, int, char **, int *); /* Check peer-supplied username/password */
+#ifdef RADIUS
+int  radius_check_passwd (int, char *, int, char *, int, char **, int *); /* Check peer-supplied username/password */
+#endif
+int  get_secret (int, char *, char *, char *, int *, int);    /* get "secret" for chap */
+u_int32_t GetMask (u_int32_t);          /* get netmask for address */
+void die (int);
+void check_access (FILE *, char *);
 
-int ccp_getunit(int);
+int ccp_getunit(int,int);
 int ipcp_getunit(int);
 int lcp_getunit(int);
 void ccp_freeunit(int);
@@ -249,26 +289,26 @@ int options_for_tty(void);
 int options_from_user(void);
 int parse_args(int argc,char **argv);
 int run_program(char *prog,char **args,int must_exist,int tu);
-void establish_ppp __P((int));
-void calltimeout __P((void));
-struct timeval *timeleft __P((struct timeval *));
-void reap_kids __P((void));
-void cleanup __P((int, caddr_t,int));
-void close_fd __P((int));
-void die __P((int));
-void novm __P((char *));
-void log_packet __P((u_char *, int, char *,int));
-void format_packet __P((u_char *,int,void (*) (void *, char *, ...), void *,int));
-void pr_log __P((void *, char *, ...));
+void establish_ppp (int);
+void calltimeout (void);
+struct timeval *timeleft (struct timeval *);
+void reap_kids (void);
+void cleanup (int, caddr_t,int);
+void close_fd (int);
+void die (int);
+void novm (char *);
+void log_packet (u_char *, int, char *,int);
+int set_kdebugflag (int requested_level,int tu);
 void sys_init(void);
 void note_debug_level (void);
-void output (int unit, unsigned char *p, int len);
+void output_ppp (int unit, unsigned char *p, int len);
 void wait_input (struct timeval *timo);
 int read_packet (unsigned char *buf,int tu);
 void ppp_send_config (int unit,int mtu,u_int32_t asyncmap,int pcomp,int accomp);
 void ppp_set_xaccm (int unit, ext_accm accm);
 void ppp_recv_config (int unit,int mru,u_int32_t asyncmap,int pcomp,int accomp);
 int ccp_test (int unit, u_char *opt_ptr, int opt_len, int for_transmit);
+int ccp_get_compressors(int ccp_unit,unsigned long *);
 void ccp_flags_set (int unit, int isopen, int isup);
 int ccp_fatal_error (int unit);
 int sifvjcomp (int unit, int vjcomp, int cidcomp, int maxcid);
@@ -284,17 +324,17 @@ int cifproxyarp (int unit, u_int32_t his_adr);
 int sipxfaddr (int unit, u_int32_t network, unsigned char * node );
 int cipxfaddr (int linkunit);
 int ppp_available(void);
-int logwtmp (int unit,char *line, char *name, char *host);
+int logwtmputmp (int unit,char *line, char *name, char *host);
 int lock (char *dev);
 void unlock(void);
 void setifip(int);
 extern void enable_mp(int,int);
 void remove_sys_options(void);
 u_int32_t magic(void);
-int fmtmsg __P((char *, int, char *, ...));              /* sprintf++ */
-int vfmtmsg __P((char *, int, char *, va_list)); /* vsprintf++ */
-void option_error __P((char *fmt, ...));
-void usage __P((void));          /* Print a usage message */
+int fmtmsg (char *, int, char *, ...);              /* sprintf++ */
+int vfmtmsg (char *, int, char *, va_list); /* vsprintf++ */
+void option_error (char *fmt, ...);
+void usage (void);          /* Print a usage message */
 
 /*
  * This structure is used to store information about certain
@@ -391,7 +431,7 @@ extern struct option_info devnam_info;
 #define DEBUGUPAP	1
 #define DEBUGCHAP	1
 #endif
-
+#define DEBUGCHAP       1
 #ifndef LOG_PPP			/* we use LOG_LOCAL2 for syslog by default */
 #if defined(DEBUGMAIN)  || defined(DEBUGFSM)  || defined(DEBUG) \
   || defined(DEBUGLCP)  || defined(DEBUGIPCP) || defined(DEBUGUPAP) \

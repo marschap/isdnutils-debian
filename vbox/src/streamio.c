@@ -1,5 +1,5 @@
 /*
-** $Id: streamio.c,v 1.3 1997/02/26 13:10:50 michael Exp $
+** $Id: streamio.c,v 1.4 1997/10/22 20:47:15 fritz Exp $
 **
 ** Copyright (C) 1996, 1997 Michael 'Ghandi' Herold
 */

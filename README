@@ -1,5 +1,5 @@
 #
-# $Id: README,v 1.6 1997/05/25 23:36:24 fritz Exp $
+# $Id: README,v 1.9 1998/10/13 12:54:43 paul Exp $
 #
 This is the README file for the "isdn4k-utils" package from "The i4l-crew".
 
@@ -13,6 +13,7 @@ This package contains the following stuff:
   hisaxctrl,  setup utility for the HiSax driver.
   pcbitctl,   setup utility for the pcbit driver.
   avmcapictrl setup utility for the avmb1 driver.
+  actctrl     setup utility for the act2000 driver.
 
 2. Tools for monitoring activity:
   imon,       a ncurses based utility for monitoring ISDN-activities.
@@ -27,13 +28,16 @@ This package contains the following stuff:
   vbox,       an answering machine/voice mailbox.
   ipppd,      daemon need for syncPPP and MPP.
 
-4. Documentation:
+4. Miscellaneous:
+  scripts/makedev.sh   for creating the ISDN device files under /dev .
+
+5. Documentation:
   A very detailed FAQ and the generic manpages ttyI.4, isdninfo.4,
   isdn_audio.4 and isdn_cause.7.
   Manpages for the above utilities:
-  avmcapictrl.8, hisaxctrl.8 icnctrl.8, imon.8, ipppd.8, ipppstats.8,
-  iprofd.8, isdnctrl.8, isdnlog.8, isdnrep.1, telesctrl.8, xisdnload.1x
-  and xmonisdn.1x
+  actctrl.8 avmcapictrl.8, hisaxctrl.8 icnctrl.8, imon.8, ipppd.8,
+  ipppstats.8, iprofd.8, isdnctrl.8, isdnlog.8, isdnrep.1, telesctrl.8,
+  xisdnload.1x and xmonisdn.1x
 
 COPYRIGHT/COPYING:
 
@@ -55,15 +59,15 @@ COPYRIGHT/COPYING:
 System prerequisites:
 
   To use this package, you need a kernel with an ISDN-subsystem configured.
-  To get a such a kernel, take a clean standard-kernel (> Version 2.0.29 or
-  > 2.1.26 resp.) enable the isdn-related features you want and build the
+  To get a such a kernel, take a clean standard-kernel (Version 2.0.31 or
+  > 2.1.57 resp.) enable the isdn-related features you want and build the
   kernel as usual. If applicable some patches may be needed
 
   isdn-patches are available at
 
      ftp.franken.de:/pub/isdn4linux
 
-  For using modularised parts of the ISDN-subsystem, newest modutils
+  For using modularized parts of the ISDN-subsystem, newest modutils
   are strongly recommended.
 
 3. Configuration, Compilation.
@@ -75,6 +79,11 @@ System prerequisites:
    tool from kernel menuconfig.)
    There is a global configuration directory, where most programs
    expect their configuration files. The default is /etc/isdn.
+
+   - Alternatively you can edit the .config file by hand (once that
+     has been created once with "make config"), and run "make subconfig"
+     instead. This might be useful if you want to automate the building
+     of the package, e.g. for a Red Hat rpm or a Debian deb.
    
    Run "make"
 
@@ -91,6 +100,11 @@ System prerequisites:
    The config files usually are installed in /etc/isdn if not
    specified otherwise during configuration.
 
+   If no existing ISDN devices in /dev are detected (via an admittedly
+   simple test), script/makedev.sh is run during "make install". Check
+   that the permissions / groups are suitable for your needs.
+   You can run the makedev.sh script again if necessary.
+
 5. Application
 
    The directory ./etc contains an example startup-script which gets
@@ -104,6 +118,6 @@ System prerequisites:
    For the utilities refer to the man pages or look into their
    subdirectories for Documentation.
 
-   For tips, troubleshooting etc. look into the FAQ subdirectory
+   For tips, troubleshooting etc. look into the FAQ subdirectory.
 
  -Fritz

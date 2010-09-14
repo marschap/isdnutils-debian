@@ -1,5 +1,0 @@
-# change the lines below for your local setup and uncomment them
-# to use vboxgetty. use "init q" to reread inittab.
-# look at the manpage for more infomations.
-#
-#I0:2345:respawn:/usr/sbin/vboxgetty -d /dev/ttyI0

@@ -1,5 +1,5 @@
-.\" $Id: vboxd.man,v 1.3 1997/09/11 10:53:54 aj Exp $
-.\" CHECKIN $Date: 1997/09/11 10:53:54 $
+.\" $Id: vboxd.man,v 1.1 1998/11/17 18:22:57 paul Exp $
+.\" CHECKIN $Date: 1998/11/17 18:22:57 $
 .TH vboxd 8 "@MANDATE@" "ISDN 4 Linux @I4LVERSION@" "Linux System Administration"
 .SH NAME
 vboxd \- isdn voice box daemon

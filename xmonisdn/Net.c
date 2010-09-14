@@ -36,12 +36,12 @@ typedef union wait	waitType;
 #endif /* SYSV else */
 #endif /* ! X_NOT_POSIX else */
 
-#include "netactive"
-#include "netinactive"
-#include "netwaiting"
-#include "netactiveout"
-#include "netstart"
-#include "netstop"
+#include <X11/bitmaps/netactive>
+#include <X11/bitmaps/netinactive>
+#include <X11/bitmaps/netwaiting>
+#include <X11/bitmaps/netactiveout>
+#include <X11/bitmaps/netstart>
+#include <X11/bitmaps/netstop>
 
 #include <X11/Xaw/XawInit.h>
 #include "NetP.h"
@@ -518,7 +518,7 @@ static void Redisplay (gw, event, region)
 static void check_netstat (w)
     NetstatWidget w;
 {
-  int newstate;
+  int newstate = 0;
   struct timeval timeout;
   fd_set fdset;
 
@@ -667,7 +667,7 @@ static void redraw_netstat (w)
     register int x, y;
     GC gc = w->netstat.gc;
     Pixel back = w->core.background_pixel;
-    struct _mbimage *im;
+    struct _mbimage *im = 0;
 
     /* center the picture in the window */
 

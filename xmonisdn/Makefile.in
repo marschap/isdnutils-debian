@@ -1,310 +1,70 @@
-# Makefile.in generated automatically by automake 1.2 from Makefile.am
+#
+# This Makefile is used for compatibility to the
+# isdn4k-utils package. In order to superseede
+# the original Makefile, it is called makefile.
+#
 
-# Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
-# This Makefile.in is free software; the Free Software Foundation
-# gives unlimited permission to copy, distribute and modify it.
+#
+# Add security check:
+#  - executed commands must be owned by root
+#    and only writable by owner.
+#
+I4LU_DEFINES := $(CFLAGS) -DPARANOIA_CHECK -I.
+ifeq (../.config,$(wildcard ../.config))
+	include ../.config
+	ifneq ($(CONFIG_XMONISDN_UPCMD),"")
+		I4LU_DEFINES += -DNETUP_COMMAND=\\\"$(shell echo $(CONFIG_XMONISDN_UPCMD))\\\"
+	endif
+	ifneq ($(CONFIG_XMONISDN_DOWNCMD),"")
+		I4LU_DEFINES += -DNETDOWN_COMMAND=\\\"$(shell echo $(CONFIG_XMONISDN_DOWNCMD))\\\"
+	endif
+    MAN1DIROPT = MANDIR=$(CONFIG_MANDIR)/man1
+    MAN3DIROPT = LIBMANDIR=$(CONFIG_MANDIR)/man3
+    MAN5DIROPT = FILEMANDIR=$(CONFIG_MANDIR)/man5
+    MANDIROPTS = $(MAN1DIROPT) $(MAN3DIROPT) $(MAN5DIROPT)
+	BINDIROPT  = BINDIR=$(CONFIG_BINDIR)
+endif
 
+all: xmonisdn xmonisdn.man
 
-SHELL = /bin/sh
+#
+# Bug in original Makefile:
+# Bitmaps are expected to be already installed.
+# We create a temporary X11 subdir and add -I.
+# instead.
+#
+xmonisdn:
+	mkdir -p X11/bitmaps
+	cp netinactive netwaiting netactive \
+		netactiveout netstart netstop X11/bitmaps
+	CFLAGS= ; MAKEFLAGS= ; $(MAKE) -f Makefile EXTRA_DEFINES="$(I4LU_DEFINES)"
+	rm -rf X11
 
-srcdir = @srcdir@
-top_srcdir = @top_srcdir@
-VPATH = @srcdir@
-prefix = @prefix@
-exec_prefix = @exec_prefix@
+xmonisdn.man: xmonisdn.man.in Makefile
+	MANDATE=`grep CHECKIN $< | awk '{print $$4}'`; \
+	sed \
+	   -e "s#\@MANDATE\@#$${MANDATE}#g" \
+	   -e "s#\@I4LVERSION\@#${I4LVERSION}#g" \
+           -e s,\@CONFIG_XMONISDN_UPCMD\@,${CONFIG_XMONISDN_UPCMD},g \
+           -e s,\@CONFIG_XMONISDN_DOWNCMD\@,${CONFIG_XMONISDN_DOWNCMD},g \
+	   < $< > $@
 
-bindir = @bindir@
-sbindir = @sbindir@
-libexecdir = @libexecdir@
-datadir = @datadir@
-sysconfdir = @sysconfdir@
-sharedstatedir = @sharedstatedir@
-localstatedir = @localstatedir@
-libdir = @libdir@
-infodir = @infodir@
-mandir = @mandir@
-includedir = @includedir@
-oldincludedir = /usr/include
+config:
+	@cp Makefile.in GNUmakefile
+	@xmkmf
 
-pkgdatadir = $(datadir)/@PACKAGE@
-pkglibdir = $(libdir)/@PACKAGE@
-pkgincludedir = $(includedir)/@PACKAGE@
+clean:
+	$(MAKE) -f Makefile clean
 
-top_builddir = .
+distclean: clean
+	rm -f Makefile GNUmakefile Makefile.bak xmonisdn.man
 
-ACLOCAL = @ACLOCAL@
-AUTOCONF = @AUTOCONF@
-AUTOMAKE = @AUTOMAKE@
-AUTOHEADER = @AUTOHEADER@
+install-man: xmonisdn.man
+	$(MAKE) -f Makefile $(MANDIROPTS) install.man
 
-INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
-INSTALL_DATA = @INSTALL_DATA@
-INSTALL_SCRIPT = @INSTALL_SCRIPT@
-transform = @program_transform_name@
+install: xmonisdn install-man
+	$(MAKE) -f Makefile $(BINDIROPT) install.all
 
-NORMAL_INSTALL = true
-PRE_INSTALL = true
-POST_INSTALL = true
-NORMAL_UNINSTALL = true
-PRE_UNINSTALL = true
-POST_UNINSTALL = true
-CC = @CC@
-LN_S = @LN_S@
-MAKEINFO = @MAKEINFO@
-PACKAGE = @PACKAGE@
-VERSION = @VERSION@
-
-AUTOMAKE_OPTIONS=foreign no-dependencies
-MAINTAINERCLEANFILES=install-sh missing mkinstalldirs aclocal.m4 \
-	configure Makefile.in 
-DISTCLEANFILES=xmonisdn.1
-bin_PROGRAMS=xmonisdn
-man_MANS=xmonisdn.1
-xmonisdn_SOURCES=Net.c Net.h NetP.h xmonisdn.c netactive netactiveout netinactive netstart netstop netwaiting
-xmonisdn_LDADD=@X_LIBS@ @X_EXTRA_LIBS@ @X_PRE_LIBS@ -lX11 -lXt -lXaw
-noinst_DIST=README
-ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_CLEAN_FILES = 
-PROGRAMS =  $(bin_PROGRAMS)
-
-
-DEFS = @DEFS@ -I. -I$(srcdir) 
-CPPFLAGS = @CPPFLAGS@
-LDFLAGS = @LDFLAGS@
-LIBS = @LIBS@
-X_CFLAGS = @X_CFLAGS@
-X_LIBS = @X_LIBS@
-X_EXTRA_LIBS = @X_EXTRA_LIBS@
-X_PRE_LIBS = @X_PRE_LIBS@
-xmonisdn_OBJECTS =  Net.o xmonisdn.o
-xmonisdn_DEPENDENCIES = 
-xmonisdn_LDFLAGS = 
-CFLAGS = @CFLAGS@
-COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
-MANS = xmonisdn.1
-
-NROFF = nroff
-DIST_COMMON =  README Makefile.am Makefile.in aclocal.m4 configure \
-configure.in install-sh missing mkinstalldirs
-
-
-DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
-
-TAR = tar
-GZIP = --best
-SOURCES = $(xmonisdn_SOURCES)
-OBJECTS = $(xmonisdn_OBJECTS)
-
-default: all
-
-.SUFFIXES:
-.SUFFIXES: .c .o
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign Makefile
-
-Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
-	cd $(top_builddir) \
-	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
-
-$(ACLOCAL_M4):  configure.in 
-	cd $(srcdir) && $(ACLOCAL)
-
-config.status: $(srcdir)/configure
-	$(SHELL) ./config.status --recheck
-$(srcdir)/configure: $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
-	cd $(srcdir) && $(AUTOCONF)
-
-mostlyclean-binPROGRAMS:
-
-clean-binPROGRAMS:
-	test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-
-distclean-binPROGRAMS:
-
-maintainer-clean-binPROGRAMS:
-
-install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo "  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
-	     $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
-	  else :; fi; \
-	done
-
-uninstall-binPROGRAMS:
-	$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(bindir)/`echo $$p|sed '$(transform)'`; \
-	done
-
-.c.o:
-	$(COMPILE) -c $<
-
-mostlyclean-compile:
-	rm -f *.o core
-
-clean-compile:
-
-distclean-compile:
-	rm -f *.tab.c
-
-maintainer-clean-compile:
-
-xmonisdn: $(xmonisdn_OBJECTS) $(xmonisdn_DEPENDENCIES)
-	@rm -f xmonisdn
-	$(LINK) $(xmonisdn_LDFLAGS) $(xmonisdn_OBJECTS) $(xmonisdn_LDADD) $(LIBS)
-install-man: $(MANS)
-	$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(mandir)/man1
-	@sect=1;				\
-	inst=`echo "xmonisdn" | sed '$(transform)'`.1; \
-	if test -f $(srcdir)/xmonisdn.1; then file=$(srcdir)/xmonisdn.1; \
-	else file=xmonisdn.1; fi; \
-	echo " $(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst"; \
-	$(INSTALL_DATA) $$file $(mandir)/man$$sect/$$inst
-
-uninstall-man:
-	$(NORMAL_UNINSTALL)
-	inst=`echo "xmonisdn" | sed '$(transform)'`.1; \
-	rm -f $(mandir)/man1/$$inst
-
-
-tags: TAGS
-
-ID: $(HEADERS) $(SOURCES)
-	here=`pwd` && cd $(srcdir) && mkid -f$$here/ID $(SOURCES) $(HEADERS)
-
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
-	tags=; \
-	here=`pwd`; \
-	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS)
-
-mostlyclean-tags:
-
-clean-tags:
-
-distclean-tags:
-	rm -f TAGS ID
-
-maintainer-clean-tags:
-
-distdir = $(PACKAGE)-$(VERSION)
-top_distdir = $(distdir)
-
-# This target untars the dist file and tries a VPATH configuration.  Then
-# it guarantees that the distribution is self-contained by making another
-# tarfile.
-distcheck: dist
-	rm -rf $(distdir)
-	GZIP=$(GZIP) $(TAR) zxf $(distdir).tar.gz
-	mkdir $(distdir)/=build
-	mkdir $(distdir)/=inst
-	dc_install_base=`cd $(distdir)/=inst && pwd`; \
-	cd $(distdir)/=build \
-	  && ../configure --srcdir=.. --prefix=$$dc_install_base \
-	  && $(MAKE) \
-	  && $(MAKE) dvi \
-	  && $(MAKE) check \
-	  && $(MAKE) install \
-	  && $(MAKE) installcheck \
-	  && $(MAKE) dist
-	rm -rf $(distdir)
-	@echo "========================"; \
-	echo "$(distdir).tar.gz is ready for distribution"; \
-	echo "========================"
-dist: distdir
-	-chmod -R a+r $(distdir)
-	GZIP=$(GZIP) $(TAR) chozf $(distdir).tar.gz $(distdir)
-	rm -rf $(distdir)
-dist-all: distdir
-	-chmod -R a+r $(distdir)
-	GZIP=$(GZIP) $(TAR) chozf $(distdir).tar.gz $(distdir)
-	rm -rf $(distdir)
-distdir: $(DISTFILES)
-	rm -rf $(distdir)
-	mkdir $(distdir)
-	-chmod 777 $(distdir)
-	@for file in $(DISTFILES); do \
-	  d=$(srcdir); \
-	  test -f $(distdir)/$$file \
-	  || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
-	  || cp -p $$d/$$file $(distdir)/$$file; \
-	done
-info:
-dvi:
-check: all
-	$(MAKE)
-installcheck:
-install-exec: install-binPROGRAMS
-	@$(NORMAL_INSTALL)
-
-install-data: install-man
-	@$(NORMAL_INSTALL)
-
-install: install-exec install-data all
-	@:
-
-uninstall: uninstall-binPROGRAMS uninstall-man
-
-all: Makefile $(PROGRAMS) $(MANS)
-
-install-strip:
-	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
-installdirs:
-	$(mkinstalldirs)  $(bindir) $(mandir)/man1
-
-
-mostlyclean-generic:
-	test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
-
-clean-generic:
-	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
-
-distclean-generic:
-	rm -f Makefile $(DISTCLEANFILES)
-	rm -f config.cache config.log stamp-h stamp-h[0-9]*
-	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
-
-maintainer-clean-generic:
-	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
-	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean:  mostlyclean-binPROGRAMS mostlyclean-compile \
-		mostlyclean-tags mostlyclean-generic
-
-clean:  clean-binPROGRAMS clean-compile clean-tags clean-generic \
-		mostlyclean
-
-distclean:  distclean-binPROGRAMS distclean-compile distclean-tags \
-		distclean-generic clean
-	rm -f config.status
-
-maintainer-clean:  maintainer-clean-binPROGRAMS maintainer-clean-compile \
-		maintainer-clean-tags maintainer-clean-generic \
-		distclean
-	@echo "This command is intended for maintainers to use;"
-	@echo "it deletes files that may require special tools to rebuild."
-	rm -f config.status
-
-.PHONY: default mostlyclean-binPROGRAMS distclean-binPROGRAMS \
-clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
-install-binPROGRAMS mostlyclean-compile distclean-compile clean-compile \
-maintainer-clean-compile install-man uninstall-man tags \
-mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
-distdir info dvi installcheck install-exec install-data install \
-uninstall all installdirs mostlyclean-generic distclean-generic \
-clean-generic maintainer-clean-generic clean mostlyclean distclean \
-maintainer-clean
-
-
-xmonisdn.1: xmonisdn.man
-	cp $< $@
-
-# Tell versions [3.59,3.63) of GNU make to not export all variables.
-# Otherwise a system limit (for SysV at least) may be exceeded.
-.NOEXPORT:
+uninstall:
+	rm -f $(DESTDIR)$(CONFIG_BINDIR)/xmonisdn
+	find $(DESTDIR)$(CONFIG_MANDIR) -name "xmonisdn.*" -exec rm -f {} \;

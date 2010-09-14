@@ -27,8 +27,8 @@ static int gettyfd = -1;
 
 static struct locks locks[] =
 {
-	{ LCK_MODEM, &modemfd, LOCKDIR "/LCK..%s"          , "?"  },
-	{ LCK_PID  , &gettyfd, RUNDIR "/vboxgetty-%s.pid" , "?"  },
+	{ LCK_MODEM, &modemfd, LCKFILEDIR "/LCK..%s"          , "?"  },
+	{ LCK_PID  , &gettyfd, PIDFILEDIR "/vboxgetty-%s.pid" , "?"  },
 	{ 0        , NULL    , NULL                           , NULL }
 };
 
@@ -97,7 +97,7 @@ int lock_type_lock(int type)
 			{
 				if (lock_locking(*(locks[i].fd), 5))
 				{
-					printstring(temp, "%10d\n", getpid());
+					printstring(temp, "%d\n", getpid());
 
 					write(*(locks[i].fd), temp, strlen(temp));
 

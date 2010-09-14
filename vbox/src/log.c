@@ -1,5 +1,5 @@
 /*
-** $Id: log.c,v 1.5 1997/03/18 12:36:46 michael Exp $
+** $Id: log.c,v 1.6 1997/10/22 20:47:07 fritz Exp $
 **
 ** Copyright (C) 1996, 1997 Michael 'Ghandi' Herold
 */
@@ -55,10 +55,10 @@ int log_init(void)
 	else
 		device++;
 
-	size = (strlen(LOGDIR) + strlen("vboxgetty-.log") + strlen(device) + 2);
+	size = (strlen(LOGFILEDIR) + strlen("vboxgetty-.log") + strlen(device) + 2);
 
 	if ((setup.logname = (char *)malloc(size))) {
-		printstring(setup.logname, "%s/vboxgetty-%s.log", LOGDIR, device);
+		printstring(setup.logname, "%s/vboxgetty-%s.log", LOGFILEDIR, device);
 		
 		if ((logsio = fopen(setup.logname, "a"))) {
 			log_debuglevel(L_DEFAULT);
