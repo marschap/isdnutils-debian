@@ -4,7 +4,7 @@
 
 <title>FAQ for isdn4linux
 <author>Matthias Hessler (<tt><htmlurl url="mailto:hessler@isdn4linux.de" name="hessler@isdn4linux.de"></tt>)
-<date>v2.0.88, 14. July 2004
+<date>v2.0.91, 31. October 2004
 <abstract>
 If you are reading this FAQ online, you may consider downloading the whole
 thing, and reading it offline (much cheaper). To download the latest
@@ -518,6 +518,8 @@ Here is a German website which has some nice installation instructions:
 <tt><url url="http://ixi.thepenguin.de"></tt> or
 <tt><url url="http://capi4linux.thepenguin.de"></tt> or
 <tt><url url="http://www.thepenguin.de"></tt>
+Please note that due to its binary nature, this driver will not work
+if your distribution is incompatible with it (e.g. based on 64 bit).
 </itemize>
 
 This interface follows the official CAPI 2.0 standard that was established
@@ -1082,6 +1084,16 @@ Yes, this works nicely. However, make sure to compile the kernel and all
 modules with option <tt/SMP/. If you run into problems when both CPUs try to
 handle the same IRQ, try to boot with <tt/noapic/.
 
+<sect1> hardware_64bit: Can I run isdn4linux on 64bit hardware with Linux?  
+<label id="hardware_64bit">
+<p>
+In principle yes, however your hardware choice is currently limited to
+active cards and external devices. Most desired are external devices using
+standard interfaces (network, USB) which do not require isdn4linux at all.
+The drivers for passive cards are currently not working under 64bit.
+Obviously you can also not make use of binary drivers, unless you find a
+binary compiled for 64bit.
+
 <sect1> hardware_alpha: Can I run isdn4linux on a DEC Alpha with Linux?  
 <label id="hardware_alpha">
 <p>
@@ -1174,7 +1186,7 @@ You may want to have a look at the German article in ct 9/2004 on how to use
 PBX4Linux.
 
 Another alternative for emulation of a PBX is Asterisk, to be found on:
-<tt><url url="www.asterisk.org"></tt>
+<tt><url url="http://www.asterisk.org"></tt>
 
 Also, it is possible to give up one B-channel in exchange for reading the
 complete D-channel protocol, which is great for isdnlog. The later can
@@ -1432,6 +1444,16 @@ hisaxctrl &lt;id&gt; 9 ISAR.BIN
 <item> Fax: The I-Surf 1.0 can be setup to send and receive faxes (see
 question <ref id="feature_fax" name="feature_fax"> for details).
 </itemize>
+
+<sect1> hardware_diva: What should I know about the Eicon Diva cards?  
+<label id="hardware_diva">
+<p>
+In general, a dedicated driver exists which supports the active Eicon
+Diva cards very well. The Pro series are not supported by isdn4linux
+since it is a semiactive card with a DSP as a B-channel controller.
+There is no code available in isdn4linux to dynamically load DSP
+programs into the card. However, check Eicon's website; maybe by now they
+provide pre-compiled driver for their cards not supported by isdn4linux.
 
 
 <!-- Trouble Hardware
@@ -2839,7 +2861,9 @@ this:
 <code>
 isdnctrl addphone &lt;device&gt; out P1&lt;your_out_number&gt;
 </code>
-Please note that then a dialout will fail when another device already uses
+This will indicate the preferred B channel in the outgoing SETUP message.
+Please note that some PBX may not like this.
+Obviously, a dialout will fail when another device already uses
 the second B channel.
 
 <sect1> dialout_dynip: On dynamic ip assignment, how do I find out which ip  
@@ -4590,6 +4614,17 @@ number of people allowed to call in at one time. These gettys or network
 interfaces can be set to the same MSN, since several people can be 
 connected to a MSN at the same time (as long as there are B channels free).
 However, not more than one getty can be assigned to a single ttyI* device. 
+
+<sect1> dialin_manycards: When using several ISDN cards, how can I react  
+upon on a call received via a specific ISDN card?  
+<label id="dialin_manycards">
+<p>
+You can use the EAZ mapping feature for this to map incoming MSN numbers
+to new internal MSN numbers, in the same way as described for question
+<ref id="dialout_manycards" name="dialout_manycards">. Usage of a card can be prevented by
+using the dash during the mapping. Please note that it is not possible to
+have any limitations based upon the B channel, since channel assignment
+is normally done by the exchange.
 
 <sect1> dialin_analogditalsamettyi: Can I configure a ttyI* device to  
 accept both digital and analog modem dialins?  

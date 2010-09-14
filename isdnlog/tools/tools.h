@@ -1,4 +1,4 @@
-/* $Id: tools.h,v 1.61 2004/07/24 16:16:56 tobiasb Exp $
+/* $Id: tools.h,v 1.63 2004/09/29 21:02:02 tobiasb Exp $
  *
  * ISDN accounting for isdn4linux.
  *
@@ -20,6 +20,19 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: tools.h,v $
+ * Revision 1.63  2004/09/29 21:02:02  tobiasb
+ * Changed handling of multiple "calling party number" information elements.
+ * The network provided number is now preferred in any case.  The other
+ * number (typical set by originating user) can be ignored using the
+ * ignoreCOLP or -U setting, which allows different values for COLP and CLIP
+ * now.  (The old behaviour was to use the first number if ignoreCOLP was set
+ * and the network provided number regardless of order otherwise.)
+ *
+ * Revision 1.62  2004/09/05 22:04:57  tobiasb
+ * New parameter file entry "ignoreUPD" for suppressing "Unexpected
+ * discrimator (...)" messages, demanded by Günther J. Niederwimmer
+ * on the suse-isdn mailing list.
+ *
  * Revision 1.61  2004/07/24 16:16:56  tobiasb
  * New entry `REPOPTIONS' in section [ISDNLOG] of the isdn configuration
  * file.  This will be used for commandline options defaults of isdnrep.
@@ -896,6 +909,7 @@
 #define CONF_ENT_ABCLCR	"ABCLCR"
 #define CONF_ENT_PROVIDERCHANGE "PROVIDERCHANGE"
 #define CONF_ENT_CLOSEFDS  "CLOSEFDS"
+#define CONF_ENT_IGNOREUPD "IGNOREUPD"
 /****************************************************************************/
 
 /* Keywords for isdn.conf */
@@ -1176,6 +1190,7 @@ _EXTERN char    mlabel[BUFSIZ];
 _EXTERN char    *amtsholung;
 _EXTERN int	ignoreRR;
 _EXTERN int	ignoreCOLP;
+_EXTERN int	ignoreCLIP;
 _EXTERN int 	interns0;
 _EXTERN	char    *vbn;
 _EXTERN	char    *vbnlen;
