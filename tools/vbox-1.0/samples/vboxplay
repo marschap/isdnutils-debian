@@ -1,0 +1,17 @@
+#! /bin/sh
+##
+## Kommando zum abspielen von Voicenachrichten mit `vbox'.
+##
+## Als erstes Argument wird der Dateiname, als zweites die eingestellte
+## Lautstärke übergeben.
+
+FILENAME=$1
+VOLUME=$2
+
+cd /usr/local/lib/pvftools
+
+./zyxeltopvf <$FILENAME | \
+   ./pvfamp $VOLUME | \
+   ./pvfcut 0.20 | \
+   ./pvftoau 8000 | \
+   /usr/local/bin/auplay

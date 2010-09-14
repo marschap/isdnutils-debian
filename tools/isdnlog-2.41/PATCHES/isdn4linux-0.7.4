@@ -1,0 +1,112 @@
+diff -cr isdn/Makefile isdn4linux-0.7.4n/Makefile
+*** isdn/Makefile	Mon Jan 22 07:18:58 1996
+--- isdn4linux-0.7.4n/Makefile	Wed Feb  7 03:22:54 1996
+***************
+*** 6,12 ****
+  export KERNELDIR = /usr/src/linux
+  export INCLUDES = ../include
+  export CC = gcc -I$(INCLUDES)
+! export MCFLAGS = -m486 -O6 -Wall -D__KERNEL__ -DLINUX -DMODULE -DSTANDALONE -DCONFIG_NETDEVICES
+  #
+  # Use next Definition of CFLAGS to get Assembler-Listings for extensive
+  # debugging
+--- 6,12 ----
+  export KERNELDIR = /usr/src/linux
+  export INCLUDES = ../include
+  export CC = gcc -I$(INCLUDES)
+! export MCFLAGS = -m486 -O6 -Wall -D__KERNEL__ -DLINUX -DMODULE -DSTANDALONE -DCONFIG_NETDEVICES -DBYTECOUNT
+  #
+  # Use next Definition of CFLAGS to get Assembler-Listings for extensive
+  # debugging
+diff -cr isdn/include/linux/isdn.h isdn4linux-0.7.4n/include/linux/isdn.h
+*** isdn/include/linux/isdn.h	Mon Jan 22 02:43:38 1996
+--- isdn4linux-0.7.4n/include/linux/isdn.h	Wed Feb  7 03:04:55 1996
+***************
+*** 532,537 ****
+--- 532,541 ----
+    infostruct        *infochain;                /* List of open info-devs.    */
+    struct wait_queue *info_waitq;               /* Wait-Queue for isdninfo    */
+    struct timer_list timer;		       /* Misc.-function Timer       */
++ #if BYTECOUNT
++   long              ibytes[ISDN_MAX_CHANNELS];
++   long              obytes[ISDN_MAX_CHANNELS];
++ #endif
+    int               chanmap[ISDN_MAX_CHANNELS];/* Map minor->device-channel  */
+    int               drvmap[ISDN_MAX_CHANNELS]; /* Map minor->driver-index    */
+    int               usage[ISDN_MAX_CHANNELS];  /* Used by tty/ip/voice       */
+diff -cr isdn/isdn/isdn_common.c isdn4linux-0.7.4n/isdn/isdn_common.c
+*** isdn/isdn/isdn_common.c	Mon Jan 22 06:16:12 1996
+--- isdn4linux-0.7.4n/isdn/isdn_common.c	Wed Feb  7 03:16:52 1996
+***************
+*** 221,226 ****
+--- 221,230 ----
+  
+  	if (dev->global_flags & ISDN_GLOBAL_STOPPED)
+  		return;
++ #ifdef BYTECOUNT
++ 	dev->ibytes[channel] += len;
++ 	isdn_info_update();
++ #endif
+  	/* First, try to deliver data to network-device */
+  	if (isdn_net_receive_callback(di, channel, buf, len))
+  		return;
+***************
+*** 682,687 ****
+--- 686,715 ----
+  		sprintf(p, "%s ", dev->num[i]);
+  		p = istatbuf + strlen(istatbuf);
+  	}
++ #ifdef BYTECOUNT
++ 	sprintf(p, "\nibytes:\t");
++ 	p = istatbuf + strlen(istatbuf);
++ 	for (i = 0; i < ISDN_MAX_CHANNELS; i++) {
++ 	  if (dev->drvmap[i] >= 0) {
++ 	    sprintf(p, "%ld ", dev->ibytes[i]);
++ 	    p = istatbuf + strlen(istatbuf);
++ 	  } else {
++ 	    sprintf(p, "? ");
++ 	    p = istatbuf + strlen(istatbuf);
++ 	  }
++ 	}
++ 	sprintf(p, "\nobytes:\t");
++ 	p = istatbuf + strlen(istatbuf);
++ 	for (i = 0; i < ISDN_MAX_CHANNELS; i++) {
++ 	  if (dev->drvmap[i] >= 0) {
++ 	    sprintf(p, "%ld ", dev->obytes[i]);
++ 	    p = istatbuf + strlen(istatbuf);
++ 	  } else {
++ 	    sprintf(p, "? ");
++ 	    p = istatbuf + strlen(istatbuf);
++ 	  }
++ 	}
++ #endif
+  	sprintf(p, "\n");
+  	return istatbuf;
+  }
+***************
+*** 782,787 ****
+--- 810,820 ----
+  		if (!dev->drv[drvidx]->running)
+  			return -ENODEV;
+  		chidx = isdn_minor2chan(minor);
++ #ifdef BYTECOUNT /* does this work? */
++ 		printk(KERN_INFO "isdn: OBYTES += %d\n", count);
++ 		dev->obytes[drvidx] += count;
++ 		isdn_info_update();
++ #endif
+  		while (dev->drv[drvidx]->interface->writebuf(drvidx, chidx, buf, count, 1) != count)
+  			interruptible_sleep_on(&dev->drv[drvidx]->snd_waitq[chidx]);
+  		return count;
+***************
+*** 1548,1553 ****
+--- 1580,1589 ----
+  		    (dev->chanmap[i] == ch)) {
+  			dev->usage[i] &= (ISDN_USAGE_NONE | ISDN_USAGE_EXCLUSIVE);
+  			strcpy(dev->num[i], "???");
++ #ifdef BYTECOUNT
++ 			dev->ibytes[i] = 0;
++ 			dev->obytes[i] = 0;
++ #endif
+  			isdn_info_update();
+  			restore_flags(flags);
+  			return;

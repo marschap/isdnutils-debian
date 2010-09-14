@@ -1,0 +1,202 @@
+<HTML>
+<HEAD>
+<TITLE>V B O X: Konfiguration</TITLE>
+</HEAD>
+<BODY>
+<A HREF="vbox-4.html">Zurück</A>
+<A HREF="vbox-6.html">Weiter</A>
+<A HREF="vbox.html#toc5">Inhaltsverzeichnis</A>
+<HR>
+<H2><A NAME="id-konfiguration"></A> <A NAME="s5">5. Konfiguration</A></H2>
+
+
+
+
+<H2><A NAME="id-vboxrc"></A> <A NAME="ss5.1">5.1 vboxrc</A></H2>
+
+
+<P>Jeder Benutzer kann sich in seinem Homeverzeichnis eine Datei mit dem Namen
+`<CODE>.vboxrc</CODE>' anlegen, in der einige Einstellungen f&uuml;r <EM>vbox</EM> und
+<EM>vboxgetty</EM> gemacht werden k&ouml;nnen.</P>
+<P>Die Datei ist in verschiedene Sektionen unterteilt. Jede Sektion beginnt mit
+einem `<CODE>[</CODE>', enth&auml;lt einen Sektionsnamen und endet mit einem
+`<CODE>]</CODE>'.</P>
+<P>Die Gro&szlig;- und Kleinschreibung zwischen den Sektionskennungen `<CODE>[</CODE>'
+und `<CODE>]</CODE>' wird ignoriert. Leere Zeichen und solche die mit einem
+`<CODE>#</CODE>' beginnen werden &uuml;berlesen. Kommentare am Ende einer Zeile
+(beginnen mit `<CODE>#</CODE>') werden entfernt.</P>
+<P>Folgende Sektionen existieren:</P>
+<P>
+<DL>
+
+<DT><B><CODE>[CALLERID]</CODE></B><DD>
+<P><B>Format:</B> <CODE>CALLERID-PATTERN ALIAS</CODE></P>
+<P>Hier k&ouml;nnen sogenannte `Aliase' f&uuml;r <CODE>CALLERID</CODE>'s angegeben werden.
+Die <CODE>CALLERID</CODE> wird bei ISDN-Ger&auml;ten - sofern nicht abgeschaltet -
+mit &uuml;bermittelt und dient zum Idendifizieren des Anrufers.</P>
+<P>
+<DL>
+
+<DT><B><CODE>CALLERID-PATTERN</CODE></B><DD>
+<P><CODE>CALLERID</CODE> f&uuml;r die ein Alias definiert werden soll (ohne
+f&uuml;hrende Nullen). Es k&ouml;nnen hier die &uuml;blichen UN*X-Pattern angegeben
+werden. In der <CODE>CALLERID</CODE> d&uuml;rfen keine Leerzeichen enthalten
+sein.</P>
+
+<DT><B><CODE>ALIAS</CODE></B><DD>
+<P>Name, der dieser <CODE>CALLERID</CODE> zugeordnet werden soll. Der
+Aliasname darf Leerzeichen enthalten.</P>
+
+</DL>
+</P>
+<P>Als letzter Eintrag sollte <B>immer</B> `<CODE>* *** Unknown ***</CODE>'
+angegeben werden (siehe Beispiel). Dieses Pattern gilt f&uuml;r alle Anrufe,
+bei denen keine <CODE>CALLERID</CODE> &uuml;bermittelt oder in der Liste gefunden
+wurde.</P>
+<P><B>Beispiel:</B></P>
+<P>
+<PRE>
+   [CALLERID]
+
+   913469992[6-8]          Bernd Braun
+   91437850413             Michael Herold
+   *                       *** Unknown ***
+   
+</PRE>
+</P>
+<P>Die <B>erste</B> &Uuml;bereinstimmung einer <CODE>CALLERID</CODE> mit einem der
+Pattern wird benutzt.</P>
+
+<DT><B><CODE>[DEBUG]</CODE></B><DD>
+<P><B>Format:</B> <CODE>FLAG + FLAG + FLAG ...</CODE></P>
+<P>In dieser Sektion k&ouml;nnen Flag's angegeben werden, die bestimmen, welche
+Informationen in die Logdatei von <EM>vboxgetty</EM> aufgenommen werden
+sollen.</P>
+<P>Folgende Flag's k&ouml;nnen angegeben werden:</P>
+<P>
+<UL>
+<LI><CODE>FATAL</CODE>
+<P>Fatale Fehler</P>
+
+</LI>
+<LI><CODE>ERRORS</CODE>
+<P>Normal Fehler</P>
+
+</LI>
+<LI><CODE>WARNINGS</CODE>
+<P>Warnungen</P>
+
+</LI>
+<LI><CODE>INFOS</CODE>
+<P>Informationen</P>
+
+</LI>
+<LI><CODE>DEBUG</CODE>
+<P>Informationen zum Debuggen</P>
+
+</LI>
+<LI><CODE>JUNK</CODE>
+<P>Erweiterte Informationen zum Debuggen</P>
+
+</LI>
+</UL>
+</P>
+<P><B>Beispiel:</B> <CODE>FATAL + ERRORS + WARNINGS + INFOS</CODE></P>
+
+<DT><B><CODE>[RINGS]</CODE></B><DD>
+<P><B>Format:</B> <CODE>ZEIT RINGS</CODE></P>
+<P>Hier kann angegeben werden, zu welcher Zeit nach wievielen <CODE>RING</CODE>'s
+ein eingehender Anruf entgegengenommen werden soll.</P>
+<P>
+<DL>
+
+<DT><B><CODE>ZEIT</CODE></B><DD>
+<P>Eine oder mehrere Zeitzonen; Die Zeitangaben k&ouml;nnen durch Kommata
+voneinander getrennt werden. Bei einer Zeitzone von
+`<CODE>STARTZEIT</CODE>-<CODE>ENDZEIT</CODE>' ist die letzte Zahl inklusiv
+(z.B. <CODE>18-22</CODE> hei&szlig;t von 18 bis einschlie&szlig;lich 22 Uhr).</P>
+
+<DT><B><CODE>RINGS</CODE></B><DD>
+<P>Anzahl der <CODE>RING</CODE>'s bis ein Anruf entgegengenommen wird. Eine
+Anzahl von 0 <CODE>RING</CODE>'s hei&szlig;t, da&szlig; der Anruf nicht
+entgegengenommen werden soll.</P>
+
+</DL>
+</P>
+<P><B>Beispiel:</B></P>
+<P>
+<PRE>
+      0-8     5 
+      *       30
+   
+</PRE>
+</P>
+<P>Im oben angegebenen Beispiel w&uuml;rde <EM>vboxgetty</EM> von 0 bis 8 Uhr nach
+5 <CODE>RING</CODE>'s und zu allen anderen Zeiten nach 30 <CODE>RING</CODE>'s den
+Anruf entgegennehmen.</P>
+<P>Die <B>erste</B> &Uuml;bereinstimming der aktuellen Zeit mit einer
+Zeitangabe wird benutzt.</P>
+<P><B>Achtung!</B></P>
+<P>Beim einem Fehler (z.B. einer Falschen Zeitangabe) wird immer 0
+<CODE>RING</CODE>'s angenommen. Achten Sie also bitte auf die Ausgabe in der
+Logdatei um solche Situationen auszuschlie&szlig;en!</P>
+
+<DT><B><CODE>Alias Sektionen</CODE></B><DD>
+<P><B>Format:</B> <CODE>ZEIT ANSAGETEXT AUFNAHMEZEIT</CODE></P>
+<P>Mit <CODE>ALIAS SEKTIONEN</CODE> k&ouml;nnen f&uuml;r Aliase, die in der Sektion
+<CODE>[CALLERID]</CODE> definiert wurden, eigene Einstellungen gemacht
+werden.</P>
+<P>
+<DL>
+
+<DT><B><CODE>ZEIT</CODE></B><DD>
+<P>Eine oder mehrere Zeitzonen; Die Zeitangaben k&ouml;nnen durch Kommata
+voneinander getrennt werden. Bei einer Zeitzone von
+`<CODE>STARTZEIT</CODE>-<CODE>ENDZEIT</CODE>' ist die letzte Zahl inklusiv
+(z.B. <CODE>18-22</CODE> hei&szlig;t von 18 bis einschlie&szlig;lich 22 Uhr).</P>
+
+<DT><B><CODE>ANSAGETEXT</CODE></B><DD>
+<P>Ansagetext der gespielt werden soll. Der Ansagetext wird aus dem
+<CODE>Message</CODE>-Verzeichnis des Benutzers geladen, f&uuml;r den
+<EM>vboxgetty</EM> Nachrichten aufzeichnen soll.</P>
+
+<DT><B><CODE>AUFNAHMEZEIT</CODE></B><DD>
+<P>Maximale Aufzeichnungszeit in Sekunden. Eine Aufzeichnungszeit von 0
+Sekunden unterdr&uuml;ckt die Aufzeichnung.</P>
+
+</DL>
+</P>
+<P>Wenn f&uuml;r eine <CODE>CALLERID</CODE> keine <CODE>ALIAS SEKTION</CODE> gefunden
+wurde, wird immer die Datei `<CODE>standard.msg</CODE>' als Ansagetext
+gespielt und 60 Sekunden lang aufgezeichnet.</P>
+<P><B>Beispiel:</B></P>
+<P>Haben Sie Beispielsweise in der Sektion <CODE>[CALLERID]</CODE> eine Alias
+`Peter Muster' mit der <CODE>CALLERID</CODE> 931271111 definiert, k&ouml;nnen Sie
+sich f&uuml;r diesen eine <CODE>ALIAS SEKTION</CODE> erstellen:</P>
+<P>
+<PRE>
+   [Peter Muster]
+
+   0-7,8                   standard.msg            30
+   *                       standard.msg            60
+   
+</PRE>
+</P>
+<P>Jedesmal wenn bei einem Anruf die <CODE>CALLERID</CODE> 931271111 erkannt
+wird, werden die Einstellungen der <CODE>ALIAS SEKTION</CODE> f&uuml;r den Alias
+der <CODE>CALLERID</CODE> (also in diesem Beispiel `Peter Muster') benutzt.</P>
+<P><B>Bemerkung:</B> Legen Sie sich eine <CODE>ALIAS SEKTION</CODE> `<CODE>[***
+Unknown ***]</CODE>' an, die benutzt wird, wenn keine <CODE>CALLERID</CODE>
+ermittelt werden konnte.</P>
+
+</DL>
+</P>
+
+
+
+<HR>
+<A HREF="vbox-4.html">Zurück</A>
+<A HREF="vbox-6.html">Weiter</A>
+<A HREF="vbox.html#toc5">Inhaltsverzeichnis</A>
+</BODY>
+</HTML>

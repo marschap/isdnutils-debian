@@ -1,0 +1,29 @@
+
+[CALLERID]
+
+91369992[6-8]		Bernd Braun
+97217840513		Michael Herold
+97217840514		Abadonna's Dataline
+*			*** Unknown ***
+
+[DEBUG]
+
+FATAL + ERRORS + WARNINGS + INFOS + DEBUG + JUNK
+
+[RINGS]
+
+0-8			5	# Früh am Morgen geht's gleich los :-)
+*			30	# Diese Einstellung *nicht* vergessen!
+
+[BERND BRAUN]
+
+0-7,8			standard.msg		30
+*			standard.msg		60
+
+#
+# Unbekannte CallerID
+#
+
+[*** UNKNOWN ***]
+
+*			standard.msg		60

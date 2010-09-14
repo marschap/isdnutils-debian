@@ -1,0 +1,87 @@
+ - 2.3.24 03-May-96 sl
+   * Doku erweitert
+   * Blanks in den Flags erlaubt
+
+ - 2.3.21 27-Apr-96 sl
+   * Bug in Flag L und Intervall fixed
+   * Gequotete Zeichen ergaenzt
+
+ - 2.3.19 25-Apr-96 sl
+   * Soundfiles beigelegt
+   * kleinere Bug-fixes
+   * Option -C geaendert
+
+ - 2.3.16 23-Apr-96 sl
+   * Intervall ergaenzt
+   * Option -S umgebaut und um Loop erweitert
+   * Doku erweitert
+
+ - 2.3.14 23-Apr-96 sl
+   * Bug-Fixes in Option -S
+   * Bug-Fixes im xisdn (os,sl)
+
+ - 2.3.12 20-Apr-96 sl
+   * Ueberarbeitung und Erweiterung von Option -S
+   * Aenderung der Syntax der Datei "isdnlog.conf"
+   * Entfernen von Xmt aus dem "xisdn" (os)
+   * Dokumentation im SGML-Format ('Ghandie')
+   * Bug im C/S fixed
+   * Bug im discardconfig/readconfig fixed
+
+ - 2.3.11 13-Apr-96 sl
+   * Bug in angzeigten Zeit (xisdn) fixed
+   * Wiederaktivierung von Adressbuch-Anfaenge
+   * kleinere Bugfixes
+
+ - 2.3.10 12-Apr-96 sl
+   * Bug im sscanf von user-access fixed
+   * Ausgabe von unbekannten Meldungen im xisdn ergaenzt (os)
+
+ - 2.3.9 11-Apr-96 sl
+   * Bugs im isdnlog-C/S fixed
+   * Bug im xisdn change_channel fixed
+
+ - 2.3.8 10-Apr-96 sl
+   * Doku ergaenzt
+   * Channel-States im Server geaendert
+   * change_channel im xisdn realisiert
+
+ - 2.3.6 08-Apr-96 akool
+   * xisdnload an neues isdn4linux angepasst (Fritz Elfert)
+
+ - 2.3.5 05-Apr-96 sl
+   * User_Get_Message fixed
+   * Probleme in User-Access behoben
+   * Defines ergaenzt
+   * kleinere Umstrukturierungen
+   * Doku ergaenzt
+
+ - 2.3.4 05-Apr-96 akool
+
+ - 2.3.3 04-Apr-96 sl
+   * Einfuehrung der Umgebungsvariable "ISDNLOG"
+   * Vervollstaendigung von User-Access
+
+ - 2.3.1 02-Apr-96 sl
+   * C/S-Protokoll-Version eingebaut
+   * User-Access-Datei fuer Client ergaenzt
+   * "malloc()"-Bug in del_socket() behoben
+   * Doku fuer User-Access-File ergaenzt
+
+ - 2.30 am 31-Mar-96 freigegeben akool
+
+ - 2.2.5 28-Mar-96 akool
+   * Exit() fixed (sl)
+   * 1TR6 fixed
+   * Pipe fixed
+
+ - 2.2.4 24-Mar-96 akool
+   * Speicherleck im Server beseitigt (sl)
+   * neues Versionsnummernschema begonnen, 2.23 -> 2.2.4
+   * Pipe-Funktionalitaet reaktiviert (lasagne@garfield.ping.de)
+   * Alle Console-Ausgaben wieder mit "\r"
+   * Gebuehrenauswertung fuer 1TR6 implementiert (Wim Bonis (bonis@kiss.de))
+   * Unterscheidung von 1TR6/EDSS1 Frames implementiert
+   * 1TR6 Causes implementiert
+
+ - 2.23 am 17-Mar-96 freigegeben akool

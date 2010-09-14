@@ -1,0 +1,74 @@
+
+14-Jun-1995 (1.0)
+=================
+
+  o Deutsche Dokumentation hinzugefügt.
+
+05-Jun-1996 (0.0.5)
+===================
+
+   o Das Auflegen beim Abspielen einer Nachricht sollte jetzt keinen
+     Hänger mehr verursachen; Benötigt wird jetzt Kernel 1.99.12 mit
+     dem Patch von Fritz Elfert.
+
+   o Touchtoneabfrage eingebaut. Abspielen der Nachrichten kann mit
+     '#' abgebrochen werden.
+
+     Eingabe einer ID wird erkannt (in '*' und '#' eingeschlossen), aber
+     noch nicht benutzt.
+
+
+28-May-1996 (0.0.4)
+===================
+
+   o Funktion zum auswerten der Debuglevels im .vboxrc eingebaut.
+
+   o Die Programme `rmdcutheader' und `rmdcatheader' beigelegt, mit denen
+     ein beliebiger RMD-Header entfernt, bzw. erzeugt werden kann. Somit
+     sollte es jetzt möglich sein, von /dev/audio aufzunehmen und dort-
+     hin abzuspielen.
+
+   o Kompressionen 'ulaw' und 'alaw' im `vboxgetty' eingebaut (bzw. die
+     Sperre entfernt :-)
+
+
+27-May-1996 (0.0.3) *
+===================
+
+   o Beispielskript `vboxplay' zum abspielen von Nachrichten in `vbox'
+     beigelegt.
+
+
+27-May-1996 (0.0.2) *
+===================
+
+   o Die .vboxrc wurde komplett umgeschrieben.
+
+   o Die Beantwortung von Anrufen in `vbox' kann jetzt mit 'O' (nur groß)
+     ein- und ausgestellt werden.
+
+   o Wenn in `vbox' mit -u ein anderer User eingestellt wird, ist der
+     Viewmode aktiv, bei dem nur die Liste eingesehen werden kann.
+
+
+26-May-1996 (0.0.2)
+===================
+
+   o VBOXPLAYCMD zu einem externen Kommando gemacht.
+
+   o Wenn im incoming-Verzeichnis eine Datei gefunden wird, die kein
+     gesetztes r-Bit hat, wird angenommen, daß diese gerade aufgezeichnet
+     wird. Der gemerkte Timestamp des Verzeichnisses wird dann auf 0
+     zurückgesetzt, damit die Datei beim nächsten Reload gefunden wird.
+
+   o Für das incoming-Verzeichnis wird jetzt die ctime & mtime vermerkt.
+
+
+25-May-1996 (0.0.1) *
+===================
+
+   o Aufgesprochene Nachrichten werden mit den Permissions '--w------'
+     erzeugt und nach der kompletten Aufnahme zu '-rw------' geändert.
+
+   o Es werden nur Nachrichten in die Liste von `vbox' aufgenommen, die ein
+     gesetztes r-Bit haben.

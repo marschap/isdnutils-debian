@@ -1,0 +1,91 @@
+diff -cr isdn/include/linux/isdn.h isdn4linux-0.7.3beta-patched/include/linux/isdn.h
+*** isdn/include/linux/isdn.h	Wed Jan 10 22:41:23 1996
+--- isdn4linux-0.7.3beta-patched/include/linux/isdn.h	Fri Jan 19 20:39:02 1996
+***************
+*** 527,532 ****
+--- 527,536 ----
+    infostruct        *infochain;                /* List of open info-devs.    */
+    struct wait_queue *info_waitq;               /* Wait-Queue for isdninfo    */
+    struct timer_list timer;		       /* Misc.-function Timer       */
++ #if 1 /* strauss */
++   long		    ibytes[ISDN_MAX_CHANNELS];
++   long		    obytes[ISDN_MAX_CHANNELS];
++ #endif
+    int               chanmap[ISDN_MAX_CHANNELS];/* Map minor->device-channel  */
+    int               drvmap[ISDN_MAX_CHANNELS]; /* Map minor->driver-index    */
+    int               usage[ISDN_MAX_CHANNELS];  /* Used by tty/ip/voice       */
+diff -cr isdn/isdn/isdn_common.c isdn4linux-0.7.3beta-patched/isdn/isdn_common.c
+*** isdn/isdn/isdn_common.c	Thu Jan 11 00:32:21 1996
+--- isdn4linux-0.7.3beta-patched/isdn/isdn_common.c	Mon Jan 22 00:16:25 1996
+***************
+*** 211,216 ****
+--- 211,220 ----
+  
+  	if (dev->global_flags & ISDN_GLOBAL_STOPPED)
+  		return;
++ #if 1 /* strauss */
++ 	dev->ibytes[channel] += len;
++ 	isdn_info_update();
++ #endif
+  	/* First, try to deliver data to network-device */
+  	if (isdn_net_receive_callback(di, channel, buf, len))
+  		return;
+***************
+*** 672,677 ****
+--- 676,705 ----
+  		sprintf(p, "%s ", dev->num[i]);
+  		p = istatbuf + strlen(istatbuf);
+  	}
++ #if 1 /* strauss */
++ 	sprintf(p, "\nibytes:\t");
++ 	p = istatbuf + strlen(istatbuf);
++ 	for (i = 0; i < ISDN_MAX_CHANNELS; i++) {
++ 	  if (dev->drvmap[i] >= 0) {
++ 	    sprintf(p, "%ld ", dev->ibytes[i]);
++ 	    p = istatbuf + strlen(istatbuf);
++ 	  } else {
++ 	    sprintf(p, "? ");
++ 	    p = istatbuf + strlen(istatbuf);
++ 	  }
++ 	}
++ 	sprintf(p, "\nobytes:\t");
++ 	p = istatbuf + strlen(istatbuf);
++ 	for (i = 0; i < ISDN_MAX_CHANNELS; i++) {
++ 	  if (dev->drvmap[i] >= 0) {
++ 	    sprintf(p, "%ld ", dev->obytes[i]);
++ 	    p = istatbuf + strlen(istatbuf);
++ 	  } else {
++ 	    sprintf(p, "? ");
++ 	    p = istatbuf + strlen(istatbuf);
++ 	  }
++ 	}
++ #endif
+  	sprintf(p, "\n");
+  	return istatbuf;
+  }
+***************
+*** 772,777 ****
+--- 800,809 ----
+  		if (!dev->drv[drvidx]->running)
+  			return -ENODEV;
+  		chidx = isdn_minor2chan(minor);
++ #if 1 /* strauss */
++ 		dev->obytes[drvidx] += count;
++ 		isdn_info_update();
++ #endif
+  		while (dev->drv[drvidx]->interface->writebuf(chidx, buf, count, 1) != count)
+  			interruptible_sleep_on(&dev->drv[drvidx]->snd_waitq[chidx]);
+  		return count;
+***************
+*** 1516,1521 ****
+--- 1548,1557 ----
+  		    (dev->chanmap[i] == ch)) {
+  			dev->usage[i] &= (ISDN_USAGE_NONE | ISDN_USAGE_EXCLUSIVE);
+  			strcpy(dev->num[i], "???");
++ #if 1 /* strauss */
++ 			dev->ibytes[i] = 0;
++ 			dev->obytes[i] = 0;
++ #endif
+  			isdn_info_update();
+  			restore_flags(flags);
+  			return;

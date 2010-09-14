@@ -1,0 +1,79 @@
+Cause-Codes von 1TR6:
+
+Cause-Codes sind 4-stellige hex-Codes, die diverse Fehler und sonstige
+Zustände einer ISDN-Schnittstelle beschreiben.
+Das Erste Byte stellt den eigentlichen Code dar, wärend das zweite Byte
+die Herkunft des Codes angibt.
+
+Für das zweite Byte (Herkunft) gibt es folgende Codes:
+
+44	public Network			Nachricht wurde von der Telecom
+					erzeugt.
+45	private Network			Nachricht wurde durch eines der
+					Endgeräte erzeugt.
+4F	unknown
+
+Das erste Byte (Code) kann folgende Werte annehmen:
+
+01	Invalid Call-reference-value	Nicht zulässiger CR-Wert.
+03	Bearer service not implemented	Service ist in der VSt nicht verfügbar
+					oder Dienst nicht beantragt.
+07	Call identity does not exist	Unbekannte Call Identity
+08	No channel available		Kein Nutzkanal auf Tln-Anschlußleitung
+					frei.
+10	Requested facility not		Der angegebene FAC-Code ist in der VSt
+	implemented			oder im Netz unbekannt.
+11	Requested facility not		Angefordertes Dienstmerkmal abgelehnt,
+	subscribed			weil der lokale oder ferne Teilnehmer
+					keine Berechtigung besitzt.
+20	Outgoing calls barred		Abgehende Verbindungen sind gesperrt.
+21	User access busy		Ist die Summe aus Anzahl der freien
+					B-Kanäle, Anzahl der belegten B-Kanäle
+					Anzahl der zugeteilten B-Kanäle und
+					Anzahl der Rufverfahren ohne B-Kanal-
+					angabe gleich vier, so werden neu
+					ankommende Rufe aus dem Netz mit
+					diesem Cause ausgelöst.
+22	Negativer GBG-Vergleich		Verbindung nicht möglich wegen
+					negativem GBG-Vergleich.
+23	Non-existent GBG		Diese GeschlosseneBenutzerGruppe
+					existiert nicht.
+25	Kommun. als SPV nicht erlaubt	Verbindung nicht möglich, da z.B.
+					RFNR-Überprüfung negativ.
+35	Destination not obtainable	Verbindung nicht aufbaubar wegen
+					falscher Zieladresse Dienste oder
+					Dienstmerkmale. ("Kein Anschluss unter
+					dieser Nummer")
+38	Number changed			Rufnummer bei B-Teilnehmer hat sich
+					geändert.
+39	Out of order			Fernes Endgerät nicht betriebsbereit.
+3A	No user responding		Kein Endgerät hat auf die ankommende
+					SETUP-Message geantwortet oder Ruf
+					wurde abgebrochen.
+3B	User busy			B-Teilnehmer besetzt.
+3D	Incoming calls barred		B-Teilnehmer hat Sperre gegen
+					ankommende Verbindungen oder der
+					geforderte Dienst ist nicht beantragt
+3E	Call rejected			Bei abgehendem Ruf: Verbindung wurde
+					vom anderen Endgerät abgelehnt.
+					Bei ankommendem Ruf: Die Verbindung
+					wurde bereits von einem anderen
+					Endgerät am Bus angenommen.
+59	Network congestion		Engpass im Netz, z.B. gassenbesetzt,
+					kein Konferenzsatz frei.
+5A	Remote user initiated		Vom fernen Ende (Tln oder VSt)
+					abgelehnt bzw. ausgelöst.
+70	Local procedure error		Auslösen wegen lokalen Fehlern. (z.B.
+					nicht zulässige Nachrichten bzw.
+					Parametern, Ablauf einer Zeitüber-
+					wachung.)
+71	Remote procedure error		Auslösung wegen Fehler am fernen Ende.
+72	Remote user suspended		Die Verbindung ist am fernen Ende auf
+					"Halten" oder "Suspend" gebracht
+					worden.
+73	Remote user resumed		Verbindung am fernen Ende nicht mehr
+					auf "Halten" bzw. "Suspend-" oder
+					Konferenzzustand.
+7F	User info discarded locally	Die Nachricht USER-INFO wird lokal
+					zurückgewiesen.
+

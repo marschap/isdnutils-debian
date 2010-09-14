@@ -1,0 +1,31 @@
+
+                              VBox Version 1.0
+
+                               Copyright 1996
+                                    bei
+                           Michael 'Ghandi' Herold
+
+
+
+`vboxgetty' basiert auf dem Paket `mgetty-0.99' (vgetty) vom 18. April 1996.
+Die mit `vboxgetty' aufgenommenen Sprachdateien können mit den dort mitge-
+lieferten `pvftools' abgespielt und verändert werden.
+
+`vboxgetty' wurde speziell für `isdn4linux' geschrieben und ist noch *nicht*
+an einem "normalen" Modem getestet worden!
+
+`vboxgetty' kann *keine* Daten- oder Faxanrufe erkennen, geschweigedenn
+entgegennehmen (und wird es auch *nie* können). Wer so etwas benötigt, dem
+kann ich nur `mgetty' (vgetty) ans Herz legen.
+
+
+Bei Fehlern, Anregungen oder Drohungen bitte eine eMail an die Adresse
+
+michael@abadonna.franken.de.
+
+Bei Fehlern nach Möglichkeit die entsprechende Logdatei beifügen!
+
+
+Für eine genauere Beschreibung lesen Sie bitte die Dokumentation im
+Verzeichnis `doc'.
+

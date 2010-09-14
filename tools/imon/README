@@ -1,0 +1,50 @@
+iMON 1.0                                              (C) Michael Knigge, 1995
+------------------------------------------------------------------------------
+
+Install iMON as follows:
+
+1. copy imon.c and Makefile to your isdn4linux/tools directory. It's the
+   same directory where isdnmon is located.
+
+2. Edit the isdn4linux Makefile (_NOT_ the Makefile of iMON)!
+   You have to change the line
+
+   SUBDIRS=isdn icn teles
+to
+   SUBDIRS=isdn icn teles tools
+
+3. Perhaps you have to add the directory where ncurses.h is located to
+   the line
+
+   export INCLUDES = ../include
+
+   Than wite something line   
+
+   export INCLUDES = ../include;/usr/include/ncurses
+
+
+
+Thats all. Than type "make" in your isdn4linux directory. iMON should be
+compiled without errors (there are 3 warnings I think). a "make install"
+will install the binary "imon" to /sbin
+
+READY
+
+So, I hope this litte utility works as well for as it works for me. If
+
+OPTIONS
+-------
+
+iMOM updates the screen every 5 seconds. You can override this default
+value by typing
+
+    imon -<time>     e.g. imon -2    will update the screen every 2 sec.
+
+
+
+If you have any questions, problems or suggestions, write me an eMail.
+My eMail address is knick@cove.han.de
+
+
+Bye
+  Michael

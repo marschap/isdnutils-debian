@@ -1,0 +1,50 @@
+
+Die Karte wird vom PC über zwei Schnittstellen gesteuert:
+  1. Bereich von 4 aufeinanderfolgenden Portadressen deren Basisadresse
+     über Schalter einstellbar ist.
+  2. Einen Shared-memory-Fenster von 16KB bis 256KB Größe, das von der
+     Software in Schritten von 16K über den gesamten Adressbereich von
+     16MB einblendbar ist. Isdn4linux verwendet stets nur eine Fenster-
+     größe von 16K, dessen Basisadresse beim Laden des Lowlevel-Moduls
+     angegeben werden kann. (siehe README, Absatz 4b)
+
+Einstellung der IO-Adresse der ICN-ISDN-Karte:
+
+  Es gibt zwei Kartentypen, eine mit Hakenschaltern, eine mit DIP-Switches.
+
+  1. Einstellung für Karten mit Hakenschaltern:
+
+     (0 = Schalter geschlossen, 1 = Schalter offen)
+
+     S3 S2 S1  Basis-Adresse
+      0  0  0  0x300
+      0  0  1  0x310
+      0  1  0  0x320 (Default von isdn4linux)
+      0  1  1  0x330
+      1  0  0  0x340
+      1  0  1  0x350
+      1  1  0  0x360
+      1  1  1  NICHT ERLAUBT!
+    
+  2. Einstellung für Karten mit DIP-Switches:
+
+     (0 = Schalter geschlossen, 1 = Schalter offen)
+
+     S1 S2 S3 S4  Basis-Adresse
+      0  0  0  0  0x300
+      0  0  0  1  0x310
+      0  0  1  0  0x320 (Default von isdn4linux)
+      0  0  1  1  0x330
+      0  1  0  0  0x340
+      0  1  0  1  0x350
+      0  1  1  0  0x360
+      0  1  1  1  NICHT ERLAUBT!
+      1  0  0  0  0x308
+      1  0  0  1  0x318
+      1  0  1  0  0x328
+      1  0  1  1  0x338
+      1  1  0  0  0x348
+      1  1  0  1  0x358
+      1  1  1  0  0x368
+      1  1  1  1  NICHT ERLAUBT!
+

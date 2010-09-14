@@ -1,0 +1,1202 @@
+\documentstyle[linuxdoc-sgml-a4,german,isolatin,qwertz,null]{article}
+\input{epsf.tex}
+\title{V B O X}
+\author{Michael `Ghandi' Herold {\(<\)}{\tt michael@abadonna.franken.de}{\(>\)}}
+\date{Version 1.0 (16. Juni 1996)}
+\abstract{Diese Dokumentation beschreibt die Installation und Konfiguration von
+{\em vbox\/}, einem Anrufbeantworter f\"{u}r {\em isdn4linux\/}.}
+
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+
+
+
+
+\section{Copyright\label{id-copyright}}
+
+
+
+
+
+Copyright {\copyright} 1996 bei Michael Herold ({\tt michael@abadonna.franken.de})
+
+Das Paket {\em vbox\/} ist freie Software und kann unter den Bedingungen
+der {\em GNU General Public License\/} ver\"{o}ffentlicht oder ver\"{a}ndert
+werden.
+
+Die Dokumentation sowie alle Programme von {\em vbox\/} wurden mit gro{\ss}er
+Sorgfalt erstellt. Dennoch sind Fehler nicht ganz auszuschlie{\ss}en. Aus diesem
+Grund sind die in der vorliegenden Dokumentation enthaltenen Angaben mit
+keiner Verpflichtung oder Garantie irgendeiner Art verbunden. Sowohl Michael
+Herold als auch die in Kapitel \ref{id-danksagungen} genannten Personen \"{u}bernehmen keine Verantwortung oder
+sonstige Haftung f\"{u}r Sch\"{a}den, die auf irgendeine Art aus der Benutzung der
+Dokumentation oder den darin beschriebenen Programmen entstehen oder
+entstanden sind.
+
+
+
+
+
+
+\section{Vorwort\label{id-vorwort}}
+
+
+
+
+
+
+
+
+\subsection{Was ist vbox?\label{id-vorwort-wasistvbox}}
+
+
+
+{\em vbox\/} ist ein Paket mit Programmen zum Betrieb eines
+Anrufbeantworters unter Linux. Es wird das Paket {\em isdn4linux\/} von
+Fritz Elfert (entweder im Kernel oder als Modul) mit {\tt AUDIO SUPPORT}
+ben\"{o}tigt (enthalten ab Kernel pre2.0.4).
+
+{\em vboxgetty\/} basiert auf {\em mgetty-0.99\/} ({\em vgetty\/}) vom
+18. April 1996. Die mit {\em vboxgetty\/} aufgezeichneten Sprachdateien
+k\"{o}nnen mit den dort enthaltenen {\em pvftools\/} abgespielt oder
+konvertiert werden (f\"{u}r die Formate {\tt ULAW} und {\tt ALAW} liegen
+Programme zum Abspielen nach `{\tt /dev/audio}' bei). Die
+{\em pfvtools\/} sind {\bf nicht} im Paket von {\em vbox\/} enthalten.
+
+{\em vboxgetty\/} wurde speziell f\"{u}r {\em isdn4linux\/} geschrieben und
+ist nicht f\"{u}r normale Modems geeignet. Es k\"{o}nnen mit {\em vboxgetty\/}
+keine Fax- oder Datenanrufe erkannt oder entgegengenommen werden. Wer so
+etwas ben\"{o}tigt, dem kann ich nur {\em mgetty\/}, bzw. {\em vgetty\/}
+empfehlen.
+
+
+
+
+
+
+\subsection{Anregungen und Fehlermeldungen\label{id-vorwort-report}}
+
+
+
+Wer neue Ideen oder Anregungen hat, oder einen Fehler in einem der Programme
+von {\em vbox\/} gefunden hat, kann diese an folgende Adresse schicken:
+
+{\tt michael@abadonna.franken.de}
+
+Bei einer Mitteilung \"{u}ber einen Fehler bitte {\bf immer} eine m\"{o}glichst
+genaue Beschreibung (am besten reproduzierbar) {\bf und} den
+entsprechenden Auszug aus den Logdateien beif\"{u}gen.
+
+
+
+
+
+
+\section{Installation\label{id-install}}
+
+
+
+F\"{u}r die Installation werden folgende Dinge ben\"{o}tigt:
+
+\begin{itemize}
+\item GCC in der Version 2.7.0 oder h\"{o}her,
+\item Linux Kernel in der Version 2.0 oder h\"{o}her,
+\item NCurses in der Version 1.9.9e oder h\"{o}her.
+\end{itemize}
+
+
+Zudem sollte {\em isdn4linux\/} bereits funktionsf\"{a}hig mit Audiosupport
+installiert sein.
+
+F\"{u}r das Abspielen der aufgenommenen Nachrichten in den Formaten
+{\tt ADPCM-2}, {\tt ADPCM-3} und {\tt ADPCM-4} werden zus\"{a}tzlich
+die {\bf pvftools} aus dem Paket {\em mgetty\/} (Version 0.99 vom 18.
+April 1996) ben\"{o}tigt.
+
+F\"{u}r die Formate {\tt ALAW} und {\tt ULAW} liegen Programme zum
+Abspielen nach {\tt /dev/audio} bei.
+
+Vor der Installation sollten folgende Dateien an das eigene System angepasst
+werden:
+
+\begin{itemize}
+\item `{\tt Makefile}' (siehe Kapitel \ref{id-install-makefile})
+\item `{\tt src/settings.h}' (siehe Kapitel \ref{id-install-settings})
+\end{itemize}
+
+
+Zum erzeugen aller Programme von {\em vbox\/} tippen Sie
+
+{\tt \$ make vbox}
+
+Die Programme befinden sich danach - sofern sie fehlerfrei erzeugt wurden -
+im Unterverzeichnis {\tt bin} des Quelltextverzeichnisses. Mit
+
+{\tt \$ make install}
+
+werden diese in die im `{\tt Makefile}' (siehe Kapitel \ref{id-install-makefile}) angegebenen
+Verzeichnisse kopiert.
+
+{\bf Bemerkung:} Vergessen Sie nicht, da{\ss} ebenfalls im
+`{\tt Makefile}' (siehe Kapitel \ref{id-install-makefile}) angegebene Spoolverzeichnis per Hand
+oder mit
+
+{\tt \$ make install-dir}
+
+zu erzeugen. Die Unterverzeichnisse
+
+\begin{itemize}
+\item {\(<\)}Benutzername{\(>\)}
+\item {\(<\)}Benutzername{\(>\)}/incoming
+\item {\(<\)}Benutzername{\(>\)}/messages
+\end{itemize}
+
+
+werden von {\em vboxgetty\/} zur Laufzeit automatisch erzeugt, falls sie
+noch nicht existieren.
+
+{\bf Bemerkung:} Die Standardansagen werden {\bf nicht} automatisch
+erzeugt, sondern m\"{u}ssen f\"{u}r jede Person selbst in das entsprechende
+Unterverzeichnis kopiert werden.
+
+
+
+
+
+
+\subsection{Einstellungen in `Makefile'\label{id-install-makefile}}
+
+
+
+Folgende Einstellungen sind im `{\tt Makefile}' m\"{o}glich:
+
+\begin{description}
+
+
+\item[SPOOLDIR] \mbox{}
+
+
+
+Verzeichnis, in dem die Daten f\"{u}r {\em vbox\/} abgelegt werden sollen.
+F\"{u}r jeden Benutzer, f\"{u}r den ein {\em vboxgetty\/} l\"{a}uft, wird dort ein
+eigenes Verzeichnis angelegt.
+
+{\bf Beispiel:} {\tt /var/spool/vbox}
+
+
+
+\item[INSTALLSBINDIR] \mbox{}
+
+
+
+Verzeichnis, in das die Programme installiert werden, die nur vom Benutzer
+{\tt root} gestartet werden sollten.
+
+{\bf Beispiel:} {\tt /usr/local/sbin}
+
+
+
+\item[INSTALLBINDIR] \mbox{}
+
+
+
+Verzeichnis, in das alle Programme installiert werden, die von normalen
+Benutzern aufgerufen werden d\"{u}rfen.
+
+{\bf Beispiel:} {\tt /usr/local/bin}
+
+
+
+\item[INSTALLXSBINDIR] \mbox{}
+
+
+
+Verzeichnis, in das alle Programme installiert werden, die unter X11 laufen
+und nur vom Benutzer {\tt root} gestartet werden sollten.
+
+{\bf Beispiel:} {\tt /usr/X11/bin}
+
+
+
+\item[INSTALLXBINDIR] \mbox{}
+
+
+
+Verzeichnis, in das alle Programme installiert werden, die unter X11 laufen
+und von normalen Benutzern aufgerufen werden d\"{u}rfen.
+
+{\bf Beispiel:} {\tt /usr/X11/bin}
+
+
+
+\item[INSTALLSBIN] \mbox{}
+
+
+
+Kommando, mit dem alle Programme installiert werden, die nur vom Benutzer
+{\tt root} gestartet werden sollten.
+
+{\bf Beispiel:} {\tt install -s -o root -g root -m 750}
+
+
+
+\item[INSTALLBIN] \mbox{}
+
+
+
+Kommando, mit dem alle Programme installiert werden, die von normalen
+Benutzern gestartet werden k\"{o}nnen.
+
+{\bf Beispiel:} {\tt install -s -o root -g bin -m 755}
+
+
+
+\item[CC] \mbox{}
+
+
+
+Der Kompiler, der zum \"{U}bersetzen der Quelltexte verwendet werden soll.
+
+{\bf Beispiel:} {\tt gcc}
+
+
+
+\item[CCFLAGS] \mbox{}
+
+
+
+Flag's, die dem Kompiler \"{u}bergeben werden sollen.
+
+{\bf Beispiel:} {\tt -i486 -O2 -Wall}
+
+
+
+\end{description}
+
+
+
+
+
+
+
+\subsection{Einstellungen in `src/settings.h'\label{id-install-settings}}
+
+
+
+Folgende Einstellungen sind in `{\tt src/settings.h}' m\"{o}glich (alle
+vorgegebenen Einstellungen {\bf m\"{u}ssen} angegeben werden):
+
+\begin{description}
+
+
+\item[LOGFILE] \mbox{}
+
+
+
+Name der Logdatei in die {\em vbox\/} seine Meldungen schreibt. Der
+Platzhalter `{\tt \%s}' wird durch den Namen des jeweiligen tty-Devices
+ersetzt.
+
+{\bf Beispiel:} {\tt "/var/log/vbox.\%s"}
+
+
+
+\item[LOCKFILE] \mbox{}
+
+
+
+Name der Datei mit der {\em vbox\/} die einzelnen Devices lockt. Der
+Platzhalter `{\tt \%s}' wird durch den Namen des jeweiligen tty-Devices
+ersetzt.
+
+{\bf Beispiel:} {\tt "/var/lock/LCK..\%s"}
+
+
+
+\item[PIDFILE] \mbox{}
+
+
+
+Name der Datei in der {\em vbox\/} seine Proze{\ss}-ID vermerkt. Der
+Platzhalter `{\tt \%s}' wird durch den Namen des jeweiligen tty-Devices
+ersetzt.
+
+{\bf Beispiel:} {\tt "/var/run/vbox-pid.\%s"}
+
+
+
+\item[VBOXRC] \mbox{}
+
+
+
+Name der Konfigurationsdatei, die sich im Homeverzeichnis des jeweiligen
+Benutzers befinden kann.
+
+{\bf Beispiel:} {\tt ".vboxrc"}
+
+
+
+\item[MODEM\_RING\_TIMEOUT] \mbox{}
+
+
+
+Anzahl der Sekunden, in denen versucht wird, einen {\tt RING} vom
+Modem einzulesen, nachdem ein eingehender Anruf erkannt wurde.
+
+{\bf Beispiel:} {\tt 5}
+
+
+
+\item[MODEM\_COMMAND\_TIMEOUT] \mbox{}
+
+
+
+Anzahl der Sekunden, in denen versucht wird, da{\ss} Ergebnis eines
+AT-Kommandos einzulesen.
+
+{\bf Beispiel:} {\tt 2}
+
+
+
+\item[MODEM\_ECHOCMD\_TIMEOUT] \mbox{}
+
+
+
+Anzahl der Sekunden, in denen versucht wird, da{\ss} Echo eines AT-Kommandos
+einzulesen.
+
+{\bf Beispiel:} {\tt 2}
+
+
+
+\item[MODEM\_WAIT\_TIMEOUT] \mbox{}
+
+
+
+Anzahl der Sekunden, nach deren Ablauf ein Kommando an das Modem geschickt
+wird, um festzustellen, ob es noch reagiert. Der Wert 0 schaltet diese
+\"{U}berpr\"{u}fung aus.
+
+{\bf Beispiel:} {\tt 1800}
+
+
+
+\item[DEFAULT\_RINGS] \mbox{}
+
+
+
+Anzahl der {\tt RING}'s, bevor {\em vbox\/} den Anruf entgegennimmt.
+Bei mir pers\"{o}nlich ({\tt Europa 10}) werden 5 {\tt RING}'s
+gemeldet, bevor das Telefon einmal klingelt.
+
+{\bf Beispiel:} {\tt 20}
+
+
+
+\item[DEFAULT\_RECORD\_TIME] \mbox{}
+
+
+
+Voreingestellte maximale Zeit in Sekunden, die ein entgegengenommener
+Anruf aufgezeichnet wird.
+
+{\bf Beispiel:} {\tt 60}
+
+
+
+\item[VOICE\_COMPRESSION\_MODE] \mbox{}
+
+
+
+Kompressionsmodus beim Aufzeichnen von Audiodaten. Folgende Modi sind
+m\"{o}glich:
+
+\begin{itemize}
+\item {\tt 2} f\"{u}r {\tt ADPCM-2}
+\item {\tt 3} f\"{u}r {\tt ADPCM-3}
+\item {\tt 4} f\"{u}r {\tt ADPCM-4}
+\item {\tt 5} f\"{u}r {\tt ALAW}
+\item {\tt 6} f\"{u}r {\tt ULAW}
+\end{itemize}
+
+
+{\bf Beispiel:} {\tt 4}
+
+
+
+\item[NEED\_FREE\_DISK\_SPACE] \mbox{}
+
+
+
+Anzahl der Byte's, die auf der Partition des Spoolverzeichnisses noch
+frei sein m\"{u}ssen, damit ein Anruf entgegengenommen wird.
+
+{\bf Bemerkung:} Wird in dieser Version noch nicht unterst\"{u}tzt.
+
+
+
+\item[VBOXPLAYCMD] \mbox{}
+
+
+
+Kommando zum Abspielen einer Nachricht in {\em vbox\/}. Dem Kommando
+werden folgende Argumente \"{u}bergeben:
+
+\begin{enumerate}
+\item Dateiname der ausgew\"{a}hlten Nachricht
+\item Eingestellte Lautst\"{a}rke
+\end{enumerate}
+
+
+{\bf Beispiel:} {\tt "/usr/local/bin/vboxplay"}
+
+Im Verzeichnis `{\tt samples}' befindet sich das Beispielskript
+`{\tt vboxplay}', das die {\em pvftools\/} und den {\em Network Audio
+Server\/} zum Spielen der Nachrichten benutzt.
+
+
+
+\end{description}
+
+
+
+
+
+
+
+\section{Programme\label{id-programme}}
+
+
+
+
+
+
+
+
+\subsection{vboxgetty\label{id-vboxgetty}}
+
+
+
+{\em vboxgetty\/} ist das eigentliche Hauptprogramm, welches die Anrufe
+entgegennimmt, Ansagetexte abspielt und die Nachrichten der Anrufer
+aufzeichnet.
+
+Beim Start von {\em vboxgetty\/} k\"{o}nnen dem Programm folgende Argumente
+\"{u}bergeben werden:
+
+\begin{description}
+
+
+\item[{\tt -s GESCHWINDIGKEIT}] \mbox{}
+
+
+
+Die Geschwindigkeit, mit der {\em vboxgetty\/} das Modem ansprechen
+soll. Die Voreinstellung von {\tt 38400} sollte in den meisten F\"{a}llen
+ausreichend sein und ist auch f\"{u}r {\tt ADPCM-4} geeignet.
+
+{\bf Beispiel:} {\tt vboxgetty -s 38400}
+
+
+
+\item[{\tt -d DEVICE}] \mbox{}
+
+
+
+Name des Devices, das als Modem benutzt werden soll. Das Device braucht
+vorher nicht mit {\em setserial\/} eingestellt zu werden.
+
+{\bf Beispiel:} {\tt vboxgetty -d /dev/ttyI5}
+
+
+
+\item[{\tt -u BENUTZERNAME}] \mbox{}
+
+
+
+{\em vboxgetty\/} {\bf mu{\ss}} beim Start der Name eines Benutzers
+angegeben werden, f\"{u}r den die Nachrichten aufgezeichnet werden sollen.
+
+Der angegebene Benutzer mu{\ss} in der `{\tt /etc/passwd}' eingetragen
+sein und auf dem System existieren.
+
+{\bf Beispiel:} {\tt vboxgetty -u michael}
+
+
+
+\item[{\tt -i MODEM-INIT-KOMMANDO}] \mbox{}
+
+
+
+Kommando zum Initialisieren des Modems. Hier sollte unter anderem die
+Telefonnummer angegeben werden, auf die {\em vboxgetty\/} - also der
+Anrufbeantworter - reagieren soll.
+
+Benutzer, die den {\em iprofd\/} von {\em isdn4linux\/} benutzen,
+sollten hier mindestens {\bf immer} die Telefonnummer angeben, auf die
+reagiert werden soll.
+
+{\bf Beispiel:} {\tt vboxgetty -i "ATZ\&E7850413"}
+
+
+
+\end{description}
+
+
+Ein normaler Aufruf von {\em vboxgetty\/} sollte in etwa so aussehen:
+
+{\tt \$ vboxgetty -d /dev/ttyI6 -i "ATZ\&E7850413" -u michael}
+
+F\"{u}r den in diesem Beispiel angegebenen Benutzer `michael' werden im
+Spoolverzeichnis folgende Verzeichnisse angelegt, falls diese noch nicht
+existieren:
+
+\begin{itemize}
+\item {\tt michael}
+\item {\tt michael/incoming}
+\item {\tt michael/messages}
+\end{itemize}
+
+
+Im {\tt Incoming}-Verzeichnis werden alle Nachrichten abgelegt, die bei
+einem Anruf aufgezeichnet werden. Die Dateinamen dieser Nachrichten haben
+folgendes Format:
+
+{\tt {\(<\)}Jahr{\(>\)}{\(<\)}Monat{\(>\)}{\(<\)}Tag{\(>\)}{\(<\)}Stunde{\(>\)}{\(<\)}Minute{\(>\)}{\(<\)}Sekunde{\(>\)}-{\(<\)}CallerID{\(>\)}}
+
+Wenn die Rufnummer eines Anrufers (sprich die CallerID) nicht ermittelt
+werden konnte (z.B. weil der Anrufer keinen ISDN-Anschlu{\ss} besitzt), wird f\"{u}r
+das Feld {\tt {\(<\)}CallerID{\(>\)}} der Wert {\tt 0} eingesetzt.
+
+{\bf Beispiel eines {\tt Incoming}-Verzeichnisses:}
+
+\begin{verbatim}
+-rw-------   1 michael  users       24592 Jun 10 11:02 960610110220-9317850413
+-rw-------   1 michael  users      131292 Jun 10 11:14 960610111408-9317850413
+-rw-------   1 michael  users       28104 Jun 10 11:16 960610111612-0
+\end{verbatim}
+
+
+Wenn {\em vboxgetty\/} eine Nachricht aufzeichnet, wird diese nur mit den
+Zugriffsrechten `{\tt --w-------}' ge\"{o}ffnet. Sobald die Nachricht zu Ende
+aufgenommen wurde, werden die Zugriffsrechte zu `{\tt -rw-------}'
+ge\"{a}ndert.
+
+Programme, welche dem Benutzer eine Liste der eingegangenen Nachrichten
+anzeigen, sollten nur solche Dateien aufnehmen, bei denen das {\tt r}-Bit
+(Lesbar) gesetzt ist, um sicher zu sein, da{\ss} die Nachricht zu Ende
+aufgezeichnet wurde (siehe Kapitel \ref{id-vbox}).
+
+Im {\tt Messages}-Verzeichnis m\"{u}ssen sich alle Ansagetexte befinden, die
+von {\em vboxgetty\/} gespielt werden sollen. Es existieren folgende
+voreingestellte Namen:
+
+\begin{description}
+
+
+\item[{\tt standard.msg}] \mbox{}
+
+
+
+Wird als normaler Ansagetext gespielt. Dieser kann in der Datei
+`{\tt .vboxrc}' (siehe Kapitel \ref{id-vboxrc}) f\"{u}r
+jeden Anrufer individuell eingestellt werden.
+
+
+
+\item[{\tt beep.msg}] \mbox{}
+
+
+
+Wird nach dem Ansagetext kurz vor der Aufnahme gespielt und sollt den
+Anrufer darauf aufmerksam machen, da{\ss} er jetzt seine Nachricht
+aufsprechen kann.
+
+
+
+\item[{\tt timeout.msg}] \mbox{}
+
+
+
+Wird gespielt, wenn die maximale Aufzeichnungszeit abgelaufen ist. Hier
+k\"{o}nnte z.B. der Text "{\tt Vielen Dank f\"{u}r Ihren Anruf}" gesprochen
+werden.
+
+
+
+\item[{\tt panic.msg}] \mbox{}
+
+
+
+Wird gespielt, wenn die Nachricht des Anrufers nicht aufgezeichnet werden
+konnte. Hier k\"{o}nnte z.B. der Text "{\tt Ihr Anruf konnte leider nicht
+aufgezeichnet werden. Bitte versuchen Sie es zu einem sp\"{a}teren Zeitpunk
+noch einmal}" gesprochen werden.
+
+
+
+\end{description}
+
+
+Einige Beispielansagen befinden sich im Verzeichnis
+`{\tt samples/messages}'.
+
+{\bf Bemerkung:} {\em vboxgetty\/} sollte am besten aus der
+`{\tt /etc/inittab}', aus `{\tt /etc/rc.d/rc.local}' oder vom Benutzer
+{\tt root} gestartet werden. Wenn {\em vboxgetty\/} von einem anderen
+Benutzer gestartet werden soll, ist eine Anpassung der Zugriffsrechte f\"{u}r
+einige Dateien n\"{o}tig (z.B. die Devices oder die Logdateien).
+
+
+
+
+
+
+
+
+\subsection{vbox\label{id-vbox}}
+
+
+
+{\em vbox\/} ist eine auf {\em ncurses\/} basierende Benutzeroberfl\"{a}che
+zum Ansehen und Abspielen der aufgezeichneten Nachrichten.
+
+Beim Programmstart k\"{o}nnen folgende Argumente angegeben werden:
+
+\begin{description}
+
+
+\item[{\tt -d DEVICE}] \mbox{}
+
+
+
+Name des Devices f\"{u}r die Bildschirm Ein- und Ausgabe. Fehlt diese Angabe,
+wird `{\tt /dev/tty}' (aktueller Bildschirm) benutzt.
+
+{\bf Beispiel:} {\tt vbox -d /dev/tty12}
+
+
+
+\item[{\tt -u BENUTZERNAME}] \mbox{}
+
+
+
+Name des Benutzers, dessen Nachrichten eingesehen werden sollen. Diese
+Option kann nur benutzt werden, wenn {\em vbox\/} vom Benutzer
+{\tt root} gestartet wird. {\em vbox\/} l\"{a}uft dann im sogenannten
+`viewmode', in dem alle Funktionen gesperrt sind und nur die Liste der
+aufgezeichneten Nachrichten angezeigt wird.
+
+Sofort nach dem Start setzt {\em vbox\/} die Rechte auf den angegebenen
+Benutzer zur\"{u}ck.
+
+{\bf Beispiel:} {\tt vbox -u michael}
+
+
+
+\item[{\tt -r SEKUNDEN}] \mbox{}
+
+
+
+Diese Option ist eigentlich nur im Zusammenhang mit `-u' sinnvoll und
+gibt an, nach wievielen Sekunden die Nachrichtenliste neu eingelesen
+werden soll.
+
+{\bf Beispiel:} {\tt vbox -r 60}
+
+
+
+\end{description}
+
+
+Beim booten des Rechners k\"{o}nnte {\em vbox\/} z.B. wie folgt aufgerufen
+werden:
+
+{\tt \$ vbox -d /dev/tty12 -u michael -r 60 \&}
+
+In diesem Beispiel w\"{u}rde {\em vbox\/} alle Nachrichten des Benutzers
+`michael' auf `{\tt /dev/tty12}' (Konsole 12) anzeigen und alle 60
+Sekunden pr\"{u}fen, ob sich die Liste ge\"{a}ndert hat.
+
+Wenn {\em vbox\/} von einem normalen Benutzer (also nicht von
+{\tt root}) aufgerufen und nicht in den `viewmode' geschaltet wurde,
+stehen folgende Funktionen zur Verf\"{u}gung:
+
+\begin{itemize}
+\item {\tt [CURSOR HOCH]} und {\tt [CURSOR RUNTER]}
+
+
+Bewegt den Markierbalken in der Liste hoch oder runter. Alle Funktionen
+beziehen sich immer auf den gerade angew\"{a}hlten Eintrag.
+
+
+
+\item `{\tt P}', `{\tt p}' oder {\tt [RETURN]}
+
+
+Spielt den aktuellen Eintrag mit dem in `{\tt src/settings.h}' (siehe
+Kapitel \ref{id-install-settings}) unter {\tt VBOXPLAYCMD} eingestellten Programm.
+
+Dem Programm wird beim Aufruf als erstes Argument der Name der Datei und
+als zweites Argument die eingestellte Lautst\"{a}rke \"{u}bergeben.
+
+
+
+\item `{\tt R}' oder `{\tt r}'
+
+
+Liest die Liste der Nachrichten neu ein. Diese wird auf dem Bildschirm nur
+dann neu dargestellt, wenn \"{A}nderungen gefunden werden konnten.
+
+
+
+\item `{\tt N}' oder `{\tt n}'
+
+
+Markiert einen Eintrag als neu oder als gelesen.
+
+
+
+\item `{\tt D}' oder `{\tt d}'
+
+
+Markiert einen Eintrag als gel\"{o}scht oder hebt diese Markierung auf.
+
+
+
+\item `{\tt +}' oder `{\tt -}'
+
+
+Setzt die Lautst\"{a}rke hoch oder runter.
+
+
+
+\item `{\tt Q}' oder `{\tt q}'
+
+
+Beendet das Programm. Wenn Eintr\"{a}ge als gel\"{o}scht markiert wurden, erscheint
+zus\"{a}tzlich eine Sicherheitsabfrage, ob diese auch auf dem Datentr\"{a}ger
+gel\"{o}scht werden sollen.
+
+
+
+\item `{\tt O}'
+
+
+Schaltet die Annahme von Anrufen ein oder aus. Dazu wird im
+Homeverzeichnis des Benutzers eine Datei mit dem Namen
+`{\tt .vboxstop}' erzeugt oder gel\"{o}scht. Existiert diese Datei, nimmt
+{\em vboxgetty\/} keine Anrufe mehr entgegen.
+
+Die Datei kann auch von Hand angelegt oder gel\"{o}scht werden.
+
+
+
+\end{itemize}
+
+
+{\em vbox\/} nimmt nur Nachrichten in die Liste auf, die ein gesetztes
+{\tt r}-Bit (Lesbar) haben. Gelesene Nachrichten werden mit dem
+{\tt x}-Bit (Ausf\"{u}hrbar) versehen.
+
+
+
+
+
+
+\subsection{rmdcutheader\label{id-rmdcutheader}}
+
+
+
+Das Programm {\em rmdcutheader\/} entfernt den {\tt RAW MODEM DATA
+HEADER} einer Voicedatei.
+
+Der Aufruf ist denkbar einfach:
+
+{\tt \$ rmdcutheader {\(<\)}DATEI\_MIT\_HEADER {\(>\)}DATEI\_OHNE\_HEADER}
+
+Um zum Beispiel Nachrichten, die im Format {\tt ULAW} aufgezeichnet
+wurden, nach `{\tt /dev/audio}' zu spielen, kann man wie folgt vorgehen:
+
+{\tt \$ rmdcutheader {\(<\)}VOICEMESSAGE {\(>\)}/dev/audio}
+
+
+
+
+
+
+\subsection{rmdcatheader\label{id-rmdcatheader}}
+
+
+
+Mit {\em rmdcatheader\/} kann ein {\tt RAW MODEM DATA HEADER} f\"{u}r die
+Formate {\tt ADPCM-2}, {\tt ADPCM-3}, {\tt ADPCM-4}, {\tt ALAW}
+oder {\tt ULAW} erzeugt werden.
+
+Folgende Argumente k\"{o}nnen \"{u}bergeben werden:
+
+\begin{description}
+
+
+\item[{\tt -2, --adpcm2}] \mbox{}
+
+Erzeugt einen {\tt RAW MODEM DATA HEADER} mit der Kompression
+{\tt ADPCM-2}.
+
+
+
+\item[{\tt -3, --adpcm3}] \mbox{}
+
+Erzeugt einen {\tt RAW MODEM DATA HEADER} mit der Kompression
+{\tt ADPCM-3}.
+
+
+
+\item[{\tt -4, --adpcm4}] \mbox{}
+
+Erzeugt einen {\tt RAW MODEM DATA HEADER} mit der Kompression
+{\tt ADPCM-4}.
+
+
+
+\item[{\tt -u, --ulaw}] \mbox{}
+
+Erzeugt einen {\tt RAW MODEM DATA HEADER} mit der Kompression
+{\tt ULAW}.
+
+
+
+\item[{\tt -a, --alaw}] \mbox{}
+
+Erzeugt einen {\tt RAW MODEM DATA HEADER} mit der Kompression
+{\tt ALAW}.
+
+
+
+\end{description}
+
+
+{\bf Bemerkung:} Alle Header haben als Modemtyp `{\tt ZyXEL 1496}'
+eingetragen.
+
+
+
+
+
+
+\section{Konfiguration\label{id-konfiguration}}
+
+
+
+
+
+
+
+
+\subsection{vboxrc\label{id-vboxrc}}
+
+
+
+Jeder Benutzer kann sich in seinem Homeverzeichnis eine Datei mit dem Namen
+`{\tt .vboxrc}' anlegen, in der einige Einstellungen f\"{u}r {\em vbox\/} und
+{\em vboxgetty\/} gemacht werden k\"{o}nnen.
+
+Die Datei ist in verschiedene Sektionen unterteilt. Jede Sektion beginnt mit
+einem `{\tt [}', enth\"{a}lt einen Sektionsnamen und endet mit einem
+`{\tt ]}'.
+
+Die Gro{\ss}- und Kleinschreibung zwischen den Sektionskennungen `{\tt [}'
+und `{\tt ]}' wird ignoriert. Leere Zeichen und solche die mit einem
+`{\tt \#}' beginnen werden \"{u}berlesen. Kommentare am Ende einer Zeile
+(beginnen mit `{\tt \#}') werden entfernt.
+
+Folgende Sektionen existieren:
+
+\begin{description}
+
+
+\item[{\tt [CALLERID]}] \mbox{}
+
+
+
+{\bf Format:} {\tt CALLERID-PATTERN ALIAS}
+
+Hier k\"{o}nnen sogenannte `Aliase' f\"{u}r {\tt CALLERID}'s angegeben werden.
+Die {\tt CALLERID} wird bei ISDN-Ger\"{a}ten - sofern nicht abgeschaltet -
+mit \"{u}bermittelt und dient zum Idendifizieren des Anrufers.
+
+\begin{description}
+
+
+\item[{\tt CALLERID-PATTERN}] \mbox{}
+
+
+
+{\tt CALLERID} f\"{u}r die ein Alias definiert werden soll (ohne
+f\"{u}hrende Nullen). Es k\"{o}nnen hier die \"{u}blichen UN*X-Pattern angegeben
+werden. In der {\tt CALLERID} d\"{u}rfen keine Leerzeichen enthalten
+sein.
+
+
+
+\item[{\tt ALIAS}] \mbox{}
+
+
+
+Name, der dieser {\tt CALLERID} zugeordnet werden soll. Der
+Aliasname darf Leerzeichen enthalten.
+
+
+
+\end{description}
+
+
+Als letzter Eintrag sollte {\bf immer} `{\tt * *** Unknown ***}'
+angegeben werden (siehe Beispiel). Dieses Pattern gilt f\"{u}r alle Anrufe,
+bei denen keine {\tt CALLERID} \"{u}bermittelt oder in der Liste gefunden
+wurde.
+
+{\bf Beispiel:}
+
+\begin{verbatim}
+   [CALLERID]
+
+   913469992[6-8]          Bernd Braun
+   91437850413             Michael Herold
+   *                       *** Unknown ***
+   
+\end{verbatim}
+
+
+Die {\bf erste} \"{U}bereinstimmung einer {\tt CALLERID} mit einem der
+Pattern wird benutzt.
+
+
+
+\item[{\tt [DEBUG]}] \mbox{}
+
+
+
+{\bf Format:} {\tt FLAG + FLAG + FLAG ...}
+
+In dieser Sektion k\"{o}nnen Flag's angegeben werden, die bestimmen, welche
+Informationen in die Logdatei von {\em vboxgetty\/} aufgenommen werden
+sollen.
+
+Folgende Flag's k\"{o}nnen angegeben werden:
+
+\begin{itemize}
+\item {\tt FATAL}
+Fatale Fehler
+
+
+
+\item {\tt ERRORS}
+Normal Fehler
+
+
+
+\item {\tt WARNINGS}
+Warnungen
+
+
+
+\item {\tt INFOS}
+Informationen
+
+
+
+\item {\tt DEBUG}
+Informationen zum Debuggen
+
+
+
+\item {\tt JUNK}
+Erweiterte Informationen zum Debuggen
+
+
+
+\end{itemize}
+
+
+{\bf Beispiel:} {\tt FATAL + ERRORS + WARNINGS + INFOS}
+
+
+
+\item[{\tt [RINGS]}] \mbox{}
+
+
+
+{\bf Format:} {\tt ZEIT RINGS}
+
+Hier kann angegeben werden, zu welcher Zeit nach wievielen {\tt RING}'s
+ein eingehender Anruf entgegengenommen werden soll.
+
+\begin{description}
+
+
+\item[{\tt ZEIT}] \mbox{}
+
+
+
+Eine oder mehrere Zeitzonen; Die Zeitangaben k\"{o}nnen durch Kommata
+voneinander getrennt werden. Bei einer Zeitzone von
+`{\tt STARTZEIT}-{\tt ENDZEIT}' ist die letzte Zahl inklusiv
+(z.B. {\tt 18-22} hei{\ss}t von 18 bis einschlie{\ss}lich 22 Uhr).
+
+
+
+\item[{\tt RINGS}] \mbox{}
+
+
+
+Anzahl der {\tt RING}'s bis ein Anruf entgegengenommen wird. Eine
+Anzahl von 0 {\tt RING}'s hei{\ss}t, da{\ss} der Anruf nicht
+entgegengenommen werden soll.
+
+
+
+\end{description}
+
+
+{\bf Beispiel:}
+
+\begin{verbatim}
+      0-8     5 
+      *       30
+   
+\end{verbatim}
+
+
+Im oben angegebenen Beispiel w\"{u}rde {\em vboxgetty\/} von 0 bis 8 Uhr nach
+5 {\tt RING}'s und zu allen anderen Zeiten nach 30 {\tt RING}'s den
+Anruf entgegennehmen.
+
+Die {\bf erste} \"{U}bereinstimming der aktuellen Zeit mit einer
+Zeitangabe wird benutzt.
+
+{\bf Achtung!}
+
+Beim einem Fehler (z.B. einer Falschen Zeitangabe) wird immer 0
+{\tt RING}'s angenommen. Achten Sie also bitte auf die Ausgabe in der
+Logdatei um solche Situationen auszuschlie{\ss}en!
+
+
+
+\item[{\tt Alias Sektionen}] \mbox{}
+
+
+
+{\bf Format:} {\tt ZEIT ANSAGETEXT AUFNAHMEZEIT}
+
+Mit {\tt ALIAS SEKTIONEN} k\"{o}nnen f\"{u}r Aliase, die in der Sektion
+{\tt [CALLERID]} definiert wurden, eigene Einstellungen gemacht
+werden.
+
+\begin{description}
+
+
+\item[{\tt ZEIT}] \mbox{}
+
+
+
+Eine oder mehrere Zeitzonen; Die Zeitangaben k\"{o}nnen durch Kommata
+voneinander getrennt werden. Bei einer Zeitzone von
+`{\tt STARTZEIT}-{\tt ENDZEIT}' ist die letzte Zahl inklusiv
+(z.B. {\tt 18-22} hei{\ss}t von 18 bis einschlie{\ss}lich 22 Uhr).
+
+
+
+\item[{\tt ANSAGETEXT}] \mbox{}
+
+
+
+Ansagetext der gespielt werden soll. Der Ansagetext wird aus dem
+{\tt Message}-Verzeichnis des Benutzers geladen, f\"{u}r den
+{\em vboxgetty\/} Nachrichten aufzeichnen soll.
+
+
+
+\item[{\tt AUFNAHMEZEIT}] \mbox{}
+
+
+
+Maximale Aufzeichnungszeit in Sekunden. Eine Aufzeichnungszeit von 0
+Sekunden unterdr\"{u}ckt die Aufzeichnung.
+
+
+
+\end{description}
+
+
+Wenn f\"{u}r eine {\tt CALLERID} keine {\tt ALIAS SEKTION} gefunden
+wurde, wird immer die Datei `{\tt standard.msg}' als Ansagetext
+gespielt und 60 Sekunden lang aufgezeichnet.
+
+{\bf Beispiel:}
+
+Haben Sie Beispielsweise in der Sektion {\tt [CALLERID]} eine Alias
+`Peter Muster' mit der {\tt CALLERID} 931271111 definiert, k\"{o}nnen Sie
+sich f\"{u}r diesen eine {\tt ALIAS SEKTION} erstellen:
+
+\begin{verbatim}
+   [Peter Muster]
+
+   0-7,8                   standard.msg            30
+   *                       standard.msg            60
+   
+\end{verbatim}
+
+
+Jedesmal wenn bei einem Anruf die {\tt CALLERID} 931271111 erkannt
+wird, werden die Einstellungen der {\tt ALIAS SEKTION} f\"{u}r den Alias
+der {\tt CALLERID} (also in diesem Beispiel `Peter Muster') benutzt.
+
+{\bf Bemerkung:} Legen Sie sich eine {\tt ALIAS SEKTION} `{\tt [***
+Unknown ***]}' an, die benutzt wird, wenn keine {\tt CALLERID}
+ermittelt werden konnte.
+
+
+
+\end{description}
+
+
+
+
+
+
+
+\section{Danksagungen\label{id-danksagungen}}
+
+
+
+Bedanken m\"{o}chte ich mich bei:
+
+\begin{itemize}
+\item {\bf Fritz Elfert} ({\tt fritz@wuemaus.franken.de})
+
+
+F\"{u}r {\em isdn4linux\/}, sein Hilfe bei einigen Problemen und den
+schnellen Einbau der DTMF-Erkennung.
+
+
+
+\item {\bf Nicole Sauvage} ({\tt nicole@abadonna.franken.de})
+
+
+F\"{u}r die englische \"{U}bersetzung dieser Dokumentation.
+
+
+
+\end{itemize}
+
+
+Und nat\"{u}rlich bei alle anderen, die mich mit zahlreichen neuen Ideen und
+Anregungen versorgt haben.
+
+
+
+\end{document}

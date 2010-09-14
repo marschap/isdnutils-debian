@@ -1,0 +1,43 @@
+Index: ./drivers/isdn/isdn_common.c
+Prereq:  1.4
+--- orig/./drivers/isdn/isdn_common.c   Fri Mar  1 21:55:03 1996
++++ ./drivers/isdn/isdn_common.c        Sat Mar  2 20:30:46 1996
+@@ -235,0 +236,2 @@
++       dev->ibytes[channel] += len;
++       isdn_info_update();
+@@ -705,0 +708,22 @@
++       sprintf(p, "\nibytes:\t");
++       p = istatbuf + strlen(istatbuf);
++       for (i = 0; i < ISDN_MAX_CHANNELS; i++) {
++         if (dev->drvmap[i] >= 0) {
++           sprintf(p, "%ld ", dev->ibytes[i]);
++           p = istatbuf + strlen(istatbuf);
++         } else {
++           sprintf(p, "? ");
++           p = istatbuf + strlen(istatbuf);
++         }
++       }
++       sprintf(p, "\nobytes:\t");
++       p = istatbuf + strlen(istatbuf);
++       for (i = 0; i < ISDN_MAX_CHANNELS; i++) {
++         if (dev->drvmap[i] >= 0) {
++           sprintf(p, "%ld ", dev->obytes[i]);
++           p = istatbuf + strlen(istatbuf);
++         } else {
++           sprintf(p, "? ");
++           p = istatbuf + strlen(istatbuf);
++         }
++       }
+@@ -805,0 +830,2 @@
++               dev->obytes[drvidx] += count;
++               isdn_info_update();
+@@ -1561,0 +1588,2 @@
++                       dev->ibytes[i] = 0;
++                       dev->obytes[i] = 0;
+Index: ./include/linux/isdn.h
+Prereq:  1.2
+--- orig/./include/linux/isdn.h Fri Mar  1 22:14:31 1996
++++ ./include/linux/isdn.h      Sat Mar  2 20:23:47 1996
+@@ -544,0 +545,2 @@
++  long              ibytes[ISDN_MAX_CHANNELS];
++  long              obytes[ISDN_MAX_CHANNELS];

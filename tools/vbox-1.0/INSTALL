@@ -1,0 +1,64 @@
+
+Installation von `vbox' Version 1.0
+===================================
+
+`vbox' und `vboxgetty' basieren auf dem Paket `mgetty-0.99', enthalten
+aber *keine* Funktionen für Fax- oder Datenverbindungen. Das Paket ist
+ausschließlich als Anrufbeantworter und *nur* für isdn4linux gedacht!
+
+Bei einem Fehler von `vboxgetty' bitte eine eMail an:
+
+   michael@abadonna.franken.de
+
+Dabei bitte der entsprechende Ausschnitt aus der Logdatei und nach
+möglichkeit eine Beschreibung um den Fehler zu reproduzieren!
+
+
+Vor der Installation sind folgende Dateien anzupassen:
+
+- ./Makefile
+- ./src/settings.h
+
+Danach:
+
+$ make install-dir
+
+Dadurch wird das in SPOOLDIR angegebene Verzeichniss erzeugt. Alle weiteren
+Unterverzeichnisse die benötigt werden, werden von `vboxgetty' erzeugt.
+
+Jetzt...
+
+$ make vbox
+$ make install
+
+...um die Programme zu erzeugen und zu installieren.
+
+Im Verzeichnis './samples' befindet sich eine Beispieldatei zur Ein-
+bindung von vboxgetty in die /etc/inittab (sample-inittab) und  eine
+Beispieldatei für $HOME/.vboxrc (sample-vboxrc).
+
+Außerdem noch die Datei 'vboxplay', die angibt, wie ein externes Kommando
+zum abspielen aufgebaut sein kann (soll).
+
+
+In './samples/messages' sind einige Beispielmessages.
+
+`vboxgetty' spielt folgende Nachrichten ab:
+
+michael:/var/spool/vbox/michael/messages:
+
+-rw-r--r--   1 michael  users        3567 May 23 19:07 beep.msg
+-rw-r--r--   1 michael  users       20286 May 23 16:42 panic.msg
+-rw-r--r--   1 michael  users       48031 May 23 19:18 standard.msg
+-rw-r--r--   1 michael  users       13519 May 23 19:19 timeout.msg
+
+standard.msg: Ansagetext wenn eine Verbindung zustande gekommen ist
+              (Im Beispiel: Mein persönlicher Ansagetext).
+
+beep.msg    : Beep-Signal; wird direkt nach dem Ansagetext gespielt.
+
+panic.msg   : Wird gespielt, wenn eine Nachricht nicht aufgenommen werden
+              konnte.
+
+timeout.msg : Wird gespielt, wenn die maximale Aufzeichnungszeit abgelaufen
+              ist (Im Beispiel "Vielen Dank für Ihren Anruf").

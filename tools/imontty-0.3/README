@@ -1,0 +1,76 @@
+imontty v 0.3
+(c) 1995, Volker Goetz (volker@oops.franken.de)
+
+This is version 0.3 of imontty, a handy program to print out the
+status of all ISDN lines of the isdn4linux package.
+
+
+INSTALLATION:
+-------------
+
+Check the Makefile for the correct path of the include directory
+of the isdn4linux package:
+
+ISDN_INCLUDE=/usr/src/isdn/include
+
+is the default and fits if you have unpacked the isdn4linux
+package in /usr/src.
+
+SBINPATH must be set to the directory where the binary is going
+to be installed.
+
+To compile simply type "make" or "make all". If the compilation
+stops with an error that isdnconfig.h could not be found then go
+to the main directory of isdn4linux und type "make config" to
+make the required include file. After that type again "make" or
+"make all" in the imontty source directory.
+
+To install the binary in its final location type "make install".
+
+
+USAGE:
+------
+
+To print the status of the ISDN lines type "imontty". No command
+line options are supported. The output should look like this:
+
+
+ISDN channel status:
+
+Channel #   Dr/Ch   Direction   Usage           Number
+-----------------------------------------------------------------------
+Channel 0:  0/0     outgoing    IP interface    09317840724
+Channel 1:  0/1     incoming    tty emulation   916188680
+
+
+or (if two cards are installed):
+
+ISDN channel status:
+
+Channel #   Dr/Ch   Direction   Usage           Number
+-----------------------------------------------------------------------
+Channel 0:  0/0     free        --              ???
+Channel 1:  0/1     free        --              ???
+Channel 2:  1/0     incoming    IP interface    933180724
+Channel 3:  1/1     free        --              ???
+
+
+One line describes the status of the named ISDN Channel.
+
+Dr/Ch give the actual driver and channel of this driver which
+are attached to this channel.
+
+Direction: free, incoming or outgoing
+Usage: raw device, tty emulation, IP interface, voice or fax.
+Number is either the called partys number (outgoing) or the
+calling party number (incoming). If the channel is unused (free)
+"???" is printed.
+
+
+TODO:
+-----
+
+nothing at the moment :-)
+
+If you have any suggestions or error reports pleas let me know
+via email to volker@oops.franken.de.

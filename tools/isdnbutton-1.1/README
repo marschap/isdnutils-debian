@@ -1,0 +1,51 @@
+This is a small X based program that allows for easy activation and
+deactivation of the demand-dialing feature of the Linux-ISDN
+subsystem. It displays a symbolized traffic light. When the light is
+red, no demand-dialing is possible; when it is yellow, demand-dialing
+has been enabled but there is currently no connection using any of the
+ISDN network devices; when it is green, there is at least one active
+connection using an ISDN network device. You can interactively switch
+between red and yellow/green by clicking into the window.
+
+ISDN-button is intended to be run inside of the FVWM button bar, but
+you can also run it stand-alone. It has to be installed setuid-root in
+order to access the ISDN and network devices! I tried to close the
+most obvious security holes, but I cannot guarantee that this program
+is secure; if you are paranoid or do not trust your users, you should
+refrain from using ISDN-button (or submit a patch, that closes
+possible security holes).
+
+You will have to provide two shell scripts in "/usr/sbin/isdn";
+"connect" will be called when demand-dialing is to be enabled and
+"disconnect" will be called when it is to be disabled.
+
+Typically, "connect" will have instructions for adding an outgoing
+telephone number (e.g. "/sbin/isdnctrl addnum isdn0 out 555-1234"),
+and setting up a default route (e.g. "/sbin/route add default gw
+192.168.0.1 metric 1"); "disconnect" will then have instructions for
+removing the default route (e.g. "/sbin/route del default"), for
+removing all outgoing telephone numbers (e.g. "/sbin/isdnctrl delnum
+isdn0 out 555-1234"), and for hanging up (e.g. "/sbin/isdnctrl hangup
+isdn0").
+
+It is highly advisable, that you configure "syslogd" to log all
+messages of priority "warn" or above. The output should not only go
+into a log file, but also into either the "xconsole" window or on a
+free virtual console! ISDN-button uses the facility "user". All error
+messages, that are output when "dis-/connect" is run, will be sent to
+"syslogd".
+
+This program works fine, if you connect to just a limited number of
+ISP's. For anything more advanced than this, you are likely to exceed
+the limits of ISDN-button. If you think, you have come up with an
+unusual trick for using ISDN-button in more advanced applications, I
+would like to know about it.
+
+For copyright/licensing information have a look into the header of the
+C source code. Basically, this code is covered under the conditions of
+the GPL, but I would really appreciate if you sent me a postcard from
+your home-town, if you think that ISDN-button is useful to you.
+
+
+Markus Gutschke, Schlage 5a, D-48268 Greven-Gimbte, Germany
+gutschk@uni-muenster.de

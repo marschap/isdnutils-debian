@@ -1,0 +1,25 @@
+ipppd, based on pppd 2.2.0f
+---------------------------
+
+I added two new options:
+ - 'useifip' gets the IP addresses from the interface
+		interface address -> local IP
+		pointopoint address -> remote IP
+ - '+mp' enables MPPP negotiation
+
+The ipppd can handle multiple devices. This is necessary to
+link together several connections to one bundle.
+Also, you only start the ipppd once. It now opens the devices
+and waits for connections. 
+If you (or the remote side) closes the connection the ipppd
+reopens the device automatically.
+So you shouldn't kill the ipppd to close a link. Instead, trigger
+a hangup on the netdevice layer.
+(with isdn4linux: isdnctrl hangup <device>')
+
+I applied the mschap80 patches (see README.mschap80), but this
+is untested.
+
+
+
+

@@ -1,0 +1,285 @@
+<HTML>
+<HEAD>
+<TITLE>V B O X: Programme</TITLE>
+</HEAD>
+<BODY>
+<A HREF="vbox-3.html">Zurück</A>
+<A HREF="vbox-5.html">Weiter</A>
+<A HREF="vbox.html#toc4">Inhaltsverzeichnis</A>
+<HR>
+<H2><A NAME="id-programme"></A> <A NAME="s4">4. Programme</A></H2>
+
+
+
+
+<H2><A NAME="id-vboxgetty"></A> <A NAME="ss4.1">4.1 vboxgetty</A></H2>
+
+
+<P><EM>vboxgetty</EM> ist das eigentliche Hauptprogramm, welches die Anrufe
+entgegennimmt, Ansagetexte abspielt und die Nachrichten der Anrufer
+aufzeichnet.</P>
+<P>Beim Start von <EM>vboxgetty</EM> k&ouml;nnen dem Programm folgende Argumente
+&uuml;bergeben werden:</P>
+<P>
+<DL>
+
+<DT><B><CODE>-s GESCHWINDIGKEIT</CODE></B><DD>
+<P>Die Geschwindigkeit, mit der <EM>vboxgetty</EM> das Modem ansprechen
+soll. Die Voreinstellung von <CODE>38400</CODE> sollte in den meisten F&auml;llen
+ausreichend sein und ist auch f&uuml;r <CODE>ADPCM-4</CODE> geeignet.</P>
+<P><B>Beispiel:</B> <CODE>vboxgetty -s 38400</CODE></P>
+
+<DT><B><CODE>-d DEVICE</CODE></B><DD>
+<P>Name des Devices, das als Modem benutzt werden soll. Das Device braucht
+vorher nicht mit <EM>setserial</EM> eingestellt zu werden.</P>
+<P><B>Beispiel:</B> <CODE>vboxgetty -d /dev/ttyI5</CODE></P>
+
+<DT><B><CODE>-u BENUTZERNAME</CODE></B><DD>
+<P><EM>vboxgetty</EM> <B>mu&szlig;</B> beim Start der Name eines Benutzers
+angegeben werden, f&uuml;r den die Nachrichten aufgezeichnet werden sollen.</P>
+<P>Der angegebene Benutzer mu&szlig; in der `<CODE>/etc/passwd</CODE>' eingetragen
+sein und auf dem System existieren.</P>
+<P><B>Beispiel:</B> <CODE>vboxgetty -u michael</CODE></P>
+
+<DT><B><CODE>-i MODEM-INIT-KOMMANDO</CODE></B><DD>
+<P>Kommando zum Initialisieren des Modems. Hier sollte unter anderem die
+Telefonnummer angegeben werden, auf die <EM>vboxgetty</EM> - also der
+Anrufbeantworter - reagieren soll.</P>
+<P>Benutzer, die den <EM>iprofd</EM> von <EM>isdn4linux</EM> benutzen,
+sollten hier mindestens <B>immer</B> die Telefonnummer angeben, auf die
+reagiert werden soll.</P>
+<P><B>Beispiel:</B> <CODE>vboxgetty -i "ATZ&amp;E7850413"</CODE></P>
+
+</DL>
+</P>
+<P>Ein normaler Aufruf von <EM>vboxgetty</EM> sollte in etwa so aussehen:</P>
+<P><CODE>$ vboxgetty -d /dev/ttyI6 -i "ATZ&amp;E7850413" -u michael</CODE></P>
+<P>F&uuml;r den in diesem Beispiel angegebenen Benutzer `michael' werden im
+Spoolverzeichnis folgende Verzeichnisse angelegt, falls diese noch nicht
+existieren:</P>
+<P>
+<UL>
+<LI><CODE>michael</CODE></LI>
+<LI><CODE>michael/incoming</CODE></LI>
+<LI><CODE>michael/messages</CODE></LI>
+</UL>
+</P>
+<P>Im <CODE>Incoming</CODE>-Verzeichnis werden alle Nachrichten abgelegt, die bei
+einem Anruf aufgezeichnet werden. Die Dateinamen dieser Nachrichten haben
+folgendes Format:</P>
+<P><CODE>&lt;Jahr&gt;&lt;Monat&gt;&lt;Tag&gt;&lt;Stunde&gt;&lt;Minute&gt;&lt;Sekunde&gt;-&lt;CallerID&gt;</CODE></P>
+<P>Wenn die Rufnummer eines Anrufers (sprich die CallerID) nicht ermittelt
+werden konnte (z.B. weil der Anrufer keinen ISDN-Anschlu&szlig; besitzt), wird f&uuml;r
+das Feld <CODE>&lt;CallerID&gt;</CODE> der Wert <CODE>0</CODE> eingesetzt.</P>
+<P><B>Beispiel eines <CODE>Incoming</CODE>-Verzeichnisses:</B></P>
+<P>
+<PRE>
+-rw-------   1 michael  users       24592 Jun 10 11:02 960610110220-9317850413
+-rw-------   1 michael  users      131292 Jun 10 11:14 960610111408-9317850413
+-rw-------   1 michael  users       28104 Jun 10 11:16 960610111612-0
+</PRE>
+</P>
+<P>Wenn <EM>vboxgetty</EM> eine Nachricht aufzeichnet, wird diese nur mit den
+Zugriffsrechten `<CODE>--w-------</CODE>' ge&ouml;ffnet. Sobald die Nachricht zu Ende
+aufgenommen wurde, werden die Zugriffsrechte zu `<CODE>-rw-------</CODE>'
+ge&auml;ndert.</P>
+<P>Programme, welche dem Benutzer eine Liste der eingegangenen Nachrichten
+anzeigen, sollten nur solche Dateien aufnehmen, bei denen das <CODE>r</CODE>-Bit
+(Lesbar) gesetzt ist, um sicher zu sein, da&szlig; die Nachricht zu Ende
+aufgezeichnet wurde (siehe Kapitel 
+<A HREF="#id-vbox">vbox</A>).</P>
+<P>Im <CODE>Messages</CODE>-Verzeichnis m&uuml;ssen sich alle Ansagetexte befinden, die
+von <EM>vboxgetty</EM> gespielt werden sollen. Es existieren folgende
+voreingestellte Namen:</P>
+<P>
+<DL>
+
+<DT><B><CODE>standard.msg</CODE></B><DD>
+<P>Wird als normaler Ansagetext gespielt. Dieser kann in der Datei
+`<CODE>.vboxrc</CODE>' (siehe Kapitel 
+<A HREF="vbox-5.html#id-vboxrc">vboxrc</A>) f&uuml;r
+jeden Anrufer individuell eingestellt werden.</P>
+
+<DT><B><CODE>beep.msg</CODE></B><DD>
+<P>Wird nach dem Ansagetext kurz vor der Aufnahme gespielt und sollt den
+Anrufer darauf aufmerksam machen, da&szlig; er jetzt seine Nachricht
+aufsprechen kann.</P>
+
+<DT><B><CODE>timeout.msg</CODE></B><DD>
+<P>Wird gespielt, wenn die maximale Aufzeichnungszeit abgelaufen ist. Hier
+k&ouml;nnte z.B. der Text "<CODE>Vielen Dank f&uuml;r Ihren Anruf</CODE>" gesprochen
+werden.</P>
+
+<DT><B><CODE>panic.msg</CODE></B><DD>
+<P>Wird gespielt, wenn die Nachricht des Anrufers nicht aufgezeichnet werden
+konnte. Hier k&ouml;nnte z.B. der Text "<CODE>Ihr Anruf konnte leider nicht
+aufgezeichnet werden. Bitte versuchen Sie es zu einem sp&auml;teren Zeitpunk
+noch einmal</CODE>" gesprochen werden.</P>
+
+</DL>
+</P>
+<P>Einige Beispielansagen befinden sich im Verzeichnis
+`<CODE>samples/messages</CODE>'.</P>
+<P><B>Bemerkung:</B> <EM>vboxgetty</EM> sollte am besten aus der
+`<CODE>/etc/inittab</CODE>', aus `<CODE>/etc/rc.d/rc.local</CODE>' oder vom Benutzer
+<CODE>root</CODE> gestartet werden. Wenn <EM>vboxgetty</EM> von einem anderen
+Benutzer gestartet werden soll, ist eine Anpassung der Zugriffsrechte f&uuml;r
+einige Dateien n&ouml;tig (z.B. die Devices oder die Logdateien).</P>
+
+
+
+
+<H2><A NAME="id-vbox"></A> <A NAME="ss4.2">4.2 vbox</A></H2>
+
+
+<P><EM>vbox</EM> ist eine auf <EM>ncurses</EM> basierende Benutzeroberfl&auml;che
+zum Ansehen und Abspielen der aufgezeichneten Nachrichten.</P>
+<P>Beim Programmstart k&ouml;nnen folgende Argumente angegeben werden:</P>
+<P>
+<DL>
+
+<DT><B><CODE>-d DEVICE</CODE></B><DD>
+<P>Name des Devices f&uuml;r die Bildschirm Ein- und Ausgabe. Fehlt diese Angabe,
+wird `<CODE>/dev/tty</CODE>' (aktueller Bildschirm) benutzt.</P>
+<P><B>Beispiel:</B> <CODE>vbox -d /dev/tty12</CODE></P>
+
+<DT><B><CODE>-u BENUTZERNAME</CODE></B><DD>
+<P>Name des Benutzers, dessen Nachrichten eingesehen werden sollen. Diese
+Option kann nur benutzt werden, wenn <EM>vbox</EM> vom Benutzer
+<CODE>root</CODE> gestartet wird. <EM>vbox</EM> l&auml;uft dann im sogenannten
+`viewmode', in dem alle Funktionen gesperrt sind und nur die Liste der
+aufgezeichneten Nachrichten angezeigt wird.</P>
+<P>Sofort nach dem Start setzt <EM>vbox</EM> die Rechte auf den angegebenen
+Benutzer zur&uuml;ck.</P>
+<P><B>Beispiel:</B> <CODE>vbox -u michael</CODE></P>
+
+<DT><B><CODE>-r SEKUNDEN</CODE></B><DD>
+<P>Diese Option ist eigentlich nur im Zusammenhang mit `-u' sinnvoll und
+gibt an, nach wievielen Sekunden die Nachrichtenliste neu eingelesen
+werden soll.</P>
+<P><B>Beispiel:</B> <CODE>vbox -r 60</CODE></P>
+
+</DL>
+</P>
+<P>Beim booten des Rechners k&ouml;nnte <EM>vbox</EM> z.B. wie folgt aufgerufen
+werden:</P>
+<P><CODE>$ vbox -d /dev/tty12 -u michael -r 60 &amp;</CODE></P>
+<P>In diesem Beispiel w&uuml;rde <EM>vbox</EM> alle Nachrichten des Benutzers
+`michael' auf `<CODE>/dev/tty12</CODE>' (Konsole 12) anzeigen und alle 60
+Sekunden pr&uuml;fen, ob sich die Liste ge&auml;ndert hat.</P>
+<P>Wenn <EM>vbox</EM> von einem normalen Benutzer (also nicht von
+<CODE>root</CODE>) aufgerufen und nicht in den `viewmode' geschaltet wurde,
+stehen folgende Funktionen zur Verf&uuml;gung:</P>
+<P>
+<UL>
+<LI><CODE>[CURSOR HOCH]</CODE> und <CODE>[CURSOR RUNTER]</CODE>
+
+<P>Bewegt den Markierbalken in der Liste hoch oder runter. Alle Funktionen
+beziehen sich immer auf den gerade angew&auml;hlten Eintrag.</P>
+
+</LI>
+<LI>`<CODE>P</CODE>', `<CODE>p</CODE>' oder <CODE>[RETURN]</CODE>
+
+<P>Spielt den aktuellen Eintrag mit dem in `<CODE>src/settings.h</CODE>' (siehe
+Kapitel 
+<A HREF="vbox-3.html#id-install-settings">Einstellungen in    `src/settings.h'</A>) unter <CODE>VBOXPLAYCMD</CODE> eingestellten Programm.</P>
+<P>Dem Programm wird beim Aufruf als erstes Argument der Name der Datei und
+als zweites Argument die eingestellte Lautst&auml;rke &uuml;bergeben.</P>
+
+</LI>
+<LI>`<CODE>R</CODE>' oder `<CODE>r</CODE>'
+
+<P>Liest die Liste der Nachrichten neu ein. Diese wird auf dem Bildschirm nur
+dann neu dargestellt, wenn &Auml;nderungen gefunden werden konnten.</P>
+
+</LI>
+<LI>`<CODE>N</CODE>' oder `<CODE>n</CODE>'
+
+<P>Markiert einen Eintrag als neu oder als gelesen.</P>
+
+</LI>
+<LI>`<CODE>D</CODE>' oder `<CODE>d</CODE>'
+
+<P>Markiert einen Eintrag als gel&ouml;scht oder hebt diese Markierung auf.</P>
+
+</LI>
+<LI>`<CODE>+</CODE>' oder `<CODE>-</CODE>'
+
+<P>Setzt die Lautst&auml;rke hoch oder runter.</P>
+
+</LI>
+<LI>`<CODE>Q</CODE>' oder `<CODE>q</CODE>'
+
+<P>Beendet das Programm. Wenn Eintr&auml;ge als gel&ouml;scht markiert wurden, erscheint
+zus&auml;tzlich eine Sicherheitsabfrage, ob diese auch auf dem Datentr&auml;ger
+gel&ouml;scht werden sollen.</P>
+
+</LI>
+<LI>`<CODE>O</CODE>'
+
+<P>Schaltet die Annahme von Anrufen ein oder aus. Dazu wird im
+Homeverzeichnis des Benutzers eine Datei mit dem Namen
+`<CODE>.vboxstop</CODE>' erzeugt oder gel&ouml;scht. Existiert diese Datei, nimmt
+<EM>vboxgetty</EM> keine Anrufe mehr entgegen.</P>
+<P>Die Datei kann auch von Hand angelegt oder gel&ouml;scht werden.</P>
+
+</LI>
+</UL>
+</P>
+<P><EM>vbox</EM> nimmt nur Nachrichten in die Liste auf, die ein gesetztes
+<CODE>r</CODE>-Bit (Lesbar) haben. Gelesene Nachrichten werden mit dem
+<CODE>x</CODE>-Bit (Ausf&uuml;hrbar) versehen.</P>
+
+
+
+<H2><A NAME="id-rmdcutheader"></A> <A NAME="ss4.3">4.3 rmdcutheader</A></H2>
+
+
+<P>Das Programm <EM>rmdcutheader</EM> entfernt den <CODE>RAW MODEM DATA
+HEADER</CODE> einer Voicedatei.</P>
+<P>Der Aufruf ist denkbar einfach:</P>
+<P><CODE>$ rmdcutheader &lt;DATEI_MIT_HEADER &gt;DATEI_OHNE_HEADER</CODE></P>
+<P>Um zum Beispiel Nachrichten, die im Format <CODE>ULAW</CODE> aufgezeichnet
+wurden, nach `<CODE>/dev/audio</CODE>' zu spielen, kann man wie folgt vorgehen:</P>
+<P><CODE>$ rmdcutheader &lt;VOICEMESSAGE &gt;/dev/audio</CODE></P>
+
+
+
+<H2><A NAME="id-rmdcatheader"></A> <A NAME="ss4.4">4.4 rmdcatheader</A></H2>
+
+
+<P>Mit <EM>rmdcatheader</EM> kann ein <CODE>RAW MODEM DATA HEADER</CODE> f&uuml;r die
+Formate <CODE>ADPCM-2</CODE>, <CODE>ADPCM-3</CODE>, <CODE>ADPCM-4</CODE>, <CODE>ALAW</CODE>
+oder <CODE>ULAW</CODE> erzeugt werden.</P>
+<P>Folgende Argumente k&ouml;nnen &uuml;bergeben werden:</P>
+<P>
+<DL>
+
+<DT><B><CODE>-2, --adpcm2</CODE></B><DD><P>Erzeugt einen <CODE>RAW MODEM DATA HEADER</CODE> mit der Kompression
+<CODE>ADPCM-2</CODE>.</P>
+
+<DT><B><CODE>-3, --adpcm3</CODE></B><DD><P>Erzeugt einen <CODE>RAW MODEM DATA HEADER</CODE> mit der Kompression
+<CODE>ADPCM-3</CODE>.</P>
+
+<DT><B><CODE>-4, --adpcm4</CODE></B><DD><P>Erzeugt einen <CODE>RAW MODEM DATA HEADER</CODE> mit der Kompression
+<CODE>ADPCM-4</CODE>.</P>
+
+<DT><B><CODE>-u, --ulaw</CODE></B><DD><P>Erzeugt einen <CODE>RAW MODEM DATA HEADER</CODE> mit der Kompression
+<CODE>ULAW</CODE>.</P>
+
+<DT><B><CODE>-a, --alaw</CODE></B><DD><P>Erzeugt einen <CODE>RAW MODEM DATA HEADER</CODE> mit der Kompression
+<CODE>ALAW</CODE>.</P>
+
+</DL>
+</P>
+<P><B>Bemerkung:</B> Alle Header haben als Modemtyp `<CODE>ZyXEL 1496</CODE>'
+eingetragen.</P>
+
+
+
+<HR>
+<A HREF="vbox-3.html">Zurück</A>
+<A HREF="vbox-5.html">Weiter</A>
+<A HREF="vbox.html#toc4">Inhaltsverzeichnis</A>
+</BODY>
+</HTML>
