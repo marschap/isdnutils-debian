@@ -1,5 +1,4 @@
-130	FreeCall
-151	Mobilfunknetz D1
+1511	Mobilfunknetz D1
 160	Mobilfunknetz D1
 170	Mobilfunknetz D1
 171	Mobilfunknetz D1
@@ -14,26 +13,43 @@
 178	Mobilfunknetz Eplus
 176	Mobilfunknetz E2
 179	Mobilfunknetz E2
-150	Mobilfunknetz Quam
+1505	Mobilfunknetz Quam
 1801	Shared Cost 0180-1	3
-1802	Shared Cost 0180-2      3
-1803	Shared Cost 0180-3      3
-1804	Shared Cost 0180-4      3
-1805	Shared Cost 0180-5      3
-1901	Premium Rate 0190-1     3
-1902	Premium Rate 0190-2     3
-1903	Premium Rate 0190-3     3
-1904	Premium Rate 0190-4     3
-1905	Premium Rate 0190-5     3
-1906	Premium Rate 0190-6     3
-1907	Premium Rate 0190-7     3
-1908	Premium Rate 0190-8     3
-1909	Premium Rate 0190-9     3
+1802	Shared Cost 0180-2	3
+1803	Shared Cost 0180-3	3
+1804	Shared Cost 0180-4	3
+1805	Shared Cost 0180-5	3
+1900	Premium Rate 0190-0 (freie Tarifierung)
+1901	Premium Rate 0190-1	3
+1902	Premium Rate 0190-2	3
+1903	Premium Rate 0190-3	3
+1904	Premium Rate 0190-4	3
+1905	Premium Rate 0190-5	3
+1906	Premium Rate 0190-6	3
+1907	Premium Rate 0190-7	3
+1908	Premium Rate 0190-8	3
+1909	Premium Rate 0190-9	3
+190023	HugoTel
+190024	Pennyphone
+190025	clever25
+190028	maxTEL
 190029	Telebillig
 190031	Teledump
+190032	Phonedump
 190035	TeleDiscount
 190037	Fonfux
+190047	Surprise Telecom
+190049	Germanphone
+190051	Junior Telecom
+190054	Calladin
+190071	RapidCall
+1900732	Tele2 iHear
+190076	Telestunt
+190079	smart79
+190082	lightTalk
+190084	maxbell
 190087	Phonecraft
+190095	superdump
 201	Essen
 202	Wuppertal
 203	Duisburg
@@ -238,7 +254,7 @@
 2426	Nörvenich
 2427	Nideggen
 2428	Niederzier
-2429	Nürtgenwald
+2429	Hürtgenwald
 2431	Erkelenz
 2432	Wassenberg
 2433	Hückelhoven
@@ -559,12 +575,13 @@
 2993	Marsberg-Canstein
 2994	Marsberg-Westheim
 30	Berlin
+310	Testrufnummer Ferngespräche	2
+311	Testrufnummer Ortsgespräche	2
 3301	Oranienburg
 3302	Henningsdorf
 3303	Birkenwerdr
 3304	Velten
 33051	Nassenheide
-33052	Leegebruch
 33053	Zehlendorf
 33054	Liebenwalde
 33055	Kremmen
@@ -771,7 +788,6 @@
 33924	Rägelin
 33925	Wustrau-Altfriesack
 33926	Herzberg
-33927	Linum
 33928	Wildberg
 33929	Gühlen-Glienicke
 33931	Reinsberg
@@ -787,7 +803,7 @@
 33967	Freyenstein
 33968	Meyenburg
 33969	Stepenitz
-33970	Neustadt
+33970	Neustadt Dosse
 33971	Kyritz
 33972	Breddin
 33973	Zernitz
@@ -1178,7 +1194,7 @@
 35953	Burkau
 35954	Großharthau
 35955	Pulsnitz
-3596	Neustadt
+3596	Neustadt i Sa
 35971	Sebnitz
 35973	Stolpen
 35974	Hinterhermsdorf
@@ -2240,7 +2256,7 @@
 4407	Wardenburg
 4408	Hude
 4409	Westerstede-Ocholt
-441	Oldenburg
+441	Oldenburg (Oldb)
 4421	Wilhelmshaven
 4422	Sande
 4423	Fedderwarden
@@ -2344,7 +2360,7 @@
 4557	Blunk
 4558	Todesfelde
 4559	Wensin
-4561	Neustadt
+4561	Neustadt in Holstein
 4562	Grömitz
 4563	Scharbeutz-Haffkrug
 4564	Schashagen
@@ -2456,7 +2472,7 @@
 4791	Osterholz-Scharmbeck
 4792	Worpswede
 4793	Hambergen
-4794	Worpswede-Osterode
+4794	Worpswede-Ostersode
 4795	Garlstedt
 4796	Teufelsmoor
 4802	Wrohm
@@ -3365,7 +3381,7 @@
 6307	Schopp
 6308	Olsbrücken
 631	Kaiserslautern
-6321	Neustadt
+6321	Neustadt a d Weinstr
 6322	Bad Dürkheim
 6323	Edenkoben
 6324	Haßloch
@@ -3624,7 +3640,7 @@
 6683	Ehrenberg
 6684	Hofbier Schwarzbach
 6691	Schwalmstadt
-6692	Neustadt
+6692	Neustadt Hessen
 6693	Neuental
 6694	Neukirchen
 6695	Jeseberg
@@ -4432,7 +4448,7 @@
 8326	Fischen
 8327	Rettenberg
 8328	Baderschwang
-8329	Riezlern
+8329	Riezlern Kleinwalsertal (+43 5517 ab 2003-07)
 8330	Legau
 8331	Memmingen
 8332	Ottobeuren
@@ -4457,6 +4473,7 @@
 8363	Pfronten
 8364	Seeg
 8365	Wertach
+83658	Jungholz Tirol (+43 5676 ab 2003-07)
 8366	Oy-Mittelberg
 8367	Roßhaupten
 8368	Halblech
@@ -4700,15 +4717,15 @@
 8868	Schwabsoien
 8869	Kinsau
 89	München
-9002	Rain Lech
-9003	Harburg
-9004	Tapfheim
-9005	Bissingen
-9006	Mertingen
-9007	Marxheim
-9008	Bissingen-Unterringingen
-9009	Kaisheim
+9001	Premium Rate - Information
+9003	Premium Rate - Unterhaltung
+9005	Premium Rate - Sonstige (Erotik)
+9005000	Centalk	5
+9005001	Centalk	5
+9005310	Centel
+9009	Premium Rate - Dialer
 906	Donauwörth
+9070	Tapfheim
 9071	Dillingen
 9072	Lauingen
 9073	Gundelfingen
@@ -4716,17 +4733,24 @@
 9075	Glött
 9076	Wittislingen
 9077	Bachhagel
+9078	Mertingen
+9080	Harburg Schwaben
 9081	Nördlingen
 9082	Oettingen
 9083	Möttingen
+9084	Bissingen
 9085	Alerheim
 9086	Fremdingen
 9087	Marktoffingen
 9088	Mönchsdeggingen
+9089	Bissingen-Unterringingen
+9090	Rain Lech
 9091	Monheim
 9092	Wemding
 9093	Polsingen
 9094	Tagmersheim
+9097	Marxheim
+9099	Kaisheim
 9101	Langenzenn
 9102	Wilhermsdorf
 9103	Cadolzburg
@@ -5054,7 +5078,7 @@
 9574	Marktzeuln
 9575	Weismain
 9576	Lichtenfels-Isling
-9602	Neustadt
+9602	Neustadt a d Waldnaab
 9603	Floß
 9604	Wernberg-Köblitz
 9605	Weiherhammer
@@ -5146,7 +5170,7 @@
 9764	Hoechheim
 9765	Trappstadt
 9766	Grosswenkheim
-9771	Bad Neustadt
+9771	Bad Neustadt a d Saale
 9772	Bischofsheim a.d.Rhoen
 9773	Unsleben
 9774	Oberelsbach

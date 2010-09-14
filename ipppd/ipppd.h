@@ -18,7 +18,7 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- * $Id: ipppd.h,v 1.20 2000/07/25 20:23:51 kai Exp $
+ * $Id: ipppd.h,v 1.24 2004/02/12 10:50:21 keil Exp $
  */
 
 /*
@@ -48,6 +48,7 @@
 # include <utmp.h>
 #endif
 
+#if 0
 #include <linux/version.h>
 #if (LINUX_VERSION_CODE < ((0x020100)+88))
 #define ISDN_PPP_COMP_MAX_OPTIONS 16
@@ -57,6 +58,7 @@ struct isdn_ppp_comp_data {
         int optlen;
         int flags;
 };
+#endif
 #endif
 
 #ifndef PPP_LINK_CCP
@@ -196,6 +198,8 @@ extern char	*connector;	/* Script to establish physical link */
 extern char	*disconnector;	/* Script to disestablish physical link */
 extern char	user[];		/* Username for PAP */
 extern char	passwd[];	/* Password for PAP */
+extern int	ask_passwd;	/* Ask user for password */
+extern int	fdpasswd;	/* Password via filedescriptor */
 extern int	auth_required;	/* Peer is required to authenticate */
 extern int	proxyarp;	/* Set up proxy ARP entry for peer */
 extern int	persist;	/* Reopen link after it goes down */
@@ -211,6 +215,21 @@ extern int	cryptpap;	/* Others' PAP passwords are encrypted */
 #ifdef __linux__
 extern int      hostroute;      /* Add a route to the host at the other end? */
 #endif
+#ifdef IPPP_FILTER
+
+#  ifdef HAVE_NET_BPF_H
+#    include <net/bpf.h>
+#  else
+#    ifdef HAVE_PCAP_BPF_H
+#      include <pcap-bpf.h>
+#    else
+#      error no BPF include defined
+#    endif
+#  endif
+
+extern struct   bpf_program pass_filter;   /* Filter for pkts to pass */
+extern struct   bpf_program active_filter; /* Filter for link-active pkts */
+#endif /* IPPP_FILTER */
 
 /*
  * Values for phase.
@@ -284,6 +303,9 @@ void link_required(int);
 void link_terminated(int);
 void link_down(int);
 void link_established(int unit);
+#ifdef IPPP_FILTER
+int set_filters(int, struct bpf_program *, struct bpf_program *);
+#endif /* IPPP_FILTER */
 int device_script(char *program,int in,int out);
 void check_auth_options(void);
 void setipdefault(void);

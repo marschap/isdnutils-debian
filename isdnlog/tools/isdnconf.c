@@ -1,4 +1,4 @@
-/* $Id: isdnconf.c,v 1.33 2000/09/01 06:30:20 paul Exp $
+/* $Id: isdnconf.c,v 1.36 2004/07/24 16:16:56 tobiasb Exp $
  *
  * ISDN accounting for isdn4linux. (Utilities)
  *
@@ -20,6 +20,16 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: isdnconf.c,v $
+ * Revision 1.36  2004/07/24 16:16:56  tobiasb
+ * New entry `REPOPTIONS' in section [ISDNLOG] of the isdn configuration
+ * file.  This will be used for commandline options defaults of isdnrep.
+ *
+ * Revision 1.35  2004/02/06 16:58:01  tobiasb
+ * Fixed outdated source code comment.
+ *
+ * Revision 1.34  2002/07/04 10:29:18  paul
+ * "DEM" -> "EUR"
+ *
  * Revision 1.33  2000/09/01 06:30:20  paul
  * Now install country-de.dat as country.dat; renaming the source can be done by
  * someone who is more experienced with CVS.
@@ -1121,6 +1131,7 @@ static int _readconfig(char *_myname)
   vboxcommand2  = NULL;
   mgettypath    = NULL;
   mgettycommand = NULL;
+	isdnrep_defopts = NULL;
 
 
 	ClearEnv(&Environment);
@@ -1324,6 +1335,9 @@ static int Set_Globals(section *SPtr)
 
 		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_MGTYCMD)) != NULL)
 			mgettycommand = CEPtr->value;
+
+		if ((CEPtr = Get_Entry(Ptr->entries,CONF_ENT_REPOPTS)) != NULL)
+			isdnrep_defopts = CEPtr->value;
 
 		CEPtr = Ptr->entries;
 		cnt = 0;
@@ -1821,7 +1835,7 @@ static int readoldconfig(char *myname)
   }
 
   return 0;
-} /* readconfig */
+} /* readoldconfig */
 
 /****************************************************************************/
 

@@ -1,4 +1,4 @@
-/* $Id: isdnlog.h,v 1.25 2001/06/08 11:55:24 kai Exp $
+/* $Id: isdnlog.h,v 1.28 2004/01/28 14:27:46 tobiasb Exp $
  *
  * ISDN accounting for isdn4linux.
  *
@@ -20,6 +20,52 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: isdnlog.h,v $
+ * Revision 1.28  2004/01/28 14:27:46  tobiasb
+ * Second step in restricting fds at isdnlog restart and script starting.
+ * The fd limit is now taken from getrlimit() instead of NR_OPEN.
+ * Close_Fds(first) which tries to close all possible fds is generally
+ * built in but the execution must be requested with "closefds=yes" in
+ * the parameterfile otherwise the isdnlog behaviour remains unchanged.
+ *
+ * Revision 1.27  2004/01/26 15:20:08  tobiasb
+ * First step to close all unnecessary open file descriptors before
+ * starting a start script as reaction to a call.  The same applies to the
+ * restart of isdnlog using SIGHUP.  Till now each restart increases the
+ * number of used fds.
+ * For now the modifications are inactive by default.  They can be enabled
+ * by adding the line "DEFS += -DFD_AT_EXEC_MODE=1" to ../Makefile.in.
+ * The next isdnlog (4.68) will have this enabled per default.
+ * The upper limit for fd numbers is taken from NR_OPEN in <linux/limits.h>.
+ * If there is a smarter way to access this limit, please let me know.
+ * Another approach would be to set the close-on-exec flag on each fd
+ * directly after it is opened.  This would require more extensive changes.
+ * I'd like to thank Jan Bernhardt for discovering this problem.
+ *
+ * Revision 1.26  2003/08/26 19:46:12  tobiasb
+ * isdnlog-4.66:
+ *  - Added support for AVM B1 (with layer 2 d-channel trace) in point-to-
+ *    point mode, where only TEI 0 is used ("Anlagenanschluss" in German).
+ *    Many thanks to Klaus Heske for his testing efforts.
+ *  - The source number "0" in outgoing calls is now expanded to
+ *    +<country><area>0.  This may be useful for point-to-point setups,
+ *    when <area> contains area code and local number without extension.
+ *  - Basic support for different codesets in (E)DSS1 messages.  Except
+ *    for codeset 0, unknown information elements are now silently
+ *    ignored (controlled by ignore_unknown_IE in isdnlog/isdnlog.h).
+ *  - Added some information elements to isdnlog/messages.c.
+ *  - Increased the length of msn (local number) in struct telnum.
+ *  - Fixed seperation of country and area code for long numbers
+ *    in getDest, tools/dest.c.
+ *  - Changed broken (with gcc 2.95.2) generation of .depend.  The old
+ *    output did not consider the location of objectfiles in subdirs.
+ *    Remove this file before compiling this upgraded isdnlog.
+ *  - Moved DUALFIX... defines from tools/tools.h to isdnlog/isdnlog.h.
+ *  - Added missing R:-Links for cellphone entries in country-de.dat.
+ *  - Different entry for each city "Neustadt" in tools/zone/de/code.
+ *  - Earlier changes since isdnlog-4.65:
+ *     - Allow dualmode workaround 0x100 (DUALFIX_DESTNUM) to work also with
+ *       CALL_PROCEEDING messages for cleaning up unanswered incoming calls.
+ *
  * Revision 1.25  2001/06/08 11:55:24  kai
  * fix to compile with newer kernel headers. Maybe someone wants to fix isdnlog to recognize the number of channels at run time?
  *
@@ -369,6 +415,20 @@
 
 /****************************************************************************/
 
+#define DUALFIX_DESTNUM    0x100
+#define DUALFIX_SRCNUM     0x200
+#define DUALFIX_MULTLOG    0x400
+
+/****************************************************************************/
+
+typedef struct {
+	int     current;
+	int     shift;
+        int     locked;
+} CODESET;
+
+/****************************************************************************/
+
 typedef struct _interval {
 	int        event;
 	int        chan;
@@ -382,9 +442,13 @@ typedef struct _interval {
 #ifdef _ISDNLOG_C_
 #define _EXTERN
 socket_queue *sockets = NULL;
+_EXTERN int     ignore_unknown_IE = 0xFE;    /* codesets 7 to 1 */
+_EXTERN int     param_closefds = 0;
 #else
 #define _EXTERN extern
 extern socket_queue *sockets;
+_EXTERN int     ignore_unknown_IE;
+_EXTERN int     param_closefds;
 #endif
 
 _EXTERN FILE   *flog;    /* /var/adm/isdn.log          */
@@ -533,6 +597,7 @@ _EXTERN int Del_Interval(int chan, info_args *infoarg);
 _EXTERN struct timeval *Get_Interval(int Sec);
 _EXTERN int Change_Channel_Ring( int old_channel, int new_channel);
 _EXTERN int Start_Interval(void);
+_EXTERN void Close_Fds( const int first );
 
 #undef _EXTERN
 

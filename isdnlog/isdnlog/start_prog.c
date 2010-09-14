@@ -1,4 +1,4 @@
-/* $Id: start_prog.c,v 1.16 2000/04/13 15:44:20 paul Exp $
+/* $Id: start_prog.c,v 1.19 2004/07/24 15:48:45 tobiasb Exp $
  *
  * ISDN accounting for isdn4linux.
  *
@@ -20,6 +20,34 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: start_prog.c,v $
+ * Revision 1.19  2004/07/24 15:48:45  tobiasb
+ * Set call duration -- written \$5 in callerid.conf -- until a
+ * CONNECT occurs to 0 and not to the time elapsed since SETUP.  Now
+ * the value 0 clearly indicates an unanswered call at HANGUP.  This
+ * was reported by Rainer Dorsch on the isdn4linux mailinglist in
+ * message <200404181436.48694.rdorsch@web.de> at 2004-04-18.
+ *
+ * Revision 1.18  2004/01/28 14:27:46  tobiasb
+ * Second step in restricting fds at isdnlog restart and script starting.
+ * The fd limit is now taken from getrlimit() instead of NR_OPEN.
+ * Close_Fds(first) which tries to close all possible fds is generally
+ * built in but the execution must be requested with "closefds=yes" in
+ * the parameterfile otherwise the isdnlog behaviour remains unchanged.
+ *
+ * Revision 1.17  2004/01/26 15:20:07  tobiasb
+ * First step to close all unnecessary open file descriptors before
+ * starting a start script as reaction to a call.  The same applies to the
+ * restart of isdnlog using SIGHUP.  Till now each restart increases the
+ * number of used fds.
+ * For now the modifications are inactive by default.  They can be enabled
+ * by adding the line "DEFS += -DFD_AT_EXEC_MODE=1" to ../Makefile.in.
+ * The next isdnlog (4.68) will have this enabled per default.
+ * The upper limit for fd numbers is taken from NR_OPEN in <linux/limits.h>.
+ * If there is a smarter way to access this limit, please let me know.
+ * Another approach would be to set the close-on-exec flag on each fd
+ * directly after it is opened.  This would require more extensive changes.
+ * I'd like to thank Jan Bernhardt for discovering this problem.
+ *
  * Revision 1.16  2000/04/13 15:44:20  paul
  * Fix for $5, $7, $8, $9, $10, always having same value as $11
  *
@@ -93,6 +121,7 @@
 #include <pwd.h>
 #include <grp.h>
 #include <sys/types.h>
+#include <sys/resource.h>
 
 /*************************************************************************/
 
@@ -255,6 +284,9 @@ int Ring(info_args *Cmd, char *Opts[], int Die, int Async)
 
 			         dup2(filedes[1],STDOUT_FILENO);
 			         dup2(filedes[1],STDERR_FILENO);
+
+			         if (param_closefds)
+			           Close_Fds(3); /* do not leave isdnlog's fds to script */
 
 /*			         execvp(Pathfind(Args[0],NULL,NULL), Args);*/
 			         execvp(Args[0], Args);
@@ -1024,10 +1056,15 @@ char **Get_Opts(int chan, int event, int InOut)
 	else
 		Opts[3] = "";
 
+	/* .connect is time of SETUP before CONNECT */
 	if (call[chan].connect)
 	{
-		long Help = (long) (time(NULL) - call[chan].connect);
-		Opts[4] = ArgToChar(R_TYPE_LONG, &Help);
+		if (call[chan].dialog) {
+			long Help = (long) (time(NULL) - call[chan].connect);
+			Opts[4] = ArgToChar(R_TYPE_LONG, &Help);
+		}
+		else
+			Opts[4] = "0";
 	}
 	else
 		Opts[4] = "";
@@ -1159,6 +1196,27 @@ int Change_Channel_Ring( int old_channel, int new_channel)
 	}
 
 	return 0;
+}
+
+/****************************************************************************/
+
+void Close_Fds( const int first )
+{
+	int i, r;
+	struct rlimit rlim;
+
+	r = getrlimit(RLIMIT_NOFILE, &rlim);
+	if (r == -1) {
+		print_msg(PRT_WARN, "number of fds unknown, no close prior to exec: %s", strerror(errno));
+		return;
+	}
+
+	for (i = first; i < rlim.rlim_cur; i++) {
+		r = close(i);
+		if (r == -1 && errno != EBADF)
+			print_msg(PRT_WARN, "close of fd %i prior to exec failed: %s",
+			          i, strerror(errno));
+	}
 }
 
 /****************************************************************************/

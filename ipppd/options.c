@@ -17,7 +17,7 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-char options_rcsid[] = "$Id: options.c,v 1.20 2000/12/07 12:46:49 paul Exp $";
+char options_rcsid[] = "$Id: options.c,v 1.24 2003/06/30 22:30:57 keil Exp $";
 
 #include <stdio.h>
 #include <errno.h>
@@ -38,6 +38,10 @@ char options_rcsid[] = "$Id: options.c,v 1.20 2000/12/07 12:46:49 paul Exp $";
 #ifdef RADIUS
 #include <radiusclient.h>
 #endif
+
+#ifdef IPPP_FILTER
+#include <pcap.h>
+#endif /* IPPP_FILTER */
 
 #include "fsm.h"
 #include "ipppd.h"
@@ -93,6 +97,8 @@ int	lockflag = 0;		/* Create lock file to lock the serial dev */
 int	nodetach = 0;		/* Don't detach from controlling tty */
 char user[MAXNAMELEN];	/* Username for PAP */
 char passwd[MAXSECRETLEN];	/* Password for PAP */
+int	ask_passwd = 0;		/* Ask user for password */
+int	fdpasswd = 0;		/* Password via filedescriptor */
 int	auth_required = 0;	/* Peer is required to authenticate */
 int	defaultroute = 0;	/* assign default route through interface */
 int hostroute = 1;
@@ -138,6 +144,10 @@ int force_driver = 0;
 struct option_info auth_req_info;
 struct option_info devnam_info;
 
+#ifdef IPPP_FILTER
+struct  bpf_program pass_filter;/* Filter program for packets to pass */
+struct  bpf_program active_filter; /* Filter program for link-active pkts */
+#endif /* IPPP_FILTER */
 
 /*
  * Prototypes
@@ -201,6 +211,9 @@ static int setname __P((int,char **));
 static int setuser __P((int,char **));
 static int setremote __P((int,char **));
 static int setauth __P((int));
+static int setaskpw __P((int));
+static int unsetaskpw __P((int));
+static int setfdpw __P((int,char **));
 static int setnoauth __P((int));
 static int readfile __P((int,char **));
 static int pidfile __P((int,char **));
@@ -287,6 +300,11 @@ char *make_username_realm ( char * );
 int __P (radius_init ( void ));
 #endif
 
+#ifdef IPPP_FILTER
+static int setpassfilter __P((int,char **));
+static int setactivefilter __P((int,char **));
+#endif /* IPPP_FILTER */
+
 /*
  * Valid arguments.
  */
@@ -368,6 +386,10 @@ static struct cmd {
     {"user", 1, setuser},      /* Set name for auth with peer */
     {"usehostname", 0, setusehostname},	/* Must use hostname for auth. */
     {"remotename", 1, setremote}, /* Set remote name for authentication */
+    {"askpassword", 0, setaskpw}, /* Ask user password on start */
+    {"noaskpassword", 0, unsetaskpw}, /* Ask user password on start */
+    {"-askpassword", 0, unsetaskpw}, /* Ask user password on start */
+    {"passwordfd", 1, setfdpw}, /* Read password from fd */
     {"auth", 0, setauth},	/* Require authentication from peer */
     {"noauth", 0, setnoauth},  /* Don't require peer to authenticate */
     {"file", 1, readfile},	/* Take options from a file */
@@ -461,7 +483,10 @@ static struct cmd {
     {"nohostroute", 0, setnohostroute}, /* Don't add host route */
 #endif
     {"+force-driver",0,setforcedriver},
-
+#ifdef IPPP_FILTER
+    { "pass-filter", 1, setpassfilter},		/* pass filter */
+    { "active-filter", 1, setactivefilter},	/* link-active filter */
+#endif /* IPPP_FILTER */
     {NULL, 0, NULL}
 };
 
@@ -470,26 +495,25 @@ static struct cmd {
 #define IMPLEMENTATION ""
 #endif
 
-static char *usage_string = "\
-ipppd version %s patch level %d%s\n\
-Usage: %s [ options ], where options are:\n\
-\t<device>	Communicate over the named device\n\
+static char *usage_string = "ipppd version %s patch level %d%s\n"
+"Usage: %s [ options ], where options are:\n"
+"\t<device>	Communicate over the named device\n"
 #ifdef INCLUDE_OBSOLETE_FEATURES
-\tcrtscts		Use hardware RTS/CTS flow control\n\
-\t<speed>		Set the baud rate to <speed>\n\
-\tmodem		Use modem control lines\n\
+"\tcrtscts		Use hardware RTS/CTS flow control\n"
+"\t<speed>		Set the baud rate to <speed>\n"
+"\tmodem		Use modem control lines\n"
 #endif
-\t<loc>:<rem>	Set the local and/or remote interface IP\n\
-\t\taddresses.  (you also may use the option 'useifip' to get IPs).\n\
-\tasyncmap <n>	Set the desired async map to hex <n>\n\
-\tauth		Require authentication from peer\n\
-\tconnect <p>     Invoke shell command <p> to set up the serial line\n\
-\tdefaultroute	Add default route through interface\n\
-\tfile <f>	Take options from file <f>\n\
-\tmru <n>		Set MRU value to <n> for negotiation\n\
-\tnetmask <n>	Set interface netmask to <n>\n\
-See ipppd(8) for more options.\n\
-";
+"\t<loc>:<rem>	Set the local and/or remote interface IP\n"
+"\t\taddresses.  (you also may use the option 'useifip' to get IPs).\n"
+"\tasyncmap <n>	Set the desired async map to hex <n>\n"
+"\tauth		Require authentication from peer\n"
+"\tconnect <p>     Invoke shell command <p> to set up the serial line\n"
+"\tdefaultroute	Add default route through interface\n"
+"\tfile <f>	Take options from file <f>\n"
+"\tmru <n>		Set MRU value to <n> for negotiation\n"
+"\tnetmask <n>	Set interface netmask to <n>\n"
+"See ipppd(8) for more options.\n"
+;
 
 static char *current_option;   /* the name of the option being parsed */
 
@@ -1558,7 +1582,7 @@ static int setdevname(char *cp,int nd)
     if (stat(cp, &statbuf) < 0) {
 	if (errno == ENOENT)
 	    return 0;
-	syslog(LOG_ERR, cp);
+	syslog(LOG_ERR, "%s", cp);
 	return -1;
     }
 
@@ -1932,6 +1956,23 @@ static int setremote(int slot,char **argv)
     strncpy(remote_name, argv[0], MAXNAMELEN);
     remote_name[MAXNAMELEN-1] = 0;
     return 1;
+}
+
+static int setaskpw(int slot)
+{
+    ask_passwd = 1;
+    return 1;
+}
+
+static int unsetaskpw(int slot)
+{
+    ask_passwd = 0;
+    return 1;
+}
+
+static int setfdpw(int slot,char **argv)
+{
+    return int_option(*argv, &fdpasswd);
 }
 
 static int setauth(int slot)
@@ -2589,3 +2630,33 @@ static int setforcedriver(int dummy)
     force_driver = 1;
     return 1;
 }
+
+#ifdef IPPP_FILTER
+/*
+ * setpassfilter - Set the pass filter for packets
+ */
+static int
+setpassfilter(argc, argv)
+    int argc;
+    char **argv;
+{
+    if (pcap_compile_nopcap(PPP_HDRLEN, DLT_PPP, &pass_filter, *argv, 1, netmask) == 0)
+        return 1;
+    option_error("error in pass-filter expression.\n");
+    return 0;
+}
+
+/*
+ * setactivefilter - Set the active filter for packets
+ */
+static int
+setactivefilter(argc, argv)
+    int argc;
+    char **argv;
+{
+    if (pcap_compile_nopcap(PPP_HDRLEN, DLT_PPP, &active_filter, *argv, 1, netmask) == 0)
+        return 1;
+    option_error("error in active-filter expression.\n");
+    return 0;
+}
+#endif /* IPPP_FILTER */

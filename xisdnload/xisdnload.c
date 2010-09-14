@@ -71,6 +71,7 @@ static void quit();
 
 typedef struct _XISDNLoadResources {
   Boolean show_label;
+  Boolean manual_mode;
   char *online_color;
   char *active_color;
   char *trying_color;
@@ -97,6 +98,7 @@ static XrmOptionDescRec options[] = {
  {"-online",		"*onlineColor",         XrmoptionSepArg,	NULL},
  {"-trying",		"*tryingColor",         XrmoptionSepArg,	NULL},
  {"-active",		"*activeColor",         XrmoptionSepArg,	NULL},
+ {"-manual",            "*ManualMode",          XrmoptionNoArg,       "True"},
  {"-activate",		"*activate",		XrmoptionSepArg,	NULL},
  {"-deactivate",	"*deactivate",		XrmoptionSepArg,	NULL},
 #ifdef REGEX_NUMBER
@@ -114,6 +116,8 @@ static XrmOptionDescRec options[] = {
 static XtResource my_resources[] = {
   {"showLabel", XtCBoolean, XtRBoolean, sizeof(Boolean),
      Offset(show_label), XtRImmediate, (XtPointer) TRUE},
+  {"ManualMode", XtCBoolean, XtRBoolean, sizeof(Boolean),
+     Offset(manual_mode), XtRImmediate, (XtPointer) FALSE},
   {"onlineColor", "OnlineColor", XtRString, sizeof(char *),
      Offset(online_color), XtRString, NULL},
   {"activeColor", "ActiveColor", XtRString, sizeof(char *),
@@ -201,6 +205,8 @@ void usage()
       "    -activate string        exec this to activate demand dialing\n");
     fprintf (stderr,
       "    -deactivate string      exec this to deactivate demand dialing\n");
+    fprintf (stderr,
+      "    -manual                 manual dialing mode\n");
 #ifdef REGEX_NUMBER
     fprintf (stderr,
       "    -number string          regexp to match against number to watch\n");
@@ -242,11 +248,22 @@ InitLoadPoint()
 
   fd_isdninfo = open("/dev/isdninfo", O_RDONLY | O_NDELAY);
   if (fd_isdninfo < 0) {
-    perror("/dev/isdninfo");
+    perror("can't open /dev/isdninfo");
     exit(1);
   }
 
+  /*
+   * Read the current iobytes values and count the bytes as the count at
+   * "last time"; starting xisdnload when there has been a connection for some
+   * time otherwise leads to a huge initial spike, and the rest is scaled doen
+   * to effectively zero until the spike scrolls off. This should prevent that.
+   */
+  if (ioctl(fd_isdninfo, IIOCGETCPS, &iobytes))
+    perror("Can't get bytes transferred:");
+
+  bytes_last = 0;
   for (i = 0; i < ISDN_MAX_CHANNELS; i++) {
+    bytes_last += iobytes[i].ibytes + iobytes[i].obytes;
     iobytes[i].ibytes = 0;
     iobytes[i].obytes = 0;
     strcpy(phone[i], "???");
@@ -260,7 +277,6 @@ InitLoadPoint()
   gettimeofday(&tv_last, NULL);
   tv_last.tv_sec--; /* avoid devision by zero */
   tv_start = tv_last;
-  bytes_last = 0;
   bytes_total = 0;
   bytes_now = 0;
   secs_running = 0;
@@ -327,7 +343,7 @@ XtPointer call_data;	/* pointer to (double) return value */
 	  online_now++;
 	  if (get_iobytes) {
             if (ioctl(fd_isdninfo, IIOCGETCPS, &iobytes))
-              perror("IIOCGETCPS");
+              perror("Can't get bytes transferred:");
 	    get_iobytes = 0;
 	  }
 	  bytes_now += iobytes[idx].ibytes + iobytes[idx].obytes;
@@ -429,7 +445,9 @@ XtPointer call_data;	/* pointer to (double) return value */
 void ToggleActive(Widget w, XtPointer p, XEvent *e, Boolean *c)
 {
   if (e->type == ButtonPress) {
-    if (get_active()) {
+    if (!resources.manual_mode 
+	  ? get_active()
+          : (trying_last > 0 || online_last > 0)) { 
       system(resources.deactivate);
     } else {
       system(resources.activate);

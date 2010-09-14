@@ -1,4 +1,4 @@
-/* $Id: rep_main.c,v 1.15 2002/03/11 16:17:11 paul Exp $
+/* $Id: rep_main.c,v 1.19 2004/07/25 14:21:13 tobiasb Exp $
  *
  * ISDN accounting for isdn4linux. (Report-module)
  *
@@ -20,6 +20,75 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: rep_main.c,v $
+ * Revision 1.19  2004/07/25 14:21:13  tobiasb
+ * New isdnrep option -m [*|/]number.  It multiplies or divide the cost of
+ * each call by the given number.  `-m/1.16' for example displays the costs
+ * without the German `Umsatzsteuer'.
+ *
+ * Revision 1.18  2004/07/24 17:58:06  tobiasb
+ * New isdnrep options: `-L:' controls the displayed call summaries in the
+ * report footer.  `-x' displays only call selected or not deselected by
+ * hour or type of day -- may be useful in conjunction with `-r'.
+ *
+ * Activated new configuration file entry `REPOPTIONS' for isdnrep default
+ * options.  This options can be disabled by `-c' on the command line.
+ *
+ * Revision 1.17  2003/10/29 17:41:35  tobiasb
+ * isdnlog-4.67:
+ *  - Enhancements for isdnrep:
+ *    - New option -r for recomputing the connection fees with the rates
+ *      from the current (and for a different or the cheapest provider).
+ *    - Revised output format of summaries at end of report.
+ *    - New format parameters %j, %v, and %V.
+ *    - 2 new input formats for -t option.
+ *  - Fix for dualmode workaround 0x100 to ensure that incoming calls
+ *    will not become outgoing calls if a CALL_PROCEEDING message with
+ *    an B channel confirmation is sent by a terminal prior to CONNECT.
+ *  - Fixed and enhanced t: Tag handling in pp_rate.
+ *  - Fixed typo in interface description of tools/rate.c
+ *  - Fixed typo in tools/isdnrate.man, found by Paul Slootman.
+ *  - Minor update to sample isdn.conf files:
+ *    - Default isdnrep format shows numbers with 16 chars (+ & 15 digits).
+ *    - New isdnrep format (-FNIO) without display of transfered bytes.
+ *    - EUR as currency in Austria, may clash with outdated rate-at.dat.
+ *      The number left of the currency symbol is nowadays insignificant.
+ *  - Changes checked in earlier but after step to isdnlog-4.66:
+ *    - New option for isdnrate: `-rvNN' requires a vbn starting with NN.
+ *    - Do not compute the zone with empty strings (areacodes) as input.
+ *    - New ratefile tags r: und t: which need an enhanced pp_rate.
+ *      For a tag description see rate-files(5).
+ *    - Some new and a few updated international cellphone destinations.
+ *
+ * NOTE: If there any questions, problems, or problems regarding isdnlog,
+ *    feel free to join the isdn4linux mailinglist, see
+ *    https://www.isdn4linux.de/mailman/listinfo/isdn4linux for details,
+ *    or send a mail in English or German to <tobiasb@isdn4linux.de>.
+ *
+ * Revision 1.16  2003/07/25 22:18:03  tobiasb
+ * isdnlog-4.65:
+ *  - New values for isdnlog option -2x / dual=x with enable certain
+ *    workarounds for correct logging in dualmode in case of prior
+ *    errors.  See `man isdnlog' and isdnlog/processor.c for details.
+ *  - New isdnlog option -U2 / ignoreCOLP=2 for displaying ignored
+ *    COLP information.
+ *  - Improved handling of incomplete D-channel frames.
+ *  - Increased length of number aliases shown immediately by isdnlog.
+ *    Now 127 instead of 32 chars are possible. (Patch by Jochen Erwied.)
+ *  - The zone number for an outgoing call as defined in the rate-file
+ *    is written to the logfile again and used by isdnrep
+ *  - Improved zone summary of isdnrep.  Now the real zone numbers as
+ *    defined in the rate-file are shown.  The zone number is taken
+ *    from the logfile as mentioned before or computed from the current
+ *    rate-file.  Missmatches are indicated with the chars ~,+ and *,
+ *    isdnrep -v ... explains the meanings.
+ *  - Fixed provider summary of isdnrep. Calls should no longer be
+ *    treated wrongly as done via the default (preselected) provider.
+ *  - Fixed the -pmx command line option of isdnrep, where x is the xth
+ *    defined [MSN].
+ *  - `make install' restarts isdnlog after installing the data files.
+ *  - A new version number generates new binaries.
+ *  - `make clean' removes isdnlog/isdnlog/ilp.o when called with ILP=1.
+ *
  * Revision 1.15  2002/03/11 16:17:11  paul
  * DM -> EUR
  *
@@ -231,111 +300,95 @@
 
 /*****************************************************************************/
 
+static int parse_options(int argc, char *argv[], char *myname);
 int print_msg(int Level, const char *fmt, ...);
 int print_in_modules(const char *fmt, ...);
 static int set_linefmt(char *linefmt);
 
 /*****************************************************************************/
 
+static char  fnbuff[512] = "";
+static char  usage[]     = "%s: usage: %s [ -%s ]\n";
+static char  wrongdate[] = "unknown date: %s\n";
+static char  wrongxopt[] = "error in -x option starting at: %s\n";
+static char  options[]   = "abcd:f:him:nop:r:s:t:uvw:x:EF:L:M:NR:SV";
+static char *linefmt     = "";
+static char *htmlreq     = NULL;
+static char *phonenumberarg = NULL;
+static int   do_defopts  = 1;
+
+/*****************************************************************************/
+
 int main(int argc, char *argv[], char *envp[])
 {
   auto int   c;
-	auto char  fnbuff[512] = "";
-	auto char  usage[]     = "%s: usage: %s [ -%s ]\n";
-	auto char  wrongdate[] = "unknown date: %s\n";
-	auto char  options[]   = "ad:f:hinop:s:t:uvw:NVF:M:R:bES";
 	auto char *myname      = basename(argv[0]);
 	auto char *ptr         = NULL;
-	auto char *linefmt     = "";
-	auto char *htmlreq     = NULL;
+	auto char **pptr;
 
 
 	set_print_fct_for_tools(print_in_modules);
+
+	recalc.mode = '\0'; recalc.prefix = UNKNOWN; recalc.input = NULL;
+	recalc.count = recalc.unknown = recalc.cheaper = 0;
+	modcost.mode = 0;
+	select_summaries(sel_sums, NULL); /* default: all summaries */
 
 	/* we don't need this at the moment:
 	new_args(&argc,&argv);
 	*/
 
-  while ((c = getopt(argc, argv, options)) != EOF)
-    switch (c) {
-      case 'a' : timearea++;
-                 begintime = 0;
-			           time(&endtime);
-      	       	 break;
+	/* readconfig should be done before option parsing.  At least -pmx
+	 * needs access to known in set_msnlist.  Otherwise no selection of
+	 * configured MSNs via their index (x=1..) is possible.  By the other
+	 * hand this order can cause problems.  A corrupt config can block
+	 * the simple `isdnrep -V'.  Resolution: parse options first but call
+	 * set_msnlist after readconfig.
+	 */
 
-      case 'i' : incomingonly++;
-      	       	 break;
-
-      case 'o' : outgoingonly++;
-      	       	 break;
-
-      case 'h' : header = 0;
-      	       	 break;
-
-      case 'n' : numbers++;
-      	       	 break;
-
-      case 'd' : delentries++;
-
-      case 't' : strcpy(timestring, optarg);
-                 if (!get_term(timestring,&begintime,&endtime,delentries))
-                 {
-                   printf(wrongdate, timestring);
-                   return 1;
-                 }
-                 timearea++;
-                 break;
-
-      case 'u' : seeunknowns++;
-      	       	 break;
-
-      case 'v' : verbose++;
-      	       	 break;
-
-      case 'E' : print_failed++;
-      	       	 break;
-
-      case 'f' : strcpy(fnbuff, optarg);
-                 break;
-
-      case 'p' : if (!phonenumberonly) set_msnlist(optarg);
-      	       	 phonenumberonly++;
-      	       	 break;
-
-      case 'w' : html = strtol(optarg, NIL, 0)?H_PRINT_HEADER:H_PRINT_HTML;
-                 break;
-
-      case 's' : lineformat = strdup(optarg);
-                 linefmt = NULL;
-                 break;
-
-      case 'F' : linefmt = strdup(optarg);
-                 break;
-
-      case 'N' : use_new_config = 0;
-                 break;
-
-      case 'M' : htmlreq = strdup(optarg);
-                 break;
-
-      case 'R' : preselect = (int)strtol(optarg, NIL, 0);
-      	       	 break;
-
-      case 'b' : bill++;
-      	       	 break;
-
-      case 'V' : print_version(myname);
-                 exit(0);
-
-      case 'S' : summary++;
-      	       	 break;
-
-      case '?' : printf(usage, argv[0], argv[0], options);
-                 return(1);
-    } /* switch */
+	/* TODO: parse_options may print to stdout regardless a missing
+	 * Content-Type header. (tobiasb|200407) */
+	if ((c=parse_options(argc, argv, myname) > 0))
+		return c;
 
   if (readconfig(myname) != 0)
   	return 1;
+	
+
+	pptr = (char **) 0;
+	while (do_defopts && isdnrep_defopts)  /* default options from isdn.conf */
+	{
+		int dargc;
+		char **dargv;
+		
+		pptr = String_to_Array(isdnrep_defopts, ';');
+		if (!pptr)
+			break;
+		dargc = 0;
+		dargv = pptr;
+		while (*dargv++)
+			dargc++;
+		if (!dargc)
+			break;
+
+		dargv = (char **) calloc(dargc+2, sizeof(char *));
+		if (!dargv)
+			break;
+		dargv[0] = argv[0];
+		memcpy(dargv+1, pptr, dargc * sizeof(char *));
+
+		if ((c=parse_options(dargc+1, dargv, myname) > 0))
+			return c;
+		
+		break;
+	}
+	if (pptr)
+		del_Array(pptr);
+
+	if (phonenumberonly && phonenumberarg != NULL) {
+		set_msnlist(phonenumberarg);
+		free(phonenumberarg);
+	}
 
   if (htmlreq)
   {
@@ -381,6 +434,141 @@ int main(int argc, char *argv[], char *envp[])
 }
 
 /*****************************************************************************/
+/* handle options from cammandline and isdn.conf */
+static int parse_options(int argc, char *argv[], char *myname)
+{
+	auto int   c;
+	auto char *ptr         = NULL;
+	
+	/* reset internal state of getopt ...
+	 * for an explanation look at bugs.debian.org, bug #192834 */
+#ifdef __GLIBC__
+	optind = 0;
+#else
+	optind = 1;
+#endif
+
+  while ((c = getopt(argc, argv, options)) != EOF)
+    switch (c) {
+      case 'a' : timearea++;
+                 begintime = 0;
+			           time(&endtime);
+      	       	 break;
+
+      case 'i' : incomingonly++;
+      	       	 break;
+
+      case 'o' : outgoingonly++;
+      	       	 break;
+
+      case 'h' : header = 0;
+      	       	 break;
+
+      case 'n' : numbers++;
+      	       	 break;
+
+      case 'd' : delentries++;
+
+      case 't' : strcpy(timestring, optarg);
+                 if (!get_term(timestring,&begintime,&endtime,delentries))
+                 {
+                   printf(wrongdate, timestring);
+                   return 1;
+                 }
+                 timearea++;
+                 break;
+
+      case 'u' : seeunknowns++;
+      	       	 break;
+
+      case 'v' : verbose++;
+      	       	 break;
+
+      case 'E' : print_failed++;
+      	       	 break;
+
+      case 'f' : strcpy(fnbuff, optarg);
+                 break;
+
+      case 'p' : if (!phonenumberonly) phonenumberarg = strdup(optarg);
+      	       	 phonenumberonly++;
+      	       	 break;
+
+      case 'w' : html = strtol(optarg, NIL, 0)?H_PRINT_HEADER:H_PRINT_HTML;
+                 break;
+
+      case 's' : lineformat = strdup(optarg);
+                 linefmt = NULL;
+                 break;
+
+      case 'F' : if (linefmt && !*linefmt)
+			             linefmt = strdup(optarg);
+                 break;
+
+      case 'N' : use_new_config = 0;
+                 break;
+
+      case 'M' : htmlreq = strdup(optarg);
+                 break;
+
+      case 'R' : preselect = (int)strtol(optarg, NIL, 0);
+      	       	 break;
+
+      case 'b' : bill++;
+      	       	 break;
+
+      case 'V' : print_version(myname);
+                 exit(0);
+
+      case 'S' : summary++;
+      	       	 break;
+
+      case 'r' : recalc.mode = *optarg;
+                 recalc.input = strdup(optarg+1);
+                 break;
+
+			case 'L' : select_summaries(sel_sums, optarg);
+			           break;
+
+			case 'x' : ptr = select_day_hour(days, hours, optarg);
+			           if (ptr) {
+			             printf(wrongxopt, ptr);
+			             return 1;
+			           }
+			           break;
+
+			case 'c' : do_defopts = 0;
+			           break;
+
+			case 'm' : modcost.mode = (*optarg =='/') ? 2 : 1;
+			           modcost.numstr = strdup(optarg);
+			           if (*optarg == '*' || *optarg == '/')
+			             modcost.numstr++;
+			           ptr = NULL;
+			           modcost.number = strtod(modcost.numstr, &ptr);
+			           if (modcost.numstr == ptr)
+			           {
+			             printf("no number in -m option: %s\n", modcost.numstr);
+			             return 1;
+			           }
+			           if (modcost.mode == 2 && modcost.number == 0.0)
+			           {
+			             printf("division by 0 as requested in -m option not allowed.\n");
+			             return 1;
+			           }
+			           if (ptr && *ptr)
+			             *ptr = 0;		
+			           break;
+
+      case '?' : printf(usage, argv[0], argv[0], options);
+                 return(1);
+    } /* switch */
+
+	return 0;
+} /* /parse_options() */
+
+/*****************************************************************************/
+
 int     print_msg(int Level, const char *fmt,...)
 {
   auto va_list ap;
@@ -439,4 +627,4 @@ int set_linefmt(char *linefmt)
 }
 
 /*****************************************************************************/
-
+/* vim:set ts=2: */
