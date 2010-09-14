@@ -4,7 +4,7 @@
 
 <title>FAQ for isdn4linux
 <author>Matthias Hessler (<tt><htmlurl url="mailto:hessler@isdn4linux.de" name="hessler@isdn4linux.de"></tt>)
-<date>v2.0.98, 8 July 2005
+<date>v2.0.102, 5 December 2005
 <abstract>
 If you are reading this FAQ online, you may consider downloading the whole
 thing, and reading it offline (much cheaper). To download the latest
@@ -83,6 +83,28 @@ kernel. It consists of the main module <tt/isdn/ and the
 actual hardware driver that control some specific card.
 In addition, the package <tt/isdn4k-utils/ contains utilities to
 make use of ISDN specific features.
+Please note that since kernel 2.6.0 isdn4linux is considered legacy.
+It has been superseded by the new mISDN drivers (see question
+<ref id="general_misdn" name="general_misdn">.
+
+<sect1> general_misdn: What is mISDN?  
+<label id="general_misdn">
+<p>
+mISDN is the successor of isdn4linux, and also consists of kernel modules
+that are part of the Linux kernel. The mISDN modules have been rewritten
+from scratch since the old isdn4linux modules were difficult to maintain.
+
+The new mISDN modules are based on the CAPI interface (see question
+<ref id="feature_capi" name="feature_capi"> for more details on the CAPI
+interface). Not all ISDN cards supported by isdn4linux have been/will be
+ported to mISDN. However, it is planned to create a compatibility layer to
+allow migration of the existing isdn4linux drivers. Also, ipppd would be
+replaced by the standard pppd once pppd works as well as ipppd currently does.
+For the moment, isdn4linux can still be used in parallel with mISDN, but this
+may change in the future.
+
+For more technical and configuration information about the mISDN driver
+see question <ref id="config_misdn" name="config_misdn">.
 
 <sect1> general_hardware: What hardware is supported by isdn4linux?  
 <label id="general_hardware">
@@ -641,15 +663,30 @@ Use the following command to start the ISDN card in NT mode:
 hisaxctrl &lt;id&gt; 98 1
 </code>
 Make sure that the crossed cable is terminated even if it is very short!
-Nothing will work without termination, not even a 1m cable.
-Some HFC card already have jumpers for termination.
+Nothing will work without termination, not even a 1m cable. Some HFC card
+already have jumpers for termination. Since TX as well as RX circuits must
+be terminated with its own resistor, two jumpers should be present, like this:
+<verb>
+> 3 RX+ 2a --[100 Ohm]----+     ---------- /      ----------
+> 4 TX+ 1a --[100 Ohm]--+ |    | 87654321 |      | 12345678 |
+> 5 TX- 1b ---oJ1o------+ |    |__      __|/     |/_      /_|
+> 6 RX- 2b ---oJ2o--------+       |____|            |/___|
+</verb>
+
+It has been reported that for proper functioning even on a short cable a
+termination is required at/near both ends (at the ISDN card as well as at
+the connecting ISDN device).
 
 However, this will only give you the physical connection. Up to now
 isdn4linux does not (yet?) implement the higher level ISDN protocol DSS1
 (this means that isdn4linux can not pretend to an ISDN device that it is
-an ISDN exchange, and give it the proper ISDN commands).
-As a result, you can simulate a leased line, but not pretend to be the
-PBX.
+an ISDN exchange, and give it the proper ISDN commands). As a result, you can
+simulate a leased line, but not pretend to be the PBX with isdn4linux.
+
+With the newer mISDN modules the situation is better. A special user space
+module is available for the emulation of a PBX. Development of a kernel module
+is in progress. In any case the chipset has to support the NT mode.
+
 
 <sect1> feature_lcr: Can isdn4linux do least cost routing (LCR)?  
 <label id="feature_lcr">
@@ -857,6 +894,12 @@ Other archives are:
 url="ftp://ftp.uni-oldenburg.de/pub/unix/linux/isdn/isdn4linux/Mailing-List"></tt>
 </itemize>
 
+<sect1> docu_bugtracker: Is there a bug tracker available for isdn4linux?  
+<label id="docu_bugtracker">
+<p>
+Yes, there is a bugtracker available under the following url:
+<url url="https://www.isdn4linux.de/mantis">. You have to register yourself
+before you can search for known bugs and enter new issues.
 
 <!-- Supported Hardware & hardware-specific stuff
 -->
@@ -1167,8 +1210,11 @@ environment. Please write me if anyone ever succeeds.
 <sect1> hardware_ppc: Can I run isdn4linux on a PowerPC with Linux?  
 <label id="hardware_ppc">
 <p>
-Yes, most cards should work. However, at least the AVMFritz!PCI card won't
-work, due to the different Endian format for 32bit B-channel data on the PPC.
+Yes, in theory most cards should work. However some Endian format issues
+remain due to the bugs. I heard that the AVMFritz!PCIv2 card may work well
+with the old isdn4linux drivers (even with asterisk via chan_modem_i4l).
+Also the Eicon Diva Server cards should work. You are welcome to report any
+bugs and fixes to the mailing list.
 
 In any case, you may also get a terminal adapter (= external ISDN "modem").
 Since then you don't need isdn4linux (see question
@@ -1385,13 +1431,17 @@ If the interrupt for the card is shared with other devices and your card does
 not work, then there could be an issue with the motherboard. See question
 <ref id="hardware_irqsharing" name="hardware_irqsharing"> for this.
 
-One very interesting thing: the Fritz! card is currently the only passive card
-for which a capi driver exists. As a result, it can be configured to
+One very interesting thing: the Fritz! card was the first card
+for which a capi driver existed which can be configured to
 fax. See question <ref id="feature_capi" name="feature_capi"> and
 <url url="http://www.avm.de/ftp/cardware/fritzcrd/linux/index.htm">
 for more information on this. Usage of the capi driver is completely optional,
 you might as well stay with the standard driver if you do not need capi
 support.
+
+In total three drivers exist: the old Hisax driver (part of isdn4linux), the
+new mISDN driver, and the binary AVM driver. Only the last one is prepared
+for sending faxes.
 
 <sect1> hardware_avmb1: What is special about the AVM B1 card?  
 <label id="hardware_avmb1">
@@ -1448,6 +1498,8 @@ There are several interesting things.
 <item> Two Versions: There are two different versions (version 1.0 and
 version 2.0) with a different chipset. Both work fine, however you have
 to set the type properly (29 for version 1.0, 12 for version 2.0).
+<item> The USB version is currently not supported, there is no driver
+available.
 <item> PnP bug: Due to a bug in the pnp chip it is very important for the
 I-Surf 1.0 to have the following PEEK and POKE lines in your isapnp file
 to properly initialize the PnP register:
@@ -1760,10 +1812,27 @@ id="contr0%contr1"
 channels?  
 <label id="config_manychannels">
 <p>
-Increase the parameter ISDN_MAX_CHANNELS in
-<tt>/usr/src/linux/include/linux/isdn.h</tt> and rebuild the isdn stuff. Don't
-forget to create the additional devices with makedev.sh (part of isdn4k-utils)
-or by hand.
+You can adjust the parameter ISDN_MAX_CHANNELS and the ISDN_MINOR* parameters
+in <tt>/usr/src/linux/include/linux/isdn.h</tt> and rebuild the isdn stuff.
+It is unlikely you have more than 64 physical B channels available, therefore
+you probably want to leave ISDN_MINOR_B and ISDN_MINOR_BMAX as they are.
+
+Your bottleneck are probably the number of potential (logical) network
+connections (ipppX devices). The maximum number for this (ISDN_MAX_CHANNELS)
+is 127, since the minor devices start at 128 (see ISDN_MINOR_PPP) and have to
+end before 255 (ISDN_MINOR_STATUS).
+
+To further increase the maximum number of logical connections you either
+have the possibility to use an additional major (e.g. 44 - not used any
+more) - this requires some small changes to the driver and the installation
+of one ipppd instance per logical connection; or to use only one
+ipppd per physical B channel with external Radius authentication. In the
+first case you have to modify and recompile the driver, in the second case
+you have to modify and recompile ipppd (you'll find some preparations for
+this already in the source code).
+
+Don't forget to create the additional devices with makedev.sh (part of
+isdn4k-utils) or by hand.
 
 <sect1> config_gsmv110: How do I connect my PalmPilot via GSM over V.110  
 to my computer?  
@@ -1821,7 +1890,13 @@ For a mini-howto see:
 gateway for H.323 clients?  
 <label id="config_h323">
 <p>
-You have to install the Linux H.323 - ISDN Gateway, which can be found on
+You have to install a gateway which handles the translation. Several
+versions exist which are all based on the OpenH323 and PWLib libraries.
+The latest recommendation is to use isdngw at:
+<url url="http://www.gnugk.org/h323-isdn-gw.html">. This is an updated
+version of the isdngw located at:
+<url url="http://www.virtual-net.fr/h323/isdngw/">, which in turn is an
+updated version of the Linux H.323 - ISDN Gateway found on
 <url url="http://www.telos.de/linux/H323/">.
 
 Please note that not all sound cards support full duplex audio. Depending
@@ -1865,10 +1940,13 @@ howto (isdn.html) and a ISDN quick-install guide (isdnquick.html).
 <url url="http://www.schlenn.de/isdn4linux/">
 <item>Tips to configure Red Hat:
 <url url="http://www.webideal.de/rh-isdn/">
+<item>Tips to configure Debian with Fritz Card PCI and kernel 2.6 (in German):
+<url url="http://www.plzk.de/archiv/files/docs/FritzCard.PCI.Linux-HOWTO.html">
 <item>Tips to configure Mandrake:
 <url url="http://www.mandrakeuser.org/connect/cisdn.html">
 <item>Tips to configure Gentoo:
 <url url="http://forums.gentoo.org/viewtopic.php?t=29991">
+<url url="http://de.gentoo-wiki.com/ISDN">
 <item>fli4l, a prepackaged Linux version to use an old PC as ISDN router:
 <url url="http://www.fli4l.de"> (great!)
 <item>LR101 (a project which tries to create a hardware router based on Linux):
@@ -1932,7 +2010,7 @@ For a more general description on the mISDN driver and the future of isdn4linux
 you may also read the German article published in ct 3/2004. An online
 version is available at: <tt><url url="http://www.heise.de/ct/04/03/182/"></tt>
 
-Please note that the current FAQ applies to old isdn drivers.
+Please note that the current FAQ applies mainly to the old isdn4linux drivers.
 mISDN may work differently than described in this FAQ.
 Please let me know about any amendmends for this FAQ.
 
@@ -1950,6 +2028,19 @@ new kernel features like devfs. You still have to create all the devices you
 need, either with makedev.sh (part of isdn4k-utils), or by hand. Some
 distributions will do that for you (e.g. Suse), for others you have to do
 this yourself (e.g. Mandrake 10).
+
+
+<sect1> config_asterisk: How can I install asterisk with mISDN?  
+<label id="config_asterisk">
+<p>
+First you have to get mISDNuser and compile it. Then you have to compile
+chan_misdn (included with asterisk) so it works together with mISDNuser.
+For this you have to modify the Makefile in <tt>asterisk/channels/misdn/</tt>
+to configure the correct location of mISDNuser. A make in the same directory,
+followed by a 'make install' in the asterisk directory should be sufficient.
+
+The easiest way is to get the install script published at:
+<url url="http://www.beronet.com/download/install-misdn.tar.gz">.
 
 
 <!-- Troubleshooting
@@ -2463,7 +2554,6 @@ author did not update the checksum when changing the source code (reason
 could be that the complete certification tests have not yet been run on
 the changed code).
 
-
 <sect1> trouble_crcerror: How can I see the number of packets for HiSax with  
 invalid CRC?  
 <label id="trouble_crcerror">
@@ -2505,6 +2595,24 @@ for i in eicon isdnlog ipppd ; do
  cd ..
 done
 </code>
+
+<sect1> trouble_hisaxparams: HiSax does not work - how can I set the  
+HiSax parameters for newer Linux kernels?  
+<label id="trouble_hisaxparams">
+<p>
+Unfortunately the udev/hotplug mechanism of current kernels (written in
+November 2005) loads hisax without the needed parameters. To check whether
+this is the issue of missing parameters unload the hisax module with rmmod:
+<code>
+rmmod hisax
+</code>
+then insert the kernel module with the correct parameters again, e.g.:
+<code>
+modprobe -v hisax type=35 protocol=2
+</code>
+In case this solves the issue, you can permanently fix it by providing the
+needed parameters to the module loader, e.g. in /etc/modprobe.d/hisax on
+a Suse distribution.
 
 
 <!-- Config MSN
@@ -2846,6 +2954,10 @@ ln -s /usr/bin/su1 /usr/local/bin/hangup
 </code>
 Now the users XXXX and YYYY can dial out by typing <tt/dial/, and hangup with
 <tt/hangup/.
+<item>isdnctrl can be set SETUID root. Please not that if it is called by a
+user different from root, isdnctrl will only allow you to dialin/hangup,
+and addlink/removelink/show. However, the setup/configuration data can only be
+modified by root.
 <item>If you only have one user that you use for ISDN interactions, you can
 make him owner of the ISDN interface.
 </enum>
@@ -3633,7 +3745,7 @@ assignment of addresses possible.
 From this summary it should be clear under what conditions it makes sense
 to use raw IP.
 
-<sect1> rawip_capi: How can I use Raw IP with the new CAPI 2.0 interface?  
+<sect1> rawip_capi: How can I use Raw IP with the new CAPI 2.0 interface (mISDN)?  
 <label id="rawip_capi">
 <p>
 Raw IP can still be used with the new CAPI interface and drivers by using
@@ -5060,10 +5172,7 @@ the RELEASE COMPLETE, before any new data is sent on the D channel. The
 PBXs tested up to now have all been too slow (in particular the widely
 used ISTEC). The only possibility is to combine the data afterwards. But
 then there are problems with synchronizing the different times. Whoever
-want to attempt to do this is welcome (I'll make the logs from my
-Ackermann Euracom available - Matthias Hessler
-<tt><htmlurl url="mailto:hessler@wi-inf.uni-essen.de"
-	     name="hessler@wi-inf.uni-essen.de"></tt>).
+want to attempt to do this is very welcome.
 </itemize>
 
 <sect1> isdnlog_rategraphic: How can I display the data transfer rates  
@@ -5148,6 +5257,23 @@ for communicating, but can log outgoing calls from any device.
 
 See also question <ref id="isdnlog_reversedcard" name="isdnlog_reversedcard">
 for using two ISDN cards for logging.
+
+<sect1> isdnlog_enoughdata: How can I check whether isdnlog receives enough  
+information from the kernel drivers?  
+<label id="isdnlog_enoughdata">
+<p>
+First stop isdnlog (e.g. "killall isdnlog"), then run "cat /dev/isdnctrl0".
+When you trigger some activity on the isdn line (e.g. by initiating an
+incoming call) you should see lines starting with "HEX:" or "D2:" in the
+output of the cat command. If these lines are missing then check your
+configuration of the kernel drivers.
+
+<sect1> isdnlog_database: How can I set up isdnlog with database support?  
+<label id="isdnlog_database">
+<p>
+You have to rebuild isdnlog for this. You can find some instructions
+(in German) on:
+<url url="http://lists.suse.com/archive/suse-isdn/2005-May/0043.html">.
 
 
 <!-- Audio
