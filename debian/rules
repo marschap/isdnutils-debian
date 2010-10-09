@@ -92,7 +92,7 @@ endif
 # autoheader doesn't work in vbox ... is it needed?
 #	  echo "  autoheader"; autoheader; \
 
-	# cd ipppd && autoconf
+	cd ipppd && autoconf
 
 	touch auto-update-stamp
 
@@ -262,12 +262,12 @@ binary-arch: build install
 	dh_testroot
 	dh_installdebconf
 	dh_installdocs
-# ifneq ($(some_arch_match),yes)
-# 	install -m 0644 debian/README.MPPP debian/README.multiple-ipppd \
-# 	    debian/ipppd/usr/share/doc/ipppd/
-# 	install -m 0644 debian/isdneurofile.README.Debian \
-# 	    debian/isdneurofile/usr/share/doc/isdneurofile/README.Debian
-# endif
+ifneq ($(some_arch_match),yes)
+	install -m 0644 debian/README.MPPP debian/README.multiple-ipppd \
+	    debian/ipppd/usr/share/doc/ipppd/
+	#install -m 0644 debian/isdneurofile.README.Debian \
+	#    debian/isdneurofile/usr/share/doc/isdneurofile/README.Debian
+endif
 	dh_installexamples
 	dh_installmenu
 #	dh_installpam
@@ -319,8 +319,8 @@ endif
 	install -m 644 debian/isdnvboxserver.lintian-overrides debian/isdnvboxserver/usr/share/lintian/overrides/isdnvboxserver
 	# - yet again, examples scripts that shouldn't be executable
 	# - db_input in postinst only in extreme situations
-	# install -d debian/ipppd/usr/share/lintian/overrides
-	# install -m 644 debian/ipppd.lintian-overrides debian/ipppd/usr/share/lintian/overrides/ipppd
+	install -d debian/ipppd/usr/share/lintian/overrides
+	install -m 644 debian/ipppd.lintian-overrides debian/ipppd/usr/share/lintian/overrides/ipppd
 
 	dh_installchangelogs
 	rm -rf debian/libcapi20-dev/usr/share/doc/libcapi20-dev

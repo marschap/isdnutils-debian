@@ -8,6 +8,7 @@ eicon-manpages.patch
 rcapid-manpage.patch
 isdnlog-diffs.patch
 xisdnload-config.patch
+ipppd-ms-chap.patch
 vbox-vboxplay.patch
 vbox-diffs.patch
 vbox-autotools.patch
@@ -25,3 +26,4 @@ capi20-msg2str-safety.patch
 lsb-init-script.patch
 bashisms.patch
 capi20-h-needs-stddef-h.patch
+ipppd-replace-gpl-code.patch

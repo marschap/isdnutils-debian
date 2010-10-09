@@ -104,7 +104,7 @@ VBOX_LOCKDIR='/var/lock'
 VBOX_DOCDIR='/usr/share/doc/isdnvboxserver'
 VBOX_TCL='tcl8.3'
 # VBOX_SUSPEND_ID is not set
-# CONFIG_IPPPD is not set
+CONFIG_IPPPD=y
 
 #
 # Options for ipppd

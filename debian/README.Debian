@@ -12,8 +12,13 @@ isdnutils is split into different packages:
 - isdnutils-base
   The base part, containing direct kernel support, e.g. isdnctrl
 
+- ipppd
+  Needed for connecting via syncPPP to e.g. an ISP.
+  Now supports MS-CHAP authentication.
+
 - pppdcapiplugin
-  Use this with the PPP daemon to make a connection over ISDN
+  If you have a CAPI-capable ISDN card, you can use this with the "normal"
+  PPP daemon to make a connection over ISDN instead of using ipppd.
 
 - isdnlog
   For logging ISDN connections, and optionally triggering actions upon events

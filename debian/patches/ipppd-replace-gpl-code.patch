@@ -1,0 +1,229 @@
+--- isdnutils-3.9.20060704+dfsg.2.orig/ipppd/Makefile.in
++++ isdnutils-3.9.20060704+dfsg.2/ipppd/Makefile.in
+@@ -34,12 +34,12 @@
+ endif
+ 
+ PPPDSRCS = main.c magic.c fsm.c lcp.c ipcp.c upap.c chap.c md5.c ccp.c \
+-	   ipxcp.c auth.c options.c sys-linux.c cbcp.c environ.c readpw.c
++	   ipxcp.c auth.c options.c sys-linux.c cbcp.c environ_bsd.c readpw.c
+ HEADERS =  callout.h pathnames.h patchlevel.h chap.h md5.h \
+-	   ipxcp.h cbcp.h environ.h
++	   ipxcp.h cbcp.h environ_bsd.h
+ MANPAGES = ipppd.8
+ PPPDOBJS = main.o magic.o fsm.o lcp.o ipcp.o upap.o chap.o md5.o ccp.o \
+-	   auth.o options.o sys-linux.o cbcp.o ipxcp.o environ.o readpw.o
++	   auth.o options.o sys-linux.o cbcp.o ipxcp.o environ_bsd.o readpw.o
+ 
+ all: ipppd
+ 
+--- /dev/null
++++ isdnutils-3.9.20060704+dfsg.2/ipppd/environ_bsd.c
+@@ -0,0 +1,179 @@
++/*
++ * Copyright (c) 1984-2000 Carnegie Mellon University. All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ *
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ *
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in
++ *    the documentation and/or other materials provided with the
++ *    distribution.
++ *
++ * 3. The name "Carnegie Mellon University" must not be used to
++ *    endorse or promote products derived from this software without
++ *    prior written permission. For permission or any legal
++ *    details, please contact
++ *      Office of Technology Transfer
++ *      Carnegie Mellon University
++ *      5000 Forbes Avenue
++ *      Pittsburgh, PA  15213-3890
++ *      (412) 268-4387, fax: (412) 268-7395
++ *      tech-transfer@andrew.cmu.edu
++ *
++ * 4. Redistributions of any form whatsoever must retain the following
++ *    acknowledgment:
++ *    "This product includes software developed by Computing Services
++ *     at Carnegie Mellon University (http://www.cmu.edu/computing/)."
++ *
++ * CARNEGIE MELLON UNIVERSITY DISCLAIMS ALL WARRANTIES WITH REGARD TO
++ * THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
++ * AND FITNESS, IN NO EVENT SHALL CARNEGIE MELLON UNIVERSITY BE LIABLE
++ * FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
++ * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
++ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ *
++ * Copyright (c) 1999-2004 Paul Mackerras. All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ *
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ *
++ * 2. The name(s) of the authors of this software must not be used to
++ *    endorse or promote products derived from this software without
++ *    prior written permission.
++ *
++ * 3. Redistributions of any form whatsoever must retain the following
++ *    acknowledgment:
++ *    "This product includes software developed by Paul Mackerras
++ *     <paulus@samba.org>".
++ *
++ * THE AUTHORS OF THIS SOFTWARE DISCLAIM ALL WARRANTIES WITH REGARD TO
++ * THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
++ * AND FITNESS, IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY
++ * SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
++ * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
++ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ *
++ * Copyright 2010 Ben Hutchings.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ *
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the above disclaimer.
++ *
++ * 2. The name(s) of the authors of this software must not be used to
++ *    endorse or promote products derived from this software without
++ *    prior written permission.
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include "environ_bsd.h"
++
++char **script_env;		/* Env. variable values for scripts */
++static int s_env_nalloc;	/* # words avail at script_env */
++
++/*
++ * script_setenv - set an environment variable value to be used
++ * for scripts that we run (e.g. ip-up, auth-up, etc.)
++ */
++void script_setenv(char *var, char *value)
++{
++    size_t varl = strlen(var);
++    size_t vl = varl + strlen(value) + 2;
++    int i;
++    char *p, *newstring;
++
++    newstring = (char *) malloc(vl);
++    if (newstring == 0)
++	return;
++    sprintf(newstring, "%s=%s", var, value);
++
++    /* check if this variable is already set */
++    if (script_env != 0) {
++	for (i = 0; (p = script_env[i]) != 0; ++i) {
++	    if (strncmp(p, var, varl) == 0 && p[varl] == '=') {
++		free(p);
++		script_env[i] = newstring;
++		return;
++	    }
++	}
++    } else {
++	/* no space allocated for script env. ptrs. yet */
++	i = 0;
++	script_env = (char **) malloc(16 * sizeof(char *));
++	if (script_env == 0)
++	    return;
++	s_env_nalloc = 16;
++    }
++
++    /* reallocate script_env with more space if needed */
++    if (i + 1 >= s_env_nalloc) {
++	int new_n = i + 17;
++	char **newenv = (char **) realloc((void *)script_env,
++					  new_n * sizeof(char *));
++	if (newenv == 0)
++	    return;
++	script_env = newenv;
++	s_env_nalloc = new_n;
++    }
++
++    script_env[i] = newstring;
++    script_env[i+1] = 0;
++}
++
++/*
++ * script_unsetenv - remove a variable from the environment
++ * for scripts.
++ */
++void script_unsetenv(char *var)
++{
++    int vl = strlen(var);
++    int i;
++    char *p;
++
++    if (script_env == 0)
++	return;
++    for (i = 0; (p = script_env[i]) != 0; ++i) {
++	if (strncmp(p, var, vl) == 0 && p[vl] == '=') {
++	    free(p);
++	    while ((script_env[i] = script_env[i+1]) != 0)
++		++i;
++	    break;
++	}
++    }
++}
++
++/*
++ * script_unsetenv_prefix - remove variables from the environment
++ * for scripts.
++ */
++void script_unsetenv_prefix(char *prefix)
++{
++    int vl = strlen(prefix);
++    int i, j;
++    char *p;
++
++    if (script_env == 0)
++	return;
++    j = 0;
++    for (i = 0; (p = script_env[i]) != 0; ++i) {
++	if (strncmp(p, prefix, vl) == 0)
++	    free(p);
++	else
++	    script_env[j++] = script_env[i];
++    }
++    script_env[j] = 0;
++}
+--- /dev/null
++++ isdnutils-3.9.20060704+dfsg.2/ipppd/environ_bsd.h
+@@ -0,0 +1,4 @@
++void script_setenv(char *var, char *value);
++void script_unsetenv(char *var);
++void script_unsetenv_prefix(char *prefix);
++extern char **script_env;
+--- isdnutils-3.9.20060704+dfsg.2.orig/ipppd/ipcp.c
++++ isdnutils-3.9.20060704+dfsg.2/ipppd/ipcp.c
+@@ -34,7 +34,7 @@
+ #include "ipppd.h"
+ #include "ipcp.h"
+ #include "pathnames.h"
+-#include "environ.h"
++#include "environ_bsd.h"
+ 
+ /* global vars */
+ ipcp_options ipcp_wantoptions[NUM_PPP];	/* Options that we want to request */
+--- isdnutils-3.9.20060704+dfsg.2.orig/ipppd/main.c
++++ isdnutils-3.9.20060704+dfsg.2/ipppd/main.c
+@@ -56,7 +56,7 @@
+ #include "lcp.h"
+ #include "ipcp.h"
+ #include "ipxcp.h"
+-#include "environ.h"
++#include "environ_bsd.h"
+ 
+ #include "upap.h"
+ #include "chap.h"
