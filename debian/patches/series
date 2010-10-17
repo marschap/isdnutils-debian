@@ -28,3 +28,4 @@ bashisms.patch
 capi20-h-needs-stddef-h.patch
 ipppd-replace-gpl-code.patch
 va_list.patch
+fix-manpage-section.patch
