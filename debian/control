@@ -5,12 +5,17 @@ Maintainer: Rolf Leggewie <foss@rolf.leggewie.biz>
 Uploaders: Jan-Michael Brummer <jan.brummer@tabos.org>
 DM-Upload-Allowed: yes
 Standards-Version: 3.7.3
-Build-Depends: debhelper (>=5), bzip2, libncurses5-dev | libncurses-dev, xutils-dev | imake, tcl-dev, linuxdoc-tools (>=0.9.20), groff, libtool, libxaw7-dev, libreadline-dev, libpcap0.8-dev, autotools-dev, automake1.4, automake1.7, automake1.9, autoconf2.13, autoconf, libssl-dev, psutils, lsb-release, po-debconf
+Build-Depends: debhelper (>=5), bzip2, libncurses5-dev | libncurses-dev,
+ xutils-dev | imake, tcl-dev, linuxdoc-tools (>=0.9.20), groff, libtool,
+ libxaw7-dev, libreadline-dev, libpcap0.8-dev, autotools-dev, automake1.4,
+ automake1.7, automake1.9, autoconf2.13, autoconf, libssl-dev, psutils,
+ lsb-release, po-debconf
 
 Package: isdnutils
 Priority: optional
 Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 s390 sh4 sparc sparc64
-Depends: isdnutils-base (= ${binary:Version}), ipppd, isdnlog, isdnutils-xtools, isdnvboxserver, isdnvboxclient, openbsd-inetd | inet-superserver, ${misc:Depends}
+Depends: isdnutils-base (= ${binary:Version}), ipppd, isdnlog, isdnutils-xtools,
+ isdnvboxserver, isdnvboxclient, openbsd-inetd | inet-superserver, ${misc:Depends}
 Suggests: isdnutils-doc, pppdcapiplugin, capiutils
 Description: ISDN utilities - dependency package
  This package depends on the most frequently used components for an
@@ -73,7 +78,8 @@ Description: ISDN utilities - PPP daemon
 
 Package: isdnlog
 Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390 sh4 sparc64
-Depends: isdnutils-base (= ${binary:Version}), isdnlog-data (>= ${binary:Version}), debconf (>=1.2.9) | debconf-2.0, ${shlibs:Depends}, ${misc:Depends}
+Depends: isdnutils-base (= ${binary:Version}), isdnlog-data (>= ${binary:Version}),
+ debconf (>=1.2.9) | debconf-2.0, ${shlibs:Depends}, ${misc:Depends}
 Description: ISDN utilities - connection logger
  This package provides a set of utilities that can log ISDN connections and
  calculate the cost of calls. If sufficient data is available, it can even
@@ -123,7 +129,8 @@ Description: ISDN utilities - answering machine client
 
 Package: isdnvboxserver
 Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390 sh4 sparc64
-Depends: isdnutils-base (= ${binary:Version}), debconf (>=1.2.9) | debconf-2.0, ${shlibs:Depends}, openbsd-inetd | inet-superserver, udev | makedev, ${misc:Depends}
+Depends: isdnutils-base (= ${binary:Version}), debconf (>=1.2.9) | debconf-2.0,
+ ${shlibs:Depends}, openbsd-inetd | inet-superserver, udev | makedev, ${misc:Depends}
 Suggests: isdnvboxclient
 Description: ISDN utilities - answering machine server
  Let your Debian system be your answering machine! Messages can be accessed
@@ -136,7 +143,8 @@ Description: ISDN utilities - answering machine server
 
 Package: capiutils
 Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390 sh4 sparc64
-Depends: libcapi20-3 (= ${binary:Version}), ${shlibs:Depends}, lsb-base (>= 1.3-9ubuntu3), udev | makedev, ${misc:Depends}
+Depends: libcapi20-3 (= ${binary:Version}), ${shlibs:Depends}, lsb-base (>= 1.3-9ubuntu3),
+ udev | makedev, ${misc:Depends}
 Section: net
 Description: ISDN utilities - tools for CAPI-capable cards
  Some ISDN cards (notably the AVM active cards, and the AVM passive cards
@@ -170,7 +178,8 @@ Description: ISDN utilities - CAPI development libraries
 
 Package: pppdcapiplugin
 Architecture: alpha amd64 arm armeb armel hppa i386 ia64 m68k mips mipsel powerpc ppc64 sparc s390 sh4 sparc64
-Depends: ppp (>= 2.4.4), ppp (<< 2.4.6), libcapi20-3 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Depends: ppp (>= 2.4.4), ppp (<< 2.4.6), libcapi20-3 (= ${binary:Version}),
+ ${shlibs:Depends}, ${misc:Depends}
 Section: net
 Description: ISDN utilities - pppd plug-in for CAPI support
  Some ISDN cards can be used by CAPI utilities - for instance the AVM
