@@ -1,3 +1,21 @@
+isdnutils (1:3.9.20060704+dfsg.2-5) unstable; urgency=low
+
+  * debian/control:
+    - take over maintainership of isdnutils (Closes: #546946)
+    - bump to standard 3.9.1 (still not lintian clean)
+      drop a couple of obsolete lintian overrides
+    - add Homepage and Vcs fields
+  * rename isdnutils.lintian-overrides to source.lintian-overrides
+  * abort on error for maintenance scripts as recommend by policy
+    - debian/isdnutils-base.config
+    - debian/isdnvboxserver.config
+  * debian/watch: adjust dversionmangle to work with dfsg-numbering
+  * fix section inconsistencies for a number of man pages
+  * debian/copyright: add my copyright
+  * isdnlog: fix spelling mistake in dest.cdb (Closes: #593136)
+
+ -- Rolf Leggewie <foss@rolf.leggewie.biz>  Thu, 28 Oct 2010 07:17:42 +0900
+
 isdnutils (1:3.9.20060704+dfsg.2-4) unstable; urgency=low
 
   * QA upload
