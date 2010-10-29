@@ -1,3 +1,11 @@
+isdnutils (1:3.9.20060704+dfsg.2-6) unstable; urgency=low
+
+  * turn "abort on error" in debian/isdnutils-base.config and
+    debian/isdnvboxserver.config off until further analysis has been done
+    (c.f. bugs 601768 and 554537 which report upgrade breakage)
+
+ -- Rolf Leggewie <foss@rolf.leggewie.biz>  Fri, 29 Oct 2010 21:39:39 +0900
+
 isdnutils (1:3.9.20060704+dfsg.2-5) unstable; urgency=low
 
   * debian/control:
