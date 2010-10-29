@@ -1,7 +1,10 @@
 /*
- * $Id: capidyn.c,v 1.4 2004/01/16 15:27:11 calle Exp $
+ * $Id: capidyn.c,v 1.1 2009/05/08 21:02:02 buzz Exp $
  * 
  * $Log: capidyn.c,v $
+ * Revision 1.1  2009/05/08 21:02:02  buzz
+ * Add new libcapi20
+ *
  * Revision 1.4  2004/01/16 15:27:11  calle
  * remove several warnings.
  *
@@ -20,7 +23,9 @@
 
 #include <sys/types.h>
 #define _LINUX_LIST_H
+#ifndef WIN32
 #include <linux/capi.h>
+#endif
 #include <string.h>
 #include "capi20.h"
 #include <dlfcn.h>
