@@ -15,13 +15,13 @@ case "$1" in
 
         if [ -s /var/lib/dpkg/info/isdnutils.postinst ] &&
            grep 'rm -rf /etc/isdn ' /var/lib/dpkg/info/isdnutils.postinst >/dev/null 2>&1; then
-            perl -i -pe 's,rm -rf /etc/isdn ,true # rm -rf  /etc/isdn ,' /var/lib/dpkg/info/isdnutils.postinst
+           perl -i -pe 's,rm -rf /etc/isdn ,true # rm -rf  /etc/isdn ,' /var/lib/dpkg/info/isdnutils.postinst
         fi
 
         cd /dev
-	if [ ! -c /dev/isdn-tty -a ! -c /dev/isdn-io -a -e /dev/MAKEDEV ]; then
+	if [ ! -c /dev/isdn-tty -a ! -c /dev/isdn-io -a -e /sbin/MAKEDEV ]; then
 	        echo "Note: running MAKEDEV to create ISDN devices in /dev..."
-        	MAKEDEV isdn-tty isdn-io
+        	/sbin/MAKEDEV isdn-tty isdn-io
 	        rm -f isdnctrl
         	ln -s isdnctrl0 isdnctrl
 	fi

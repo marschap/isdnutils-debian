@@ -11,7 +11,7 @@ case "$1" in
         if [ ! -c /dev/capi -a -e /dev/MAKEDEV ]; then
 		cd /dev
 	        echo "Note: running MAKEDEV to create CAPI devices in /dev..."
-        	./MAKEDEV capi
+        	/sbin/MAKEDEV capi
 	fi
 	;;
 
