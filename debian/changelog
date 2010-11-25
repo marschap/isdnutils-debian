@@ -1,3 +1,14 @@
+isdnutils (1:3.9.20060704+dfsg.2-7) unstable; urgency=medium
+
+  * debian/*.postinst: hardcode path to MAKEDEV
+    Closes: #604219, #604211, #597926, #604216
+  * debian/control: 
+    - drop explicit dependency on "udev|makedev", this is picked up
+      automatically
+    - add armhf support.  Closes: #604675
+
+ -- Rolf Leggewie <foss@rolf.leggewie.biz>  Thu, 25 Nov 2010 20:47:52 +0100
+
 isdnutils (1:3.9.20060704+dfsg.2-6) unstable; urgency=low
 
   * turn "abort on error" in debian/isdnutils-base.config and
