@@ -7,12 +7,6 @@ case "$1" in
     configure)
 	rm -f /etc/hotplug/blacklist.d/capiutils 2>/dev/null
 	rmdir /etc/hotplug/blacklist.d 2>/dev/null || true
-
-        if [ ! -c /dev/capi -a -e /dev/MAKEDEV ]; then
-		cd /dev
-	        echo "Note: running MAKEDEV to create CAPI devices in /dev..."
-        	/sbin/MAKEDEV capi
-	fi
 	;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

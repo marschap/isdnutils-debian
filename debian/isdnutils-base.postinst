@@ -19,12 +19,6 @@ case "$1" in
         fi
 
         cd /dev
-	if [ ! -c /dev/isdn-tty -a ! -c /dev/isdn-io -a -e /sbin/MAKEDEV ]; then
-	        echo "Note: running MAKEDEV to create ISDN devices in /dev..."
-        	/sbin/MAKEDEV isdn-tty isdn-io
-	        rm -f isdnctrl
-        	ln -s isdnctrl0 isdnctrl
-	fi
         # firmware handling
         db_get isdnutils/firmware || true
         firmware=$RET

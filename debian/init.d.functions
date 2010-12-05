@@ -87,7 +87,6 @@ check_isdncards() {
 	    # udev is running
 	    old_pwd=$(pwd)
 	    cd /dev
-	    WRITE_ON_UDEV=1 /sbin/MAKEDEV isdnmodem isdnbri dcbri isdn-io isdn-tty isdn-ippp
 	    if [ ! -e /dev/isdnctrl ]; then
 		cd /dev && ln -s isdnctrl0 isdnctrl
 	    fi
@@ -278,15 +277,6 @@ start_devices() {
 	    extraopts='master'
 	fi
 	for device in $master $slaves; do
-            # if the device doesn't exist in /dev nor in /dev/isdn,
-            # then this is (obviously?) not a devfs system, thus
-            # the device needs to be created.
-            if [ ! -c /dev/$device -a ! -c /dev/isdn/$device ]; then
-		cd /dev
-		/bin/echo -e " (creating /dev/$device)\c"
-		WRITE_ON_UDEV=1 /sbin/MAKEDEV $device || true
-		cd /etc/isdn
-	    fi
 	    if [ `expr "$extraopts" : 'slave'` -eq 5 ]; then
 		device=${master}+${device##????}
 		# slaves can't be added if the master interface

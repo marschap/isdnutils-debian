@@ -16,18 +16,6 @@ set -e
 
 case "$1" in
     configure)
-	old_pwd=$(pwd)
-	if [ ! -c /dev/isdn-tty -a -e /sbin/MAKEDEV ]; then
-		cd /dev
-		echo "Note: running MAKEDEV to create ISDN devices in /dev..."
-		/sbin/MAKEDEV isdn-tty isdn-io isdn-ippp
-	fi
-	# FIXME BUG! MAKEDEV should create the link by itself
-	if [ ! -d /dev/.udev/ ]; then
-	    rm -f isdnctrl
-	    ln -s isdnctrl0 isdnctrl
-	fi
-	cd $old_pwd
 	forcerestart=false
 	RET=ippp0
         db_get ipppd/whichif || true
