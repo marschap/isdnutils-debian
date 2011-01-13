@@ -87,8 +87,9 @@ check_isdncards() {
 	    # udev is running
 	    old_pwd=$(pwd)
 	    cd /dev
+	    # see discussion in bug 609736 regarding use of if and ln in the next three lines
 	    if [ ! -e /dev/isdnctrl ]; then
-		cd /dev && ln -s isdnctrl0 isdnctrl
+		cd /dev && ln -sf isdnctrl0 isdnctrl
 	    fi
 	    cd $old_pwd
 	    if [ -e /dev/isdninfo ]; then
