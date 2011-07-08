@@ -1,8 +1,20 @@
+isdnutils (1:3.9.20060704+dfsg.2-9) experimental; urgency=low
+
+  * capi20: grab Jan-Michael's new code from cvs. LP: 420918
+  * debian/patches:
+    - rebase capi20-h-needs-stddef-h.patch to newest capi20 code
+    - apply load_capifs_silently.patch from Jan Kiszka
+      capifs will be dropped in kernel >= 2.6.38
+  * debian/rules: drop call to debconf-updatepo
+  * debian/init.d.functions: force overwriting a dangling symlink
+    as discussed in bug 609736
+
+ -- Rolf Leggewie <foss@rolf.leggewie.biz>  Sun, 31 Oct 2010 09:51:08 +0900
+
 isdnutils (1:3.9.20060704+dfsg.2-8) unstable; urgency=low
 
   * remove calls to MAKEDEV from *.postinst and init.d.functions
     they should no longer be necessary. Closes: #607387
-  * debian/po: run debconf-updatepo to update po files
 
  -- Rolf Leggewie <foss@rolf.leggewie.biz>  Mon, 27 Dec 2010 12:54:01 +0800
 
