@@ -7,7 +7,7 @@ DM-Upload-Allowed: yes
 Standards-Version: 3.9.1
 Build-Depends: debhelper (>=5), bzip2, libncurses5-dev | libncurses-dev,
  xutils-dev | imake, tcl-dev, linuxdoc-tools (>=0.9.20), groff, libtool,
- libxaw7-dev, libreadline-dev, libpcap0.8-dev, autotools-dev, automake1.4,
+ libxaw7-dev, libreadline-dev, libpcap0.8-dev, autotools-dev,
  automake1.7, automake1.9, autoconf2.13, autoconf, libssl-dev, psutils,
  lsb-release, po-debconf
 Homepage: http://www.isdn4linux.de
