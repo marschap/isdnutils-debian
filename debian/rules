@@ -141,37 +141,21 @@ endif
 clean:
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp auto-update-stamp
 
-	[ ! -f Makefile ] || $(MAKE) distclean
-	rm -f isdnlog/client/config.cache \
-		isdnlog/client/config.status isdnlog/client/config.log
-	#-rm -f vbox/examples/beep.msg.example
-	#-rm -f `find . -name "*~"`
-	#-rm -rf debian/tmp* `find debian/* -type d ! -name CVS` debian/files* core
 	-rm -rf linux debian/linux debian/kernel-source-*
-	# -rm -f  debian/isdnactivecards.files debian/isdnactivecards.conffiles
 
 	: # remove updated/added autotools files
 	find . -name config.sub -o -name config.guess -o \
 		-name autom4te.cache -o -name config.cache -o \
 		-name config.log -o -name config.status -o -name aclocal.m4 -o \
 		-name config.h -o -o -name ltmain.sh | xargs rm -f
-	rm -f capifax/configure capiinfo/configure capiinit/configure \
-		rcapid/configure vbox/configure eicon/configure
-	rm -f capi20/Makefile.in capifax/Makefile.in capiinfo/Makefile.in \
-		capiinit/Makefile.in rcapid/Makefile.in vbox/doc/Makefile.in \
-		vbox/doc/de/Makefile.in vbox/utils/Makefile.in
 	find . -type l \
 	    \( -name install-sh -o -name mkinstalldirs -o -name missing \
 	       -o -name compile -o -name depcomp \
 	    \) \
 		| xargs rm -f
 
-	[ ! -f Makefile ] || $(MAKE) distclean
-
-	rm -f capiinit/stamp-h.in
-	rm -f vbox/src/stamp-h1
+	dh clean
 
 	dh_clean
 
@@ -229,15 +213,8 @@ binary-indep: DH_OPTIONS=-i
 binary-indep: build install
 	dh_testdir
 	dh_testroot
-#	dh_installdebconf
 	dh_installdocs
 	dh_installexamples
-#	dh_installmenu
-#	dh_installemacsen
-#	dh_installpam
-#	dh_installinit
-#	dh_installcron
-#	dh_installinfo
 	dh_installchangelogs 
 	dh_link
 	dh_compress
@@ -247,7 +224,6 @@ binary-indep: build install
 	  [ -f $$i ] || continue; \
 	  sort -u $$i > $$i.sorted; mv $$i.sorted $$i; \
 	done
-#	dh_perl
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
@@ -317,8 +293,6 @@ endif
 	dh_compress
 	dh_fixperms
 	dh_installdeb
-#	dh_makeshlibs
-#	dh_perl
 	dh_shlibdeps -L libcapi20-3 -l debian/libcapi20-3/usr/lib
 	# there's already a versioned depends in the control file for libcapi20-3
 	perl -i -pe 's/, libcapi20-3//' debian/capiutils.substvars
@@ -327,16 +301,6 @@ endif
 	  sort -u $$i > $$i.sorted; mv $$i.sorted $$i; \
 	done
 	dh_gencontrol
-##	# dont build isdnvboxclient on all architectures.
-##	for pkg in isdnutils isdnutils-xtools ipppd isdnlog isdnvbox isdnvboxserver libcapi20-3 isdnactivecards pppdcapiplugin isdneurofile; do \
-##	    dpkg-gencontrol -ldebian/changelog -isp -p$pkg -Tdebian/$pkg.substvars -Pdebian/$pkg; \
-##	done
-##	case $(DEB_HOST_ARCH) in \
-##	    hurd)	;; \
-##	    *)		dpkg-gencontrol -ldebian/changelog -isp -pisdnvboxclient -Tdebian/isdnvboxclient.substvars -Pdebian/isdnvboxclient; \
-##	esac
-##	chmod 644 debian/*/DEBIAN/control
-##	chown 0.0 debian/*/DEBIAN/control
 	dh_md5sums
 	dh_builddeb
 	# checking that nothing is left behind...
