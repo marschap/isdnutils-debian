@@ -1,3 +1,14 @@
+isdnutils (1:3.9.20060704+dfsg.2-10) unstable; urgency=medium
+
+  * debian/patches/: update vbox-autotools.patch. Closes: #618228
+    make the build-system agnostic to tcl-version from the build host
+  * debian/control
+    - allow uploads by Debian Maintainers
+    - drop build dependency on automake1.4, possibility for further
+      simplifications need to be investigated, help more than welcome!
+
+ -- Rolf Leggewie <foss@rolf.leggewie.biz>  Sat, 16 Jul 2011 04:22:45 +0900
+
 isdnutils (1:3.9.20060704+dfsg.2-9) experimental; urgency=low
 
   * capi20: grab Jan-Michael's new code from cvs. LP: 420918
