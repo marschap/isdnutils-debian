@@ -1,2 +1,5 @@
 usr/sbin/ipppstats
 usr/sbin/ipppd
+debian/ioptions		/etc/ppp/
+debian/99-ipppd		/etc/ppp/ip-down.d/
+debian/00-ipppd		/etc/ppp/ip-up.d/

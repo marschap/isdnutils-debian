@@ -140,25 +140,10 @@ endif
 
 	touch build-stamp
 
+# XXX this is the standard call dh makes for clean
 clean:
 	dh_testdir
-	dh_testroot
-
-	-rm -rf linux debian/linux debian/kernel-source-*
-
-	: # remove updated/added autotools files
-	find . -name config.sub -o -name config.guess -o \
-		-name autom4te.cache -o -name config.cache -o \
-		-name config.log -o -name config.status -o -name aclocal.m4 -o \
-		-name config.h -o -o -name ltmain.sh | xargs rm -f
-	find . -type l \
-	    \( -name install-sh -o -name mkinstalldirs -o -name missing \
-	       -o -name compile -o -name depcomp \
-	    \) \
-		| xargs rm -f
-
-	dh clean
-
+	dh_auto_clean
 	dh_clean
 
 install: DH_OPTIONS=
@@ -207,7 +192,7 @@ binary-indep: build install
 	dh_testdir
 	dh_testroot
 	dh_installdocs
-	dh_installexamples
+	dh_installexamples -X.in
 	dh_installchangelogs 
 	dh_installman
 	dh_link
@@ -233,7 +218,7 @@ ifneq ($(some_arch_match),yes)
 	#install -m 0644 debian/isdneurofile.README.Debian \
 	#    debian/isdneurofile/usr/share/doc/isdneurofile/README.Debian
 endif
-	dh_installexamples
+	dh_installexamples -X.in
 	dh_installmenu
 #	dh_installpam
 	# override the "global" DH_OPTIONS=-a setting for one command

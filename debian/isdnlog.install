@@ -6,3 +6,9 @@ usr/bin/isdnrate
 usr/bin/isdnrep
 usr/sbin/isdnlog
 usr/sbin/mkzonedb
+lib/README.Syntax.conffile /usr/share/doc/isdnlog/de
+isdnlog/BUGS /usr/share/doc/isdnlog/de
+isdnlog/FAQ /usr/share/doc/isdnlog/de
+isdnlog/README /usr/share/doc/isdnlog/de
+isdnlog/TODO /usr/share/doc/isdnlog/de
+isdnlog/contrib/winpopup/winpopup /usr/share/doc/isdnlog/de
