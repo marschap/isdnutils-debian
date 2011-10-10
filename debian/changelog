@@ -1,3 +1,27 @@
+isdnutils (1:3.9.20060704+dfsg.2-11) unstable; urgency=low
+
+  [ Jeroen Schot ]
+  * debian/po: add Dutch translation. Closes: #626896
+
+  [ Joe Dalton ]
+  * debian/po: add Danish translation.  Closes: #626306
+
+  [ Rolf Leggewie ]
+  * debian/control:
+    - build for Architecture: linux-any. Closes: #644333
+    - make sure that isdnlog is safe for binNMU
+    - bump up to policy 3.9.2. still not lintian-clean.
+  * debian/libcapi20: ship usr/lib/capi/*.so.* files
+  * streamline debian rules and leverage more of debhelper7 magic
+    - bump debhelper version requirement
+    - bump compat for debian/clean support
+    - move some of the clean target out of debian/rules and into debian/clean
+    - remove some comments
+    - still loads of work left to be done
+  * debian/patches: strip uselessly added linkage from no-imake.patch
+
+ -- Rolf Leggewie <foss@rolf.leggewie.biz>  Mon, 10 Oct 2011 20:29:25 +0800
+
 isdnutils (1:3.9.20060704+dfsg.2-10) unstable; urgency=medium
 
   * debian/patches/: update vbox-autotools.patch. Closes: #618228
