@@ -31,3 +31,4 @@ va_list.patch
 fix-manpage-section.patch
 debian-bts593136-fix-dest.cdb-spelling.patch
 load_capifs_silently.patch
+ALL_strip-unnecessary-linkage.patch

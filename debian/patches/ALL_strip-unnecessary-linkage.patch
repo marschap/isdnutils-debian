@@ -1,0 +1,92 @@
+Author: Rolf Leggewie <foss@rolf.leggewie.biz>
+Forwarded: no
+Subject: stop linking unnecessarily and introducing faulty dependencies
+
+diff --git a/vbox/acinclude.m4 b/vbox/acinclude.m4
+index 8899d02..dbf3ea0 100644
+--- a/vbox/acinclude.m4
++++ b/vbox/acinclude.m4
+@@ -51,19 +51,19 @@ AC_DEFUN(GND_PACKAGE_TCL,
+             dlerror,
+             [AC_CHECK_LIB(${gnd_1st_tcl_lib_test},
+                Tcl_CreateInterp,
+-               LINK_TCL_LIBS="${gnd_tcl_lib_dir} -l${gnd_1st_tcl_lib_test} -lm -ldl",
++               LINK_TCL_LIBS="${gnd_tcl_lib_dir} -l${gnd_1st_tcl_lib_test}",
+                [AC_CHECK_LIB(${gnd_2nd_tcl_lib_test},
+                   Tcl_CreateInterp,
+-                  LINK_TCL_LIBS="${gnd_tcl_lib_dir} -l${gnd_2nd_tcl_lib_test} -lm -ldl",
++                  LINK_TCL_LIBS="${gnd_tcl_lib_dir} -l${gnd_2nd_tcl_lib_test}",
+                   [AC_CHECK_LIB(${gnd_3rd_tcl_lib_test},
+                      Tcl_CreateInterp,
+-                     LINK_TCL_LIBS="${gnd_tcl_lib_dir} -l${gnd_3rd_tcl_lib_test} -lm -ldl",
++                     LINK_TCL_LIBS="${gnd_tcl_lib_dir} -l${gnd_3rd_tcl_lib_test}",
+                      ,
+-                     ${gnd_tcl_lib_dir} -lm -ldl
++                     ${gnd_tcl_lib_dir}
+                   )],
+-                  ${gnd_tcl_lib_dir} -lm -ldl
++                  ${gnd_tcl_lib_dir}
+                )],
+-               ${gnd_tcl_lib_dir} -lm -ldl
++               ${gnd_tcl_lib_dir}
+             )],
+          )],
+       )
+diff --git a/vbox/aclocal.m4 b/vbox/aclocal.m4
+index 2387b6b..435ea86 100644
+--- a/vbox/aclocal.m4
++++ b/vbox/aclocal.m4
+@@ -63,19 +63,19 @@ AC_DEFUN(GND_PACKAGE_TCL,
+             dlerror,
+             [AC_CHECK_LIB(${gnd_1st_tcl_lib_test},
+                Tcl_CreateInterp,
+-               LINK_TCL_LIBS="${gnd_tcl_lib_dir} -l${gnd_1st_tcl_lib_test} -lm -ldl",
++               LINK_TCL_LIBS="${gnd_tcl_lib_dir} -l${gnd_1st_tcl_lib_test}",
+                [AC_CHECK_LIB(${gnd_2nd_tcl_lib_test},
+                   Tcl_CreateInterp,
+-                  LINK_TCL_LIBS="${gnd_tcl_lib_dir} -l${gnd_2nd_tcl_lib_test} -lm -ldl",
++                  LINK_TCL_LIBS="${gnd_tcl_lib_dir} -l${gnd_2nd_tcl_lib_test}",
+                   [AC_CHECK_LIB(${gnd_3rd_tcl_lib_test},
+                      Tcl_CreateInterp,
+-                     LINK_TCL_LIBS="${gnd_tcl_lib_dir} -l${gnd_3rd_tcl_lib_test} -lm -ldl",
++                     LINK_TCL_LIBS="${gnd_tcl_lib_dir} -l${gnd_3rd_tcl_lib_test}",
+                      ,
+-                     ${gnd_tcl_lib_dir} -lm -ldl
++                     ${gnd_tcl_lib_dir}
+                   )],
+-                  ${gnd_tcl_lib_dir} -lm -ldl
++                  ${gnd_tcl_lib_dir}
+                )],
+-               ${gnd_tcl_lib_dir} -lm -ldl
++               ${gnd_tcl_lib_dir}
+             )],
+          )],
+       )
+diff --git a/vbox3/acinclude.m4 b/vbox3/acinclude.m4
+index 1ae4634..12da4df 100644
+--- a/vbox3/acinclude.m4
++++ b/vbox3/acinclude.m4
+@@ -71,7 +71,7 @@ AC_DEFUN(AC_PATH_TCL,
+                AC_CHECKING([whether tcl is installed in a standard location...])
+ 
+                AC_CHECK_LIB(tcl, Tcl_CreateInterp,
+-                  [ tcl_library="-ltcl -lm -ldl" ],
++                  [ tcl_library="-ltcl" ],
+                   [
+                      AC_CHECKING([whether tcl is installed in a special locations...])
+ 
+@@ -82,12 +82,12 @@ AC_DEFUN(AC_PATH_TCL,
+                      if (test ! "$searchresult" = "NO")
+                      then
+                         AC_CHECK_LIB(tcl, Tcl_CreateInterp,
+-                           [ tcl_library="-L$searchresult -ltcl -lm -ldl" ],
++                           [ tcl_library="-L$searchresult -ltcl" ],
+                            ,
+-                           -L$searchresult -lm -ldl)
++                           -L$searchresult)
+                      fi
+                   ],
+-                  -lm -ldl)
++                  )
+             ])
+       ])
