@@ -6,7 +6,7 @@
  xisdnload:
 -	CFLAGS= ; MAKEFLAGS= ; $(MAKE) -f Makefile EXTRA_DEFINES="$(EDEF)"
 +	gcc -g -O2 -fno-strict-aliasing -I/usr/X11R6/include -c xisdnload.c
-+	gcc -o xisdnload -L/usr/X11R6/lib xisdnload.o -lXaw -lXmu -lXt -lSM -lICE -lXpm -lXext -lX11
++	gcc -o xisdnload -L/usr/X11R6/lib xisdnload.o -lXaw -lXmu -lXt -lXext -lX11
  
  config:
 -	@cp Makefile.in GNUmakefile
@@ -57,7 +57,7 @@
 -	CFLAGS= ; MAKEFLAGS= ; $(MAKE) -f Makefile EXTRA_DEFINES="$(I4LU_DEFINES)"
 +	gcc -g -O2 -fno-strict-aliasing $(I4LU_DEFINES) -I. -I/usr/X11R6/include -c Net.c
 +	gcc -g -O2 -fno-strict-aliasing $(I4LU_DEFINES) -I. -I/usr/X11R6/include -c xmonisdn.c
-+	gcc -o xmonisdn -L/usr/X11R6/lib Net.o xmonisdn.o -lXaw -lXmu -lXt -lSM -lICE -lXpm -lXext -lX11 -lm
++	gcc -o xmonisdn -L/usr/X11R6/lib Net.o xmonisdn.o -lXaw -lXmu -lXt -lXext -lX11
  	rm -rf X11
  
  xmonisdn.man: xmonisdn.man.in Makefile
