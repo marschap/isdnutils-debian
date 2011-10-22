@@ -77,9 +77,7 @@
 
 	# figure out where the app-defaults live
 	# If it's in /etc, then it needs to be marked as a conffile
-	mv debian/isdnutils-xtools.files     debian/isdnutils-xtools.files.orig
 	mv debian/isdnutils-xtools.conffiles debian/isdnutils-xtools.conffiles.orig
-	grep -v app-default debian/isdnutils-xtools.files.orig     > debian/isdnutils-xtools.files
 	grep -v app-default debian/isdnutils-xtools.conffiles.orig > debian/isdnutils-xtools.conffiles
 	if [ -d debian/tmp/etc/X11/app-defaults ]; then \
 	    echo  etc/X11/app-defaults/XISDNLoad >> debian/isdnutils-xtools.files; \

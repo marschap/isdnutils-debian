@@ -181,15 +181,12 @@ ifneq ($(some_arch_match),yes)
 	chmod +x debian/finish-install-first.sh
 	debian/finish-install-first.sh
 	mv debian/tmp/usr/bin/capifaxrcvd debian/tmp/usr/sbin/
-	dh_movefiles -i
 endif
 	: # These apply to all arch'es:
 	mv debian/tmp/usr/share/man/man5/vbox_file.5 \
 	    debian/tmp/usr/share/man/man5/vbox.5
 	install -m 0644 vbox/examples/vboxrc.example \
 	    debian/isdnvboxclient/usr/share/doc/isdnvboxclient/examples/vboxrc
-
-	dh_movefiles -s
 
 ifneq ($(some_arch_match),yes)
 	chmod +x debian/finish-install-last.sh
@@ -199,13 +196,14 @@ endif
 
 	# These apply to all arch'es:
 	# the binary is called vboxcnvt, not vboxconvert
-	mv debian/isdnvboxclient/usr/share/man/man1/vboxconvert.1 \
-	    debian/isdnvboxclient/usr/share/man/man1/vboxcnvt.1
+#	mv debian/isdnvboxclient/usr/share/man/man1/vboxconvert.1 \
+#	    debian/isdnvboxclient/usr/share/man/man1/vboxcnvt.1
 
-	mkdir -p debian/isdnutils-xtools/usr/share/man/man1/
-	mv debian/isdnutils-xtools/usr/man/man1/xisdnload.1x \
-	    debian/isdnutils-xtools/usr/share/man/man1/xisdnload.1x
+#	mkdir -p debian/isdnutils-xtools/usr/share/man/man1/
+#	mv debian/isdnutils-xtools/usr/man/man1/xisdnload.1x \
+#	    debian/isdnutils-xtools/usr/share/man/man1/xisdnload.1x
 	rmdir -p --ignore-fail-on-non-empty debian/isdnutils-xtools/usr/man/man1
+	dh_install
 
 # Build architecture-independent files here.
 # Pass -i to all debhelper commands in this target to reduce clutter.

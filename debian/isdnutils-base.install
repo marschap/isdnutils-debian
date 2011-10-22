@@ -1,3 +1,4 @@
+scripts/isdncause /usr/bin/
 usr/bin/imon
 usr/bin/imontty
 usr/include/isdn_dwabclib.h
