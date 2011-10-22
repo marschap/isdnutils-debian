@@ -173,7 +173,7 @@ install: build
 
 	# Add here commands to install the package into debian/tmp
 	# (the files get moved out by dh_movefiles later)
-	$(MAKE) install DESTDIR=`pwd`/debian/tmp
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
 
 	cp -p isdnlog/holiday-??.dat debian/tmp/usr/share/isdn/
 
