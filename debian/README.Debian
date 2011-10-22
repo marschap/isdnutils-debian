@@ -3,12 +3,6 @@ isdnutils for Debian
 
 isdnutils is split into different packages:
 
-- isdnutils
-  Compatibility package for people upgrading from the previous version.
-  It depends on most of the split-off packages so that functionality
-  isn't lost when upgrading.
-  When in doubt, install this, and the rest will be installed as well :-)
-
 - isdnutils-base
   The base part, containing direct kernel support, e.g. isdnctrl
 

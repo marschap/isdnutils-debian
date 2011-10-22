@@ -14,36 +14,6 @@ Homepage: http://www.isdn4linux.de
 Vcs-Git: git://git.debian.org/git/collab-maint/isdnutils.git
 Vcs-Browser: http://git.debian.org/?p=collab-maint/isdnutils.git
 
-Package: isdnutils
-Priority: optional
-Architecture: linux-any
-Depends: isdnutils-base (= ${binary:Version}), ipppd, isdnlog, isdnutils-xtools,
- isdnvboxserver, isdnvboxclient, openbsd-inetd | inet-superserver, ${misc:Depends}
-Suggests: isdnutils-doc, pppdcapiplugin, capiutils
-Description: ISDN utilities - dependency package
- This package depends on the most frequently used components for an
- ISDN system using an internal adapter; they are not required for an
- external adapter.
- .
- The isdnutils suite is split up into component packages, to make it
- easier to fine-tune what is installed; hardly anyone needs everything.
- However, it's not possible to select what is needed automatically. This
- dependency package just ensures the most important components are
- installed, and can be safely removed again once that is done.
- .
- The component packages involved are:
-  * isdnutils-base:   the basic set of ISDN utilities;
-  * ipppd:            for networking over ISDN with syncPPP;
-  * isdnlog:          for logging ISDN calls (and much more);
-  * isdnutils-xtools: graphical utilities (xisdnload and xmonisdn);
-  * isdnvboxclient:   ISDN answering machine client;
-  * isdnvboxserver:   ISDN answering machine server.
- .
- It also suggests the following optional extras:
-  * capiutils:        CAPI utilities;
-  * isdnutils-doc:    additional documentation;
-  * pppdcapiplugin:   a CAPI plugin for the normal PPP daemon.
-
 Package: isdnutils-base
 Priority: optional
 Architecture: linux-any
@@ -94,6 +64,7 @@ Package: isdnlog-data
 Architecture: all
 Depends: ${misc:Depends}
 Recommends: isdnlog (>= ${source:Version})
+Suggests: isdnutils-doc
 Description: ISDN utilities - connection logger data
  This package provides data related to call pricing, area codes, etcetera,
  in various countries, and is only useful with isdnlog.
@@ -121,7 +92,7 @@ Description: ISDN utilities - answering machine dependency package
 Package: isdnvboxclient
 Architecture: linux-any
 Depends: ${shlibs:Depends}, sox | nas-bin | alsa-utils, ${misc:Depends}
-Suggests: isdnvboxserver
+Suggests: isdnvboxserver, isdnutils-doc
 Description: ISDN utilities - answering machine client
  Let your Debian system be your answering machine! Messages can be accessed
  remotely, automatically emailed, etc.
@@ -159,6 +130,7 @@ Package: libcapi20-3
 Architecture: linux-any
 Section: libs
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Suggests: isdnutils-doc
 Description: ISDN utilities - CAPI support libraries
  If you have an ISDN card with which CAPI works, you may be able to use
  CAPI-capable applications such as fax systems. At this point, AVM cards can
@@ -171,6 +143,7 @@ Package: libcapi20-dev
 Architecture: linux-any
 Section: libdevel
 Depends: libcapi20-3 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Suggests: isdnutils-doc
 Description: ISDN utilities - CAPI development libraries
  If you have an ISDN card with which CAPI works, you may be able to use
  CAPI-capable applications such as fax systems. At this point, AVM cards can
