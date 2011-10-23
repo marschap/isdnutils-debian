@@ -7,7 +7,6 @@
 	rm -f             debian/tmp/etc/isdn/eftusers
 	# ln -s ../ftpusers debian/isdneurofile/etc/isdn/eftusers
 	install -m 0444 Mini-FAQ/isdn-faq.*           debian/isdnutils-doc/usr/share/doc/isdnutils-doc/Mini-FAQ/
-	mv debian/tmp/usr/share/man/man1/xisdnload.1* debian/isdnutils-xtools/usr/man/man1/
 	mv debian/tmp/usr/bin/x*                      debian/isdnutils-xtools/usr/bin/
 	cp xmonisdn/README                            debian/isdnutils-xtools/usr/share/doc/isdnutils-xtools/README.xmonisdn
 	# move some extra stuff from upstream source into debian tree
@@ -65,9 +64,7 @@
 	install -m 0444 debian/ioptions      debian/ipppd/etc/ppp/
 	install -m 0644 isdnlog/rate-*.dat                 debian/isdnlog-data/usr/share/isdn/
 	install -m 0644 isdnlog/zone-*.cdb                 debian/isdnlog-data/usr/share/isdn/
-	install -m 0644 debian/isdnlog-data-README	   debian/isdnlog-data/usr/share/doc/isdnlog-data/README
 	install -m 0644 debian/isdnlog.logrotate.d	   debian/isdnlog/etc/logrotate.d/isdnlog
-	install -m 0644 debian/isdnutils-xtools-README	   debian/isdnutils-xtools/usr/share/doc/isdnutils-xtools/README
 	# not admin tools IMHO
 	mv debian/tmp/usr/sbin/imon*               debian/tmp/usr/bin/.
 	mv debian/tmp/usr/share/man/man8/imon.8    debian/tmp/usr/share/man/man1/imon.1

@@ -1,0 +1,12 @@
+debian/tmp/usr/share/man/man1/vboxconvert.1
+debian/tmp/usr/share/man/man1/autovbox.1
+debian/tmp/usr/share/man/man1/rmdtovbox.1
+debian/tmp/usr/share/man/man1/vbox.1
+debian/tmp/usr/share/man/man1/vboxbeep.1
+debian/tmp/usr/share/man/man1/vboxconvert.1
+debian/tmp/usr/share/man/man1/vboxctrl.1
+debian/tmp/usr/share/man/man1/vboxmode.1
+debian/tmp/usr/share/man/man1/vboxplay.1
+debian/tmp/usr/share/man/man1/vboxtoau.1
+debian/tmp/usr/share/man/man5/vboxrc.5
+

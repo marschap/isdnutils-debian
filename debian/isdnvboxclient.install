@@ -7,13 +7,3 @@ usr/bin/vboxctrl
 usr/bin/vboxmode
 usr/bin/vboxplay
 usr/bin/vboxtoau
-usr/share/man/man1/autovbox.1
-usr/share/man/man1/rmdtovbox.1
-usr/share/man/man1/vbox.1
-usr/share/man/man1/vboxbeep.1
-usr/share/man/man1/vboxconvert.1
-usr/share/man/man1/vboxctrl.1
-usr/share/man/man1/vboxmode.1
-usr/share/man/man1/vboxplay.1
-usr/share/man/man1/vboxtoau.1
-usr/share/man/man5/vboxrc.5

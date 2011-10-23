@@ -193,16 +193,6 @@ ifneq ($(some_arch_match),yes)
 	debian/finish-install-last.sh
 endif
 
-
-	# These apply to all arch'es:
-	# the binary is called vboxcnvt, not vboxconvert
-#	mv debian/isdnvboxclient/usr/share/man/man1/vboxconvert.1 \
-#	    debian/isdnvboxclient/usr/share/man/man1/vboxcnvt.1
-
-#	mkdir -p debian/isdnutils-xtools/usr/share/man/man1/
-#	mv debian/isdnutils-xtools/usr/man/man1/xisdnload.1x \
-#	    debian/isdnutils-xtools/usr/share/man/man1/xisdnload.1x
-	rmdir -p --ignore-fail-on-non-empty debian/isdnutils-xtools/usr/man/man1
 	dh_install
 
 # Build architecture-independent files here.
@@ -214,6 +204,7 @@ binary-indep: build install
 	dh_installdocs
 	dh_installexamples
 	dh_installchangelogs 
+	dh_installman
 	dh_link
 	dh_compress
 	dh_fixperms
@@ -234,6 +225,7 @@ binary-arch: build install
 	dh_testroot
 	dh_installdebconf
 	dh_installdocs
+	dh_installman
 ifneq ($(some_arch_match),yes)
 	install -m 0644 debian/README.MPPP debian/README.multiple-ipppd \
 	    debian/ipppd/usr/share/doc/ipppd/

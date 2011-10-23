@@ -1,0 +1,9 @@
+debian/tmp/usr/share/man/man5/vbox.5
+debian/tmp/usr/share/man/man5/vbox.conf.5
+debian/tmp/usr/share/man/man5/vboxd.conf.5
+debian/tmp/usr/share/man/man5/vboxgetty.conf.5
+debian/tmp/usr/share/man/man5/vboxtcl.5
+debian/tmp/usr/share/man/man8/vboxd.8
+debian/tmp/usr/share/man/man8/vboxgetty.8
+debian/tmp/usr/share/man/man8/vboxputty.8
+debian/tmp/usr/share/man/man8/vboxmail.8
