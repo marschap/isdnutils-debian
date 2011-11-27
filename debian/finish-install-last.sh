@@ -33,7 +33,6 @@
 	# install -m 0755 eurofile/scripts/ix25test debian/isdneurofile/usr/share/doc/isdneurofile/scripts/
 	# install -m 0755 eurofile/scripts/eftd.sh debian/isdneurofile/usr/share/doc/isdneurofile/scripts/
 
-	install -m 0644 debian/isdnutils-README.transitional debian/isdnutils/usr/share/doc/isdnutils/README.transitional
 	# ln -s isdnutils-base debian/isdnutils-base/usr/share/doc/isdnutils
 
 	# already in ./Mini-FAQ/
