@@ -71,14 +71,3 @@
 	mv debian/tmp/usr/share/man/man8/imontty.8 debian/tmp/usr/share/man/man1/imontty.1
 	# this _is_
 	mv debian/tmp/usr/bin/vboxmail             debian/tmp/usr/sbin/.
-
-	# figure out where the app-defaults live
-	# If it's in /etc, then it needs to be marked as a conffile
-	mv debian/isdnutils-xtools.conffiles debian/isdnutils-xtools.conffiles.orig
-	grep -v app-default debian/isdnutils-xtools.conffiles.orig > debian/isdnutils-xtools.conffiles
-	if [ -d debian/tmp/etc/X11/app-defaults ]; then \
-	    echo  etc/X11/app-defaults/XISDNLoad >> debian/isdnutils-xtools.files; \
-	    echo /etc/X11/app-defaults/XISDNLoad >> debian/isdnutils-xtools.conffiles; \
-	fi
-	# in the old situation, the app-defaults are under usr/X11R6
-	# which is moved out to the package anyway, so no need to add it to .files
