@@ -1,1 +1,2 @@
+# - INSTALL is not a compilation guide, it's a real usage guide.
 isdneurofile: package-contains-upstream-install-documentation usr/share/doc/isdneurofile/INSTALL.gz

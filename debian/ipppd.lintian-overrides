@@ -1,3 +1,6 @@
+# - yet again, examples scripts that shouldn't be executable
+## Well, shouldn't they reside in the examples directory instead, then?
+# - db_input in postinst only in extreme situations
 ipppd: postinst-uses-db-input
 ipppd: script-not-executable ./usr/share/isdn/default/auth-down
 ipppd: script-not-executable ./usr/share/isdn/default/auth-up

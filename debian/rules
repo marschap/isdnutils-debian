@@ -252,25 +252,8 @@ ifneq ($(some_arch_match),yes)
 	ln -s ../man7/isdn_cause.7.gz \
 	    debian/isdnutils-base/usr/share/man/man1/isdncause.1.gz
 endif
-	# lintian junk
-	# - duh, it's an example, why should it be executable
-	install -d debian/isdnutils-base/usr/share/lintian/overrides
-	install -m 644 debian/isdnutils-base.lintian-overrides debian/isdnutils-base/usr/share/lintian/overrides/isdnutils-base
-	# # - INSTALL is not a compilation guide, it's a real usage guide.
-	# install -d debian/isdneurofile/usr/share/lintian/overrides
-	# install -m 644 debian/isdneurofile.lintian-overrides debian/isdneurofile/usr/share/lintian/overrides/isdneurofile
-	# - again, examples scripts that shouldn't be executable
-	# - and I *do* want a different default depending on the language!
-	install -d debian/isdnlog/usr/share/lintian/overrides
-	install -m 644 debian/isdnlog.lintian-overrides debian/isdnlog/usr/share/lintian/overrides/isdnlog
-	# - these shared libraries are only used by a single binary that knows all about them
-	install -d debian/pppdcapiplugin/usr/share/lintian/overrides
-	install -m 644 debian/pppdcapiplugin.lintian-overrides debian/pppdcapiplugin/usr/share/lintian/overrides/pppdcapiplugin
-	# - yet again, examples scripts that shouldn't be executable
-	# - db_input in postinst only in extreme situations
-	install -d debian/ipppd/usr/share/lintian/overrides
-	install -m 644 debian/ipppd.lintian-overrides debian/ipppd/usr/share/lintian/overrides/ipppd
 
+	dh_lintian
 	dh_installchangelogs
 	rm -rf debian/libcapi20-dev/usr/share/doc/libcapi20-dev
 	ln -s libcapi20-3 debian/libcapi20-dev/usr/share/doc/libcapi20-dev

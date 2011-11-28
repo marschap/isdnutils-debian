@@ -1,2 +1,3 @@
+# - these shared libraries are only used by a single binary that knows all about them
 pppdcapiplugin: shared-lib-without-dependency-information ./usr/lib/pppd/2.4.4/userpass.so
 pppdcapiplugin: shared-lib-without-dependency-information ./usr/lib/pppd/2.4.5/userpass.so
