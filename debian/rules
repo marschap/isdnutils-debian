@@ -175,6 +175,9 @@ install: build
 	# (the files get moved out by dh_movefiles later)
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
 
+	# empty dependency_libs field in *.la files
+	sed -i "/dependency_libs/ s/'.*'/''/" "$(CURDIR)/debian/tmp/usr/lib/libcapi20.la"
+
 	cp -p isdnlog/holiday-??.dat debian/tmp/usr/share/isdn/
 
 ifneq ($(some_arch_match),yes)
