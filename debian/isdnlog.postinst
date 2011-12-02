@@ -29,56 +29,7 @@ case "$DOWHAT" in
         message="First time configuration, c"
         CONF=/etc/isdn/isdn.conf
         RATE=/etc/isdn/rate.conf
-        if [ -s $CONF ]; then
-            if grep '^[[:space:]]*VBNLEN[[:space:]]*=' $CONF >/dev/null; then
-                # ok, new version
-                # we need to possibly upgrade the German stuff, if VBN or CURRENCY = ...,DM
-                if [ "$country" = de ] &&
-                    (grep '^[[:space:]]*VBN[[:space:]]*=[[:space:]]*010[^:]' $CONF >/dev/null ||
-                     grep '^[[:space:]]*CURRENCY[[:space:]]*=[[:space:]]*[0-9.]*,DE*M' $CONF >/dev/null); then
-                    if dpkg --compare-versions "$OLDVERSION" lt-nl "1:3.1pre1b-29" && dpkg --compare-versions "$OLDVERSION" gt "1:3.1pre1b-0"; then
-                        perl -i.bak -pe 's/^(\s*VBN\s*=\s*010)(\s*(#.*)?)$/# :01900 eingefuegt, isdnlog postinst\n$1:01900$2/; s/(^\s*CURRENCY\s*=\s*).+?(\s.*)?$/# konvertiert nach EUR, isdnlog postinst\n${1}0.062,EUR/;' $CONF
-                        # add new providers if not already there
-                        if grep P:229 $RATE >/dev/null; then :; else echo 'P:229=0	#E Telebillig'   >> $RATE; fi
-                        if grep P:231 $RATE >/dev/null; then :; else echo 'P:231=0	#E Teledump'     >> $RATE; fi
-                        if grep P:235 $RATE >/dev/null; then :; else echo 'P:235=0	#E TeleDiscount' >> $RATE; fi
-                        if grep P:237 $RATE >/dev/null; then :; else echo 'P:237=0	#E Fonfux'       >> $RATE; fi
-                        if grep P:287 $RATE >/dev/null; then :; else echo 'P:287=0	#E Phonecraft'   >> $RATE; fi
-                    fi
-                fi
-                if [ "$country" = nl ] &&
-                     grep '^[[:space:]]*CURRENCY[[:space:]]*=[[:space:]]*[0-9.]*,NLG' $CONF >/dev/null; then
-                    if dpkg --compare-versions "$OLDVERSION" lt-nl "1:3.1pre1b-29" && dpkg --compare-versions "$OLDVERSION" gt "1:3.1pre1b-0"; then
-                        perl -i.bak -pe 's/(^\s*CURRENCY\s*=\s*).+?(\s.*)?$/# geconverteerd naar EUR door isdnlog postinst\n${1}0.068,EUR$2/;' $CONF
-                    fi
-                fi
-                
-            else
-                echo "You seem to have an old $CONF from a previous isdnutils version."
-                echo "That version will be saved as isdn.conf-v3.0, and a new version will be created."
-                echo "Please check the new isdn.conf file later."
-                if [ -s $CONF-v3.0 ]; then
-                    echo ' '
-                    echo "Hmmm, you already seem to have an old version saved!"
-                    echo "Make sure that isdn.conf contains all the new parameters, including VBNLEN!"
-                    echo "See the directory $DEFDIR/ for examples.".
-                else
-                    mv -f $CONF $CONF-v3.0
-                    message="Now rec"
-                fi
-                echo ' '
-            fi
-        fi
-        if [ "$country" = de -a -s $RATE ] &&
-            dpkg --compare-versions "$OLDVERSION" lt-nl "1:3.1pre1b-29" &&
-            dpkg --compare-versions "$OLDVERSION" gt    "1:3.1pre1b-0"; then
-                # add new providers if not already there
-                if grep P:229 $RATE >/dev/null; then :; else echo 'P:229=0	#E Telebillig'   >> $RATE; fi
-                if grep P:231 $RATE >/dev/null; then :; else echo 'P:231=0	#E Teledump'     >> $RATE; fi
-                if grep P:235 $RATE >/dev/null; then :; else echo 'P:235=0	#E TeleDiscount' >> $RATE; fi
-                if grep P:237 $RATE >/dev/null; then :; else echo 'P:237=0	#E Fonfux'       >> $RATE; fi
-                if grep P:287 $RATE >/dev/null; then :; else echo 'P:287=0	#E Phonecraft'   >> $RATE; fi
-        fi
+
 	for CFG in isdn.conf rate.conf; do
 	    if [ ! -s /etc/isdn/$CFG ]; then
 		echo "${message}reating /etc/isdn/$CFG ."
