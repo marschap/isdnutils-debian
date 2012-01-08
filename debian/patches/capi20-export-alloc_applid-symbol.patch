@@ -1,0 +1,18 @@
+Description: export symbol alloc_applid for capi20
+Author: Michael Mueller <malware@t-online.de>
+Reviewed-by: Jan-Michael Brummer <jan.brummer@tabos.org>
+Bug: http://bugs.debian.org/650155
+
+Index: isdnutils/capi20/capi20.c
+===================================================================
+--- isdnutils.orig/capi20/capi20.c	2012-01-08 01:34:28.000000000 +0100
++++ isdnutils/capi20/capi20.c	2012-01-08 01:35:10.000000000 +0100
+@@ -276,7 +276,7 @@
+ 	return 0;
+ }
+ 
+-static inline unsigned alloc_applid(int fd)
++unsigned alloc_applid(int fd)
+ {
+ 	unsigned applid;
+ 
