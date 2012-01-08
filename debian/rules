@@ -96,7 +96,9 @@ endif
 
 	touch auto-update-stamp
 
-build: build-stamp
+build: build-arch build-indep
+build-arch: build-stamp
+build-indep: build-stamp
 build-stamp: auto-update-stamp
 	dh_testdir
 
