@@ -27,38 +27,9 @@ mkcapidev()
   fi
 }
 
-mountcapifs()
-{
-  if grep -q '/dev devfs rw' /proc/mounts; then
-    return
-  fi
-
-  if [ -e /dev/.devfsd ]; then
-    modprobe capifs
-  fi
-  if grep -q '^capifs /dev/capi ' /proc/mounts; then
-    return
-  fi
-  rm -rf /dev/capi
-  mkdir -m 755 /dev/capi
-  mount -t capifs -omode=0666 capifs /dev/capi
-}
-
-umountcapifs()
-{
-  if ! grep -q '^capifs /dev/capi ' /proc/mounts; then
-    return
-  fi
-  umount /dev/capi
-  if ! grep -q '^capifs ' /proc/mounts; then
-    rmmod capifs 2>/dev/null || true
-  fi
-}
-
 case "$1" in
   start)
     mkcapidev
-    mountcapifs
     if grep -Evq '^ *$|^ *#' /etc/isdn/capi.conf; then
       # assume AVM driver
       log_begin_msg "Starting $DESC..."
@@ -90,7 +61,6 @@ case "$1" in
         done
       fi
     fi
-    umountcapifs
     exit 0
     ;;
   reload|restart|force-reload)
@@ -102,7 +72,6 @@ case "$1" in
       fi
     fi
     mkcapidev
-    mountcapifs
     if grep -Evq '^ *$|^ *#' /etc/isdn/capi.conf; then
       $DAEMON start
       log_end_msg $?
