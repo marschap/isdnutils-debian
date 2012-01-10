@@ -31,7 +31,6 @@
 	install -m 0644 debian/HOWTO	     debian/isdnutils-base/usr/share/doc/isdnutils-base/
 	ln -s HOWTO                          debian/isdnutils-base/usr/share/doc/isdnutils-base/CONFIG
 	ln -s HOWTO                          debian/isdnutils-base/usr/share/doc/isdnutils-base/HOWTO.isdnutils
-	install -m 0644 debian/README.source debian/isdnutils-base/usr/share/doc/isdnutils-base/
 	install -m 0444 debian/ioptions      debian/ipppd/etc/ppp/
 	install -m 0644 isdnlog/rate-*.dat                 debian/isdnlog-data/usr/share/isdn/
 	install -m 0644 isdnlog/zone-*.cdb                 debian/isdnlog-data/usr/share/isdn/
