@@ -1,3 +1,24 @@
+isdnutils (1:3.9.20060704+dfsg.3-1) unstable; urgency=medium
+
+  [ Michael Mueller ]
+  * debian/patches: export symbol alloc_applid for capi20. Closes: #650155
+
+  [ Rolf Leggewie ]
+  * create dfsg tarball 3.9.20060704+dfsg.3
+    - stop shipping upstream capi20 which we fully replace with cvs trunk
+    - drop .cvsignore files, too, while we're at it
+  * leverage more of debhelper to do the packaging (ongoing effort)
+  * debian/rules:
+    - add "dummy" build-arch and build-indep target
+    - clean target successfully moved to dh standard
+  * debian/capiutils.init: drop code related to obsolete capifs.
+    Closes: #651722, closes: #335283, closes: #414199, closes: #433992
+  * debian/isdnlog.postinst: remove code to update from 10 year old package
+  * libcapi20-3: install instead of explicitly creating links to libs
+  * isdnutils-base: drop obsolete README.source
+
+ -- Rolf Leggewie <foss@rolf.leggewie.biz>  Wed, 11 Jan 2012 12:17:14 +0800
+
 isdnutils (1:3.9.20060704+dfsg.2-12) unstable; urgency=low
 
   * debian/libcapi20-3.links: link *.so to *.so.0.0.0 (Closes: #650156)
