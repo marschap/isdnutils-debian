@@ -21,6 +21,12 @@ endif
 
 distribution := $(shell lsb_release -is)
 
+override_dh_installexamples:
+	dh_installexamples -X.in
+
+override_dh_shlibdeps:
+	dh_shlibdeps -L libcapi20-3 -l debian/libcapi20-3/usr/lib
+
 auto: auto-update-stamp
 auto-update-stamp:
 	: # update autotools files
@@ -140,11 +146,9 @@ endif
 
 	touch build-stamp
 
-# XXX this is the standard call dh makes for clean
+# XXX this is the standard dh call
 clean:
-	dh_testdir
-	dh_auto_clean
-	dh_clean
+	dh clean
 
 install: DH_OPTIONS=
 install: build
@@ -165,8 +169,6 @@ install: build
 	# empty dependency_libs field in *.la files
 	sed -i "/dependency_libs/ s/'.*'/''/" "$(CURDIR)/debian/tmp/usr/lib/libcapi20.la"
 
-	cp -p isdnlog/holiday-??.dat debian/tmp/usr/share/isdn/
-
 ifneq ($(some_arch_match),yes)
 	chmod +x debian/finish-install-first.sh
 	debian/finish-install-first.sh
@@ -178,30 +180,18 @@ endif
 	install -m 0644 vbox/examples/vboxrc.example \
 	    debian/isdnvboxclient/usr/share/doc/isdnvboxclient/examples/vboxrc
 
-ifneq ($(some_arch_match),yes)
-	chmod +x debian/finish-install-last.sh
-	debian/finish-install-last.sh
-endif
+	# remove some unwanted stuff
+	set -e
+	if [ -s debian/isdneurofile/etc/init.d/eftd.sh ]; then mv debian/isdneurofile/etc/init.d/eftd.sh debian/isdneurofile/etc/init.d/isdneurofile; fi
+	rm -f debian/pppdcapiplugin/usr/share/doc/pppdcapiplugin/examples/adsl.conf	# already in /etc/drsdl
+	rm -f usr/share/doc/isdnutils-doc/isdn-faq.txt.gz				# already in ./Mini-FAQ/
+	rm -vf debian/tmp/etc/isdn/isdnlog.isdnctrl0.options
+	rm -vf debian/tmp/usr/share/man/man1/xmonisdn.1x*
 
-	dh_install
+	dh install
 
-# Build architecture-independent files here.
-# Pass -i to all debhelper commands in this target to reduce clutter.
-binary-indep: DH_OPTIONS=-i
 binary-indep: build install
-	dh_testdir
-	dh_testroot
-	dh_installdocs
-	dh_installexamples -X.in
-	dh_installchangelogs 
-	dh_installman
-	dh_link
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
+	dh binary-indep
 
 # Build architecture-dependent files here.
 # Pass -a to all debhelper commands in this target to reduce clutter.
@@ -209,62 +199,19 @@ binary-arch: DH_OPTIONS=-s
 binary-arch: build install
 	dh_testdir
 	dh_testroot
-	dh_installdebconf
-	dh_installdocs
-	dh_installman
-ifneq ($(some_arch_match),yes)
-	install -m 0644 debian/README.MPPP debian/README.multiple-ipppd \
-	    debian/ipppd/usr/share/doc/ipppd/
-	#install -m 0644 debian/isdneurofile.README.Debian \
-	#    debian/isdneurofile/usr/share/doc/isdneurofile/README.Debian
-endif
-	dh_installexamples -X.in
-	dh_installmenu
-#	dh_installpam
 	# override the "global" DH_OPTIONS=-a setting for one command
 ifneq ($(some_arch_match),yes)
 	DH_OPTIONS='' dh_installinit -pcapiutils \
 		--no-restart-on-upgrade --update-rcd-params='defaults 13 21'
-	mkdir -p debian/capiutils/etc/modprobe.d
-	cp -p debian/capiutils.blacklist \
-		debian/capiutils/etc/modprobe.d/blacklist-capiutils.conf
-endif
-	# Ok, for two commands
-	# No, for one command after all. Do this one by hand.
-	# env DH_OPTIONS='' dh_installinit --no-restart-on-upgrade -pisdnutils-base
-	# the postinst stuff normally done by dh is now statically in there.
-ifneq ($(some_arch_match),yes)
-	install -m 0755 debian/isdnutils-base.init \
-		debian/isdnutils-base/etc/init.d/isdnutils
-endif
-	dh_installcron
-ifneq ($(some_arch_match),yes)
 	ln -s ../man7/isdn_cause.7.gz \
 	    debian/isdnutils-base/usr/share/man/man1/isdncause.1.gz
 endif
-
-	dh_lintian
-	dh_installchangelogs
 	rm -rf debian/libcapi20-dev/usr/share/doc/libcapi20-dev
 	ln -s libcapi20-3 debian/libcapi20-dev/usr/share/doc/libcapi20-dev
-	dh_strip
-	dh_link
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_shlibdeps -L libcapi20-3 -l debian/libcapi20-3/usr/lib
-	# there's already a versioned depends in the control file for libcapi20-3
-	perl -i -pe 's/, libcapi20-3//' debian/capiutils.substvars
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
+
 	# checking that nothing is left behind...
 	rm -f debian/tmp/etc/services # this should be ignored
-x:
-ifeq ($(some_arch_match),yes)
-	echo "Ignore any of the 'still existing files' listed below on this architecture."
-endif
-	if [ ! -z "`find debian/tmp ! -type d`" ]; then echo "The following files still exist in debian/tmp/:"; find debian/tmp ! -type d -ls; fi;
+	dh binary-arch
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install

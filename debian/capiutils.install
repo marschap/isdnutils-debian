@@ -1,3 +1,4 @@
+debian/capi.conf /etc/isdn
 usr/bin/capifax
 usr/bin/capiinfo
 usr/sbin/avmcapictrl

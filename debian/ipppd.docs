@@ -1,3 +1,4 @@
 ipppd/NOTES.IPPPD
 ipppd/README*
 debian/README.MPPP
+debian/README.multiple-ipppd

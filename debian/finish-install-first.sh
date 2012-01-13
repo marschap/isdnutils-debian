@@ -26,15 +26,8 @@
 	    cp vbox/examples/$A.example debian/isdnvboxserver/usr/share/isdnvboxserver/default/$A; \
 	    ln -s ../../isdnvboxserver/default/$A debian/isdnvboxserver/usr/share/isdn/default/$A; \
 	done
-        install -m 0755 debian/vboxmail.enhanced debian/isdnvboxserver/usr/share/doc/isdnvboxserver/
-	install -m 0755 debian/grepconfig.pl debian/isdnutils-base/usr/share/doc/isdnutils-base/examples/
-	install -m 0644 debian/HOWTO	     debian/isdnutils-base/usr/share/doc/isdnutils-base/
 	ln -s HOWTO                          debian/isdnutils-base/usr/share/doc/isdnutils-base/CONFIG
 	ln -s HOWTO                          debian/isdnutils-base/usr/share/doc/isdnutils-base/HOWTO.isdnutils
-	install -m 0444 debian/ioptions      debian/ipppd/etc/ppp/
-	install -m 0644 isdnlog/rate-*.dat                 debian/isdnlog-data/usr/share/isdn/
-	install -m 0644 isdnlog/zone-*.cdb                 debian/isdnlog-data/usr/share/isdn/
-	install -m 0644 debian/isdnlog.logrotate.d	   debian/isdnlog/etc/logrotate.d/isdnlog
 	# not admin tools IMHO
 	mv debian/tmp/usr/sbin/imon*               debian/tmp/usr/bin/.
 	mv debian/tmp/usr/share/man/man8/imon.8    debian/tmp/usr/share/man/man1/imon.1
