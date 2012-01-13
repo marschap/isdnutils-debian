@@ -18,8 +18,6 @@ capi20-soname.patch
 libtool.patch
 imon-update.patch
 gcc40-fixes.patch
-ppp-2.4.4.patch
-ppp-2.4.5.patch
 vbox-little-endian.patch
 toplevel-make.patch
 capi20-msg2str-safety.patch
