@@ -1,3 +1,20 @@
+isdnutils (1:3.9.20060704+dfsg.3-2) unstable; urgency=medium
+
+  * debian/libcapi20-dev.install: drop libcapi20.so file from the dev package
+    Closes: #655840. Closes: #655760.
+  * leverage more of debhelper in the build system (ongoing effort)
+    - leverage more of the power of dh_{install,installppp,installdocs,
+      installexamples,installinit,installlogrotate,installmodules}
+    - drop debian/finish-install-last.sh
+    - significantly reduce special-casing in debian/rules
+    - call "dh install" from the install target instead of "dh_install"
+      only.  The former implies the latter and more.
+    - binary-indep and clean target fully migrated to dh
+    - migrate most of binary-arch target over to dh as well
+  * debian/cisco-config: drop unused file
+
+ -- Rolf Leggewie <foss@rolf.leggewie.biz>  Sat, 14 Jan 2012 18:30:49 +0800
+
 isdnutils (1:3.9.20060704+dfsg.3-1) unstable; urgency=medium
 
   [ Michael Mueller ]
