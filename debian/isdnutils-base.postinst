@@ -8,16 +8,6 @@ set -e
 case "$1" in
     configure)
         set +e # don't exit if the db_get below fails
-        # undo bad things in (old) isdnutils postrm in case someone tries to
-        # dpkg --purge isdnutils (the 3.0-20 version), which would remove
-        # /etc/isdn /var/lib/isdn /var/log/isdn /var/spool/vbox
-        # thus ruining a lot of things
-
-        if [ -s /var/lib/dpkg/info/isdnutils.postinst ] &&
-           grep 'rm -rf /etc/isdn ' /var/lib/dpkg/info/isdnutils.postinst >/dev/null 2>&1; then
-           perl -i -pe 's,rm -rf /etc/isdn ,true # rm -rf  /etc/isdn ,' /var/lib/dpkg/info/isdnutils.postinst
-        fi
-
         cd /dev
         # firmware handling
         db_get isdnutils/firmware || true
@@ -69,40 +59,7 @@ EOF
 #-- isdnutils end
 EOF
 	fi
-	if [ "x$2" != "x" -a "x$2" != "x<unknown>" ]; then   # it was configured before
-	    if ! dpkg --compare-versions "$2" ">=" "1:3.1"; then # previous was old vers.
-		cat <<'EOF'
-
-Isdnutils is now split into different packages for convenience to
-those that do not need or want all the parts installed (e.g. vbox).
-
-For more information about isdnutils look at /usr/share/doc/isdnutils;
-in particular 'README.Debian' and 'HOWTO.isdnutils'.
-
-EOF
-	    	sleep 2
-		if grep -qs '^[0-9][a-z].*vboxgetty' /etc/inittab; then
-			tempfile=`tempfile -d /var/tmp -p isdn.`
-			cp /dev/null $tempfile 2>&1
-			dpkg -l isdnvboxserver >> $tempfile 2>&1
-			if grep -qs '^i.* isdnvboxserver ' $tempfile; then
-			  # ok, safe
-			  rm -f $tempfile
-			else
-			  cat <<'EOF'
-You have vboxgetty active in your /etc/inittab, but you don't have the
-`isdnvboxserver' package installed or selected. Please either install
-the package or remove the vboxgetty line from /etc/inittab.
-
-EOF
-			  sleep 2
-			  rm -f $tempfile
-			fi
-		fi
-                # ignore errors from starting twice
-		invoke-rc.d isdnutils start 2>&1 | grep -v 'No such device' || true
-	    fi
-	else # not configured before
+	if [ "x$2" = "x" -o "x$2" = "x<unknown>" ]; then   # not configured before
 		cat <<'EOF'
 
 	For more information about isdnutils look at /usr/share/doc/isdnutils;
