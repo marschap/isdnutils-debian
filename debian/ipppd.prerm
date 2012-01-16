@@ -5,8 +5,8 @@ set -e
 
 case "$1" in
     remove)
-        if [ -s /etc/init.d/isdnutils ]; then
-            invoke-rc.d isdnutils stop ipppd
+        if [ -s /etc/init.d/isdnutils-base ]; then
+            invoke-rc.d isdnutils-base stop ipppd
         else
             kill `cat ipppd.ippp*.pid >/dev/null 2>&1` >/dev/null 2>&1
         fi

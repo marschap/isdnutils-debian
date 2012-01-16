@@ -196,10 +196,7 @@ binary-arch: DH_OPTIONS=-s
 binary-arch: build install
 	dh_testdir
 	dh_testroot
-	# override the "global" DH_OPTIONS=-a setting for one command
 ifneq ($(some_arch_match),yes)
-	DH_OPTIONS='' dh_installinit -pcapiutils \
-		--no-restart-on-upgrade --update-rcd-params='defaults 13 21'
 	ln -s ../man7/isdn_cause.7.gz \
 	    debian/isdnutils-base/usr/share/man/man1/isdncause.1.gz
 endif

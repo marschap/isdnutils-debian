@@ -1,6 +1,6 @@
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:          isdnutils
+# Provides:          isdnutils-base
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:     $remote_fs $syslog
 # Should-Start:      capiutils
@@ -11,14 +11,14 @@
 #
 # You don't need to change this file!
 #
-# Please read /usr/share/doc/isdnutils/README.debian
-# and         /usr/share/doc/isdnutils/CONFIG.gz .
+# Please read /usr/share/doc/isdnutils-base/README.debian
+# and         /usr/share/doc/isdnutils-base/CONFIG.gz .
 #
 # This script stops/starts ALL ISDN stuff (including isdnlog, if installed).
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 DAEMON=/usr/sbin/isdnctrl
-NAME=isdnutils
+NAME=isdnutils-base
 DESC='ISDN services'
 FLAGS="defaults"
 
@@ -91,7 +91,7 @@ case "$1" in
 	exit 0
     fi
     log_warning_msg "Sorry, reload can only be done explicitly for ipppd and isdnlog."
-    log_warning_msg 'Run "/etc/init.d/isdnutils reload ipppd" for example.'
+    log_warning_msg 'Run "/etc/init.d/isdnutils-base reload ipppd" for example.'
     exit 1
     ;;
   restart|force-reload)

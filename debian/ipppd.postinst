@@ -67,12 +67,12 @@ case "$1" in
 	    db_go
             set -e
 	fi
-        if [ -s /etc/init.d/isdnutils ]; then
+        if [ -s /etc/init.d/isdnutils-base ]; then
             err=false
             if $forcerestart; then
-                invoke-rc.d isdnutils restart || err=true
+                invoke-rc.d isdnutils-base restart || err=true
             else
-                invoke-rc.d isdnutils reload ipppd || err=true
+                invoke-rc.d isdnutils-base reload ipppd || err=true
             fi
             if $err; then
                 set +e
