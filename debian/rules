@@ -11,16 +11,6 @@ export DH_OPTIONS
 # brace expansion
 export SHELL=/bin/bash
 
-DEB_HOST_ARCH		?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
-DEB_HOST_GNU_TYPE	?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-
-some_arch_match := no
-ifeq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH),hurd sh))
-  some_arch_match := yes
-endif
-
-distribution := $(shell lsb_release -is)
-
 override_dh_installexamples:
 	dh_installexamples -X.in
 
@@ -125,24 +115,13 @@ build-stamp: auto-update-stamp
 	test -f ../isdnutils.config && cp ../isdnutils.config .config || \
 	    sed -e "s#@KERNELDIR@#`pwd`/linux#" \
 		< debian/dotconfig > .config
-ifeq ($(some_arch_match),yes)
-	: # build only isdnvboxclient on the "excluded" arches
-	sed -e "s#@KERNELDIR@#`pwd`/linux#" \
-		< debian/dotconfig.vboxclientonly > .config
-endif
-
-	# : # ugh
-	# touch eurofile/configure
 
 	$(MAKE) subconfig
 
 	$(MAKE)
 
-
-ifneq ($(some_arch_match),yes)
 	cd isdnlog/tools/zone; $(MAKE) zonefiles
 	cd Mini-FAQ; make
-endif
 
 	touch build-stamp
 
@@ -166,12 +145,9 @@ install: build
 	# (the files get moved out by dh_movefiles later)
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
 
-ifneq ($(some_arch_match),yes)
 	chmod +x debian/finish-install-first.sh
 	debian/finish-install-first.sh
 	mv debian/tmp/usr/bin/capifaxrcvd debian/tmp/usr/sbin/
-endif
-	: # These apply to all arch'es:
 	mv debian/tmp/usr/share/man/man5/vbox_file.5 \
 	    debian/tmp/usr/share/man/man5/vbox.5
 	install -m 0644 vbox/examples/vboxrc.example \
@@ -196,10 +172,8 @@ binary-arch: DH_OPTIONS=-s
 binary-arch: build install
 	dh_testdir
 	dh_testroot
-ifneq ($(some_arch_match),yes)
 	ln -s ../man7/isdn_cause.7.gz \
 	    debian/isdnutils-base/usr/share/man/man1/isdncause.1.gz
-endif
 	rm -rf debian/libcapi20-dev/usr/share/doc/libcapi20-dev
 	ln -s libcapi20-3 debian/libcapi20-dev/usr/share/doc/libcapi20-dev
 
