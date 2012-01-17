@@ -1,3 +1,15 @@
+isdnutils (1:3.9.20060704+dfsg.3-3) unstable; urgency=low
+
+  * libcapi20-{3,dev}: *.so files ought to be shipped in -dev package
+  * libcapi20-dev: stop shipping .la files at all
+  * drop some obsolete maintainer files
+  * drop code to upgrade from ancient releases from maintainer files
+  * let dh_installinit do its magic. Closes: #656125
+  * debian/ipppd.postinst: ip-up and ip-down scripts changed file names
+  * debian/rules: stop special-casing hurd and sh ARCH
+
+ -- Rolf Leggewie <foss@rolf.leggewie.biz>  Tue, 17 Jan 2012 08:22:29 +0800
+
 isdnutils (1:3.9.20060704+dfsg.3-2) unstable; urgency=medium
 
   * debian/libcapi20-dev.install: drop libcapi20.so file from the dev package
