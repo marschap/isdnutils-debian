@@ -79,25 +79,18 @@ isdncards_unchecked=true
 check_isdncards() {
     if $isdncards_unchecked; then
 	isdncards_unchecked=false
-        if [ -e /dev/isdninfo ]; then
-	    ISDNINFO=/dev/isdninfo
-        elif [ -e /dev/isdn/isdninfo ]; then
-	    ISDNINFO=/dev/isdn/isdninfo
-	elif [ -d /dev/.udev/ ]; then
-	    # udev is running
-	    old_pwd=$(pwd)
-	    cd /dev
-	    # see discussion in bug 609736 regarding use of if and ln in the next three lines
-	    if [ ! -e /dev/isdnctrl ]; then
-		cd /dev && ln -sf isdnctrl0 isdnctrl
-	    fi
-	    cd $old_pwd
-	    if [ -e /dev/isdninfo ]; then
-		ISDNINFO=/dev/isdninfo
-	    elif [ -e /dev/isdn/isdninfo ]; then
-		ISDNINFO=/dev/isdn/isdninfo
-	    fi
+
+	# see discussion in bug 609736 regarding use of if and ln in the next three lines
+	if [ ! -e /dev/isdnctrl -a -e /dev/isdnctrl0 ]; then
+		ln -sf /dev/isdnctrl0 /dev/isdnctrl
 	fi
+
+	if [ -e /dev/isdninfo ]; then
+		ISDNINFO=/dev/isdninfo
+	elif [ -e /dev/isdn/isdninfo ]; then
+		ISDNINFO=/dev/isdn/isdninfo
+	fi
+
         if [ -z "$ISDNINFO" ]; then
 	    log_failure_msg " error:"
             log_failure_msg "    Neither /dev/isdninfo nor /dev/isdn/isdninfo exist!"
