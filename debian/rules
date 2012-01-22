@@ -1,24 +1,9 @@
 #!/usr/bin/make -f
-# Sample debian/rules that uses debhelper. 
-# GNU copyright 1997 by Joey Hess.
+%:
+	dh $@
 
-# Uncomment this to turn on verbose mode. 
-# export DH_VERBOSE=1
-
-# This has to be exported to make some magic below work.
-export DH_OPTIONS
-
-# brace expansion
-export SHELL=/bin/bash
-
-override_dh_installexamples:
-	dh_installexamples -X.in
-
-override_dh_shlibdeps:
-	dh_shlibdeps -L libcapi20-3 -l debian/libcapi20-3/usr/lib
-
-auto: auto-update-stamp
-auto-update-stamp:
+override_dh_auto_build:
+	dh_testdir
 	: # update autotools files
 	for d in capi20 isdnlog/client vbox3; do \
 	  cp -p /usr/share/misc/config.* $$d/; \
@@ -48,22 +33,6 @@ auto-update-stamp:
 	  cd ..; \
 	done
 
-ifeq (0,1)
-	: # does not work, automake-1.3 was used ...
-	@set -e; \
-	for d in isdnlog/client; do \
-	  echo "Regenerating autotools files in $$d ..."; \
-	  cd $$d; \
-	  echo "  aclocal"; aclocal; \
-	  echo "  autoconf"; autoconf; \
-	  echo "  autoheader"; autoheader; \
-	  echo "  automake"; automake -c --add-missing; \
-	  touch configure.in; \
-	  touch aclocal.m4; \
-	  touch configure; \
-	  cd ..; \
-	done
-endif
 	@set -e; \
 	for d in vbox; do \
 	  echo "Regenerating autotools files in $$d ..."; \
@@ -90,47 +59,19 @@ endif
 
 	cd ipppd && autoconf
 
-	touch auto-update-stamp
+	#### normal MAKE process continues here ###
 
-build: build-arch build-indep
-build-arch: build-stamp
-build-indep: build-stamp
-build-stamp: auto-update-stamp
-	dh_testdir
-
-	# we need a path to the kernel sources.
-	# Link to top dir so that local choice can be preserved. That link must
-	# be made first thing, otherwise it will try to unpack
-	# /usr/src/kernel-source-2.4.*.tar.bz2 .
-	#  This used to be "parent dir", but that doesn't always work for
-	#  build daemons...
-	# This has moved to an external script, as large chunks of shell
-	# script in makefiles is an ugly solution.
-	# sh debian/prepare-kernel-source $(DEB_HOST_ARCH)
-	-rm -f ../linux
-
-	# cp debian/isdnactivecards.files.all     debian/isdnactivecards.files
 	# we need a .config file. Try isdnutils.config in parent directory first
 	# so that local choice can be preserved.
 	test -f ../isdnutils.config && cp ../isdnutils.config .config || \
 	    sed -e "s#@KERNELDIR@#`pwd`/linux#" \
 		< debian/dotconfig > .config
-
 	$(MAKE) subconfig
-
 	$(MAKE)
-
 	cd isdnlog/tools/zone; $(MAKE) zonefiles
 	cd Mini-FAQ; make
 
-	touch build-stamp
-
-# XXX this is the standard dh call
-clean:
-	dh clean
-
-install: DH_OPTIONS=
-install: build
+override_dh_auto_install:
 	dh_testdir
 	dh_testroot
 	dh_prep
@@ -163,26 +104,16 @@ install: build
 	      debian/tmp/etc/isdn/callerid.conf \
 	      debian/tmp/etc/isdn/isdn.conf     \
 	      debian/tmp/etc/isdn/rate.conf
-
-	dh install
-
-binary-indep: build install
-	dh binary-indep
-
-# Build architecture-dependent files here.
-# Pass -a to all debhelper commands in this target to reduce clutter.
-binary-arch: DH_OPTIONS=-s
-binary-arch: build install
-	dh_testdir
-	dh_testroot
-	ln -s ../man7/isdn_cause.7.gz \
-	    debian/isdnutils-base/usr/share/man/man1/isdncause.1.gz
-	rm -rf debian/libcapi20-dev/usr/share/doc/libcapi20-dev
-	ln -s libcapi20-3 debian/libcapi20-dev/usr/share/doc/libcapi20-dev
-
-	# checking that nothing is left behind...
 	rm -f debian/tmp/etc/services # this should be ignored
-	dh binary-arch
+	dh_auto_install
 
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install
+override_dh_installexamples:
+	dh_installexamples -X.in
+
+override_dh_link:
+	# replace the directory with a link to libcapi20-3 docs later
+	rm -Rf debian/libcapi20-dev/usr/share/doc/libcapi20-dev
+	dh_link
+
+override_dh_shlibdeps:
+	dh_shlibdeps -L libcapi20-3 -l debian/libcapi20-3/usr/lib
