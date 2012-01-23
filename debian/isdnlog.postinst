@@ -70,7 +70,7 @@ case "$DOWHAT" in
 	 # -e "s,^\s*(RATEFILE.*zone-)..(.*),\$1$country\$2,;"
         if [ ! -s /etc/isdn/isdnlog.isdnctrl0 ]; then
             echo "Creating default /etc/isdn/isdnlog.isdnctrl0 ."
-            sed '/REMOVE the next line/,/REMOVE the above/d' < /usr/share/isdn/default/isdnlog.DEVICE > /etc/isdn/isdnlog.isdnctrl0
+            sed '/REMOVE the next line/,/REMOVE the above/d' < /usr/share/doc/isdnlog/examples/isdnlog.DEVICE > /etc/isdn/isdnlog.isdnctrl0
             somethingchanged=true
             init=start
         fi
