@@ -39,3 +39,8 @@ isdnutils is split into different packages:
 
 - isdnactivecards
   utilities and firmware for active cards. Not needed by most people.
+  Due to the firmware being DFSG-nonfree, this package is no longer
+  built or shipped.  Cards that need firmware are not supported but
+  can probably be made to work with a little tinkering (essentially
+  downloading the firmware and repeating the steps previously done by
+  the package).

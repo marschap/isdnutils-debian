@@ -3,51 +3,8 @@
 
 set -e
 
-. /usr/share/debconf/confmodule
-
 case "$1" in
     configure)
-        set +e # don't exit if the db_get below fails
-        cd /dev
-        # firmware handling
-        db_get isdnutils/firmware || true
-        firmware=$RET
-        if [ "$firmware" = none ]; then
-            if [ -s /etc/isdn/firmware.conf ]; then
-                mv -f /etc/isdn/firmware.conf /etc/isdn/firmware.conf.old
-            fi
-        else
-            # remove bogus "none," from beginning of value (caused by bad
-            # debconf template before version -11)
-            firmware=${firmware##none,}
-            RET=''
-            db_get isdnutils/firmwarecards || true
-            firmwarecards=$RET
-            if [ -s /etc/isdn/firmware.conf ]; then
-                mv -f /etc/isdn/firmware.conf /etc/isdn/firmware.conf.old
-            fi
-            if [ ! -z "$firmwarecards" ]; then
-                echo "firmware=$firmware" > /etc/isdn/firmware.conf
-                cat << 'EOF' >> /etc/isdn/firmware.conf
-load_firmware() {
-    local i
-    local n
-    i=1
-    n=$#
-    if [ $n -lt $firmwarecardnum ]; then
-        echo "Error in firmware card number ($firmwarecardnum), only $n cards available."
-        return 1
-    fi
-    while [ $i -lt $# ]; do shift; done
-    /usr/sbin/hisaxctrl $1 9 /usr/share/isdn/$firmware
-}
-
-EOF
-                for i in `echo $firmwarecards | sed 's/,/ /g'`; do
-                    echo "firmwarecardnum=$i; load_firmware \$isdncards"
-                done >> /etc/isdn/firmware.conf
-            fi
-        fi # end of firmware handling
 	if ! grep -q '#-- isdnutils begin' /etc/inittab; then
 		cat >>/etc/inittab <<EOF
 #-- isdnutils begin
@@ -78,8 +35,6 @@ EOF
         exit 0
     	;;
 esac
-
-db_stop # grrrr
 
 #DEBHELPER#
 
