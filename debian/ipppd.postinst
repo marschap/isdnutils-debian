@@ -36,7 +36,8 @@ case "$1" in
                 db_get ipppd/eaz       || true; EAZ="$RET"
                 db_get ipppd/isplogin  || true; ISPLOGIN="$RET"
                 db_get ipppd/isppasswd || true; ISPPASSWD=$(echo "$RET" | sed 's,",\\&,g')
-                cp /usr/share/isdn/default/device.DEVICE /etc/isdn/device.$IPPPX
+                ucf /usr/share/isdn/default/device.DEVICE /etc/isdn/device.$IPPPX
+                ucfr ipppd /etc/isdn/device.$IPPPX
                 cp /usr/share/isdn/default/ipppd.DEVICE /etc/isdn/ipppd.$IPPPX
                 # escape any @ in the username, as perl wants to expand that as an arrary
                 ISPLOGIN=$(echo $ISPLOGIN | sed 's,@,\\@,')

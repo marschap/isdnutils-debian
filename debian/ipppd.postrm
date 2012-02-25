@@ -1,0 +1,28 @@
+#! /bin/sh
+# postrm script for ipppd
+
+set -e
+
+case "$1" in
+       purge)
+         pkg=ipppd
+         for conffile in $(ucfq $pkg -w| grep $pkg | cut -f 1 -d ":");do
+           ucf --purge $conffile && ucfr --purge $pkg $conffile && rm -f $conffile
+           for ext in '~' '%' .bak .ucf-new .ucf-old .ucf-dist;  do
+             rm -f $conffile$ext
+           done
+         done
+         ;;
+
+       remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+         ;;
+
+    *)
+         echo "postrm called with unknown argument \`$1'" >&2
+         exit 0
+	 ;;
+esac
+
+#DEBHELPER#
+
+exit 0

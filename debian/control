@@ -41,7 +41,7 @@ Description: ISDN utilities - graphical tools
 Package: ipppd
 Architecture: linux-any
 Section: net
-Depends: isdnutils-base (= ${binary:Version}), debconf (>=1.2.9) | debconf-2.0, ppp, ${shlibs:Depends}, ${misc:Depends}
+Depends: isdnutils-base (= ${binary:Version}), debconf (>=1.2.9) | debconf-2.0, ppp, ucf, ${shlibs:Depends}, ${misc:Depends}
 Suggests: pdnsd
 Description: ISDN utilities - PPP daemon
  This package provides the specially modified version of the Point to

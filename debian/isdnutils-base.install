@@ -9,3 +9,4 @@ usr/sbin/iprofd
 usr/sbin/isdnctrl
 debian/isdnconfig	/usr/sbin/
 debian/init.d.functions	/etc/isdn/
+debian/device.DEVICE* /usr/share/isdn/default/

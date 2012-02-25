@@ -14,7 +14,6 @@
 	mv debian/tmp/usr/share/doc/isdnvboxserver/* debian/isdnvboxserver/usr/share/doc/isdnvboxserver/.
 	rmdir debian/tmp/usr/share/doc/isdnvboxserver
 	# install examples
-	cp debian/device.DEVICE debian/isdnutils-base/usr/share/isdn/default/
 	for A in debian/ipppd.DEVICE \
 		debian/auth-down debian/auth-up ; do \
 	    cp $A debian/ipppd/usr/share/isdn/default/; \
