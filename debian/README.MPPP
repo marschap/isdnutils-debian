@@ -11,7 +11,7 @@ It's pretty simple:
     - create a new config file /etc/isdn/device.ippp3+4
       This tells the config system that ippp3 is the master,
       and ippp4 is a slave device for ippp3.
-    
+
     That's basically it :-)  However, isdn4linux does not support adding
     channels dynamically (the "trigger" and "sdelay" commands in isdnctrl
     are for rawIP channel bundling, not syncPPP). So, when you want to use
@@ -124,9 +124,9 @@ Configure ippp0 for single channel.
 Add to device.ippp0 before the "NETWORK SETUP" section:
 
        #        Channel bundling
-        
+
         SLAVE=ippp1
-        
+
         isdnctrl addslave ${device} $SLAVE
         bindnum=`expr $SLAVE : 'ippp\(.\)'`
         if [ ! -z "$bindnum" ]
@@ -144,7 +144,7 @@ Add to device.ippp0 before the "NETWORK SETUP" section:
         isdnctrl l3_prot $SLAVE trans
         isdnctrl encap $SLAVE syncppp
         isdnctrl huptimeout $SLAVE 90
-        isdnctrl secure $SLAVE on                                       
+        isdnctrl secure $SLAVE on
         isdnctrl dialmode $SLAVE $DIALMODE || true
 
 Add to ipppd.ippp0:
@@ -161,10 +161,10 @@ isdnctrl removelink ippp0  # Hangup second channel
 You can monitor the lines with imon.
 
 
--- 
+--
 
 To add yourself to this mailing list send email to
 majordomo@listserv.isdn4linux.de containing
 "subscribe isdn4linux <your_email_address>" in the message body.
 
--- 
+--

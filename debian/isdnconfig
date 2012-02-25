@@ -154,7 +154,7 @@ Special setup :	one ipppd for each device: /dev/ippp0 /dev/ippp1 ...
 
 Usually only a single ippp interface is used (for connecting to an ISP), so
 the above isn't really relevant to most users.
- 
+
 Name for new configuration (ippp0 ippp1 ...) : "
     read device dummy
     if test -z "$device"

@@ -15,7 +15,7 @@
 [ -d /var/log/vbox   ] || exit 0
 
 cd /var/log/vbox
-for LOG in vboxgetty-ttyI*.log 
+for LOG in vboxgetty-ttyI*.log
 do
         if [ -s $LOG ]; then
 		savelog -p -c 4 $LOG >/dev/null

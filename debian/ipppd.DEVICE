@@ -14,7 +14,7 @@
 #kdebug X		# set kernel debugging level to X
 #nodetach		# (no) fork to the background
 #callback X		# ask for callback (parameter X ?)
-#lock			# create a lock file for device 
+#lock			# create a lock file for device
 #domain X		# add domain X to a given hostname
 #pidfile X		# save pid in file X
 #call X			# take options from privileges file (???)
@@ -30,10 +30,10 @@
 #silent			# don't even try to initiate the connection
 #passive		# wait for the peer to initiate the connection
 #lcp-echo-failure X	# consecutive echo failures
-#lcp-echo-interval X	# time for lcp echo events 
-lcp-restart 1		# Set timeout for LCP 
+#lcp-echo-interval X	# time for lcp echo events
+lcp-restart 1		# Set timeout for LCP
 #lcp-max-terminate X	# Set max #xmits for term-reqs
-#lcp-max-configure X	# Set max #xmits for conf-reqs 
+#lcp-max-configure X	# Set max #xmits for conf-reqs
 #lcp-max-failure X 	# Set max #conf-naks for LCP
 
 
@@ -50,11 +50,11 @@ name X			# set local name for auth XXX_
 #papcrypt		# pap passwords are encrypted
 
 # AUTHENTICATION TUNING
-#pap-restart X		# Set retransmit timeout for PAP 
+#pap-restart X		# Set retransmit timeout for PAP
 #pap-max-authreq X	# Set max #xmits for auth-reqs
 #pap-timeout X		# Set time limit for peer PAP auth.
-#chap-restart X 	# Set timeout for CHAP 
-#chap-max-challenge X 	# Set max #xmits for challenge 
+#chap-restart X 	# Set timeout for CHAP
+#chap-max-challenge X 	# Set max #xmits for challenge
 #chap-interval X 	# Set interval for rechallenge
 
 # COMPRESSION
@@ -93,25 +93,25 @@ mtu 1500		#  do      set max size of transmit units (1500 is OK)
 #set_userip 		# (do not) define valid ip addrs in /etc/ppp/useriptab
 
 
-#ipcp-restart X		# Set timeout for IPCP 
-#ipcp-max-terminate X	# Set max #xmits for term-reqs 
-#ipcp-max-configure X	# Set max #xmits for conf-reqs 
-#ipcp-max-failure X	# Set max #conf-naks for IPCP 
-ipcp-accept-local	# Accept peer's address for us 
-ipcp-accept-remote	# Accept peer's address for it 
+#ipcp-restart X		# Set timeout for IPCP
+#ipcp-max-terminate X	# Set max #xmits for term-reqs
+#ipcp-max-configure X	# Set max #xmits for conf-reqs
+#ipcp-max-failure X	# Set max #conf-naks for IPCP
+ipcp-accept-local	# Accept peer's address for us
+ipcp-accept-remote	# Accept peer's address for it
 
 # IPX NETWORKING
 
 #noipx			# en/disable ipx
-#ipx-network X 		# IPX network number 
+#ipx-network X 		# IPX network number
 #ipxcp-accept-network	#  Accept peer netowrk
-#ipx-node X 		# IPX node number 
-#ipxcp-accept-local	# Accept our address 
+#ipx-node X 		# IPX node number
+#ipxcp-accept-local	# Accept our address
 #ipxcp-accept-remote	# Accept peer's address
-#ipx-routing X		# IPX routing proto number 
+#ipx-routing X		# IPX routing proto number
 #ipx-router-name X	# IPX router name
-#ipxcp-restart X 	# Set timeout for IPXCP 
-#ipxcp-max-terminate X	# max #xmits for term-reqs 
-#ipxcp-max-configure X	# max #xmits for conf-reqs 
-#ipxcp-max-failure X	# max #conf-naks for IPXCP 
+#ipxcp-restart X 	# Set timeout for IPXCP
+#ipxcp-max-terminate X	# max #xmits for term-reqs
+#ipxcp-max-configure X	# max #xmits for conf-reqs
+#ipxcp-max-failure X	# max #conf-naks for IPXCP
 

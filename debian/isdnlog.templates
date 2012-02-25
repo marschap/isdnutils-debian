@@ -12,14 +12,14 @@ Type: select
 #flag:translate:9
 Choices-C: AT, FR, DE, LU, NL, NO, ES, CH, other
 __Choices: Austria, France, Germany, Luxembourg, Netherlands, Norway, Spain, Switzerland, other
-# Translators: 
+# Translators:
 #  You must NOT translate this string, but you can change its value.
 #  The comment between brackets is used to distinguish this msgid
 #  from the one in the Choices list; you do not have to worry about
 #  them, and have to simply choose a msgstr among the English values
 #  listed in the Choices field above, e.g. msgstr "Dutch (nl)"
 #
-# Please choose among 
+# Please choose among
 # "Austria, France, Germany, Luxembourg, Netherlands, Norway, Spain, Switzerland, other"
 # In short, if your country is one of those, put its name
 # in the msgstr and put it *in English*

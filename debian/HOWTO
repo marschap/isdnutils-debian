@@ -127,7 +127,7 @@ For this, the ipppd package must also be installed!
 Step by step guide for making a connection to the internet:
 
  1. Get the hardware recognized by linux (modconf and friends)
- 
+
  2. use isdnconfig to
  	
  	a) create at least /etc/isdn/isdnlog.isdnctrl0 (needed to get
@@ -135,14 +135,14 @@ Step by step guide for making a connection to the internet:
 	   to your needs and fire up '/etc/init.d/isdnutils start'
  	   call yourself with a phone and check /var/log/isdn/isdnlog
 	   NOTE: this is not necessary for just an internet connection!
- 
+
  	b) create /etc/isdn/device.ippp0 and /etc/isdn/ipppd.ippp0
- 	   the first file is for phone numbers, routing and firewalling 
+	   the first file is for phone numbers, routing and firewalling
  	   stuff, the latter for options which the ipppd is called with.
  	   (note: the debian version of the ipppd ignores /etc/ppp/(i)options)
- 
+
  3. Set up /etc/ppp/pap-secrets or /etc/ppp/chap-secrets
- 
+
  4. Edit /etc/isdn/device.ippp0 and /etc/isdn/ipppd.ippp0, paying special
     attention to the places marked with _XXX . Most people won't need to
     change anything else.

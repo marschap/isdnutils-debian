@@ -8,10 +8,10 @@ index ab8c1c6..81b5c5c 100644
 +++ b/capi20/capi20.c
 @@ -61,7 +61,7 @@ static int tracelevel;
  static char *tracefile;
- 
+
  /** debug level, for debugging purpose */
 -static int nDebugLevel = 0;
 +static int nDebugLevel = 0xFFFF;
- 
+
  /**
   * \brief CapiDebug output functions

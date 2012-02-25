@@ -16,7 +16,7 @@ console=/dev/null	# where to send stdout text; e.g. /dev/tty12
 #monitor=yes	# enable support for imon and imontty (monitor progs)
 syslog=0x1bf7	# log to syslog with log level X
 #thruput=60	# if you log thruput : one message every X seconds
-#time=2		# 1=get time from isdn one, 2=everytime 
+#time=2		# 1=get time from isdn one, 2=everytime
 #hangup=5:3	# enable chargehup with 5 / 3 seconds security gap
 #start=yes	# enable program start on events
 ciInterval=59   # show the cost etc. every 60s

@@ -6,7 +6,7 @@
 # Note that xisdnload looks at the routing table to determine if a connection
 # is "up" or not:
 # - if there is _ANY_ route to an isdn or ippp interface, clicking on xisdnload
-#   will cause the netdown script to be run. 
+#   will cause the netdown script to be run.
 # - if there is _NO_ route to any isdn or ippp interface, clicking on xisdnload
 #   will cause the netup script to be run.
 #
