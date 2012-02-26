@@ -103,37 +103,6 @@ _Description: ISP user name already in chap-secrets and pap-secrets
  The existing entries will be commented out, and new entries with the data
  you just entered will be inserted.
 
-Template: ipppd/oldipup
-Type: error
-_Description: /etc/ppp/ip-up.d/00-isdnutils still exists
- The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package
- still exists. If you changed that file at some point, you may need to redo
- those changes in the 00-ipppd file (which is the new name). After that,
- please delete the old 00-isdnutils file.
- .
- Until it is deleted, it will still be used. This may cause conflicts.
-
-Template: ipppd/oldipdown
-Type: error
-_Description: /etc/ppp/ip-down.d/99-isdnutils still exists
- The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package
- still exists. If you changed that file at some point, you may need to redo
- those changes in the 99-ipppd file (which is the new name). After that,
- please delete the old 99-isdnutils file.
- .
- Until it is deleted, it will still be used. This may cause conflicts.
-
-Template: ipppd/oldipupdown
-Type: error
-_Description: old /etc/ppp/ip-up.d and ip-down.d scripts still exist
- The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils
- files from the old isdnutils package still exist. If you changed those
- files at some point, you may need to redo those changes in the 00-ipppd
- and 99-ipppd files (which are the new names). After that, please delete
- the old 00-isdnutils and 99-isdnutils files.
- .
- Until they are deleted, they will still be used. This may cause conflicts.
-
 Template: ipppd/noisdnutilsinit
 Type: error
 _Description: (Re)start ipppd manually

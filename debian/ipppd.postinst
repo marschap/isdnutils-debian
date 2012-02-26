@@ -51,22 +51,6 @@ case "$1" in
             fi
         fi
 
-	have_up=false
-	have_down=false
-	if [ -s /etc/ppp/ip-up.d/ipppd ]; then have_up=true; fi
-	if [ -s /etc/ppp/ip-down.d/ipppd ]; then have_down=true; fi
-	if $have_up || $have_down; then
-            set +e
-	    if ! $have_up; then # have only down
-		db_input high ipppd/oldipdown
-	    elif ! $have_down; then # have only up
-		db_input high ipppd/oldipup
-	    else # have both
-		db_input high ipppd/oldipupdown
-	    fi
-	    db_go
-            set -e
-	fi
         if [ -s /etc/init.d/isdnutils-base ]; then
             err=false
             if $forcerestart; then

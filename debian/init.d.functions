@@ -367,32 +367,6 @@ start_ipppd() {
 	    --exec /usr/sbin/ipppd -- file /etc/isdn/$optionfile $extraops /dev/$master $slaves &
     done
     cd "$olddir"
-    # next part copied from ipppd.postinst
-    ipppd_have_up=false
-    ipppd_have_down=false
-    if [ -s /etc/ppp/ip-up.d/00-isdnutils ]; then ipppd_have_up=true; fi
-    if [ -s /etc/ppp/ip-down.d/99-isdnutils ]; then ipppd_have_down=true; fi
-    if $ipppd_have_up || $ipppd_have_down; then
-	echo ""
-        if ! $ipppd_have_up; then # have only down
-            log_warning_msg "The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package still"
-            log_warning_msg "exists. If you changed that file at some point, you may need to redo those"
-            log_warning_msg "changes in the 99-ipppd file (which is the new name). After that, please"
-            log_warning_msg "delete the old 99-isdnutils file."
-        elif ! $ipppd_have_down; then # have only up
-            log_warning_msg "The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package still"
-            log_warning_msg "exists. If you changed that file at some point, you may need to redo those"
-            log_warning_msg "changes in the 00-ipppd file (which is the new name). After that, please"
-            log_warning_msg "delete the old 00-isdnutils file."
-        else # have both
-            log_warning_msg "The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils files"
-            log_warning_msg "from the old isdnutils package still exist. If you changed those files at some"
-            log_warning_msg "point, you may need to redo those changes in the 00-ipppd and 99-ipppd files"
-            log_warning_msg "(which are the new names). After that, please delete the old 00-isdnutils"
-            log_warning_msg "and 99-isdnutils files."
-        fi
-        sleep 5
-    fi
 }
 
 reload_ipppd() {
