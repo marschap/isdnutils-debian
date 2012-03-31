@@ -28,14 +28,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: isdnutils 1:3.9.20060704-5\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
-"POT-Creation-Date: 2009-10-14 06:41+0200\n"
+"POT-Creation-Date: 2012-04-13 15:17+0800\n"
 "PO-Revision-Date: 2009-10-14 12:00+0200\n"
 "Last-Translator: Francisco Javier Cuadrado <fcocuadrado@gmail.com>\n"
 "Language-Team: Debian l10n Spanish <debian-l10n-spanish@lists.debian.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. Type: error
 #. Description
@@ -243,8 +243,8 @@ msgid ""
 "a new entry with the data you just entered will be inserted."
 msgstr ""
 "El nombre de usuario que introdujo para la identificación en su ISP ya está "
-"en el archivo «/etc/ppp/pap-secrets». Se comentará la entrada existente, y "
-"se insertará una nueva entrada con los datos que acaba de introducir."
+"en el archivo «/etc/ppp/pap-secrets». Se comentará la entrada existente, y se "
+"insertará una nueva entrada con los datos que acaba de introducir."
 
 #. Type: error
 #. Description
@@ -281,100 +281,19 @@ msgid ""
 "inserted."
 msgstr ""
 "El nombre de usuario que introdujo para la identificación en su ISP ya está "
-"en los archivos «chap-secrets» y «pap-secrets» del directorio «/etc/ppp/». "
-"Se comentará la entrada existente, y se insertará una nueva entrada con los "
+"en los archivos «chap-secrets» y «pap-secrets» del directorio «/etc/ppp/». Se "
+"comentará la entrada existente, y se insertará una nueva entrada con los "
 "datos que acaba de introducir."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:12001
-msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
-msgstr "Todavía existe el archivo «/etc/ppp/ip-up.d/00-isdnutils»"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:12001
-msgid ""
-"The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package still "
-"exists. If you changed that file at some point, you may need to redo those "
-"changes in the 00-ipppd file (which is the new name). After that, please "
-"delete the old 00-isdnutils file."
-msgstr ""
-"El archivo «/etc/ppp/ip-up.d/00-isdnutils» del antiguo paquete de isdnutils "
-"todavía existe. Si cambió ese archivo alguna vez, puede que necesite rehacer "
-"esos cambios en el archivo «00-ipppd» (que es el nuevo nombre). Después de "
-"esto, borre el antiguo archivo «00-isdnutils»."
-
-#. Type: error
-#. Description
-#. Type: error
-#. Description
-#: ../ipppd.templates:12001 ../ipppd.templates:13001
-msgid "Until it is deleted, it will still be used. This may cause conflicts."
-msgstr ""
-"Hasta que se borre, se seguirá utilizando. Esto puede causar problemas."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:13001
-msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
-msgstr "Todavía existe el archivo «/etc/ppp/ip-down.d/99-isdnutils»"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:13001
-msgid ""
-"The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package "
-"still exists. If you changed that file at some point, you may need to redo "
-"those changes in the 99-ipppd file (which is the new name). After that, "
-"please delete the old 99-isdnutils file."
-msgstr ""
-"El archivo «/etc/ppp/ip-up.d/99-isdnutils» del antiguo paquete de isdnutils "
-"todavía existe. Si cambió ese archivo alguna vez, puede que necesite rehacer "
-"esos cambios en el archivo «99-ipppd» (que es el nuevo nombre). Después de "
-"esto, borre el antiguo archivo «99-isdnutils»."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
-msgstr ""
-"Todavía existen los antiguos scripts «/etc/ppp/ip-up.d/» y «/etc/ppp/ip-down."
-"d»"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid ""
-"The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils files "
-"from the old isdnutils package still exist. If you changed those files at "
-"some point, you may need to redo those changes in the 00-ipppd and 99-ipppd "
-"files (which are the new names). After that, please delete the old 00-"
-"isdnutils and 99-isdnutils files."
-msgstr ""
-"Los archivos «/etc/ppp/ip-up.d/00-isdnutils» y «/etc/ppp/ip-up.d/99-"
-"isdnutils» del antiguo paquete isdnutils todavía existen. Si cambió esos "
-"archivos alguna vez, puede que necesite rehacer esos cambios en los archivos "
-"«00-ipppd» y «99-ipppd» (que son sus nuevos nombres). Después de esto, borre "
-"los antiguos archivos «00-isdnutils» y «99-isdnutils»."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid ""
-"Until they are deleted, they will still be used. This may cause conflicts."
-msgstr ""
-"Hasta que se borren, se seguirán utilizando. Esto puede causar problemas."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:15001
 msgid "(Re)start ipppd manually"
 msgstr "(Re)inicie ipppd manualmente"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:15001
+#: ../ipppd.templates:12001
 msgid ""
 "There is no /etc/init.d/isdnutils on this system; hence you will have to "
 "stop and start any ipppd daemons manually."
@@ -384,13 +303,13 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:16001
+#: ../ipppd.templates:13001
 msgid "Error running isdnutils init script"
 msgstr "Se produjo un error al ejecutar el script de inicio de isdnutils"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:16001
+#: ../ipppd.templates:13001
 msgid ""
 "The /etc/init.d/isdnutils script ran with errors. Please check the "
 "installation of the isdnutils-base package; reinstall it if necessary. "
@@ -569,57 +488,6 @@ msgstr ""
 "Este valor sólo es útil para configuraciones especiales, tales como una "
 "puerta de enlace de ISDN a H.323."
 
-#. Type: select
-#. Choices
-#: ../isdnutils-base.templates:2001
-msgid "none"
-msgstr "ninguno"
-
-#. Type: select
-#. Description
-#: ../isdnutils-base.templates:2002
-msgid "Firmware to load:"
-msgstr "Firmware a cargar:"
-
-#. Type: select
-#. Description
-#: ../isdnutils-base.templates:2002
-msgid ""
-"Some ISDN cards can't function properly until some firmware has been loaded. "
-"A notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which "
-"need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is necessary."
-msgstr ""
-"Algunas tarjetas ISDN no funcionan adecuadamente hasta que se carga algún "
-"firmware. Un ejemplo claro es el Sedlbauer SpeedFax+ PCI o el Siemens I-"
-"Surf, que necesitan cargar el firmware «ISAR.BIN». Escoja «ISAR.BIN» si esto "
-"es necesario."
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid "ISDN card numbers to load with the firmware:"
-msgstr "Número de tarjeta(s) ISDN que cargan el firmware:"
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid ""
-"If you use more than one card, enter the number of the card(s) in need of "
-"firmware."
-msgstr ""
-"Si utiliza más de una tarjeta, introduzca el número de tarjeta(s) que "
-"necesitan el firmware."
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid ""
-"Multiple entries should be separated by commas. Card numbers are integers "
-"where \"1\" is the first card, \"2\" the second, etc."
-msgstr ""
-"Se pueden introducir varias entradas separadas por comas. Los números de las "
-"tarjetas son enteros, siendo «1» la primera tarjeta, «2» la segunda, etc."
-
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:2001
@@ -778,9 +646,8 @@ msgid ""
 "The home directory \"${DIR}\" for user \"${USER}\" does not exist. This "
 "means that the file \"${DIR}/.vbox.conf\" cannot be created."
 msgstr ""
-"No existe el directorio personal («home») «${DIR}» para el usuario "
-"«${USER}». Esto significa que el archivo «${DIR}/.vbox.conf» no se puede "
-"crear."
+"No existe el directorio personal («home») «${DIR}» para el usuario «${USER}». "
+"Esto significa que el archivo «${DIR}/.vbox.conf» no se puede crear."
 
 #. Type: error
 #. Description
@@ -797,8 +664,8 @@ msgid ""
 "username, or after creating the user."
 msgstr ""
 "El usuario «${USER}» no existe en el sistema. Ejecute de nuevo el proceso de "
-"configuración mediante «dpkg-reconfigure isdnvboxserver» para introducir "
-"otro nombre de usuario, o después de haber creado el usuario."
+"configuración mediante «dpkg-reconfigure isdnvboxserver» para introducir otro "
+"nombre de usuario, o después de haber creado el usuario."
 
 #. Type: boolean
 #. Description
@@ -868,3 +735,94 @@ msgstr ""
 "utilizando un nombre de devfs («/dev/isdn/ttyIxx») en «vboxgetty.conf» "
 "mientras que devfs no está montado, o se está utilizando un nombre que no es "
 "de devfs mientras devfs está montado."
+
+#~ msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
+#~ msgstr "Todavía existe el archivo «/etc/ppp/ip-up.d/00-isdnutils»"
+
+#~ msgid ""
+#~ "The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package "
+#~ "still exists. If you changed that file at some point, you may need to "
+#~ "redo those changes in the 00-ipppd file (which is the new name). After "
+#~ "that, please delete the old 00-isdnutils file."
+#~ msgstr ""
+#~ "El archivo «/etc/ppp/ip-up.d/00-isdnutils» del antiguo paquete de "
+#~ "isdnutils todavía existe. Si cambió ese archivo alguna vez, puede que "
+#~ "necesite rehacer esos cambios en el archivo «00-ipppd» (que es el nuevo "
+#~ "nombre). Después de esto, borre el antiguo archivo «00-isdnutils»."
+
+#~ msgid ""
+#~ "Until it is deleted, it will still be used. This may cause conflicts."
+#~ msgstr ""
+#~ "Hasta que se borre, se seguirá utilizando. Esto puede causar problemas."
+
+#~ msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
+#~ msgstr "Todavía existe el archivo «/etc/ppp/ip-down.d/99-isdnutils»"
+
+#~ msgid ""
+#~ "The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package "
+#~ "still exists. If you changed that file at some point, you may need to "
+#~ "redo those changes in the 99-ipppd file (which is the new name). After "
+#~ "that, please delete the old 99-isdnutils file."
+#~ msgstr ""
+#~ "El archivo «/etc/ppp/ip-up.d/99-isdnutils» del antiguo paquete de "
+#~ "isdnutils todavía existe. Si cambió ese archivo alguna vez, puede que "
+#~ "necesite rehacer esos cambios en el archivo «99-ipppd» (que es el nuevo "
+#~ "nombre). Después de esto, borre el antiguo archivo «99-isdnutils»."
+
+#~ msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
+#~ msgstr ""
+#~ "Todavía existen los antiguos scripts «/etc/ppp/ip-up.d/» y «/etc/ppp/ip-"
+#~ "down.d»"
+
+#~ msgid ""
+#~ "The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils "
+#~ "files from the old isdnutils package still exist. If you changed those "
+#~ "files at some point, you may need to redo those changes in the 00-ipppd "
+#~ "and 99-ipppd files (which are the new names). After that, please delete "
+#~ "the old 00-isdnutils and 99-isdnutils files."
+#~ msgstr ""
+#~ "Los archivos «/etc/ppp/ip-up.d/00-isdnutils» y «/etc/ppp/ip-up.d/99-"
+#~ "isdnutils» del antiguo paquete isdnutils todavía existen. Si cambió esos "
+#~ "archivos alguna vez, puede que necesite rehacer esos cambios en los "
+#~ "archivos «00-ipppd» y «99-ipppd» (que son sus nuevos nombres). Después de "
+#~ "esto, borre los antiguos archivos «00-isdnutils» y «99-isdnutils»."
+
+#~ msgid ""
+#~ "Until they are deleted, they will still be used. This may cause conflicts."
+#~ msgstr ""
+#~ "Hasta que se borren, se seguirán utilizando. Esto puede causar problemas."
+
+#~ msgid "none"
+#~ msgstr "ninguno"
+
+#~ msgid "Firmware to load:"
+#~ msgstr "Firmware a cargar:"
+
+#~ msgid ""
+#~ "Some ISDN cards can't function properly until some firmware has been "
+#~ "loaded. A notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-"
+#~ "Surf, which need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is "
+#~ "necessary."
+#~ msgstr ""
+#~ "Algunas tarjetas ISDN no funcionan adecuadamente hasta que se carga algún "
+#~ "firmware. Un ejemplo claro es el Sedlbauer SpeedFax+ PCI o el Siemens I-"
+#~ "Surf, que necesitan cargar el firmware «ISAR.BIN». Escoja «ISAR.BIN» si "
+#~ "esto es necesario."
+
+#~ msgid "ISDN card numbers to load with the firmware:"
+#~ msgstr "Número de tarjeta(s) ISDN que cargan el firmware:"
+
+#~ msgid ""
+#~ "If you use more than one card, enter the number of the card(s) in need of "
+#~ "firmware."
+#~ msgstr ""
+#~ "Si utiliza más de una tarjeta, introduzca el número de tarjeta(s) que "
+#~ "necesitan el firmware."
+
+#~ msgid ""
+#~ "Multiple entries should be separated by commas. Card numbers are integers "
+#~ "where \"1\" is the first card, \"2\" the second, etc."
+#~ msgstr ""
+#~ "Se pueden introducir varias entradas separadas por comas. Los números de "
+#~ "las tarjetas son enteros, siendo «1» la primera tarjeta, «2» la segunda, "
+#~ "etc."

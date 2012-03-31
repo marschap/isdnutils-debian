@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: isdnutils_1:3-9.20060704-5_eu\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
-"POT-Creation-Date: 2009-10-14 06:41+0200\n"
+"POT-Creation-Date: 2012-04-13 15:17+0800\n"
 "PO-Revision-Date: 2009-10-15 12:16+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <debian-l10n-basque@lists.debian.org>\n"
-"Language: eu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: eu\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -268,89 +268,12 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../ipppd.templates:12001
-msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
-msgstr "/etc/ppp/ip-up.d/00-isdnutils oraindik badago"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:12001
-msgid ""
-"The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package still "
-"exists. If you changed that file at some point, you may need to redo those "
-"changes in the 00-ipppd file (which is the new name). After that, please "
-"delete the old 00-isdnutils file."
-msgstr ""
-"isdnutils pakete zaharreko /etc/ppp/ip-up.d/00-isdnutils fitxategia badago "
-"oraindik. Momentu batean fitxategi hori aldatu bazenuen, aldaketa horiek "
-"berregin egin beharko dituzu 00-ipppd fitxategian (izen berria dena). Honen "
-"ondoren, ezabatu 00-isdnutils fitxategia."
-
-#. Type: error
-#. Description
-#. Type: error
-#. Description
-#: ../ipppd.templates:12001 ../ipppd.templates:13001
-msgid "Until it is deleted, it will still be used. This may cause conflicts."
-msgstr "Ezabatzen den arte berau erabili egingo da! Honek arazoak sor ditzake."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:13001
-msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
-msgstr "/etc/ppp/ip-down.d/99-isdnutils oraindik badago"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:13001
-msgid ""
-"The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package "
-"still exists. If you changed that file at some point, you may need to redo "
-"those changes in the 99-ipppd file (which is the new name). After that, "
-"please delete the old 99-isdnutils file."
-msgstr ""
-"isdnutils pakete zaharreko /etc/ppp/ip-down.d/99-isdnutils fitxategia badago "
-"oraindik. Momentu batean fitxategi hori aldatu bazenuen, aldaketa horiek "
-"berregin egin beharko dituzu 99-ipppd fitxategian (izen berria dena). Honen "
-"ondoren, ezabatu 99-isdnutils fitxategia."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
-msgstr "/etc/ppp/ip-up.d zaharra eta ip-down.d script-ak oraindik badaude"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid ""
-"The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils files "
-"from the old isdnutils package still exist. If you changed those files at "
-"some point, you may need to redo those changes in the 00-ipppd and 99-ipppd "
-"files (which are the new names). After that, please delete the old 00-"
-"isdnutils and 99-isdnutils files."
-msgstr ""
-"Oraindik isdnutils pakete zaharreko /etc/ppp/ip-up.d/00-isdnutils eta /etc/"
-"ppp/ip-down.d/99-isdnutils fitxategiak daude,. Momentu baten batetan "
-"fitxategi horiek aldatu badituzu aldaketa horiek 00-ipppd eta 99-ipppd "
-"fitxategietan (hauen izen berriak direnak) berregin beharko dituzu. Horren "
-"ondoren, ezabatu 00-isdnutils eta 99-isdnutils fitxategi zaharrak."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid ""
-"Until they are deleted, they will still be used. This may cause conflicts."
-msgstr "Ezabatu bitartean erabiliak izango dira! Honek arazoak sor ditzake."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:15001
 msgid "(Re)start ipppd manually"
 msgstr "(Berr)abiarazi ipppd eskuz"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:15001
+#: ../ipppd.templates:12001
 msgid ""
 "There is no /etc/init.d/isdnutils on this system; hence you will have to "
 "stop and start any ipppd daemons manually."
@@ -360,13 +283,13 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:16001
+#: ../ipppd.templates:13001
 msgid "Error running isdnutils init script"
 msgstr "Errorea isdnutils-en hasierako script-a exekutatzean"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:16001
+#: ../ipppd.templates:13001
 msgid ""
 "The /etc/init.d/isdnutils script ran with errors. Please check the "
 "installation of the isdnutils-base package; reinstall it if necessary. "
@@ -544,57 +467,6 @@ msgid ""
 msgstr ""
 "ISDN-tik H.323rako atebideetan bezalako egoera berezietan bakarrik da "
 "erabilgarri ezarpen hau."
-
-#. Type: select
-#. Choices
-#: ../isdnutils-base.templates:2001
-msgid "none"
-msgstr "bat ere ez"
-
-#. Type: select
-#. Description
-#: ../isdnutils-base.templates:2002
-msgid "Firmware to load:"
-msgstr "Firmwarea kargatzeko:"
-
-#. Type: select
-#. Description
-#: ../isdnutils-base.templates:2002
-msgid ""
-"Some ISDN cards can't function properly until some firmware has been loaded. "
-"A notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which "
-"need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is necessary."
-msgstr ""
-"ISDN txartel batzuk ezin dute behar bezala funtzionatu firmwarea kargatu "
-"arte. Adibide bereizi batzuk Sedlbauer SpeedFax+ PCI edo Siemens I-Surf "
-"dira, zeinek ISAR:BIN kargatzea behar duten. Aukeratu \"ISAR.BIN\" "
-"beharrezkoa izanez gero."
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid "ISDN card numbers to load with the firmware:"
-msgstr "ISDN txartel zenbakiak firmwarearekin kargatzeko:"
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid ""
-"If you use more than one card, enter the number of the card(s) in need of "
-"firmware."
-msgstr ""
-"Txartel bat baino gehiago edukiz gero, sartu txartelen zenbakia firmwarearen "
-"beharretan."
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid ""
-"Multiple entries should be separated by commas. Card numbers are integers "
-"where \"1\" is the first card, \"2\" the second, etc."
-msgstr ""
-"Hainbat sarrera komaz bereiztu behar dira. Txartelen zenbakiak osoko "
-"zenbakiak dira, non \"1\" aurreneko txartela den, \"2\" bigarrena, e.a."
 
 #. Type: string
 #. Description
@@ -838,3 +710,90 @@ msgstr ""
 "gailu-izen bat du; edo devfs muntatu gabe dagoen bitartean devfs (/dev/isdn/"
 "ttyIxx) izen bat darabil vboxgetty.conf-en, edo devfs ez den izen bat "
 "erabili da devfs muntatuta dagoenean."
+
+#~ msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
+#~ msgstr "/etc/ppp/ip-up.d/00-isdnutils oraindik badago"
+
+#~ msgid ""
+#~ "The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package "
+#~ "still exists. If you changed that file at some point, you may need to "
+#~ "redo those changes in the 00-ipppd file (which is the new name). After "
+#~ "that, please delete the old 00-isdnutils file."
+#~ msgstr ""
+#~ "isdnutils pakete zaharreko /etc/ppp/ip-up.d/00-isdnutils fitxategia "
+#~ "badago oraindik. Momentu batean fitxategi hori aldatu bazenuen, aldaketa "
+#~ "horiek berregin egin beharko dituzu 00-ipppd fitxategian (izen berria "
+#~ "dena). Honen ondoren, ezabatu 00-isdnutils fitxategia."
+
+#~ msgid ""
+#~ "Until it is deleted, it will still be used. This may cause conflicts."
+#~ msgstr ""
+#~ "Ezabatzen den arte berau erabili egingo da! Honek arazoak sor ditzake."
+
+#~ msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
+#~ msgstr "/etc/ppp/ip-down.d/99-isdnutils oraindik badago"
+
+#~ msgid ""
+#~ "The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package "
+#~ "still exists. If you changed that file at some point, you may need to "
+#~ "redo those changes in the 99-ipppd file (which is the new name). After "
+#~ "that, please delete the old 99-isdnutils file."
+#~ msgstr ""
+#~ "isdnutils pakete zaharreko /etc/ppp/ip-down.d/99-isdnutils fitxategia "
+#~ "badago oraindik. Momentu batean fitxategi hori aldatu bazenuen, aldaketa "
+#~ "horiek berregin egin beharko dituzu 99-ipppd fitxategian (izen berria "
+#~ "dena). Honen ondoren, ezabatu 99-isdnutils fitxategia."
+
+#~ msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
+#~ msgstr "/etc/ppp/ip-up.d zaharra eta ip-down.d script-ak oraindik badaude"
+
+#~ msgid ""
+#~ "The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils "
+#~ "files from the old isdnutils package still exist. If you changed those "
+#~ "files at some point, you may need to redo those changes in the 00-ipppd "
+#~ "and 99-ipppd files (which are the new names). After that, please delete "
+#~ "the old 00-isdnutils and 99-isdnutils files."
+#~ msgstr ""
+#~ "Oraindik isdnutils pakete zaharreko /etc/ppp/ip-up.d/00-isdnutils eta /"
+#~ "etc/ppp/ip-down.d/99-isdnutils fitxategiak daude,. Momentu baten batetan "
+#~ "fitxategi horiek aldatu badituzu aldaketa horiek 00-ipppd eta 99-ipppd "
+#~ "fitxategietan (hauen izen berriak direnak) berregin beharko dituzu. "
+#~ "Horren ondoren, ezabatu 00-isdnutils eta 99-isdnutils fitxategi zaharrak."
+
+#~ msgid ""
+#~ "Until they are deleted, they will still be used. This may cause conflicts."
+#~ msgstr "Ezabatu bitartean erabiliak izango dira! Honek arazoak sor ditzake."
+
+#~ msgid "none"
+#~ msgstr "bat ere ez"
+
+#~ msgid "Firmware to load:"
+#~ msgstr "Firmwarea kargatzeko:"
+
+#~ msgid ""
+#~ "Some ISDN cards can't function properly until some firmware has been "
+#~ "loaded. A notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-"
+#~ "Surf, which need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is "
+#~ "necessary."
+#~ msgstr ""
+#~ "ISDN txartel batzuk ezin dute behar bezala funtzionatu firmwarea kargatu "
+#~ "arte. Adibide bereizi batzuk Sedlbauer SpeedFax+ PCI edo Siemens I-Surf "
+#~ "dira, zeinek ISAR:BIN kargatzea behar duten. Aukeratu \"ISAR.BIN\" "
+#~ "beharrezkoa izanez gero."
+
+#~ msgid "ISDN card numbers to load with the firmware:"
+#~ msgstr "ISDN txartel zenbakiak firmwarearekin kargatzeko:"
+
+#~ msgid ""
+#~ "If you use more than one card, enter the number of the card(s) in need of "
+#~ "firmware."
+#~ msgstr ""
+#~ "Txartel bat baino gehiago edukiz gero, sartu txartelen zenbakia "
+#~ "firmwarearen beharretan."
+
+#~ msgid ""
+#~ "Multiple entries should be separated by commas. Card numbers are integers "
+#~ "where \"1\" is the first card, \"2\" the second, etc."
+#~ msgstr ""
+#~ "Hainbat sarrera komaz bereiztu behar dira. Txartelen zenbakiak osoko "
+#~ "zenbakiak dira, non \"1\" aurreneko txartela den, \"2\" bigarrena, e.a."

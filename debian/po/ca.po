@@ -15,14 +15,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: isdnutils\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
-"POT-Creation-Date: 2009-10-14 06:41+0200\n"
+"POT-Creation-Date: 2012-04-13 15:17+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. Type: error
 #. Description
@@ -321,93 +321,6 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../ipppd.templates:12001
-msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
-msgstr "/etc/ppp/ip-up.d/00-isdnutils ja existeix"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:12001
-msgid ""
-"The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package still "
-"exists. If you changed that file at some point, you may need to redo those "
-"changes in the 00-ipppd file (which is the new name). After that, please "
-"delete the old 00-isdnutils file."
-msgstr ""
-"Existeix un fitxer /etc/ppp/ip-up.d/00-isdnutils d'un paquet isdnutils "
-"antic. Si canvieu el fitxer en aquest punt, necessitareu refer aquests "
-"canvis en el fitxer 00-ipppd (el qual és el seu nou nom).  Després d'això, "
-"si us plau esborreu l'antic fitxer 00-isdnutils."
-
-#. Type: error
-#. Description
-#. Type: error
-#. Description
-#: ../ipppd.templates:12001 ../ipppd.templates:13001
-#, fuzzy
-#| msgid ""
-#| "Until it is deleted, it will still be used! This may cause conflicts."
-msgid "Until it is deleted, it will still be used. This may cause conflicts."
-msgstr ""
-"Fins que aquest no sigui esborrat, no podreu usar-lo!  aAixò podria causar "
-"conflictes."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:13001
-msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
-msgstr "/etc/ppp/ip-down.d/99-isdnutils ja existeix"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:13001
-msgid ""
-"The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package "
-"still exists. If you changed that file at some point, you may need to redo "
-"those changes in the 99-ipppd file (which is the new name). After that, "
-"please delete the old 99-isdnutils file."
-msgstr ""
-"Existeix un fitxer /etc/ppp/ip-down.d/99-isdnutils d'un paquet isdnutils "
-"antic. Si canvieu el fitxer en aquest punt, necessitareu refer aquests "
-"canvis en el fitxer 99-ipppd (el qual és el seu nou nom).  Després d'això, "
-"si us plau esborreu l'antic fitxer 99-isdnutils."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
-msgstr "S'han trobat els antigs scripts /etc/ppp/ip-up.d i ip-down.d"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid ""
-"The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils files "
-"from the old isdnutils package still exist. If you changed those files at "
-"some point, you may need to redo those changes in the 00-ipppd and 99-ipppd "
-"files (which are the new names). After that, please delete the old 00-"
-"isdnutils and 99-isdnutils files."
-msgstr ""
-"Encara hi han els fitxers /etc/ppp/ip-up.d/00-isdnutils i /etc/ppp/ip-down."
-"d/99-isdnutils de l'antic paquet isdnutils.  Si canvieu aquests fitxers en "
-"aquest punt, necessitareu refer aquests canvis en els fitxers 00-ippd i 99-"
-"ipppd (el qual és el seu nou nom).  Després d'això, si us plau esborreu els "
-"antigs fitxers 00-isdnutils i 99-isdnutils."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-#, fuzzy
-#| msgid ""
-#| "Until they are deleted, they will still be used! This may cause conflicts."
-msgid ""
-"Until they are deleted, they will still be used. This may cause conflicts."
-msgstr ""
-"Fins que aquest no sigui esborrat, no podreu usar-lo!  aAixò podria causar "
-"conflictes."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:15001
 #, fuzzy
 #| msgid "(re)start ipppd by hand"
 msgid "(Re)start ipppd manually"
@@ -415,7 +328,7 @@ msgstr "(re)start el ipppd manualment"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:15001
+#: ../ipppd.templates:12001
 #, fuzzy
 #| msgid ""
 #| "There is no /etc/init.d/isdnutils on your system; hence you will have to "
@@ -429,13 +342,13 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:16001
+#: ../ipppd.templates:13001
 msgid "Error running isdnutils init script"
 msgstr ""
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:16001
+#: ../ipppd.templates:13001
 msgid ""
 "The /etc/init.d/isdnutils script ran with errors. Please check the "
 "installation of the isdnutils-base package; reinstall it if necessary. "
@@ -614,66 +527,6 @@ msgstr ""
 msgid ""
 "This setting is only useful for special setups, such as for an ISDN-to-H.323 "
 "gateway."
-msgstr ""
-
-#. Type: select
-#. Choices
-#: ../isdnutils-base.templates:2001
-msgid "none"
-msgstr ""
-
-#. Type: select
-#. Description
-#: ../isdnutils-base.templates:2002
-#, fuzzy
-#| msgid "Does firmware need to be loaded?"
-msgid "Firmware to load:"
-msgstr "Necessiteu carregar un microprogramari?"
-
-#. Type: select
-#. Description
-#: ../isdnutils-base.templates:2002
-#, fuzzy
-#| msgid ""
-#| "Some ISDN cards can't function properly until firmware has been "
-#| "downloaded. Notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-"
-#| "Surf, which need ISAR.BIN to be loaded. (I don't know of any others at "
-#| "this time.) Choose \"ISAR.BIN\" if this is necessary. If you don't know "
-#| "what I'm talking about, choose \"none\"."
-msgid ""
-"Some ISDN cards can't function properly until some firmware has been loaded. "
-"A notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which "
-"need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is necessary."
-msgstr ""
-"Algunes targetes ISDN no poden funciona si no se'ls hi carrega previament un "
-"microprogramari.  Un notable exemple és el de la Sedlbauer SpeedFax+ PCI o "
-"Siemens I-Surf, les quals necessiten que se'ls carregui el ISAR.BIN. (En "
-"aquest moment no en sé de cap altra).  Escolliu \"ISAR.BIN\" si és aquest el "
-"necessari.  Si no sabeu quin no m'ho pregunteu a mi, escolliu \"cap\"."
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-#, fuzzy
-#| msgid "Which ISDN card numbers have to be loaded with the firmware?"
-msgid "ISDN card numbers to load with the firmware:"
-msgstr ""
-"Quins són els números de les targetes ISDN a carregar el microprogramari?"
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid ""
-"If you use more than one card, enter the number of the card(s) in need of "
-"firmware."
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid ""
-"Multiple entries should be separated by commas. Card numbers are integers "
-"where \"1\" is the first card, \"2\" the second, etc."
 msgstr ""
 
 #. Type: string
@@ -952,6 +805,100 @@ msgid ""
 "name is used in vboxgetty.conf while devfs is not mounted, or the non-devfs "
 "name is used while devfs is mounted."
 msgstr ""
+
+#~ msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
+#~ msgstr "/etc/ppp/ip-up.d/00-isdnutils ja existeix"
+
+#~ msgid ""
+#~ "The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package "
+#~ "still exists. If you changed that file at some point, you may need to "
+#~ "redo those changes in the 00-ipppd file (which is the new name). After "
+#~ "that, please delete the old 00-isdnutils file."
+#~ msgstr ""
+#~ "Existeix un fitxer /etc/ppp/ip-up.d/00-isdnutils d'un paquet isdnutils "
+#~ "antic. Si canvieu el fitxer en aquest punt, necessitareu refer aquests "
+#~ "canvis en el fitxer 00-ipppd (el qual és el seu nou nom).  Després "
+#~ "d'això, si us plau esborreu l'antic fitxer 00-isdnutils."
+
+#, fuzzy
+#~| msgid ""
+#~| "Until it is deleted, it will still be used! This may cause conflicts."
+#~ msgid ""
+#~ "Until it is deleted, it will still be used. This may cause conflicts."
+#~ msgstr ""
+#~ "Fins que aquest no sigui esborrat, no podreu usar-lo!  aAixò podria "
+#~ "causar conflictes."
+
+#~ msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
+#~ msgstr "/etc/ppp/ip-down.d/99-isdnutils ja existeix"
+
+#~ msgid ""
+#~ "The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package "
+#~ "still exists. If you changed that file at some point, you may need to "
+#~ "redo those changes in the 99-ipppd file (which is the new name). After "
+#~ "that, please delete the old 99-isdnutils file."
+#~ msgstr ""
+#~ "Existeix un fitxer /etc/ppp/ip-down.d/99-isdnutils d'un paquet isdnutils "
+#~ "antic. Si canvieu el fitxer en aquest punt, necessitareu refer aquests "
+#~ "canvis en el fitxer 99-ipppd (el qual és el seu nou nom).  Després "
+#~ "d'això, si us plau esborreu l'antic fitxer 99-isdnutils."
+
+#~ msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
+#~ msgstr "S'han trobat els antigs scripts /etc/ppp/ip-up.d i ip-down.d"
+
+#~ msgid ""
+#~ "The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils "
+#~ "files from the old isdnutils package still exist. If you changed those "
+#~ "files at some point, you may need to redo those changes in the 00-ipppd "
+#~ "and 99-ipppd files (which are the new names). After that, please delete "
+#~ "the old 00-isdnutils and 99-isdnutils files."
+#~ msgstr ""
+#~ "Encara hi han els fitxers /etc/ppp/ip-up.d/00-isdnutils i /etc/ppp/ip-"
+#~ "down.d/99-isdnutils de l'antic paquet isdnutils.  Si canvieu aquests "
+#~ "fitxers en aquest punt, necessitareu refer aquests canvis en els fitxers "
+#~ "00-ippd i 99-ipppd (el qual és el seu nou nom).  Després d'això, si us "
+#~ "plau esborreu els antigs fitxers 00-isdnutils i 99-isdnutils."
+
+#, fuzzy
+#~| msgid ""
+#~| "Until they are deleted, they will still be used! This may cause "
+#~| "conflicts."
+#~ msgid ""
+#~ "Until they are deleted, they will still be used. This may cause conflicts."
+#~ msgstr ""
+#~ "Fins que aquest no sigui esborrat, no podreu usar-lo!  aAixò podria "
+#~ "causar conflictes."
+
+#, fuzzy
+#~| msgid "Does firmware need to be loaded?"
+#~ msgid "Firmware to load:"
+#~ msgstr "Necessiteu carregar un microprogramari?"
+
+#, fuzzy
+#~| msgid ""
+#~| "Some ISDN cards can't function properly until firmware has been "
+#~| "downloaded. Notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-"
+#~| "Surf, which need ISAR.BIN to be loaded. (I don't know of any others at "
+#~| "this time.) Choose \"ISAR.BIN\" if this is necessary. If you don't know "
+#~| "what I'm talking about, choose \"none\"."
+#~ msgid ""
+#~ "Some ISDN cards can't function properly until some firmware has been "
+#~ "loaded. A notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-"
+#~ "Surf, which need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is "
+#~ "necessary."
+#~ msgstr ""
+#~ "Algunes targetes ISDN no poden funciona si no se'ls hi carrega previament "
+#~ "un microprogramari.  Un notable exemple és el de la Sedlbauer SpeedFax+ "
+#~ "PCI o Siemens I-Surf, les quals necessiten que se'ls carregui el ISAR."
+#~ "BIN. (En aquest moment no en sé de cap altra).  Escolliu \"ISAR.BIN\" si "
+#~ "és aquest el necessari.  Si no sabeu quin no m'ho pregunteu a mi, "
+#~ "escolliu \"cap\"."
+
+#, fuzzy
+#~| msgid "Which ISDN card numbers have to be loaded with the firmware?"
+#~ msgid "ISDN card numbers to load with the firmware:"
+#~ msgstr ""
+#~ "Quins són els números de les targetes ISDN a carregar el microprogramari?"
 
 #, fuzzy
 #~| msgid ""

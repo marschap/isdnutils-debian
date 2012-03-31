@@ -8,17 +8,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: isdnutils 1:3.9.20060704-5\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
-"POT-Creation-Date: 2009-10-14 06:41+0200\n"
+"POT-Creation-Date: 2012-04-13 15:17+0800\n"
 "PO-Revision-Date: 2009-10-26 15:10+0300\n"
 "Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
-"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #. Type: error
 #. Description
@@ -262,91 +262,12 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../ipppd.templates:12001
-msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
-msgstr "Найден файл /etc/ppp/ip-up.d/00-isdnutils"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:12001
-msgid ""
-"The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package still "
-"exists. If you changed that file at some point, you may need to redo those "
-"changes in the 00-ipppd file (which is the new name). After that, please "
-"delete the old 00-isdnutils file."
-msgstr ""
-"Файл /etc/ppp/ip-up.d/00-isdnutils остался от старого пакета isdnutils. Если "
-"вы когда-либо изменяли этот файл, то вам может потребоваться перенести эти "
-"изменения в файл 00-ipppde (новое имя). После этого, удалите старый файл 00-"
-"isdnutils."
-
-#. Type: error
-#. Description
-#. Type: error
-#. Description
-#: ../ipppd.templates:12001 ../ipppd.templates:13001
-msgid "Until it is deleted, it will still be used. This may cause conflicts."
-msgstr ""
-"Пока он не удалён, он будет использован. Это может привести к конфликтам."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:13001
-msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
-msgstr "Найден файл /etc/ppp/ip-down.d/99-isdnutils"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:13001
-msgid ""
-"The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package "
-"still exists. If you changed that file at some point, you may need to redo "
-"those changes in the 99-ipppd file (which is the new name). After that, "
-"please delete the old 99-isdnutils file."
-msgstr ""
-"Файл /etc/ppp/ip-down.d/99-isdnutils остался от старого пакета isdnutils. "
-"Если вы когда-либо изменяли этот файл, то вам может потребоваться перенести "
-"эти изменения в файл 99-ipppd (новое имя). После этого, удалите старый файл "
-"99-isdnutils."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
-msgstr "Найдены старые сценарии /etc/ppp/ip-up.d и ip-down.d"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid ""
-"The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils files "
-"from the old isdnutils package still exist. If you changed those files at "
-"some point, you may need to redo those changes in the 00-ipppd and 99-ipppd "
-"files (which are the new names). After that, please delete the old 00-"
-"isdnutils and 99-isdnutils files."
-msgstr ""
-"Файлы /etc/ppp/ip-up.d/00-isdnutils и /etc/ppp/ip-down.d/99-isdnutils "
-"остались от старого пакета isdnutils. Если вы когда-либо изменяли эти файлы, "
-"то вам может потребоваться перенести эти изменения в файлы 00-ipppd и 99-"
-"ipppd (новые имена). После этого, удалите старые файлы 00-isdnutils и 99-"
-"isdnutils."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid ""
-"Until they are deleted, they will still be used. This may cause conflicts."
-msgstr ""
-"Пока они не удалены, они будут использованы. Это может привести к конфликтам."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:15001
 msgid "(Re)start ipppd manually"
 msgstr "(Пере)запуск ipppd вручную"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:15001
+#: ../ipppd.templates:12001
 msgid ""
 "There is no /etc/init.d/isdnutils on this system; hence you will have to "
 "stop and start any ipppd daemons manually."
@@ -356,13 +277,13 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:16001
+#: ../ipppd.templates:13001
 msgid "Error running isdnutils init script"
 msgstr "Ошибка в работе сценария запуска isdnutils"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:16001
+#: ../ipppd.templates:13001
 msgid ""
 "The /etc/init.d/isdnutils script ran with errors. Please check the "
 "installation of the isdnutils-base package; reinstall it if necessary. "
@@ -540,57 +461,6 @@ msgid ""
 msgstr ""
 "Эта настройка используется только в особых случаях, например для шлюза ISDN-"
 "to-H.323."
-
-#. Type: select
-#. Choices
-#: ../isdnutils-base.templates:2001
-msgid "none"
-msgstr "нет"
-
-#. Type: select
-#. Description
-#: ../isdnutils-base.templates:2002
-msgid "Firmware to load:"
-msgstr "Микропрограмма для загрузки:"
-
-#. Type: select
-#. Description
-#: ../isdnutils-base.templates:2002
-msgid ""
-"Some ISDN cards can't function properly until some firmware has been loaded. "
-"A notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which "
-"need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is necessary."
-msgstr ""
-"Некоторые ISDN карты не могут работать правильно, пока не будет загружена их "
-"микропрограмма. Ярким примером служит карта Sedlbauer SpeedFax+ PCI или "
-"Siemens I-Surf, в которые нужно загружать ISAR.BIN. Выберите \"ISAR.BIN\", "
-"если это необходимо."
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid "ISDN card numbers to load with the firmware:"
-msgstr "Номера ISDN карт, в которые нужно загружать микропрограмму:"
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid ""
-"If you use more than one card, enter the number of the card(s) in need of "
-"firmware."
-msgstr ""
-"Если используется одной карты, то введите номер(а) карты, которой требуется "
-"микропрограмма."
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid ""
-"Multiple entries should be separated by commas. Card numbers are integers "
-"where \"1\" is the first card, \"2\" the second, etc."
-msgstr ""
-"Несколько записей указывается через запятую. Номера карт -- это числа, где "
-"\"1\" -- это первая карта, \"2\" -- вторая карта и т.д."
 
 #. Type: string
 #. Description
@@ -834,3 +704,92 @@ msgstr ""
 "устройства, которое не соответствует используемому в данный момент devfs; "
 "или имя (/dev/isdn/ttyIxx) используется в vboxgetty.conf при не "
 "смонтированном devfs, или используется не-devfs имя, хотя devfs смонтирована."
+
+#~ msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
+#~ msgstr "Найден файл /etc/ppp/ip-up.d/00-isdnutils"
+
+#~ msgid ""
+#~ "The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package "
+#~ "still exists. If you changed that file at some point, you may need to "
+#~ "redo those changes in the 00-ipppd file (which is the new name). After "
+#~ "that, please delete the old 00-isdnutils file."
+#~ msgstr ""
+#~ "Файл /etc/ppp/ip-up.d/00-isdnutils остался от старого пакета isdnutils. "
+#~ "Если вы когда-либо изменяли этот файл, то вам может потребоваться "
+#~ "перенести эти изменения в файл 00-ipppde (новое имя). После этого, "
+#~ "удалите старый файл 00-isdnutils."
+
+#~ msgid ""
+#~ "Until it is deleted, it will still be used. This may cause conflicts."
+#~ msgstr ""
+#~ "Пока он не удалён, он будет использован. Это может привести к конфликтам."
+
+#~ msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
+#~ msgstr "Найден файл /etc/ppp/ip-down.d/99-isdnutils"
+
+#~ msgid ""
+#~ "The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package "
+#~ "still exists. If you changed that file at some point, you may need to "
+#~ "redo those changes in the 99-ipppd file (which is the new name). After "
+#~ "that, please delete the old 99-isdnutils file."
+#~ msgstr ""
+#~ "Файл /etc/ppp/ip-down.d/99-isdnutils остался от старого пакета isdnutils. "
+#~ "Если вы когда-либо изменяли этот файл, то вам может потребоваться "
+#~ "перенести эти изменения в файл 99-ipppd (новое имя). После этого, удалите "
+#~ "старый файл 99-isdnutils."
+
+#~ msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
+#~ msgstr "Найдены старые сценарии /etc/ppp/ip-up.d и ip-down.d"
+
+#~ msgid ""
+#~ "The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils "
+#~ "files from the old isdnutils package still exist. If you changed those "
+#~ "files at some point, you may need to redo those changes in the 00-ipppd "
+#~ "and 99-ipppd files (which are the new names). After that, please delete "
+#~ "the old 00-isdnutils and 99-isdnutils files."
+#~ msgstr ""
+#~ "Файлы /etc/ppp/ip-up.d/00-isdnutils и /etc/ppp/ip-down.d/99-isdnutils "
+#~ "остались от старого пакета isdnutils. Если вы когда-либо изменяли эти "
+#~ "файлы, то вам может потребоваться перенести эти изменения в файлы 00-"
+#~ "ipppd и 99-ipppd (новые имена). После этого, удалите старые файлы 00-"
+#~ "isdnutils и 99-isdnutils."
+
+#~ msgid ""
+#~ "Until they are deleted, they will still be used. This may cause conflicts."
+#~ msgstr ""
+#~ "Пока они не удалены, они будут использованы. Это может привести к "
+#~ "конфликтам."
+
+#~ msgid "none"
+#~ msgstr "нет"
+
+#~ msgid "Firmware to load:"
+#~ msgstr "Микропрограмма для загрузки:"
+
+#~ msgid ""
+#~ "Some ISDN cards can't function properly until some firmware has been "
+#~ "loaded. A notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-"
+#~ "Surf, which need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is "
+#~ "necessary."
+#~ msgstr ""
+#~ "Некоторые ISDN карты не могут работать правильно, пока не будет загружена "
+#~ "их микропрограмма. Ярким примером служит карта Sedlbauer SpeedFax+ PCI "
+#~ "или Siemens I-Surf, в которые нужно загружать ISAR.BIN. Выберите \"ISAR."
+#~ "BIN\", если это необходимо."
+
+#~ msgid "ISDN card numbers to load with the firmware:"
+#~ msgstr "Номера ISDN карт, в которые нужно загружать микропрограмму:"
+
+#~ msgid ""
+#~ "If you use more than one card, enter the number of the card(s) in need of "
+#~ "firmware."
+#~ msgstr ""
+#~ "Если используется одной карты, то введите номер(а) карты, которой "
+#~ "требуется микропрограмма."
+
+#~ msgid ""
+#~ "Multiple entries should be separated by commas. Card numbers are integers "
+#~ "where \"1\" is the first card, \"2\" the second, etc."
+#~ msgstr ""
+#~ "Несколько записей указывается через запятую. Номера карт -- это числа, "
+#~ "где \"1\" -- это первая карта, \"2\" -- вторая карта и т.д."

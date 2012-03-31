@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
-"POT-Creation-Date: 2009-10-14 06:41+0200\n"
+"POT-Creation-Date: 2012-04-13 15:17+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -221,76 +221,12 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../ipppd.templates:12001
-msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
-msgstr ""
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:12001
-msgid ""
-"The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package still "
-"exists. If you changed that file at some point, you may need to redo those "
-"changes in the 00-ipppd file (which is the new name). After that, please "
-"delete the old 00-isdnutils file."
-msgstr ""
-
-#. Type: error
-#. Description
-#. Type: error
-#. Description
-#: ../ipppd.templates:12001 ../ipppd.templates:13001
-msgid "Until it is deleted, it will still be used. This may cause conflicts."
-msgstr ""
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:13001
-msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
-msgstr ""
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:13001
-msgid ""
-"The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package "
-"still exists. If you changed that file at some point, you may need to redo "
-"those changes in the 99-ipppd file (which is the new name). After that, "
-"please delete the old 99-isdnutils file."
-msgstr ""
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
-msgstr ""
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid ""
-"The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils files "
-"from the old isdnutils package still exist. If you changed those files at "
-"some point, you may need to redo those changes in the 00-ipppd and 99-ipppd "
-"files (which are the new names). After that, please delete the old 00-"
-"isdnutils and 99-isdnutils files."
-msgstr ""
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid ""
-"Until they are deleted, they will still be used. This may cause conflicts."
-msgstr ""
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:15001
 msgid "(Re)start ipppd manually"
 msgstr ""
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:15001
+#: ../ipppd.templates:12001
 msgid ""
 "There is no /etc/init.d/isdnutils on this system; hence you will have to "
 "stop and start any ipppd daemons manually."
@@ -298,13 +234,13 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:16001
+#: ../ipppd.templates:13001
 msgid "Error running isdnutils init script"
 msgstr ""
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:16001
+#: ../ipppd.templates:13001
 msgid ""
 "The /etc/init.d/isdnutils script ran with errors. Please check the "
 "installation of the isdnutils-base package; reinstall it if necessary. "
@@ -469,49 +405,6 @@ msgstr ""
 msgid ""
 "This setting is only useful for special setups, such as for an ISDN-to-H.323 "
 "gateway."
-msgstr ""
-
-#. Type: select
-#. Choices
-#: ../isdnutils-base.templates:2001
-msgid "none"
-msgstr ""
-
-#. Type: select
-#. Description
-#: ../isdnutils-base.templates:2002
-msgid "Firmware to load:"
-msgstr ""
-
-#. Type: select
-#. Description
-#: ../isdnutils-base.templates:2002
-msgid ""
-"Some ISDN cards can't function properly until some firmware has been loaded. "
-"A notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which "
-"need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is necessary."
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid "ISDN card numbers to load with the firmware:"
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid ""
-"If you use more than one card, enter the number of the card(s) in need of "
-"firmware."
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid ""
-"Multiple entries should be separated by commas. Card numbers are integers "
-"where \"1\" is the first card, \"2\" the second, etc."
 msgstr ""
 
 #. Type: string

@@ -6,14 +6,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: isdnutils 1:3.9.20060704-5\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
-"POT-Creation-Date: 2009-10-14 06:41+0200\n"
+"POT-Creation-Date: 2012-04-13 15:17+0800\n"
 "PO-Revision-Date: 2009-10-14 23:26+0900\n"
 "Last-Translator: Hideki Yamane (Debian-JP) <henrich@debian.or.jp>\n"
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
-"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
 
 #. Type: error
 #. Description
@@ -254,92 +254,12 @@ msgstr ""
 #. Type: error
 #. Description
 #: ../ipppd.templates:12001
-msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
-msgstr "/etc/ppp/ip-up.d/00-isdnutils がまだ存在しています"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:12001
-msgid ""
-"The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package still "
-"exists. If you changed that file at some point, you may need to redo those "
-"changes in the 00-ipppd file (which is the new name). After that, please "
-"delete the old 00-isdnutils file."
-msgstr ""
-"古い isdnutils パッケージの /etc/ppp/ip-up.d/00-isdnutils ファイルがまだ存在"
-"しています。どこかのタイミングでこのファイルを変更していた場合、00-ipppd ファ"
-"イル (これが新しい名前です) 中でその変更をやり直す必要があります。その後で、"
-"古い 00-isdnutils ファイルを削除してください。"
-
-#. Type: error
-#. Description
-#. Type: error
-#. Description
-#: ../ipppd.templates:12001 ../ipppd.templates:13001
-msgid "Until it is deleted, it will still be used. This may cause conflicts."
-msgstr ""
-"これは消去されるまで使われ続けます。このためエラーが起こる可能性があります。"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:13001
-msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
-msgstr "/etc/ppp/ip-down.d/99-isdnutils がまだ存在しています"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:13001
-msgid ""
-"The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package "
-"still exists. If you changed that file at some point, you may need to redo "
-"those changes in the 99-ipppd file (which is the new name). After that, "
-"please delete the old 99-isdnutils file."
-msgstr ""
-"古い isdnutils パッケージの /etc/ppp/ip-down.d/99-isdnutils ファイルがまだ存"
-"在しています。どこかのタイミングでこのファイルを変更していた場合、99-ipppd "
-"ファイル (これが新しい名前です) 中でその変更をやり直す必要があります。その後"
-"で、古い 99-isdnutils ファイルを削除してください。"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
-msgstr "古い /etc/ppp/ip-up.d and ip-down.d スクリプトがまだ存在しています"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid ""
-"The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils files "
-"from the old isdnutils package still exist. If you changed those files at "
-"some point, you may need to redo those changes in the 00-ipppd and 99-ipppd "
-"files (which are the new names). After that, please delete the old 00-"
-"isdnutils and 99-isdnutils files."
-msgstr ""
-"古い isdnutils パッケージの /etc/ppp/ip-up.d/00-isdnutils と /etc/ppp/ip-"
-"down.d/99-isdnutils ファイルがまだ存在しています。どこかのタイミングでこの"
-"ファイルを変更していた場合、00-ipppd ファイル と 99-ipppd ファイル (これが新"
-"しい名前です) 中でその変更をやり直す必要があります。その後で、古い 00-"
-"isdnutils ファイルと 99-isdnutils ファイルを削除してください。"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid ""
-"Until they are deleted, they will still be used. This may cause conflicts."
-msgstr ""
-"これらは消去されるまで使われ続けます。このためエラーが起こる可能性がありま"
-"す。"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:15001
 msgid "(Re)start ipppd manually"
 msgstr "ipppd を手動で (再) 起動する"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:15001
+#: ../ipppd.templates:12001
 msgid ""
 "There is no /etc/init.d/isdnutils on this system; hence you will have to "
 "stop and start any ipppd daemons manually."
@@ -349,13 +269,13 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:16001
+#: ../ipppd.templates:13001
 msgid "Error running isdnutils init script"
 msgstr "isdnutils 初期化スクリプト動作中のエラー"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:16001
+#: ../ipppd.templates:13001
 msgid ""
 "The /etc/init.d/isdnutils script ran with errors. Please check the "
 "installation of the isdnutils-base package; reinstall it if necessary. "
@@ -535,56 +455,6 @@ msgid ""
 "gateway."
 msgstr ""
 "この設定は ISDN-to-H.323 ゲートウェイ用など、特殊な設定にのみ役立ちます。"
-
-#. Type: select
-#. Choices
-#: ../isdnutils-base.templates:2001
-msgid "none"
-msgstr "無し"
-
-#. Type: select
-#. Description
-#: ../isdnutils-base.templates:2002
-msgid "Firmware to load:"
-msgstr "読み込むファームウェア:"
-
-#. Type: select
-#. Description
-#: ../isdnutils-base.templates:2002
-msgid ""
-"Some ISDN cards can't function properly until some firmware has been loaded. "
-"A notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which "
-"need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is necessary."
-msgstr ""
-"いくつかの ISDN カードはファームウェアがロードされないと正常に動作しません。"
-"注目に値する例としては、ISAR.BIN がロードされる必要がある Sedlbauer SpeedFax"
-"+ PCI や Siemens I-Surf です。これが必要なら「ISAR.BIN」を指定してください。"
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid "ISDN card numbers to load with the firmware:"
-msgstr "ファームウェアをロードする ISDN カード数:"
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid ""
-"If you use more than one card, enter the number of the card(s) in need of "
-"firmware."
-msgstr ""
-"1 つでもカードを使う場合、ファームウェアを必要とするカードの数を入力してくだ"
-"さい。"
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid ""
-"Multiple entries should be separated by commas. Card numbers are integers "
-"where \"1\" is the first card, \"2\" the second, etc."
-msgstr ""
-"複数のエントリはコンマで区切る必要があります。カードの数は整数で、最初のカー"
-"ドは「1」、次のカードは「2」というようになります。"
 
 #. Type: string
 #. Description
@@ -831,3 +701,93 @@ msgstr ""
 "いません。devfs がマウントされていない場合は vboxgetty.conf で使われている "
 "devfs 名 (/dev/isdn/ttyIxx) が、devfs がマウントされている場合は devfs 名以外"
 "になります。"
+
+#~ msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
+#~ msgstr "/etc/ppp/ip-up.d/00-isdnutils がまだ存在しています"
+
+#~ msgid ""
+#~ "The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package "
+#~ "still exists. If you changed that file at some point, you may need to "
+#~ "redo those changes in the 00-ipppd file (which is the new name). After "
+#~ "that, please delete the old 00-isdnutils file."
+#~ msgstr ""
+#~ "古い isdnutils パッケージの /etc/ppp/ip-up.d/00-isdnutils ファイルがまだ存"
+#~ "在しています。どこかのタイミングでこのファイルを変更していた場合、00-"
+#~ "ipppd ファイル (これが新しい名前です) 中でその変更をやり直す必要がありま"
+#~ "す。その後で、古い 00-isdnutils ファイルを削除してください。"
+
+#~ msgid ""
+#~ "Until it is deleted, it will still be used. This may cause conflicts."
+#~ msgstr ""
+#~ "これは消去されるまで使われ続けます。このためエラーが起こる可能性がありま"
+#~ "す。"
+
+#~ msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
+#~ msgstr "/etc/ppp/ip-down.d/99-isdnutils がまだ存在しています"
+
+#~ msgid ""
+#~ "The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package "
+#~ "still exists. If you changed that file at some point, you may need to "
+#~ "redo those changes in the 99-ipppd file (which is the new name). After "
+#~ "that, please delete the old 99-isdnutils file."
+#~ msgstr ""
+#~ "古い isdnutils パッケージの /etc/ppp/ip-down.d/99-isdnutils ファイルがまだ"
+#~ "存在しています。どこかのタイミングでこのファイルを変更していた場合、99-"
+#~ "ipppd ファイル (これが新しい名前です) 中でその変更をやり直す必要がありま"
+#~ "す。その後で、古い 99-isdnutils ファイルを削除してください。"
+
+#~ msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
+#~ msgstr "古い /etc/ppp/ip-up.d and ip-down.d スクリプトがまだ存在しています"
+
+#~ msgid ""
+#~ "The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils "
+#~ "files from the old isdnutils package still exist. If you changed those "
+#~ "files at some point, you may need to redo those changes in the 00-ipppd "
+#~ "and 99-ipppd files (which are the new names). After that, please delete "
+#~ "the old 00-isdnutils and 99-isdnutils files."
+#~ msgstr ""
+#~ "古い isdnutils パッケージの /etc/ppp/ip-up.d/00-isdnutils と /etc/ppp/ip-"
+#~ "down.d/99-isdnutils ファイルがまだ存在しています。どこかのタイミングでこの"
+#~ "ファイルを変更していた場合、00-ipppd ファイル と 99-ipppd ファイル (これが"
+#~ "新しい名前です) 中でその変更をやり直す必要があります。その後で、古い 00-"
+#~ "isdnutils ファイルと 99-isdnutils ファイルを削除してください。"
+
+#~ msgid ""
+#~ "Until they are deleted, they will still be used. This may cause conflicts."
+#~ msgstr ""
+#~ "これらは消去されるまで使われ続けます。このためエラーが起こる可能性がありま"
+#~ "す。"
+
+#~ msgid "none"
+#~ msgstr "無し"
+
+#~ msgid "Firmware to load:"
+#~ msgstr "読み込むファームウェア:"
+
+#~ msgid ""
+#~ "Some ISDN cards can't function properly until some firmware has been "
+#~ "loaded. A notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-"
+#~ "Surf, which need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is "
+#~ "necessary."
+#~ msgstr ""
+#~ "いくつかの ISDN カードはファームウェアがロードされないと正常に動作しませ"
+#~ "ん。注目に値する例としては、ISAR.BIN がロードされる必要がある Sedlbauer "
+#~ "SpeedFax+ PCI や Siemens I-Surf です。これが必要なら「ISAR.BIN」を指定して"
+#~ "ください。"
+
+#~ msgid "ISDN card numbers to load with the firmware:"
+#~ msgstr "ファームウェアをロードする ISDN カード数:"
+
+#~ msgid ""
+#~ "If you use more than one card, enter the number of the card(s) in need of "
+#~ "firmware."
+#~ msgstr ""
+#~ "1 つでもカードを使う場合、ファームウェアを必要とするカードの数を入力してく"
+#~ "ださい。"
+
+#~ msgid ""
+#~ "Multiple entries should be separated by commas. Card numbers are integers "
+#~ "where \"1\" is the first card, \"2\" the second, etc."
+#~ msgstr ""
+#~ "複数のエントリはコンマで区切る必要があります。カードの数は整数で、最初の"
+#~ "カードは「1」、次のカードは「2」というようになります。"

@@ -2,12 +2,12 @@
 # Copyright (c) 2011 isdnutils & nedenstående oversættere.
 # This file is distributed under the same license as the isdnutils package.
 # Joe Hansen <joedalton2@yahoo.dk>, 2011.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: isdnutils\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
-"POT-Creation-Date: 2009-10-14 06:41+0200\n"
+"POT-Creation-Date: 2012-04-13 15:17+0800\n"
 "PO-Revision-Date: 2011-05-10 17:30+01:00\n"
 "Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
 "Language-Team: Danish <debian-l10n-danish@lists.debian.org>\n"
@@ -29,9 +29,9 @@ msgid ""
 "ipppd configuration phase won't touch anything there, as it looks like it "
 "has already been configured."
 msgstr ""
-"Filerne device.${IPPP0} og ipppd.${IPPP0} findes allerede. Derfor vil "
-"ipppd-konfigurationsfasen ikke røre noget der, da det ser ud til at den "
-"allerede er blevet konfigureret."
+"Filerne device.${IPPP0} og ipppd.${IPPP0} findes allerede. Derfor vil ipppd-"
+"konfigurationsfasen ikke røre noget der, da det ser ud til at den allerede "
+"er blevet konfigureret."
 
 #. Type: error
 #. Description
@@ -43,10 +43,11 @@ msgid ""
 "ipppd\". After that, restart the ISDN processes with \"/etc/init.d/isdnutils "
 "start\"."
 msgstr ""
-"Hvis det ikke virker endnu, og du ønsker at prøve den automatiske konfiguration, "
-"så stop alle ISDN-processer (brug »/etc/init.d/isdnutils stop«), fjern filerne "
-"nævnt ovenfor, og genkør konfigurationen med »dpkg-reconfigure ipppd«. Derefter "
-"genstart ISDN-processerne med »/etc/init.d/isdnutils start«."
+"Hvis det ikke virker endnu, og du ønsker at prøve den automatiske "
+"konfiguration, så stop alle ISDN-processer (brug »/etc/init.d/isdnutils "
+"stop«), fjern filerne nævnt ovenfor, og genkør konfigurationen med »dpkg-"
+"reconfigure ipppd«. Derefter genstart ISDN-processerne med »/etc/init.d/"
+"isdnutils start«."
 
 #. Type: string
 #. Description
@@ -67,8 +68,8 @@ msgid ""
 "However, if you have special requirements or want to choose to configure "
 "another interface, please enter it here."
 msgstr ""
-"Hvis du har specielle krav eller ønsker at konfigurere en anden "
-"grænseflade, så indtast den venligst her."
+"Hvis du har specielle krav eller ønsker at konfigurere en anden grænseflade, "
+"så indtast den venligst her."
 
 #. Type: string
 #. Description
@@ -123,14 +124,14 @@ msgstr ""
 #: ../ipppd.templates:5001
 msgid ""
 "Multiple telephone numbers may be entered and should be separated by spaces."
-msgstr ""
-"Flere telefonnumre kan indtastes og de skal være adskilt af mellemrum."
+msgstr "Flere telefonnumre kan indtastes og de skal være adskilt af mellemrum."
 
 #. Type: string
 #. Description
 #: ../ipppd.templates:5001
 msgid "Leave the field blank if you want to configure the connection manually."
-msgstr "Efterlad feltet tomt hvis du ønsker at konfigurere forbindelsen manuelt."
+msgstr ""
+"Efterlad feltet tomt hvis du ønsker at konfigurere forbindelsen manuelt."
 
 #. Type: string
 #. Description
@@ -149,11 +150,11 @@ msgid ""
 "fail. So, it is best to enter the correct local MSN here."
 msgstr ""
 "Når der foretages et opkald med ISDN, skal MSN'en (telefonnummer) som er "
-"oprindelse for opkaldet angives i opkaldsopsætningens besked. Mens en forkert "
-"MSN normalt vil blive erstattet af hoved-MSN'en for ISDN-linjen, specielt på "
-"PABX'er, vil en forkert MSN (ofte udvidelsesnummeret i dette tilfælde) få "
-"opkaldsopsætningen til at fejle. Så det er bedst at indtaste den korrekte "
-"lokale MSN her."
+"oprindelse for opkaldet angives i opkaldsopsætningens besked. Mens en "
+"forkert MSN normalt vil blive erstattet af hoved-MSN'en for ISDN-linjen, "
+"specielt på PABX'er, vil en forkert MSN (ofte udvidelsesnummeret i dette "
+"tilfælde) få opkaldsopsætningen til at fejle. Så det er bedst at indtaste "
+"den korrekte lokale MSN her."
 
 #. Type: string
 #. Description
@@ -180,8 +181,8 @@ msgid ""
 "Most ISPs require an account name and password to be provided when "
 "connecting."
 msgstr ""
-"De fleste ISP'er kræver, at et kontonavn og adgangskode angives når "
-"der forbindes."
+"De fleste ISP'er kræver, at et kontonavn og adgangskode angives når der "
+"forbindes."
 
 #. Type: password
 #. Description
@@ -198,8 +199,8 @@ msgid ""
 "the account name."
 msgstr ""
 "Indtast venligst adgangskoden der skal bruges, når der forbindes til ISP'en. "
-"Denne adgangskode vil blive opbevaret i /etc/ppp/pap-secrets og "
-"/etc/ppp/chap-secrets sammen med kontonavnet."
+"Denne adgangskode vil blive opbevaret i /etc/ppp/pap-secrets og /etc/ppp/"
+"chap-secrets sammen med kontonavnet."
 
 #. Type: error
 #. Description
@@ -215,9 +216,10 @@ msgid ""
 "the /etc/ppp/pap-secrets file. The existing entry will be commented out, and "
 "a new entry with the data you just entered will be inserted."
 msgstr ""
-"Brugernavnet, du indtastede for at logge ind hos din ISP, er allerede angivet i "
-"filen /etc/ppp/pap-secrets. Det eksisterende punkt vil blive udkommenteret, og "
-"et nyt punkt med dataene, du netop har indtastet, vil blive indsat."
+"Brugernavnet, du indtastede for at logge ind hos din ISP, er allerede "
+"angivet i filen /etc/ppp/pap-secrets. Det eksisterende punkt vil blive "
+"udkommenteret, og et nyt punkt med dataene, du netop har indtastet, vil "
+"blive indsat."
 
 #. Type: error
 #. Description
@@ -233,9 +235,10 @@ msgid ""
 "the /etc/ppp/chap-secrets file. The existing entry will be commented out, "
 "and a new entry with the data you just entered will be inserted."
 msgstr ""
-"Brugernavnet, du indtastede for at logge ind hos din ISP, er allerede angivet i "
-"filen /etc/ppp/chap-secrets. Det eksisterende punkt vil blive udkommenteret, og "
-"et nyt punkt med dataene, du netop har indtastet, vil blive indsat."
+"Brugernavnet, du indtastede for at logge ind hos din ISP, er allerede "
+"angivet i filen /etc/ppp/chap-secrets. Det eksisterende punkt vil blive "
+"udkommenteret, og et nyt punkt med dataene, du netop har indtastet, vil "
+"blive indsat."
 
 #. Type: error
 #. Description
@@ -252,101 +255,20 @@ msgid ""
 "be commented out, and new entries with the data you just entered will be "
 "inserted."
 msgstr ""
-"Brugernavnet, du indtastede for at logge ind hos din ISP, er allerede angivet i "
-"filerne chap-secrets og pap-secrets i /etc/ppp/. De eksisterende punkter vil "
-"blive udkommenteret, og nye punkter med dataene, du netop har indtastet, vil "
-"blive indsat."
+"Brugernavnet, du indtastede for at logge ind hos din ISP, er allerede "
+"angivet i filerne chap-secrets og pap-secrets i /etc/ppp/. De eksisterende "
+"punkter vil blive udkommenteret, og nye punkter med dataene, du netop har "
+"indtastet, vil blive indsat."
 
 #. Type: error
 #. Description
 #: ../ipppd.templates:12001
-msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
-msgstr "/etc/ppp/ip-up.d/00-isdnutils findes stadig"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:12001
-msgid ""
-"The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package still "
-"exists. If you changed that file at some point, you may need to redo those "
-"changes in the 00-ipppd file (which is the new name). After that, please "
-"delete the old 00-isdnutils file."
-msgstr ""
-"Filen /etc/ppp/ip-up.d/00-isdnutils fra den gamle isdnutils-pakke findes "
-"stadig. Hvis du ændrede den fil på et tidspunkt, skal du måske gendanne "
-"disse ændringer i filen 00-ipppd (som er det nye navn). Slet derefter "
-"den gamle fil 00-isdnutils."
-
-#. Type: error
-#. Description
-#. Type: error
-#. Description
-#: ../ipppd.templates:12001 ../ipppd.templates:13001
-msgid "Until it is deleted, it will still be used. This may cause conflicts."
-msgstr ""
-"Indtil den er slettet, vil den stadig blive brugt. Dette kan medføre "
-"konflikter."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:13001
-msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
-msgstr "/etc/ppp/ip-down.d/99-isdnutils findes stadig"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:13001
-msgid ""
-"The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package "
-"still exists. If you changed that file at some point, you may need to redo "
-"those changes in the 99-ipppd file (which is the new name). After that, "
-"please delete the old 99-isdnutils file."
-msgstr ""
-"Filen /etc/ppp/ip-down.d/99-isdnutils fra den gamle isdnutils-pakke findes "
-"stadig. Hvis du ændrede den fil på et tidspunkt, skal du måske gendanne "
-"disse ændringer i filen 99-ipppd (som er det nye navn). Slet derefter "
-"den gamle fil 99-isdnutils."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
-msgstr "de gamle skripter /etc/ppp/ip-up.d og ip-down.d findes stadig"
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid ""
-"The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils files "
-"from the old isdnutils package still exist. If you changed those files at "
-"some point, you may need to redo those changes in the 00-ipppd and 99-ipppd "
-"files (which are the new names). After that, please delete the old 00-"
-"isdnutils and 99-isdnutils files."
-msgstr ""
-"Filerne /etc/ppp/ip-up.d/00-isdnutils og /etc/ppp/ip-down.d/99-isdnutils "
-"fra den gamle isdnutils-pakke findes stadig. Hvis du ændrede disse filer "
-"på et tidspunkt, skal du måske gendanne disse ændringer i filerne 00-ipppd "
-"og 99-ipppd (som er de nye navne). Slet derefter de gamle filer 00-isdnutils "
-"og 99-isdnutils."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:14001
-msgid ""
-"Until they are deleted, they will still be used. This may cause conflicts."
-msgstr ""
-"Indtil de er slettet, vil de stadig blive brugt. Dette kan medføre "
-"konflikter."
-
-#. Type: error
-#. Description
-#: ../ipppd.templates:15001
 msgid "(Re)start ipppd manually"
 msgstr "(Gen)start ipppd manuelt"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:15001
+#: ../ipppd.templates:12001
 msgid ""
 "There is no /etc/init.d/isdnutils on this system; hence you will have to "
 "stop and start any ipppd daemons manually."
@@ -356,23 +278,23 @@ msgstr ""
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:16001
+#: ../ipppd.templates:13001
 msgid "Error running isdnutils init script"
 msgstr "Fejl under kørsel af isdnutils' opstartsskript"
 
 #. Type: error
 #. Description
-#: ../ipppd.templates:16001
+#: ../ipppd.templates:13001
 msgid ""
 "The /etc/init.d/isdnutils script ran with errors. Please check the "
 "installation of the isdnutils-base package; reinstall it if necessary. "
 "Perhaps moving /etc/init.d/isdnutils.dpkg-dist (if it exists) to /etc/init.d/"
 "isdnutils will also help."
 msgstr ""
-"Skriptet /etc/init.d/isdnutils blev kørt med fejl. Tjek venligst installationen "
-"af pakken isdnutils-base; geninstaller om nødvendigt. Måske vil flytning af "
-"/etc/init.d/isdnutils.dpkg-dist (hvis den findes) til /etc/init.d/isdnutils "
-"også hjælpe."
+"Skriptet /etc/init.d/isdnutils blev kørt med fejl. Tjek venligst "
+"installationen af pakken isdnutils-base; geninstaller om nødvendigt. Måske "
+"vil flytning af /etc/init.d/isdnutils.dpkg-dist (hvis den findes) til /etc/"
+"init.d/isdnutils også hjælpe."
 
 #. Type: select
 #. Choices
@@ -471,8 +393,8 @@ msgid ""
 "Please choose the local country. This will be used to set the rate table to "
 "use for calculating the costs of calls."
 msgstr ""
-"Vælg venligst dit land. Dette vil blive brugt til at angive betalingstabellen "
-"til brug for beregning af prisen for opkald."
+"Vælg venligst dit land. Dette vil blive brugt til at angive "
+"betalingstabellen til brug for beregning af prisen for opkald."
 
 #. Type: string
 #. Description
@@ -528,8 +450,8 @@ msgid ""
 msgstr ""
 "Redskabet isdnrate beregner omkostningen ved en forbindelse til et angivet "
 "telefonnummer, brugt f.eks. for LCR-systemer til at finde den billigste "
-"leverandør på et opkald-per-opkald grundlag. Ved at have den kørende som "
-"en dæmon øges hastigheden, da den kun behøver at indlæse alle dataene en gang."
+"leverandør på et opkald-per-opkald grundlag. Ved at have den kørende som en "
+"dæmon øges hastigheden, da den kun behøver at indlæse alle dataene en gang."
 
 #. Type: boolean
 #. Description
@@ -538,59 +460,8 @@ msgid ""
 "This setting is only useful for special setups, such as for an ISDN-to-H.323 "
 "gateway."
 msgstr ""
-"Denne indstilling er kun brugbar for specielle opsætninger, såsom et ISDN-til-H.323 "
-"adgangspunkt."
-
-#. Type: select
-#. Choices
-#: ../isdnutils-base.templates:2001
-msgid "none"
-msgstr "ingen"
-
-#. Type: select
-#. Description
-#: ../isdnutils-base.templates:2002
-msgid "Firmware to load:"
-msgstr "Firmware at indlæse:"
-
-#. Type: select
-#. Description
-#: ../isdnutils-base.templates:2002
-msgid ""
-"Some ISDN cards can't function properly until some firmware has been loaded. "
-"A notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-Surf, which "
-"need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is necessary."
-msgstr ""
-"Nogle ISDN-kort kan ikke fungere korrekt før en bestemt firmware er blevet "
-"indlæst. Et par eksempler er Sedlbauer SpeedFax+ PCI eller Siemens I-Surf, "
-"som kræver ISAR.BIN for at blive indlæst. Vælg »ISAR.BIN« hvis dette er "
-"nødvendigt."
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid "ISDN card numbers to load with the firmware:"
-msgstr "ISDN-kortnumre til indlæsning med firmwaren:"
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid ""
-"If you use more than one card, enter the number of the card(s) in need of "
-"firmware."
-msgstr ""
-"Hvis du bruger mere end et kort så indtast numrene på kortene, som skal "
-"bruge firmware."
-
-#. Type: string
-#. Description
-#: ../isdnutils-base.templates:3001
-msgid ""
-"Multiple entries should be separated by commas. Card numbers are integers "
-"where \"1\" is the first card, \"2\" the second, etc."
-msgstr ""
-"Flere punkter skal være adskilt med kommaer. Kortnumre er heltal hvor "
-"»1« er det første kort, »2« det andet etc."
+"Denne indstilling er kun brugbar for specielle opsætninger, såsom et ISDN-"
+"til-H.323 adgangspunkt."
 
 #. Type: string
 #. Description
@@ -606,8 +477,9 @@ msgid ""
 "system, this may or may not include the area code. Leading \"0\" should most "
 "often be dropped."
 msgstr ""
-"Vbox skal vide hvilket nummer den skal lyttes på. Afhængig af landets ISDN-system, "
-"kan dette inkludere områdekoden. Foranstillet »0« skal som oftest udelades."
+"Vbox skal vide hvilket nummer den skal lyttes på. Afhængig af landets ISDN-"
+"system, kan dette inkludere områdekoden. Foranstillet »0« skal som oftest "
+"udelades."
 
 #. Type: string
 #. Description
@@ -618,9 +490,9 @@ msgid ""
 "still part of isdnutils (unless you want to create a new configuration)."
 msgstr ""
 "Efterlad feltet blankt hvis du ønsker at konfigurere manuelt, eller hvis du "
-"allerede bruger en eksisterende (fungerende) vbox-konfiguration fra tidspunktet "
-"da dette stadig var en del af isdnutils (medmindre du ønsker at oprette en "
-"ny konfiguration)."
+"allerede bruger en eksisterende (fungerende) vbox-konfiguration fra "
+"tidspunktet da dette stadig var en del af isdnutils (medmindre du ønsker at "
+"oprette en ny konfiguration)."
 
 #. Type: string
 #. Description
@@ -659,8 +531,8 @@ msgid ""
 "When a message is recorded, an email notification is sent. If that email "
 "should contain the message as an attachment, choose the option."
 msgstr ""
-"Når en besked optages, sendes en e-post-påmindelse. Hvis den e-post "
-"skal indeholde beskeden som en vedhæftning, så vælg denne indstilling."
+"Når en besked optages, sendes en e-post-påmindelse. Hvis den e-post skal "
+"indeholde beskeden som en vedhæftning, så vælg denne indstilling."
 
 #. Type: string
 #. Description
@@ -675,8 +547,8 @@ msgid ""
 "The vboxd daemon should run as an unprivileged (non-root) user. It must be a "
 "member of the \"dialout\" group."
 msgstr ""
-"Vboxd-dæmonen skal køre som en upriviligeret (ikke administrator) bruger. Den "
-"skal være medlem af gruppen »dialout«."
+"Vboxd-dæmonen skal køre som en upriviligeret (ikke administrator) bruger. "
+"Den skal være medlem af gruppen »dialout«."
 
 #. Type: text
 #. Description
@@ -709,7 +581,8 @@ msgid ""
 "isdnvboxclient package) will be prompted for a username and password."
 msgstr ""
 "Forbindelser til telefonsvareren (der bruger vbox-programmer tilbudt af "
-"pakken isdnvboxclient) vil blive promptet for et brugernavn og en adgangskode."
+"pakken isdnvboxclient) vil blive promptet for et brugernavn og en "
+"adgangskode."
 
 #. Type: string
 #. Description
@@ -747,8 +620,8 @@ msgid ""
 "The home directory \"${DIR}\" for user \"${USER}\" does not exist. This "
 "means that the file \"${DIR}/.vbox.conf\" cannot be created."
 msgstr ""
-"Hjemmemappen »${DIR}« for bruger »${USER}« findes ikke. Dette betyder "
-"at filen »${DIR}/.vbox.conf« ikke kan oprettes."
+"Hjemmemappen »${DIR}« for bruger »${USER}« findes ikke. Dette betyder at filen "
+"»${DIR}/.vbox.conf« ikke kan oprettes."
 
 #. Type: error
 #. Description
@@ -764,9 +637,9 @@ msgid ""
 "configuration with \"dpkg-reconfigure isdnvboxserver\" to enter another "
 "username, or after creating the user."
 msgstr ""
-"Brugeren »${USER}« findes ikke på systemet. Kør venligst konfigurationen "
-"med »dpkg-reconfigure isdnvboxserver« igen for at indtaste et andet "
-"brugernavn, eller efter oprettelse af brugeren."
+"Brugeren »${USER}« findes ikke på systemet. Kør venligst konfigurationen med "
+"»dpkg-reconfigure isdnvboxserver« igen for at indtaste et andet brugernavn, "
+"eller efter oprettelse af brugeren."
 
 #. Type: boolean
 #. Description
@@ -802,9 +675,9 @@ msgid ""
 "used while devfs is mounted."
 msgstr ""
 "Posten for vboxgetty i /etc/inittab bruger et enhedsnavn, som ikke "
-"korresponderer til den aktuelle devfs-brug; enten bruges et devfs-navn "
-"(/dev/isdn/ttyIxx) i inittab mens devfs ikke er monteret, ellers bruges "
-"non-devfs-navnet når devfs er monteret."
+"korresponderer til den aktuelle devfs-brug; enten bruges et devfs-navn (/dev/"
+"isdn/ttyIxx) i inittab mens devfs ikke er monteret, ellers bruges non-devfs-"
+"navnet når devfs er monteret."
 
 #. Type: error
 #. Description
@@ -830,7 +703,96 @@ msgid ""
 "name is used while devfs is mounted."
 msgstr ""
 "Enhedsposten i /etc/isdn/vboxgetty.conf bruger et enhedsnavn som ikke "
-"korresponderer til den aktuelle devfs-brug; enten bruges et devfs-navn "
-"(/dev/isdn/ttyIxx) i vboxgetty.conf mens devfs ikke er monteret ellers "
-"bruges non-devfs-navet mens devfs er monteret."
+"korresponderer til den aktuelle devfs-brug; enten bruges et devfs-navn (/dev/"
+"isdn/ttyIxx) i vboxgetty.conf mens devfs ikke er monteret ellers bruges non-"
+"devfs-navet mens devfs er monteret."
 
+#~ msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
+#~ msgstr "/etc/ppp/ip-up.d/00-isdnutils findes stadig"
+
+#~ msgid ""
+#~ "The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package "
+#~ "still exists. If you changed that file at some point, you may need to "
+#~ "redo those changes in the 00-ipppd file (which is the new name). After "
+#~ "that, please delete the old 00-isdnutils file."
+#~ msgstr ""
+#~ "Filen /etc/ppp/ip-up.d/00-isdnutils fra den gamle isdnutils-pakke findes "
+#~ "stadig. Hvis du ændrede den fil på et tidspunkt, skal du måske gendanne "
+#~ "disse ændringer i filen 00-ipppd (som er det nye navn). Slet derefter den "
+#~ "gamle fil 00-isdnutils."
+
+#~ msgid ""
+#~ "Until it is deleted, it will still be used. This may cause conflicts."
+#~ msgstr ""
+#~ "Indtil den er slettet, vil den stadig blive brugt. Dette kan medføre "
+#~ "konflikter."
+
+#~ msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
+#~ msgstr "/etc/ppp/ip-down.d/99-isdnutils findes stadig"
+
+#~ msgid ""
+#~ "The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package "
+#~ "still exists. If you changed that file at some point, you may need to "
+#~ "redo those changes in the 99-ipppd file (which is the new name). After "
+#~ "that, please delete the old 99-isdnutils file."
+#~ msgstr ""
+#~ "Filen /etc/ppp/ip-down.d/99-isdnutils fra den gamle isdnutils-pakke "
+#~ "findes stadig. Hvis du ændrede den fil på et tidspunkt, skal du måske "
+#~ "gendanne disse ændringer i filen 99-ipppd (som er det nye navn). Slet "
+#~ "derefter den gamle fil 99-isdnutils."
+
+#~ msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
+#~ msgstr "de gamle skripter /etc/ppp/ip-up.d og ip-down.d findes stadig"
+
+#~ msgid ""
+#~ "The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils "
+#~ "files from the old isdnutils package still exist. If you changed those "
+#~ "files at some point, you may need to redo those changes in the 00-ipppd "
+#~ "and 99-ipppd files (which are the new names). After that, please delete "
+#~ "the old 00-isdnutils and 99-isdnutils files."
+#~ msgstr ""
+#~ "Filerne /etc/ppp/ip-up.d/00-isdnutils og /etc/ppp/ip-down.d/99-isdnutils "
+#~ "fra den gamle isdnutils-pakke findes stadig. Hvis du ændrede disse filer "
+#~ "på et tidspunkt, skal du måske gendanne disse ændringer i filerne 00-"
+#~ "ipppd og 99-ipppd (som er de nye navne). Slet derefter de gamle filer 00-"
+#~ "isdnutils og 99-isdnutils."
+
+#~ msgid ""
+#~ "Until they are deleted, they will still be used. This may cause conflicts."
+#~ msgstr ""
+#~ "Indtil de er slettet, vil de stadig blive brugt. Dette kan medføre "
+#~ "konflikter."
+
+#~ msgid "none"
+#~ msgstr "ingen"
+
+#~ msgid "Firmware to load:"
+#~ msgstr "Firmware at indlæse:"
+
+#~ msgid ""
+#~ "Some ISDN cards can't function properly until some firmware has been "
+#~ "loaded. A notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-"
+#~ "Surf, which need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is "
+#~ "necessary."
+#~ msgstr ""
+#~ "Nogle ISDN-kort kan ikke fungere korrekt før en bestemt firmware er "
+#~ "blevet indlæst. Et par eksempler er Sedlbauer SpeedFax+ PCI eller Siemens "
+#~ "I-Surf, som kræver ISAR.BIN for at blive indlæst. Vælg »ISAR.BIN« hvis "
+#~ "dette er nødvendigt."
+
+#~ msgid "ISDN card numbers to load with the firmware:"
+#~ msgstr "ISDN-kortnumre til indlæsning med firmwaren:"
+
+#~ msgid ""
+#~ "If you use more than one card, enter the number of the card(s) in need of "
+#~ "firmware."
+#~ msgstr ""
+#~ "Hvis du bruger mere end et kort så indtast numrene på kortene, som skal "
+#~ "bruge firmware."
+
+#~ msgid ""
+#~ "Multiple entries should be separated by commas. Card numbers are integers "
+#~ "where \"1\" is the first card, \"2\" the second, etc."
+#~ msgstr ""
+#~ "Flere punkter skal være adskilt med kommaer. Kortnumre er heltal hvor »1« "
+#~ "er det første kort, »2« det andet etc."
