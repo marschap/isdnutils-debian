@@ -12,54 +12,12 @@ override_dh_auto_build:
 	done
 
 	@set -e; \
-	for d in capi20; do \
+	for d in capi20 capifax capiinfo capiinit rcapid vbox eicon ipppd; do \
 	  echo "Regenerating autotools files in $$d ..."; \
 	  cd $$d; \
-	  echo "  libtool"; libtoolize -c -f ; \
-	  echo "  aclocal-1.9"; aclocal-1.9; \
-	  echo "  automake-1.9"; automake-1.9 --add-missing; \
+	  echo "  autoreconf"; autoreconf -i; \
 	  cd ..; \
 	done
-
-	@set -e; \
-	for d in capifax capiinfo capiinit rcapid; do \
-	  echo "Regenerating autotools files in $$d ..."; \
-	  cd $$d; \
-	  echo "  aclocal"; aclocal; \
-	  echo "  autoconf"; autoconf; \
-	  case "$$d" in rcapid);; *) echo "  autoheader"; autoheader; esac; \
-	  echo "  automake"; automake --add-missing; \
-	  touch configure.in; \
-	  touch aclocal.m4; \
-	  touch configure; \
-	  cd ..; \
-	done
-
-	@set -e; \
-	for d in vbox; do \
-	  echo "Regenerating autotools files in $$d ..."; \
-	  cd $$d; \
-	  echo "  aclocal-1.7"; aclocal-1.7; \
-	  echo "  autoconf"; autoconf; \
-	  echo "  automake-1.7"; automake-1.7 -c --add-missing; \
-	  touch configure.in; \
-	  touch aclocal.m4; \
-	  touch configure; \
-	  cd ..; \
-	done
-
-	@set -e; \
-	for d in eicon; do \
-	  echo "Regenerating autotools files in $$d ..."; \
-	  cd $$d; \
-	  echo "  autoconf2.13"; autoconf2.13; \
-	  cd ..; \
-	done
-
-# autoheader doesn't work in vbox ... is it needed?
-#	  echo "  autoheader"; autoheader; \
-
-	cd ipppd && autoconf
 
 	#### normal MAKE process continues here ###
 
