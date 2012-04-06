@@ -1,9 +1,0 @@
---- a/capi20/configure.ac	2003-06-16 06:08:23.000000000 -0600
-+++ b/capi20/configure.ac	2004-11-27 10:20:20.189075904 -0700
-@@ -1,5 +1,6 @@
- dnl Process this file with autoconf to produce a configure script.
- 
-+AC_PREREQ(2.50)
- AC_INIT(capi20.c)
- AC_ARG_ENABLE([V2],
-   AS_HELP_STRING([--enable-V2],[build libcapi20 version 2 compatible library]),
