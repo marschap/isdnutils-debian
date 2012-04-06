@@ -4,3 +4,4 @@ capiinit-conffile.patch
 capiinit-fwpath.patch
 libtool.patch
 ipppd-replace-gpl-code.patch
+capiinfo-autotools.patch

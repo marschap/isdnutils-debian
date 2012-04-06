@@ -1,0 +1,30 @@
+diff --git a/capiinfo/acconfig.h b/capiinfo/acconfig.h
+deleted file mode 100644
+--- a/capiinfo/acconfig.h
++++ /dev/null
+@@ -1,5 +0,0 @@
+-
+-#undef VERSION
+-#undef PACKAGE
+-#undef CONFIG_SBINDIR
+-#undef CONFIG_MANDIR
+diff --git a/capiinfo/configure.in b/capiinfo/configure.in
+--- a/capiinfo/configure.in
++++ b/capiinfo/configure.in
+@@ -27,14 +27,14 @@ dnl Optional sbin directory
+ AC_ARG_WITH(sbin,
+ 	[  --with-sbin=DIR         Set dir where binary is istalled. [/sbin]],
+ 	CONFIG_SBINDIR="${withval}"
+-	AC_DEFINE(CONFIG_SBINDIR,"${withval}"),
++	AC_DEFINE(CONFIG_SBINDIR,"${withval}", [capiinfo sbin directory]),
+ )
+ 
+ dnl Optional man directory
+ AC_ARG_WITH(man,
+ 	[  --with-man=DIR          Set manpage dir. [/usr/man]],
+ 	CONFIG_MANDIR="${withval}"
+-	AC_DEFINE(CONFIG_MANDIR,"${withval}"),
++	AC_DEFINE(CONFIG_MANDIR,"${withval}", [capiinfo manual directory]),
+ )
+ 
+ AC_SUBST(INSTALL)
