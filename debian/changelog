@@ -1,3 +1,14 @@
+isdnutils (1:3.9.20060704+dfsg.3-5) unstable; urgency=low
+
+  * isdnutils-base: drop code related to card firmware loading
+  * isdnvboxserver: process debconf errors properly. Closes: #601768
+  * ipppd:
+    - drop some code to handle ancient config file updates
+    - handle conffile debian/device.DEVICE with dh7 and ucf
+  * libcapi20-dev: include capi20.pc file in binary package
+
+ -- Rolf Leggewie <foss@rolf.leggewie.biz>  Fri, 16 Mar 2012 00:12:54 +0100
+
 isdnutils (1:3.9.20060704+dfsg.3-4) unstable; urgency=low
 
   * smooth out upgrades from b0rked libcapi20 packages. Closes: #656204
