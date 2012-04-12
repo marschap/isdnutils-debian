@@ -1,24 +1,19 @@
 /*
- * $Id: capi20.h,v 1.11 2007/11/26 13:13:00 keil Exp $
+ * capi20.h
  *
- * $Log: capi20.h,v $
- * Revision 1.11  2007/11/26 13:13:00  keil
- * newer gcc do not include stdlib.h by default (needed for size_t)
+ * Author		Carsten Paeth <calle@calle.de>
+ * Copyright 1997,2000	Carsten Paeth <calle@calle.de>
  *
- * Revision 1.10  2000/04/03 14:27:15  calle
- * non CAPI2.0 standard functions now named capi20ext not capi20.
- * Extentionfunctions will work with actual driver version.
+ * Author		Karsten Keil <kkeil@linux-pingi.de>
+ * Copyright 2011	Karsten Keil <kkeil@linux-pingi.de>
  *
- * Revision 1.9  2000/03/03 15:56:14  calle
- * - now uses cloning device /dev/capi20.
- * - middleware extentions prepared.
+ * it under the terms of the GNU LESSER GENERAL PUBLIC LICENSE
+ * version 2.1 as published by the Free Software Foundation.
  *
- * Revision 1.8  1999/12/06 17:08:30  calle
- * - Splitted capi20.h into capi20.h and capiutils.h.
- *   - capi20.h: the functions from the CAPI-2.0 Spec
- *   - capiutils.h: the "CAPI-ADK" functions
- * - bug in 64Bit-Support fixed.
- *
+ * This code is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU LESSER GENERAL PUBLIC LICENSE for more details.
  */
 #ifndef __CAPI20_H__
 #define __CAPI20_H__
@@ -28,14 +23,18 @@ extern "C" {
 #endif
 
 #include <stdlib.h>
+#include <stddef.h>
 #include <sys/time.h>
+
+#define SEND_BUFSIZ		(128+2048)
 
 /* standard CAPI2.0 functions */
 
-unsigned capi20_register (unsigned MaxLogicalConnection,
-			  unsigned MaxBDataBlocks,
-			  unsigned MaxBDataLen,
-			  unsigned *ApplIDp);
+unsigned capi20_register (
+	unsigned MaxLogicalConnection,
+	unsigned MaxBDataBlocks,
+	unsigned MaxBDataLen,
+	unsigned *ApplIDp);
 
 unsigned capi20_release (unsigned ApplID);
 
@@ -65,10 +64,17 @@ int capi20ext_get_flags(unsigned ApplID, unsigned *flagsptr);
 int capi20ext_set_flags(unsigned ApplID, unsigned flags);
 int capi20ext_clr_flags(unsigned ApplID, unsigned flags);
 
-char *capi20ext_get_tty_devname(unsigned applid, unsigned ncci,
-				char *buf, size_t size);
-char *capi20ext_get_raw_devname(unsigned applid, unsigned ncci,
-				char *buf, size_t size);
+char *capi20ext_get_tty_devname(
+	unsigned applid,
+	unsigned ncci,
+	char *buf,
+	size_t size);
+
+char *capi20ext_get_raw_devname(
+	unsigned applid,
+	unsigned ncci,
+	char *buf,
+	size_t size);
 
 int capi20ext_ncci_opencount(unsigned applid, unsigned ncci);
 

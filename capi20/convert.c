@@ -1,82 +1,7 @@
 /*
- * $Id: convert.c,v 1.20 2006/08/08 13:23:29 keil Exp $
  *
- * $Log: convert.c,v $
- * Revision 1.20  2006/08/08 13:23:29  keil
- * some endian fixes for BIGENDIAN systems
- *
- * Revision 1.19  2005/05/09 08:23:01  calle
- * - added SendingComplete to CONNECT_RESP (no funktions changed).
- *
- * Revision 1.18  2005/03/08 07:26:47  keil
- * - add SENDING_COMPLETE to INFO_REQ CONNECT_REQ and CONNECT_IND
- * - remove SENDING_COMPLETE parameter (always NULL) from capi_fill_DISCONNECT_REQ
- *
- * Revision 1.17  2005/03/04 11:45:12  calle
- * SendingComplete was missing for DISCONNECT_REQ ...
- *
- * Revision 1.16  2005/03/04 10:57:05  calle
- * Bugfix: CAPI_LIBRARY_V2 sone ifdef/ifndef where wrong.
- *
- * Revision 1.15  2005/02/22 11:39:43  keil
- * for backward compatibility the libcapi20 can now compiled to support the
- * old (buggy) version2 ABI. This is not for future developments. This is only
- * to support old binaries, which are linked against the old V2 lib.
- *
- * Revision 1.14  2005/02/21 17:37:07  keil
- * libcapi20 version 3.0.0
- *  - add SENDING COMPLETE in ALERT_REQ
- *  - add Globalconfiguration to CONNECT_REQ/RESP and SELECT_B_PROTOCOL_REQ
- *
- * * NOTE: incompatible to 2.X.Y versions
- *
- * Revision 1.13  2004/10/06 15:24:43  calle
- * - "SendingComplete"-Patch reverted => 2.0.8 was not binaer compartible
- * - Bugfix: capi20_register() with MaxB3Connection == 0 results in a
- *   core dump. Now at least one buffer is allocated.
- *
- * Revision 1.12  2004/06/14 11:23:48  calle
- * Erweiterungen fuer ALERT_REQ.
- *
- * Revision 1.11  2001/03/01 14:59:11  paul
- * Various patches to fix errors when using the newest glibc,
- * replaced use of insecure tempnam() function
- * and to remove warnings etc.
- *
- * Revision 1.10  2000/05/18 15:02:26  calle
- * Updated _cmsg handling added new functions need by "capiconn".
- *
- * Revision 1.9  1999/12/06 17:08:30  calle
- * - Splitted capi20.h into capi20.h and capiutils.h.
- *   - capi20.h: the functions from the CAPI-2.0 Spec
- *   - capiutils.h: the "CAPI-ADK" functions
- * - bug in 64Bit-Support fixed.
- *
- * Revision 1.8  1999/10/20 16:43:17  calle
- * - The CAPI20 library is now a shared library.
- * - Arguments of function capi20_put_message swapped, to match capi spec.
- * - All capi20 related subdirs converted to use automake.
- * - Removed dependency to CONFIG_KERNELDIR where not needed.
- *
- * Revision 1.7  1999/09/15 08:10:44  calle
- * Bugfix: error in 64Bit extention.
- *
- * Revision 1.6  1999/09/10 17:20:33  calle
- * Last changes for proposed standards (CAPI 2.0):
- * - AK1-148 "Linux Extention"
- * - AK1-155 "Support of 64-bit Applications"
- *
- * Revision 1.5  1999/09/06 17:40:07  calle
- * Changes for CAPI 2.0 Spec.
- *
- * Revision 1.4  1998/10/23 12:20:44  fritz
- * Added some missing functions.
- *
- * Revision 1.3  1998/08/30 09:57:21  calle
- * I hope it is know readable for everybody.
- *
- * Revision 1.1  1998/08/25 16:33:23  calle
- * Added CAPI2.0 library. First Version.
+ * This program is free software and may be modified and
+ * distributed under the terms of the GNU Public License.
  *
  */
 #include <assert.h>
@@ -86,6 +11,7 @@
 #include <stddef.h>
 #include <time.h>
 #include <ctype.h>
+#include <byteswap.h>
 
 #include "capi20.h"
 
@@ -170,58 +96,58 @@ char *capi_info2str(_cword reason)
 /*-- error information concerning requested services  -----*/
 	case 0x3001:
 	   return "B1 protocol not supported";
-	case 0x3002: 
+	case 0x3002:
 	   return "B2 protocol not supported";
-	case 0x3003: 
+	case 0x3003:
 	   return "B3 protocol not supported";
-	case 0x3004: 
+	case 0x3004:
 	   return "B1 protocol parameter not supported";
-	case 0x3005: 
+	case 0x3005:
 	   return "B2 protocol parameter not supported";
-	case 0x3006: 
+	case 0x3006:
 	   return "B3 protocol parameter not supported";
-	case 0x3007: 
+	case 0x3007:
 	   return "B protocol combination not supported";
-	case 0x3008: 
+	case 0x3008:
 	   return "NCPI not supported";
-	case 0x3009: 
+	case 0x3009:
 	   return "CIP Value unknown";
-	case 0x300A: 
+	case 0x300A:
 	   return "Flags not supported (reserved bits)";
-	case 0x300B: 
+	case 0x300B:
 	   return "Facility not supported";
-	case 0x300C: 
+	case 0x300C:
 	   return "Data length not supported by current protocol";
-	case 0x300D: 
+	case 0x300D:
 	   return "Reset procedure not supported by current protocol";
 
 /*-- informations about the clearing of a physical connection -----*/
-	case 0x3301: 
+	case 0x3301:
 	   return "Protocol error layer 1 (broken line or B-channel removed by signalling protocol)";
-	case 0x3302: 
+	case 0x3302:
 	   return "Protocol error layer 2";
-	case 0x3303: 
+	case 0x3303:
 	   return "Protocol error layer 3";
-	case 0x3304: 
+	case 0x3304:
 	   return "Another application got that call";
 /*-- T.30 specific reasons -----*/
-	case 0x3311: 
+	case 0x3311:
 	   return "Connecting not successful (remote station is no FAX G3 machine)";
-	case 0x3312: 
+	case 0x3312:
 	   return "Connecting not successful (training error)";
-	case 0x3313: 
+	case 0x3313:
 	   return "Disconnected before transfer (remote station does not support transfer mode, e.g. resolution)";
-	case 0x3314: 
+	case 0x3314:
 	   return "Disconnected during transfer (remote abort)";
-	case 0x3315: 
+	case 0x3315:
 	   return "Disconnected during transfer (remote procedure error, e.g. unsuccessful repetition of T.30 commands)";
-	case 0x3316: 
+	case 0x3316:
 	   return "Disconnected during transfer (local tx data underrun)";
-	case 0x3317: 
+	case 0x3317:
 	   return "Disconnected during transfer (local rx data overflow)";
-	case 0x3318: 
+	case 0x3318:
 	   return "Disconnected during transfer (local abort)";
-	case 0x3319: 
+	case 0x3319:
 	   return "Illegal parameter coding (e.g. SFF coding error)";
 
 /*-- disconnect causes from the network according to ETS 300 102-1/Q.931 -----*/
@@ -229,7 +155,7 @@ char *capi_info2str(_cword reason)
 	case 0x3482: return "No route to specified transit network";
 	case 0x3483: return "No route to destination";
 	case 0x3486: return "Channel unacceptable";
-	case 0x3487: 
+	case 0x3487:
 	   return "Call awarded and being delivered in an established channel";
 	case 0x3490: return "Normal call clearing";
 	case 0x3491: return "User busy";
@@ -281,7 +207,7 @@ char *capi_info2str(_cword reason)
 
 	case 0x3500: return "Normal end of connection";
 	case 0x3501: return "Carrier lost";
-	case 0x3502: return "Error in negotation, i.e. no modem with error correction at the other end";
+	case 0x3502: return "Error in negotiation, i.e. no modem with error correction at the other end";
 	case 0x3503: return "No answer to protocol request";
 	case 0x3504: return "Remote modem only works in synchronous mode";
 	case 0x3505: return "Framing fails";
@@ -484,20 +410,34 @@ static unsigned char *cpars[] = {
 
 /*-------------------------------------------------------*/
 
-#define byteTLcpy(x,y)        *(_cbyte *)(x)=*(_cbyte *)(y);
-#define wordTLcpy(x,y)        capimsg_setu16(x, 0, *(_cword *)(y))
-#define dwordTLcpy(x,y)       capimsg_setu32(x, 0, *(_cdword *)(y))
-#define structTLcpy(x,y,l)    memcpy (x,y,l)
-#define structTLcpyovl(x,y,l) memmove (x,y,l)
+#ifdef _BIG_ENDIAN
+#define wordTLcpy(x,y)        *(_cword *)(x)=bswap_16(*(_cword *)(y));
+#define dwordTLcpy(x,y)       *(_cdword *)(x)=bswap_32(*(_cdword *)(y));
 
-#define byteTRcpy(x,y)        *(_cbyte *)(y)=*(_cbyte *)(x);
-#define wordTRcpy(x,y)        *(_cword *)(y)=CAPIMSG_U16((x), 0)
-#define dwordTRcpy(x,y)       *(_cdword *)(y)=CAPIMSG_U32((x), 0)
-#define structTRcpy(x,y,l)    memcpy (y,x,l)
-#define structTRcpyovl(x,y,l) memmove (y,x,l)
+#define wordTRcpy(x,y)        *(_cword *)(y)=bswap_16(*(_cword *)(x));
+#define dwordTRcpy(x,y)       *(_cdword *)(y)=bswap_32(*(_cdword *)(x));
+
+#define qwordTLcpy(x,y)       *(_cqword *)(x)=bswap_64(*(_cqword *)(y));
+#define qwordTRcpy(x,y)       *(_cqword *)(y)=bswap_64(*(_cqword *)(x));
+
+#else
+
+#define wordTLcpy(x,y)        *(_cword *)(x)=*(_cword *)(y);
+#define dwordTLcpy(x,y)       memcpy(x,y,4);
+
+#define wordTRcpy(x,y)        *(_cword *)(y)=*(_cword *)(x);
+#define dwordTRcpy(x,y)       memcpy(y,x,4);
 
 #define qwordTLcpy(x,y)       memcpy(x,y,8);
 #define qwordTRcpy(x,y)       memcpy(y,x,8);
+#endif
+
+#define byteTLcpy(x,y)        *(_cbyte *)(x)=*(_cbyte *)(y);
+#define byteTRcpy(x,y)        *(_cbyte *)(y)=*(_cbyte *)(x);
+#define structTLcpy(x,y,l)    memcpy (x,y,l)
+#define structTLcpyovl(x,y,l) memmove (x,y,l)
+#define structTRcpy(x,y,l)    memcpy (y,x,l)
+#define structTRcpyovl(x,y,l) memmove (y,x,l)
 
 /*-------------------------------------------------------*/
 static unsigned command_2_index(unsigned c, unsigned sc)
@@ -562,9 +502,11 @@ static void pars_2_message(_cmsg * cmsg)
 				structTLcpy(cmsg->m + cmsg->l, *(_cstruct *) OFF, 1 + **(_cstruct *) OFF);
 				cmsg->l += 1 + **(_cstruct *) OFF;
 			} else {
+				_cword iw;
 				_cstruct s = *(_cstruct *) OFF;
 				structTLcpy(cmsg->m + cmsg->l, s, 3 + *(_cword *) (s + 1));
-				cmsg->l += 3 + *(_cword *) (s + 1);
+				wordTLcpy(&iw, (s + 1));
+				cmsg->l += 3 + iw;
 			}
 			break;
 		case _CMSTRUCT:
@@ -577,7 +519,7 @@ static void pars_2_message(_cmsg * cmsg)
 /*----- Metastruktur wird composed -----*/
 			else {
 				unsigned _l = cmsg->l;
-				unsigned _ls;
+				_cword _ls;
 				cmsg->l++;
 				cmsg->p++;
 				pars_2_message(cmsg);
@@ -650,10 +592,13 @@ static void message_2_pars(_cmsg * cmsg)
 		case _CSTRUCT:
 			*(_cbyte **) OFF = cmsg->m + cmsg->l;
 
-			if (cmsg->m[cmsg->l] != 0xff)
+			if (cmsg->m[cmsg->l] != 0xff) {
 				cmsg->l += 1 + cmsg->m[cmsg->l];
-			else
-				cmsg->l += 3 + *(_cword *) (cmsg->m + cmsg->l + 1);
+			} else {
+				_cword iw;
+				wordTLcpy(&iw, (cmsg->m + cmsg->l + 1));
+				cmsg->l += 3 + iw;
+			}
 			break;
 		case _CMSTRUCT:
 /*----- Metastruktur 0 -----*/
@@ -897,10 +842,14 @@ static char *p = 0;
 static void bufprint(char *fmt,...)
 {
 	va_list f;
+	size_t space = buf + sizeof(buf) - p, len;
 	va_start(f, fmt);
-	vsprintf(p, fmt, f);
+	len = vsnprintf(p, space, fmt, f);
 	va_end(f);
-	p += strlen(p);
+	if (len < space - 1)
+		p += len;
+	else
+		p += space - 1;
 }
 
 static void printstructlen(_cbyte * m, unsigned len)
@@ -930,7 +879,9 @@ static void printstruct(_cbyte * m)
 		len = m[0];
 		m += 1;
 	} else {
-		len = ((_cword *) (m + 1))[0];
+		_cword iw;
+		wordTLcpy(&iw, (m + 1));
+		len = (unsigned)iw;
 		m += 3;
 	}
 	printstructlen(m, len);
@@ -941,6 +892,10 @@ static void printstruct(_cbyte * m)
 
 static void protocol_message_2_pars(_cmsg * cmsg, int level)
 {
+	_cword iw;
+	_cdword idw;
+	_cqword iq;
+
 	for (; TYP != _CEND; cmsg->p++) {
 		int slen = 29 + 3 - level;
 		int i;
@@ -955,28 +910,35 @@ static void protocol_message_2_pars(_cmsg * cmsg, int level)
 			cmsg->l++;
 			break;
 		case _CWORD:
-			bufprint("%-*s = 0x%x\n", slen, NAME, *(_cword *) (cmsg->m + cmsg->l));
+			wordTLcpy(&iw, (cmsg->m + cmsg->l));
+			bufprint("%-*s = 0x%x\n", slen, NAME, iw);
 			cmsg->l += 2;
 			break;
 		case _CDWORD:
-			bufprint("%-*s = 0x%lx\n", slen, NAME, *(_cdword *) (cmsg->m + cmsg->l));
+			dwordTLcpy(&idw, (cmsg->m + cmsg->l));
+			bufprint("%-*s = 0x%lx\n", slen, NAME, idw);
 			cmsg->l += 4;
 			break;
 		case _CQWORD:
-			bufprint("%-*s = 0x%llx\n", slen, NAME, *(_cqword *) (cmsg->m + cmsg->l));
+			qwordTLcpy(&iq, (cmsg->m + cmsg->l));
+			bufprint("%-*s = 0x%llx\n", slen, NAME, iq);
 			cmsg->l += 4;
 			break;
 		case _CSTRUCT:
 			bufprint("%-*s = ", slen, NAME);
-			if (cmsg->m[cmsg->l] == '\0')
+			if (cmsg->m[cmsg->l] == '\0') {
 				bufprint("default");
-			else
+			} else {
 				printstruct(cmsg->m + cmsg->l);
+			}
 			bufprint("\n");
-			if (cmsg->m[cmsg->l] != 0xff)
+			if (cmsg->m[cmsg->l] != 0xff) {
 				cmsg->l += 1 + cmsg->m[cmsg->l];
-			else
-				cmsg->l += 3 + *(_cword *) (cmsg->m + cmsg->l + 1);
+			} else {
+				_cword iw;
+				wordTLcpy(&iw, (cmsg->m + cmsg->l + 1));
+				cmsg->l += 3 + iw;
+			}
 
 			break;
 
@@ -1001,10 +963,10 @@ static void protocol_message_2_pars(_cmsg * cmsg, int level)
 /*-------------------------------------------------------*/
 char *capi_message2str(_cbyte * msg)
 {
-
 	_cmsg cmsg;
 	p = buf;
 	p[0] = 0;
+	_cword id, msgnum, len;
 
 	cmsg.m = msg;
 	cmsg.l = 8;
@@ -1013,11 +975,13 @@ char *capi_message2str(_cbyte * msg)
 	byteTRcpy(cmsg.m + 5, &cmsg.Subcommand);
 	cmsg.par = cpars[command_2_index(cmsg.Command, cmsg.Subcommand)];
 
+	wordTLcpy(&id, &msg[2]);
+	wordTLcpy(&msgnum, &msg[6]);
+	wordTLcpy(&len, &msg[0]);
+
 	bufprint("%-26s ID=%03d #0x%04x LEN=%04d\n",
 		 mnames[command_2_index(cmsg.Command, cmsg.Subcommand)],
-		 ((unsigned short *) msg)[1],
-		 ((unsigned short *) msg)[3],
-		 ((unsigned short *) msg)[0]);
+		 id, msgnum, len);
 
 	protocol_message_2_pars(&cmsg, 1);
 	return buf;
@@ -1025,15 +989,21 @@ char *capi_message2str(_cbyte * msg)
 
 char *capi_cmsg2str(_cmsg * cmsg)
 {
+	_cword id, msgnum, len;
+
 	p = buf;
 	p[0] = 0;
 	cmsg->l = 8;
 	cmsg->p = 0;
-	bufprint("%s ID=%03d #0x%04x LEN=%04d\n",
+
+	wordTLcpy(&id, &cmsg->m[2]);
+	wordTLcpy(&msgnum, &cmsg->m[6]);
+	wordTLcpy(&len, &cmsg->m[0]);
+
+	bufprint("%-26s ID=%03d #0x%04x LEN=%04d\n",
 		 mnames[command_2_index(cmsg->Command, cmsg->Subcommand)],
-		 ((_cword *) cmsg->m)[1],
-		 ((_cword *) cmsg->m)[3],
-		 ((_cword *) cmsg->m)[0]);
+		 id, msgnum, len);
+
 	protocol_message_2_pars(cmsg, 1);
 	return buf;
 }

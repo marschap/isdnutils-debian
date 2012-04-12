@@ -1,6 +1,11 @@
 #ifndef __CAPIUTILS_H__
 #define __CAPIUTILS_H__
 
+/*
+ * This program is free software and may be modified and
+ * distributed under the terms of the GNU Public License.
+ */
+
 #include <sys/types.h>
 #include <sys/time.h>
 #include <time.h>
@@ -107,11 +112,54 @@ typedef enum { CAPI_COMPOSE = 0, CAPI_DEFAULT = 1 } _cmstruct;
 
 /*-----------------------------------------------------------------------*/
 
+static inline _cword _capimsg_getu16(void *m, int off)
+{
+	_cword r = 0;
+	_cbyte	*p;
+
+	p = (_cbyte *)m;
+	p += off;
+	r = p[1];
+	r <<= 8;
+	r |= *p;
+	return r;
+}
+
+static inline _cdword _capimsg_getu32(void *m, int off)
+{
+	_cdword r = 0;
+	_cbyte	*p, i;
+
+	p = (_cbyte *)m;
+	p += off + 3;
+	for (i = 0; i < 3; i++) {
+		r |= *p--;
+		r <<= 8;
+	}
+	r |= *p;
+	return r;
+}
+
+static inline _cqword _capimsg_getu64(void *m, int off)
+{
+	_cqword r = 0;
+	_cbyte	*p, i;
+
+	p = (_cbyte *)m;
+	p += off + 7;
+	for (i = 0; i < 7; i++) {
+		r |= *p--;
+		r <<= 8;
+	}
+	r |= *p;
+	return r;
+}
+
 #define CAPIMSG_BASELEN		8
-#define CAPIMSG_U8(m, off)	(m[off])
-#define CAPIMSG_U16(m, off)	(m[off]|(m[(off)+1]<<8))
-#define CAPIMSG_U32(m, off)	(m[off]|(m[(off)+1]<<8)|(m[(off)+2]<<16)|(m[(off)+3]<<24))
-#define CAPIMSG_U64(m, off)	(((_cqword)CAPIMSG_U32(m, off))|(((_cqword)CAPIMSG_U32(m, off+4))<<32))
+#define CAPIMSG_U8(m, off)	(*((_cbyte *)(m + off)))
+#define CAPIMSG_U16(m, off)	_capimsg_getu16(m, off)
+#define CAPIMSG_U32(m, off)	_capimsg_getu32(m, off)
+#define CAPIMSG_U64(m, off)	_capimsg_getu64(m, off)
 #define	CAPIMSG_LEN(m)		CAPIMSG_U16(m,0)
 #define	CAPIMSG_APPID(m)	CAPIMSG_U16(m,2)
 #define	CAPIMSG_COMMAND(m)	CAPIMSG_U8(m,4)
@@ -219,7 +267,7 @@ typedef struct {
 	_cdword Function;
 #ifndef CAPI_LIBRARY_V2
 	_cstruct Globalconfiguration;
-#endif 
+#endif
 	_cstruct HLC;
 	_cword Info;
 	_cstruct InfoElement;
@@ -236,7 +284,7 @@ typedef struct {
 	_cstruct Useruserdata;
 #ifndef CAPI_LIBRARY_V2
 	_cstruct SendingComplete;
-#endif 
+#endif
 	unsigned char *Data;
 
 	/* intern */
@@ -322,6 +370,10 @@ char *capi_info2str(_cword reason);
 #define capi20_cmd2str	capi_cmd2str
 char *capi_cmd2str(_cbyte cmd, _cbyte subcmd);
 
+/*
+ * WARNING: The following two functions use a single static buffer and
+ * are not thread-safe.
+ */
 #define capi20_cmsg2str	capi_cmsg2str
 char *capi_cmsg2str(_cmsg * cmsg);
 
@@ -380,7 +432,7 @@ char *capi_message2str(_cbyte * msg);
 #ifndef CAPI_LIBRARY_V2
 #define CONNECT_REQ_GLOBALCONFIGURATION(x) ((x)->Globalconfiguration)
 		 /* all layer parameter */
-#endif 
+#endif
 #define CONNECT_REQ_BC(x) ((x)->BC)
 		 /* Bearer Capability */
 #define CONNECT_REQ_LLC(x) ((x)->LLC)

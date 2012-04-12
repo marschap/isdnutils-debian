@@ -1,13 +1,15 @@
-# $Id: Makefile,v 1.63 2007/11/26 13:13:44 keil Exp $
+# $Id: Makefile,v 1.65 2008/08/31 11:38:16 keil Exp $
 #
 # Toplevel Makefile for isdn4k-utils
 #
 
 .EXPORT_ALL_VARIABLES:
 
-export I4LVERSION = 3.12
+export I4LVERSION = 3.22
 
 all:	do-it-all
+
+LIBDIR:=/usr/lib
 
 #
 # Make "config" the default target if there is no configuration file.
@@ -130,9 +132,9 @@ rootperm:
 		exit 1; \
 	fi
 
-install: rootperm
+install:
 	set -e; for i in `echo $(SUBDIRS)`; do $(MAKE) -C $$i install; done
-	@if [ -c $(DESTDIR)/dev/isdnctrl0 ] && ls -l $(DESTDIR)/dev/isdnctrl0 | egrep "[[:space:]]45,[[:space:]]+64[[:space:]]" > /dev/null; \
+	@: || if [ -c $(DESTDIR)/dev/isdnctrl0 ] && ls -l $(DESTDIR)/dev/isdnctrl0 | egrep "[[:space:]]45,[[:space:]]+64[[:space:]]" > /dev/null; \
 	then \
 		/bin/echo -e '(some) ISDN devices already exist, not creating them.\nUse scripts/makedev.sh manually if necessary.'; \
 	else \
@@ -200,9 +202,12 @@ cfgerror:
 subconfig: scripts/autoconf.h
 	@echo Selected subdirs: $(BUILD_ONLY) $(SUBDIRS)
 	@set -e; for i in `echo $(BUILD_ONLY) $(SUBDIRS)`; do \
-		if [ -x $$i/configure ] ; then \
+		if [ $$i = eicon ] ; then \
 			/bin/echo -e "\nRunning configure in $$i ...\n"; sleep 1; \
-			(cd $$i; ./configure --sbindir=$(CONFIG_SBINDIR) --bindir=$(CONFIG_BINDIR) --mandir=$(CONFIG_MANDIR) --datadir=$(CONFIG_DATADIR) || $(MAKE) -C ../ ERRDIR=$$i cfgerror); \
+			(cd $$i; ./configure --with-sbin=$(CONFIG_SBINDIR) --bindir=$(CONFIG_BINDIR) --with-man=$(CONFIG_MANDIR) --datadir=$(CONFIG_DATADIR) --libdir=$(LIBDIR) --with-firmware=$(CONFIG_DATADIR) || $(MAKE) -C ../ ERRDIR=$$i cfgerror); \
+		elif [ -x $$i/configure ] ; then \
+			/bin/echo -e "\nRunning configure in $$i ...\n"; sleep 1; \
+			(cd $$i; ./configure --sbindir=$(CONFIG_SBINDIR) --bindir=$(CONFIG_BINDIR) --mandir=$(CONFIG_MANDIR) --datadir=$(CONFIG_DATADIR) --libdir=$(LIBDIR) || $(MAKE) -C ../ ERRDIR=$$i cfgerror); \
 		elif [ -f $$i/Makefile.in ] ; then \
 			/bin/echo -e "\nRunning make -f Makefile.in config in $$i ...\n"; sleep 1; \
 			$(MAKE) -C $$i -f Makefile.in config; \
@@ -233,18 +238,16 @@ config: menuconfig
 mrproper: distclean
 
 archive: distclean
-	@(cd .. ;\
-	ln -nfs isdn4k-utils isdn4k-utils-$(I4LVERSION) ;\
-	mkdir -p distisdn ;\
-	tar cvhzf distisdn/isdn4k-utils-$(I4LVERSION).tar.gz isdn4k-utils-$(I4LVERSION) ;\
-	rm isdn4k-utils-$(I4LVERSION) )
+	@(ln -nvfs $(ROOTDIR) ../isdn4k-utils-$(I4LVERSION) ;\
+	mkdir -p ../distisdn ;\
+	tar cvhzf ../distisdn/isdn4k-utils-$(I4LVERSION).tar.gz --exclude-vcs ../isdn4k-utils-$(I4LVERSION) ;\
+	rm ../isdn4k-utils-$(I4LVERSION) )
 
 distarch: distclean
-	(cd .. ;\
-	ln -nfs isdn4k-utils isdn4k-utils-$(I4LVERSION) ;\
-	mkdir -p distisdn ;\
-	tar -cvhz -X isdn4k-utils/distexclude -f distisdn/isdn4k-utils-$(I4LVERSION).tar.gz \
-	isdn4k-utils-$(I4LVERSION) ;\
-	rm isdn4k-utils-$(I4LVERSION) )
+	(ln -nvfs $(ROOTDIR) ../isdn4k-utils-$(I4LVERSION) ;\
+	mkdir -p ../distisdn ;\
+	tar -cvhz -X distexclude -f ../distisdn/isdn4k-utils-$(I4LVERSION).tar.gz \
+	--exclude-vcs ../isdn4k-utils-$(I4LVERSION) ;\
+	rm ../isdn4k-utils-$(I4LVERSION) )
 
 dist: distarch
