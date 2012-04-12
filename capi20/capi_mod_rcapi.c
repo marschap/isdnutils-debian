@@ -15,6 +15,7 @@
 #include <fcntl.h>
 #include <linux/capi.h>
 #include <errno.h>
+#include <unistd.h>
 #include "capi20.h"
 #include "capi_mod.h"
 #include "capi_mod_fritzbox.h"
@@ -32,6 +33,13 @@
 #define RCAPI_GET_PROFILE_CONF                  CAPICMD(0xe1, 0xff)
 #define RCAPI_AUTH_USER_REQ                     CAPICMD(0xff, 0x00)
 #define RCAPI_AUTH_USER_CONF                    CAPICMD(0xff, 0x01)
+
+/* add a fixed trace file for now */
+static char *rcapiTraceFile = "/tmp/rcapiTraceFile";
+static char *getTraceFile(void)
+{
+	return rcapiTraceFile;
+}
 
 /**
  * \brief Create a socket to hostname:port
@@ -59,7 +67,7 @@ static int rcapiOpenSocket( void ) {
 		if ( !connect( nHandle, ( struct sockaddr * ) &sAddr, sizeof( sAddr ) ) ) {
 			/* no errors, return handle */
 			return nHandle;
-		}	
+		}
 	}
 
 	close( nHandle );
@@ -257,7 +265,7 @@ static unsigned rcapiRegister( unsigned nMaxB3Connection, unsigned nMaxB3Blks, u
 	nErrCode = get_word( &pnPtr );
 	if ( nErrCode == CapiNoError ) {
 		/* No error, allocate new applid and set it to pnApplId */
-		*pnApplId = alloc_applid( nSock );
+		*pnApplId = capi_alloc_applid(nSock);
 	} else {
 		/* wuhh, error occured, close socket and return -1 */
 		close( nSock );
@@ -281,7 +289,7 @@ static unsigned rcapiPutMessage( int nSock, unsigned nApplId, unsigned char *pnM
 	int nSubCommand = CAPIMSG_SUBCOMMAND( pnMsg );
 	int nNum;
 
-	nLen = processMessage( pnMsg, nApplId, nCommand, nSubCommand, nLen );
+	nLen = capi_processMessage( pnMsg, nApplId, nCommand, nSubCommand, nLen );
 	nLen += 2;
 
 	put_netword( &pnSendBuffer, nLen );
@@ -290,7 +298,7 @@ static unsigned rcapiPutMessage( int nSock, unsigned nApplId, unsigned char *pnM
 	/* write data to socket */
 	nNum = write( nSock, anSendBuffer, nLen );
     if ( nNum != nLen ) {
-    	return CapiMsgOSResourceErr;
+	return CapiMsgOSResourceErr;
 	}
 
     return CapiNoError;
@@ -311,7 +319,7 @@ static unsigned rcapiGetMessage( int nSock, unsigned nApplId, unsigned char **pp
 	int nRet;
 
 	/* try to get a new buffer from queue */
-	if ( ( *ppnBuffer = pnBuffer = ( unsigned char * ) get_buffer( nApplId, &nBufSize, &nOffset ) ) == 0 ) {
+	if ( ( *ppnBuffer = pnBuffer = ( unsigned char * ) capi_get_buffer( nApplId, &nBufSize, &nOffset ) ) == 0 ) {
 		return CapiMsgOSResourceErr;
 	}
 
@@ -324,7 +332,7 @@ static unsigned rcapiGetMessage( int nSock, unsigned nApplId, unsigned char **pp
 
 		/* DATA_B3? Then set buffer address */
 		if ( ( CAPIMSG_COMMAND( pnBuffer ) == CAPI_DATA_B3 ) && ( CAPIMSG_SUBCOMMAND( pnBuffer ) == CAPI_IND ) ) {
-			save_datahandle( nApplId, nOffset, CAPIMSG_U16( pnBuffer, 18 ), CAPIMSG_U32( pnBuffer, 8 ) );
+			capi_save_datahandle( nApplId, nOffset, CAPIMSG_U16( pnBuffer, 18 ), CAPIMSG_U32( pnBuffer, 8 ) );
 			/* patch datahandle */
 			capimsg_setu16( pnBuffer, 18, nOffset );
 
@@ -359,7 +367,7 @@ static unsigned rcapiGetMessage( int nSock, unsigned nApplId, unsigned char **pp
 		}
 
 		/* buffer is not needed, return it */
-		return_buffer( nApplId, nOffset );
+		capi_return_buffer( nApplId, nOffset );
 
 		if ( ( CAPIMSG_COMMAND( pnBuffer ) == CAPI_DISCONNECT) && ( CAPIMSG_SUBCOMMAND( pnBuffer ) == CAPI_IND ) ) {
 			cleanup_buffers_for_plci( nApplId, CAPIMSG_U32( pnBuffer, 8 ) );
@@ -368,7 +376,7 @@ static unsigned rcapiGetMessage( int nSock, unsigned nApplId, unsigned char **pp
 		return CapiNoError;
 	}
 
-	return_buffer( nApplId, nOffset );
+	capi_return_buffer( nApplId, nOffset );
 
 	if ( nRet == 0 ) {
 		return CapiReceiveQueueEmpty;
@@ -488,6 +496,7 @@ static struct sModuleOperations sRemoteCapi = {
 	rcapiGetVersion,
 	rcapiGetSerialNumber,
 	rcapiGetProfile,
+	NULL,
 	NULL,
 	NULL,
 	NULL,

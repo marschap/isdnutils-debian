@@ -16,7 +16,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <sys/ioctl.h>
 #include <linux/capi.h>
+#include <unistd.h>
 #include "capi20.h"
 #include "capi_mod.h"
 
@@ -118,7 +120,7 @@ static unsigned standardRegister( unsigned nMaxB3Connection, unsigned nMaxB3Blks
 				close( nHandle );
 				return -6;
 			}
-			nApplId = alloc_applid( nHandle );
+			nApplId = capi_alloc_applid(nHandle);
 		}
 	}
 
@@ -140,7 +142,7 @@ static unsigned standardPutMessage( int nHandle, unsigned nApplId, unsigned char
 	int nSubCommand = CAPIMSG_SUBCOMMAND( pnMsg );
 	int nNum;
 
-	nLen = processMessage( pnMsg, nApplId, nCommand, nSubCommand, nLen );
+	nLen = capi_processMessage( pnMsg, nApplId, nCommand, nSubCommand, nLen );
 
 	nNum = write( nHandle, pnMsg, nLen );
 	if ( nNum != nLen ) {
@@ -177,7 +179,7 @@ static unsigned standardGetMessage( int nHandle, unsigned nApplId, unsigned char
 	int nRet;
 	size_t nBufSize;
 
-	if ( ( *ppnBuffer = pnBuffer = ( unsigned char * ) get_buffer( nApplId, &nBufSize, &nOffset ) ) == 0 ) {
+	if ( ( *ppnBuffer = pnBuffer = ( unsigned char * ) capi_get_buffer( nApplId, &nBufSize, &nOffset ) ) == 0 ) {
 		return CapiMsgOSResourceErr;
 	}
 
@@ -187,7 +189,7 @@ static unsigned standardGetMessage( int nHandle, unsigned nApplId, unsigned char
 		CAPIMSG_SETAPPID( pnBuffer, nApplId );
 
 		if ( ( CAPIMSG_COMMAND( pnBuffer ) == CAPI_DATA_B3 ) && ( CAPIMSG_SUBCOMMAND( pnBuffer ) == CAPI_IND ) ) {
-			save_datahandle( nApplId, nOffset, CAPIMSG_U16( pnBuffer, 18 ), CAPIMSG_U32( pnBuffer, 8 ) );
+			capi_save_datahandle( nApplId, nOffset, CAPIMSG_U16( pnBuffer, 18 ), CAPIMSG_U32( pnBuffer, 8 ) );
 			/* patch datahandle */
 			capimsg_setu16( pnBuffer, 18, nOffset );
 
@@ -223,7 +225,7 @@ static unsigned standardGetMessage( int nHandle, unsigned nApplId, unsigned char
 			return CapiNoError;
 		}
 
-		return_buffer( nApplId, nOffset );
+		capi_return_buffer( nApplId, nOffset );
 
 		if ( ( CAPIMSG_COMMAND( pnBuffer ) == CAPI_DISCONNECT) && ( CAPIMSG_SUBCOMMAND( pnBuffer ) == CAPI_IND ) ) {
 			cleanup_buffers_for_plci( nApplId, CAPIMSG_U32( pnBuffer, 8 ) );
@@ -232,7 +234,7 @@ static unsigned standardGetMessage( int nHandle, unsigned nApplId, unsigned char
 		return CapiNoError;
 	}
 
-	return_buffer( nApplId, nOffset );
+	capi_return_buffer( nApplId, nOffset );
 	if ( nRet == 0 ) {
 		return CapiReceiveQueueEmpty;
 	}
@@ -347,7 +349,7 @@ static unsigned standardGetProfile( int nHandle, unsigned nController, unsigned 
  * \return error code
  */
 static int standardGetFlags( unsigned nApplId, unsigned *pnFlags ) {
-	if ( ioctl( applid2fd( nApplId ), CAPI_GET_FLAGS, pnFlags ) < 0 ) {
+	if ( ioctl(capi_applid2fd( nApplId ), CAPI_GET_FLAGS, pnFlags) < 0) {
 		return CapiMsgOSResourceErr;
 	}
 
@@ -361,7 +363,7 @@ static int standardGetFlags( unsigned nApplId, unsigned *pnFlags ) {
  * \return error code
  */
 static int standardSetFlags( unsigned nApplId, unsigned nFlags ) {
-	if ( ioctl( applid2fd( nApplId ), CAPI_SET_FLAGS, &nFlags ) < 0 ) {
+	if ( ioctl(capi_applid2fd( nApplId ), CAPI_SET_FLAGS, &nFlags) < 0) {
 		return CapiMsgOSResourceErr;
 	}
 
@@ -375,7 +377,7 @@ static int standardSetFlags( unsigned nApplId, unsigned nFlags ) {
  * \return error code
  */
 static int standardClearFlags( unsigned nApplId, unsigned nFlags ) {
-	if ( ioctl( applid2fd( nApplId ), CAPI_CLR_FLAGS, &nFlags ) < 0 ) {
+	if ( ioctl(capi_applid2fd( nApplId ), CAPI_CLR_FLAGS, &nFlags) < 0) {
 		return CapiMsgOSResourceErr;
 	}
 
@@ -393,7 +395,7 @@ static int standardClearFlags( unsigned nApplId, unsigned nFlags ) {
 static char *standardGetTtyDeviceName( unsigned nApplId, unsigned nNcci, char *pnBuffer, size_t nSize ) {
 	int nUnit;
 
-	nUnit = ioctl( applid2fd( nApplId ), CAPI_NCCI_GETUNIT, &nNcci );
+	nUnit = ioctl(capi_applid2fd( nApplId ), CAPI_NCCI_GETUNIT, &nNcci);
 	if ( nUnit < 0 ) {
 		return NULL;
 	}
@@ -414,7 +416,7 @@ static char *standardGetTtyDeviceName( unsigned nApplId, unsigned nNcci, char *p
 static char *standardGetRawDeviceName( unsigned nApplId, unsigned nNcci, char *pnBuffer, size_t nSize ) {
 	int nUnit;
 
-	nUnit = ioctl( applid2fd( nApplId ), CAPI_NCCI_GETUNIT, &nNcci );
+	nUnit = ioctl(capi_applid2fd( nApplId ), CAPI_NCCI_GETUNIT, &nNcci);
 	if ( nUnit < 0 ) {
 		return NULL;
 	}
@@ -431,7 +433,7 @@ static char *standardGetRawDeviceName( unsigned nApplId, unsigned nNcci, char *p
  * \return error code
  */
 static int standardGetNcciOpenCount( unsigned nApplId, unsigned nNcci ) {
-	return ioctl( applid2fd( nApplId ), CAPI_NCCI_OPENCOUNT, &nNcci );
+	return ioctl(capi_applid2fd( nApplId ), CAPI_NCCI_OPENCOUNT, &nNcci);
 }
 
 /** Module operations structure */
@@ -445,6 +447,7 @@ static struct sModuleOperations sStandard = {
 	standardGetVersion,
 	standardGetSerialNumber,
 	standardGetProfile,
+	NULL,
 	standardGetFlags,
 	standardSetFlags,
 	standardClearFlags,

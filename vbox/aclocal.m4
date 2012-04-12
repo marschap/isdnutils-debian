@@ -48,13 +48,13 @@ AC_DEFUN(GND_PACKAGE_TCL,
 
       if (test "${gnd_use_tcl_lib}" = "")
       then
-         gnd_1st_tcl_lib_test="tcl8.4"
-         gnd_2nd_tcl_lib_test="tcl8.3"
-         gnd_3rd_tcl_lib_test="tcl8.0"
-      else
-         gnd_1st_tcl_lib_test="${gnd_use_tcl_lib}"
+         gnd_1st_tcl_lib_test="tcl8.5"
          gnd_2nd_tcl_lib_test="tcl8.4"
          gnd_3rd_tcl_lib_test="tcl8.3"
+      else
+         gnd_1st_tcl_lib_test="${gnd_use_tcl_lib}"
+         gnd_2nd_tcl_lib_test="tcl8.5"
+         gnd_3rd_tcl_lib_test="tcl8.4"
       fi
 
       AC_CHECK_LIB(m,
@@ -63,19 +63,19 @@ AC_DEFUN(GND_PACKAGE_TCL,
             dlerror,
             [AC_CHECK_LIB(${gnd_1st_tcl_lib_test},
                Tcl_CreateInterp,
-               LINK_TCL_LIBS="${gnd_tcl_lib_dir} -l${gnd_1st_tcl_lib_test} -lm -ldl",
+               LINK_TCL_LIBS="${gnd_tcl_lib_dir} -l${gnd_1st_tcl_lib_test}",
                [AC_CHECK_LIB(${gnd_2nd_tcl_lib_test},
                   Tcl_CreateInterp,
-                  LINK_TCL_LIBS="${gnd_tcl_lib_dir} -l${gnd_2nd_tcl_lib_test} -lm -ldl",
+                  LINK_TCL_LIBS="${gnd_tcl_lib_dir} -l${gnd_2nd_tcl_lib_test}",
                   [AC_CHECK_LIB(${gnd_3rd_tcl_lib_test},
                      Tcl_CreateInterp,
-                     LINK_TCL_LIBS="${gnd_tcl_lib_dir} -l${gnd_3rd_tcl_lib_test} -lm -ldl",
+                     LINK_TCL_LIBS="${gnd_tcl_lib_dir} -l${gnd_3rd_tcl_lib_test}",
                      ,
-                     ${gnd_tcl_lib_dir} -lm -ldl
+                     ${gnd_tcl_lib_dir}
                   )],
-                  ${gnd_tcl_lib_dir} -lm -ldl
+                  ${gnd_tcl_lib_dir}
                )],
-               ${gnd_tcl_lib_dir} -lm -ldl
+               ${gnd_tcl_lib_dir}
             )],
          )],
       )

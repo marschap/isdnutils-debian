@@ -1,4 +1,4 @@
-/* $Id: tools.h,v 1.64 2005/02/23 14:33:40 tobiasb Exp $
+/* $Id: tools.h,v 1.65 2007/01/05 04:23:58 tobiasb Exp $
  *
  * ISDN accounting for isdn4linux.
  *
@@ -20,6 +20,9 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: tools.h,v $
+ * Revision 1.65  2007/01/05 04:23:58  tobiasb
+ * Made isdnrep and isdnrate buildable under cygwin. See ChangeLog for details.
+ *
  * Revision 1.64  2005/02/23 14:33:40  tobiasb
  * New feature: provider skipping.
  * Certain providers can be completely ignored (skipped) when loading the
@@ -66,7 +69,7 @@
  *    ignored (controlled by ignore_unknown_IE in isdnlog/isdnlog.h).
  *  - Added some information elements to isdnlog/messages.c.
  *  - Increased the length of msn (local number) in struct telnum.
- *  - Fixed seperation of country and area code for long numbers
+ *  - Fixed separation of country and area code for long numbers
  *    in getDest, tools/dest.c.
  *  - Changed broken (with gcc 2.95.2) generation of .depend.  The old
  *    output did not consider the location of objectfiles in subdirs.
@@ -184,7 +187,7 @@
  *
  * Revision 1.49  1999/10/29 19:46:01  akool
  * isdnlog-3.60
- *  - sucessfully ported/tested to/with:
+ *  - successfully ported/tested to/with:
  *      - Linux-2.3.24 SMP
  *      - egcs-2.91.66
  *    using -DBIG_PHONE_NUMBERS
@@ -619,6 +622,13 @@
 
 #define _GNU_SOURCE 1
 
+#include <sys/types.h>
+#include <sys/time.h>
+#include <sys/times.h>
+#include <sys/stat.h>
+#include <sys/resource.h>
+#include <sys/wait.h>
+#include <sys/socket.h>
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
@@ -627,12 +637,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <unistd.h>
-#include <sys/time.h>
-#include <sys/times.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
-#include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -644,7 +648,7 @@
 #include <math.h>
 #include <syslog.h>
 #include <sys/ioctl.h>
-#ifdef linux
+#ifdef __linux__
 #include <sys/kd.h>
 #include <linux/isdn.h>
 #else
@@ -710,6 +714,9 @@
 
 /****************************************************************************/
 
+#ifndef ISDN_MSNLEN /* if linux undefined and <linux/isdn.h> not included */
+#define ISDN_MSNLEN 32
+#endif
 #define NUMSIZE    (ISDN_MSNLEN + 1)
 #define	FNSIZE	      64
 #define RETSIZE      128
@@ -1281,7 +1288,7 @@ _EXTERN char  *time2str(time_t sec);
 _EXTERN char  *double2clock(double n);
 _EXTERN char  *vnum(int chan, int who);
 _EXTERN char  *i2a(int n, int l, int base);
-_EXTERN int    iprintf(char *obuf, int chan, register char *fmt, ...);
+_EXTERN int    il_printf(char *obuf, int chan, register char *fmt, ...);
 _EXTERN char  *qmsg(int type, int version, int val);
 _EXTERN char  *Myname;
 _EXTERN	char  *zonen[MAXZONES];

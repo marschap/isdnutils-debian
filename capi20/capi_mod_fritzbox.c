@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <linux/capi.h>
 #include <errno.h>
+#include <unistd.h>
 #include "capi20.h"
 #include "capi_mod.h"
 #include "capi_mod_fritzbox.h"
@@ -257,14 +258,14 @@ static unsigned fritzboxRelease( int nSock, int nApplId ) {
  * \param pnMsg message pointer
  * \return error code (CapiNoError or CapiMsgOSResourceErr on error)
  */
-static unsigned fritzboxPutMessage( int nSock, unsigned nApplId, unsigned char *pnMsg ) {    
+static unsigned fritzboxPutMessage( int nSock, unsigned nApplId, unsigned char *pnMsg ) {
 	unsigned char anSendBuffer[ SEND_BUFSIZ ];
 	int nNum;
 	int nLen = CAPIMSG_LEN( pnMsg );
 	int nCommand = CAPIMSG_COMMAND( pnMsg );
 	int nSubCommand = CAPIMSG_SUBCOMMAND( pnMsg );
 
-	nLen = processMessage( pnMsg, nApplId, nCommand, nSubCommand, nLen );
+	nLen = capi_processMessage( pnMsg, nApplId, nCommand, nSubCommand, nLen );
 
 	/* Create capi over tcp header (0x80, 2 bytes length) */
 	anSendBuffer[ 0 ] = 0x80;
@@ -283,7 +284,7 @@ static unsigned fritzboxPutMessage( int nSock, unsigned nApplId, unsigned char *
 	memcpy( anSendBuffer + 3, pnMsg, sizeof( anSendBuffer ) - 3 );
 	nLen += 3;
 
-	/* write data to socket */    
+	/* write data to socket */
 	nNum = write( nSock, anSendBuffer, nLen );
 	if ( nNum != nLen ) {
 		CapiDebug( 3, "Error: Unable send CAPI_PUT_MESSAGE (nApplId: %d, Ctrl: %d, Cmd: %d, SubCmd: %d)", nApplId, anSendBuffer[ 11 ] & 0x7F, CAPIMSG_COMMAND( pnMsg ), CAPIMSG_SUBCOMMAND( pnMsg ) );
@@ -322,18 +323,18 @@ static int readSocket( int nSock, unsigned char *pnBuffer, int nLen ) {
 				nTotLen -= nActLen;
 				nReadLen += nActLen;
 			}
-	
+
 			nActLen = 0;
 		}
-	
+
 		if ( nActLen > 0 ) {
 			nReadLen += nActLen;
 		}
-	
+
 		if ( nReadLen != nOrigLen ) {
 			return 0;
 		}
-	
+
 		if ( nLen == 0 ) {
 			nLen = nOrigLen;
 		}
@@ -363,7 +364,7 @@ static unsigned fritzboxGetMessage( int nSock, unsigned nApplId, unsigned char *
 	size_t nBufSize;
 
 	/* try to get a new buffer from queue */
-	if ( ( *ppnBuffer = pnBuffer = ( unsigned char * ) get_buffer( nApplId, &nBufSize, &nOffset ) ) == 0 ) {
+	if ( ( *ppnBuffer = pnBuffer = ( unsigned char * ) capi_get_buffer( nApplId, &nBufSize, &nOffset ) ) == 0 ) {
 		CapiDebug( 1, "[%s]: could not get buffer\n", __FUNCTION__ );
 		return CapiMsgOSResourceErr;
 	}
@@ -376,7 +377,7 @@ static unsigned fritzboxGetMessage( int nSock, unsigned nApplId, unsigned char *
 
 		/* DATA_B3? Then set buffer address */
 		if ( CAPIMSG_COMMAND( pnBuffer ) == CAPI_DATA_B3 && CAPIMSG_SUBCOMMAND( pnBuffer ) == CAPI_IND ) {
-			save_datahandle( nApplId, nOffset, CAPIMSG_U16( pnBuffer, 18 ), CAPIMSG_U32( pnBuffer, 8 ) );
+			capi_save_datahandle( nApplId, nOffset, CAPIMSG_U16( pnBuffer, 18 ), CAPIMSG_U32( pnBuffer, 8 ) );
 			/* patch datahandle */
 			capimsg_setu16( pnBuffer, 18, nOffset );
 
@@ -410,14 +411,14 @@ static unsigned fritzboxGetMessage( int nSock, unsigned nApplId, unsigned char *
 				pnBuffer[ 29 ] = ( nData >> 56 ) & 0xFF;
 			}
 
-			CapiDebug( 3, "CAPI_GET_MESSAGE (nApplId: %d, Ctrl: %d)", nApplId, pnBuffer[ 8 ] & 0x7F ); 
+			CapiDebug( 3, "CAPI_GET_MESSAGE (nApplId: %d, Ctrl: %d)", nApplId, pnBuffer[ 8 ] & 0x7F );
 
 			/* keep buffer */
 			return CapiNoError;
 		}
 
 		/* buffer is not needed, return it */
-		return_buffer( nApplId, nOffset );
+		capi_return_buffer( nApplId, nOffset );
 
 		if ( ( CAPIMSG_COMMAND( pnBuffer ) == CAPI_DISCONNECT ) && ( CAPIMSG_SUBCOMMAND( pnBuffer ) == CAPI_IND ) ) {
 			/* we got a disconnect, cleanup buffers */
@@ -428,7 +429,7 @@ static unsigned fritzboxGetMessage( int nSock, unsigned nApplId, unsigned char *
 	}
 
 	/* uh, error occured while reading capi message, return buffer and check for errors */
-	return_buffer( nApplId, nOffset );
+	capi_return_buffer( nApplId, nOffset );
 	if ( nRet == 0 ) {
 		return CapiReceiveQueueEmpty;
 	}
@@ -549,6 +550,7 @@ static struct sModuleOperations sFritzBox = {
 	fritzboxGetVersion,
 	fritzboxGetSerialNumber,
 	fritzboxGetProfile,
+	NULL,
 	NULL,
 	NULL,
 	NULL,

@@ -1,6 +1,6 @@
 /*
  * $Id: capidyn.c,v 1.1 2009/05/08 21:02:02 buzz Exp $
- * 
+ *
  * $Log: capidyn.c,v $
  * Revision 1.1  2009/05/08 21:02:02  buzz
  * Add new libcapi20
@@ -27,11 +27,12 @@
 #include <linux/capi.h>
 #endif
 #include <string.h>
+#include <unistd.h>
 #include "capi20.h"
 #include <dlfcn.h>
 
 
-#define LIBCAPI	"libcapi20.so"
+#define LIBCAPI	"libcapi20.so.3"
 static int loadlib(void);
 
 /* ---------------------------------------------------------------------- */
@@ -123,7 +124,7 @@ capi20_get_version(unsigned Ctrl, unsigned char *Buf)
 static unsigned char *
 (*fptr_capi20_get_serial_number)(unsigned, unsigned char *);
 
-unsigned char * 
+unsigned char *
 capi20_get_serial_number(unsigned Ctrl, unsigned char *Buf)
 {
 	if (loadlib() < 0)
@@ -356,7 +357,7 @@ static void *handle;
 
 #define	resolv_sym(x)	\
     if ((fptr_##x = dlsym(handle, #x)) == 0) { \
-	write(2, "Can't resolv " #x, sizeof("Can't resolv " #x)-1); \
+	(void)write(2, "Can't resolv " #x, sizeof("Can't resolv " #x)-1); \
 	dlclose(handle); \
 	handle = 0; \
 	return -1; \
@@ -372,12 +373,12 @@ static int loadlib(void)
 	handle = dlopen(LIBCAPI, RTLD_GLOBAL | RTLD_NOW);
 	if (handle == 0) {
 		err = dlerror();
-		write(2, emsg, sizeof(emsg)-1);
-		write(2, LIBCAPI, sizeof(LIBCAPI)-1);
-		write(2, "\n", 1);
+		(void)write(2, emsg, sizeof(emsg)-1);
+		(void)write(2, LIBCAPI, sizeof(LIBCAPI)-1);
+		(void)write(2, "\n", 1);
 		if (err) {
-			write(2, err, strlen(err));
-			write(2, "\n", 1);
+			(void)write(2, err, strlen(err));
+			(void)write(2, "\n", 1);
 		}
 		return -1;
 	}

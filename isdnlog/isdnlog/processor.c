@@ -1,4 +1,4 @@
-/* $Id: processor.c,v 1.133 2006/05/01 13:52:31 tobiasb Exp $
+/* $Id: processor.c,v 1.135 2007/05/17 21:10:29 keil Exp $
  *
  * ISDN accounting for isdn4linux. (log-module)
  *
@@ -19,6 +19,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * $Log: processor.c,v $
+ * Revision 1.135  2007/05/17 21:10:29  keil
+ * fix compiler warnings
+ *
+ * Revision 1.134  2007/01/05 04:23:58  tobiasb
+ * Made isdnrep and isdnrate buildable under cygwin. See ChangeLog for details.
+ *
  * Revision 1.133  2006/05/01 13:52:31  tobiasb
  * Fix for special case with DUALFIX_SRCNUM (-2/dual= includes 0x200).
  * A more general approach would do reordering of layer 2 frames.
@@ -92,7 +98,7 @@
  *    ignored (controlled by ignore_unknown_IE in isdnlog/isdnlog.h).
  *  - Added some information elements to isdnlog/messages.c.
  *  - Increased the length of msn (local number) in struct telnum.
- *  - Fixed seperation of country and area code for long numbers
+ *  - Fixed separation of country and area code for long numbers
  *    in getDest, tools/dest.c.
  *  - Changed broken (with gcc 2.95.2) generation of .depend.  The old
  *    output did not consider the location of objectfiles in subdirs.
@@ -502,7 +508,7 @@
  *
  * Revision 1.85  1999/10/29 19:46:00  akool
  * isdnlog-3.60
- *  - sucessfully ported/tested to/with:
+ *  - successfully ported/tested to/with:
  *      - Linux-2.3.24 SMP
  *      - egcs-2.91.66
  *    using -DBIG_PHONE_NUMBERS
@@ -2291,7 +2297,7 @@ static void decode(int chan, register char *p, int type, int version, int tei)
 		      }
                       if (n == AOC_OTHER) {
                         if (asnm && *asnm) {
-                          (void)iprintf(s1, -1, mlabel, "", asnm, "\n");
+                          (void)il_printf(s1, -1, mlabel, "", asnm, "\n");
                           print_msg(PRT_SHOWNUMBERS, "%s", s1);
                         } /* if */
                       }
@@ -2731,7 +2737,7 @@ static void decode(int chan, register char *p, int type, int version, int tei)
 		    info(chan, PRT_SHOWNUMBERS, STATE_RING, s1);
 
 		      if (cl != NULL) {
-			iprintf(s1, chan, callfmt);
+			il_printf(s1, chan, callfmt);
 			fprintf(cl, "%s\n", s1);
 			fclose(cl);
 		      } /* if */
@@ -5567,7 +5573,8 @@ doppelt:break;
             strcat(sx, " ");
             strcat(sx, qmsg(TYPE_CAUSE, version, call[chan].cause));
 
-            if (((p = location(call[chan].loc)) != "")) {
+            p = location(call[chan].loc);
+            if (p && *p) {
               strcat(sx, " (");
               strcat(sx, p);
               strcat(sx, ")");

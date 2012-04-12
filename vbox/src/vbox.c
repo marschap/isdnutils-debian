@@ -1,5 +1,5 @@
 /*
-** $Id: vbox.c,v 1.11 2002/01/31 20:10:20 paul Exp $
+** $Id: vbox.c,v 1.12 2007/05/17 21:10:29 keil Exp $
 **
 ** Copyright (C) 1996, 1997 Michael 'Ghandi' Herold
 */
@@ -261,7 +261,7 @@ int main(int argc, char **argv)
 		fflush(stdout);
 	}
 
-	if ((!loginname) || (!*loginname) || (!loginpass) || (!*loginpass))
+	if ((*loginname == 0) || (*loginpass == 0))
 	{
 		fprintf(stderr, "%s: you must enter a login name and a password.\n", vbasename);
 
@@ -306,7 +306,7 @@ int main(int argc, char **argv)
 
 	memset(loginpass, '\0', VBOX_MAX_PASSWORD);
 
-	fprintf(stderr, "Transfering message list...\n");
+	fprintf(stderr, "Transferring message list...\n");
 
 	get_message_list();
 
@@ -996,7 +996,7 @@ static void toggle_delete_flag(int nr)
 
 static void transfer_message_list(void)
 {
-	message("", "Transfering message list...");
+	message("", "Transferring message list...");
 
 	get_message_list();
 
@@ -1580,7 +1580,7 @@ static void play_message(int msg)
 		{
 			if ((size = (int)xstrtol(&answer[4], 0)) > 0)
 			{
-				message("", "Transfering message (%d bytes)...", size);
+				message("", "Transferring message (%d bytes)...", size);
 
 				if ((have = load_message(fd, size)) == size)
 				{

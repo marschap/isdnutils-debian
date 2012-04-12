@@ -1,4 +1,4 @@
-## $Id: Makefile.in,v 1.223 2006/07/03 19:47:51 tobiasb Exp $
+## $Id: Makefile.in,v 1.225 2008/08/31 10:49:38 keil Exp $
 ##
 ## ISDN accounting for isdn4linux.
 ##
@@ -19,6 +19,13 @@
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
 ## $Log: Makefile.in,v $
+## Revision 1.225  2008/08/31 10:49:38  keil
+## - fix library directories
+## - build without root permissions
+##
+## Revision 1.224  2007/01/05 04:23:57  tobiasb
+## Made isdnrep and isdnrate buildable under cygwin. See ChangeLog for details.
+##
 ## Revision 1.223  2006/07/03 19:47:51  tobiasb
 ## Fix in filelist generation for NO_UTF8=1.
 ##
@@ -142,7 +149,7 @@
 ##    ignored (controlled by ignore_unknown_IE in isdnlog/isdnlog.h).
 ##  - Added some information elements to isdnlog/messages.c.
 ##  - Increased the length of msn (local number) in struct telnum.
-##  - Fixed seperation of country and area code for long numbers
+##  - Fixed separation of country and area code for long numbers
 ##    in getDest, tools/dest.c.
 ##  - Changed broken (with gcc 2.95.2) generation of .depend.  The old
 ##    output did not consider the location of objectfiles in subdirs.
@@ -930,7 +937,7 @@
 ##
 ## Revision 1.115  1999/10/29 19:45:59  akool
 ## isdnlog-3.60
-##  - sucessfully ported/tested to/with:
+##  - successfully ported/tested to/with:
 ##      - Linux-2.3.24 SMP
 ##      - egcs-2.91.66
 ##    using -DBIG_PHONE_NUMBERS
@@ -1752,8 +1759,11 @@ export NO_UTF8
 
 CSEXT = .latin1
 
-# NO_UTF8_CONV will be used as filter command
-export NO_UTF8_CONV := iconv -f UTF-8 -t ISO-8859-1
+# NO_UTF8_CONV will be used as filter command, prior overwrite possible
+ifndef NO_UTF8_CONV 
+NO_UTF8_CONV := iconv -f UTF-8 -t ISO-8859-1
+endif
+export NO_UTF8_CONV
 
 # files which have to be recoded for make all
 # use .conf.in files for selection; .conf files may not created yet
@@ -1945,6 +1955,11 @@ endif
 
 PROGS        =  $(ISDNLOG) $(ISDNREP) $(ISDNBILL) $(ISDNCONF) $(ISDNRATE)
 
+# do not build isdnlog when NO_ISDNLOG=1 is given
+ifeq ($(NO_ISDNLOG), 1)
+PROGS       := $(filter-out $(ISDNLOG),$(PROGS))
+endif
+
 ifeq ($(ORACLE),1)
 PROGS += $(ORA_LOAD)
 endif
@@ -1981,6 +1996,9 @@ $(FILES_USING_VERSION): Makefile
 options:
 	@echo Making $< with
 	@echo $(CC) $(CFLAGS) $(DEFS) $(INCLUDE)
+ifeq ($(NO_ISDNLOG), 1)
+	@echo Build of isdnlog itself disabled by NO_ISDNLOG=1
+endif
 
 progs:		options $(PROGS)
 
@@ -2015,12 +2033,14 @@ HEADERS := $(HEADERS) .depend
 endif
 
 rootperm:
+ifneq ($(NO_ROOTPERM), 1)
 	@echo 'main(int argc,char**argv){unlink(argv[0]);return(getuid()==0);}'>g
 	@if gcc -x c -o G g && rm -f g && ./G ; then \
 		echo ""; echo 'Do "make (un)install" as root!' ;echo ""; false; \
 	fi
+endif
 
-uninstall: rootperm
+uninstall:
 		if ps x | fgrep $(ISDNLOG) >/dev/null; then kill `cat $(RUNDIR)/isdnlog.isdnctrl0.pid` 2>/dev/null; fi
 		rm -f	$(DESTDIR)$(SBINDIR)/$(ISDNLOG) \
 			$(DESTDIR)$(BINDIR)/$(ISDNREP)	\
@@ -2042,7 +2062,7 @@ uninstall: rootperm
 			$(DESTDIR)$(DATADIR)/dest.cdb
 
 
-installdirs: rootperm
+installdirs:
 		$(INSTALL_DIR) $(DESTDIR)$(I4LCONFDIR)
 		$(INSTALL_DIR) $(DESTDIR)$(BINDIR)
 		$(INSTALL_DIR) $(DESTDIR)$(SBINDIR)
@@ -2051,7 +2071,7 @@ installdirs: rootperm
 		$(INSTALL_DIR) $(DESTDIR)$(MAN8DIR)
 		$(INSTALL_DIR) $(DESTDIR)$(DATADIR)
 
-install: all rootperm installdirs install-conf install-data install-progs
+install: all installdirs install-conf install-data install-progs
 
 install-old-conf:
 		@if [ -n "$(DESTDIR)$(OLDCONFDIR)" -a "$(DESTDIR)$(OLDCONFDIR)" != '/' ] ; then \
@@ -2100,15 +2120,17 @@ install-conf:
 
 
 install-progs:
-		$(INSTALL_BIN) $(ISDNLOG)  $(DESTDIR)$(SBINDIR)
 		$(INSTALL_BIN) $(ISDNREP)  $(DESTDIR)$(BINDIR)
 		$(INSTALL_BIN) $(ISDNCONF) $(DESTDIR)$(BINDIR)
 		$(INSTALL_BIN) $(ISDNRATE) $(DESTDIR)$(BINDIR)
 		$(INSTALL_BIN) $(ISDNBILL) $(DESTDIR)$(BINDIR)
+ifneq ($(NO_ISDNLOG), 1)
+		$(INSTALL_BIN) $(ISDNLOG)  $(DESTDIR)$(SBINDIR)
 		-@if (ps x | fgrep $(ISDNLOG) | grep -v grep) >/dev/null; then \
 			kill -HUP `cat $(RUNDIR)/isdnlog.isdnctrl0.pid 2>/dev/null`; \
 			echo "Restarting (the first) running isdnlog!" ; \
 		fi
+endif
 
 # FIXME: "Installing /usr/local/lib/isdn/tools/dest/dest.cdb" is confusing
 # because "/tools/dest" is only right for the source location of that file.
@@ -2132,7 +2154,7 @@ install-data:
 		  $(INSTALL_DATA) $$f $(DESTDIR)$(DATADIR); \
 		  echo Installing $(DESTDIR)$(DATADIR)/$$f; \
 		done
-		@(grep isdnlog $(SERVICEFILE) >/dev/null) || \
+		@: || (grep isdnlog $(SERVICEFILE) >/dev/null) || \
 		(echo "";echo "";echo "Add a line to the file $(SERVICEFILE)" ;echo "";echo ""; \
 		echo "isdnlog $(SERV_PORT)/tcp        isdnlog" >> $(SERVICEFILE))
 

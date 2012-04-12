@@ -1,10 +1,10 @@
 /*
  * CAPI 2.0 library
- * 
+ *
  * 2002-03-27 - Added remote capi features.
  *              Armin Schindler <armin@melware.de>
  *
- * This program is free software and may be modified and 
+ * This program is free software and may be modified and
  * distributed under the terms of the GNU Public License.
  *
  */
@@ -24,29 +24,51 @@
 #include <stdarg.h>
 #define _LINUX_LIST_H
 #include <linux/capi.h>
- 
+
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
- 
+#include <sys/types.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <semaphore.h>
+
+
+
 #include "capi20.h"
 #include "capi_mod.h"
+#include "capi_debug.h"
 
-#ifndef CAPI_GET_FLAGS
-#define CAPI_GET_FLAGS		_IOR('C',0x23, unsigned)
-#endif
-#ifndef CAPI_SET_FLAGS
-#define CAPI_SET_FLAGS		_IOR('C',0x24, unsigned)
-#endif
-#ifndef CAPI_CLR_FLAGS
-#define CAPI_CLR_FLAGS		_IOR('C',0x25, unsigned)
-#endif
-#ifndef CAPI_NCCI_OPENCOUNT
-#define CAPI_NCCI_OPENCOUNT	_IOR('C',0x26, unsigned)
-#endif
-#ifndef CAPI_NCCI_GETUNIT
-#define CAPI_NCCI_GETUNIT	_IOR('C',0x27, unsigned)
-#endif
+/*
+ * We will use shared memory to allow unique application IDs in the system
+ *
+ */
+#define CAPI20_SHARED_MEM_VERSION	0x01000010
+#define CAPI20_SHARED_MEM_NAME		"/CAPI20_shared_memory"
+#define CAPI20_SEMAPHORE_NAME		"/CAPI20_shared_sem"
+#define CAPI20_SHARED_MEM_MODE		(S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)
+
+#define MAX_APPL 1024
+
+static sem_t	*capi_sem;
+static int	shm_mem_fd = -1;
+
+static struct shr_applids {
+	unsigned int	init_done :1;
+	unsigned int	usage;
+	unsigned int	max_id;
+	struct {
+		unsigned int		inuse:1;
+		int			fd;
+		pid_t			pid;
+		unsigned long long	para;
+	} id[MAX_APPL];
+	unsigned int	reserved[16 * MAX_APPL];
+} *appids;
+
+#define CAPI20_SHARED_MEM_SIZE	sizeof(*appids)
+
+static pid_t my_pid;
 
 static int                  capi_fd = -1;
 
@@ -60,27 +82,96 @@ static char hostname[1024] = "";
 static int tracelevel;
 static char *tracefile;
 
+static void lock_capi_shared(void)
+{
+	while (sem_wait(capi_sem)) {
+		if (errno != EINTR) {
+			fprintf(stderr, "sem_wait() returned error %d - %s\n", errno, strerror(errno));
+		}
+	}
+}
+
+static void unlock_capi_shared(void)
+{
+	if (sem_post(capi_sem))
+		fprintf(stderr, "sem_post() returned error %d - %s\n", errno, strerror(errno));
+}
+
+
 /** debug level, for debugging purpose */
 static int nDebugLevel = 0;
+
+
+static int stderr_vprint(const char *file, int line, const char *func, const char *fmt, va_list va)
+{
+	int ret;
+	fprintf(stderr, "%20s:%4d %22s():", file, line, func);
+	ret = vfprintf(stderr, fmt,  va);
+	fflush(stderr);
+	return ret;
+}
+
+
+static capi_debug_t dbg_vprintf = stderr_vprint;
+
+int _capi_dprintf(const char *file, int line, const char *func, const char *fmt, ...)
+{
+	va_list args;
+	int ret;
+
+	va_start(args, fmt);
+	ret = dbg_vprintf(file, line, func, fmt, args);
+	va_end(args);
+	return ret;
+}
+
+void register_dbg_vprintf(capi_debug_t fn)
+{
+	dbg_vprintf = fn;
+}
 
 /**
  * \brief CapiDebug output functions
  * \param nLevel debug level of following message
  * \param pnFormat formatted string
  */
-void CapiDebug( int nLevel, const char *pnFormat, ... ) {
-	if ( nLevel <= nDebugLevel ) {
-		char anOutput[ 512 ];
+void CapiDebug(int nLevel, const char *pnFormat, ...) {
+	if (nLevel <= nDebugLevel) {
 		va_list pArgs;
-		time_t sTime = time( NULL );
-		struct tm *psNow = localtime( &sTime );
 
-		va_start( pArgs, pnFormat );
-		vsnprintf( anOutput, sizeof( anOutput ), pnFormat, pArgs );
-
-		printf( "[%s] %02d.%02d.%d %02d:%02d:%02d - %s\n", "libcapi", psNow -> tm_mday, psNow -> tm_mon + 1, psNow -> tm_year + 1900, psNow -> tm_hour, psNow -> tm_min, psNow -> tm_sec, anOutput );
-		va_end( pArgs );
+		va_start(pArgs, pnFormat);
+		dbg_vprintf(__FILE__, __LINE__, __PRETTY_FUNCTION__, pnFormat, pArgs);
+		va_end(pArgs);
 	}
+}
+
+void capi_dump_shared(void)
+{
+	int i, val, ret;
+
+	capi_dprintf("MapAddress: %p\n", appids);
+	capi_dprintf("MapSize:    %zd\n", CAPI20_SHARED_MEM_SIZE);
+	if (capi_sem) {
+		ret = sem_getvalue(capi_sem, &val);
+	} else {
+		ret = 0;
+		val = 9999999;
+	}
+	capi_dprintf("Semaphore: %d (ret=%d)\n", val, ret);
+	if (appids) {
+		capi_dprintf("Shared memory %s\n", appids->init_done ? "initialized" : "not initialized");
+		capi_dprintf("Usage count: %d\n", appids->usage);
+		capi_dprintf("Max used Id: %d\n", appids->max_id);
+		for (i = 1; i <= appids->max_id; i++) {
+			if (i == MAX_APPL)
+				break;
+			capi_dprintf("AppId:%4d: fd: %d pid: %d %s\n", i, appids->id[i].fd, appids->id[i].pid,
+				appids->id[i].inuse ? "(used)" : "(not used)");
+		}
+	} else {
+		capi_dprintf("Shared memory not available\n");
+	}
+	capi_dprintf("End of dump\n");
 }
 
 /**
@@ -179,7 +270,7 @@ static char *skip_nonwhitespace(char *s)
 {
 	while (*s && !isspace(*s)) s++;
 		return s;
-} 
+}
 
 /*
  * read config file
@@ -207,7 +298,7 @@ static int read_config(void)
 					continue;
 		if (!(strncmp(s, "REMOTE", 6))) {
 			s = skip_nonwhitespace(s);
-			
+
 			t = skip_whitespace(s);
 			s = skip_nonwhitespace(t);
 			if (*s) *s++ = 0;
@@ -263,47 +354,68 @@ void setHostName( char *pnHostName ) {
  * managment of application ids
  */
 
-#define MAX_APPL 1024
 
-static int applidmap[MAX_APPL];
-
-static inline int remember_applid(unsigned applid, int fd)
+int capi_remember_applid(unsigned applid, int fd)
 {
 	if (applid >= MAX_APPL)
 		return -1;
-
-	applidmap[applid] = fd;
+	lock_capi_shared();
+	appids->id[applid].fd = fd;
+	appids->id[applid].inuse = 1;
+	unlock_capi_shared();
 	return 0;
 }
 
-static inline unsigned alloc_applid(int fd)
+unsigned capi_alloc_applid(int fd)
 {
 	unsigned applid;
 
+	lock_capi_shared();
 	for (applid = 1; applid < MAX_APPL; applid++) {
-		if (applidmap[applid] < 0) {
-			applidmap[applid] = fd;
-			return applid;
+		if (appids->id[applid].inuse == 0) {
+			appids->id[applid].inuse = 1;
+			appids->id[applid].fd = fd;
+			appids->id[applid].pid = my_pid;
+			if (appids->max_id < applid)
+				appids->max_id = applid;
+			break;
 		}
 	}
-	return 0;
+	if (applid == MAX_APPL)
+		applid = 0;
+	unlock_capi_shared();
+	return applid;
 }
 
-static inline void freeapplid(unsigned applid)
+void capi_freeapplid(unsigned applid)
 {
+	if (applid < MAX_APPL) {
+		lock_capi_shared();
+		appids->id[applid].fd = -1;
+		appids->id[applid].inuse = 0;
+		appids->id[applid].pid = 0;
+		if (appids->max_id == applid) {
+			for (applid = appids->max_id; applid > 0; applid--) {
+				if (appids->id[applid].inuse)
+					break;
+			}
+			appids->max_id = applid;
+		}
+		unlock_capi_shared();
+	}
+}
+
+int capi_validapplid(unsigned applid)
+{
+	/* no need to lock here */
+	return ((applid > 0) && (applid < MAX_APPL) && (appids->id[applid].inuse));
+}
+
+int capi_applid2fd(unsigned applid)
+{
+	/* no need to lock here */
 	if (applid < MAX_APPL)
-		applidmap[applid] = -1;
-}
-
-static inline int validapplid(unsigned applid)
-{
-	return ((applid > 0) && (applid < MAX_APPL) && (applidmap[applid] >= 0));
-}
-
-inline int applid2fd(unsigned applid)
-{
-	if (applid < MAX_APPL)
-		return applidmap[applid];
+		return appids->id[applid].fd;
 
 	return -1;
 }
@@ -376,12 +488,12 @@ static void free_buffers(struct applinfo *ap)
 
 static struct applinfo *applinfo[MAX_APPL];
 
-unsigned char *get_buffer(unsigned applid, size_t *sizep, unsigned *handle)
+unsigned char *capi_get_buffer(unsigned applid, size_t *sizep, unsigned *handle)
 {
 	struct applinfo *ap;
 	struct recvbuffer *buf;
 
-	assert(validapplid(applid));
+	assert(capi_validapplid(applid));
 	ap = applinfo[applid];
 	if ((buf = ap->firstfree) == 0)
 		return 0;
@@ -396,16 +508,12 @@ unsigned char *get_buffer(unsigned applid, size_t *sizep, unsigned *handle)
 	return buf->buf;
 }
 
-void save_datahandle(
-	unsigned char applid,
-	unsigned offset,
-	unsigned datahandle,
-	unsigned ncci)
+void capi_save_datahandle(unsigned applid, unsigned offset, unsigned datahandle, unsigned ncci)
 {
 	struct applinfo *ap;
 	struct recvbuffer *buf;
 
-	assert(validapplid(applid));
+	assert(capi_validapplid(applid));
 	ap = applinfo[applid];
 	assert(offset < ap->maxbufs);
 	buf = ap->buffers+offset;
@@ -413,12 +521,12 @@ void save_datahandle(
 	buf->ncci = ncci;
 }
 
-unsigned return_buffer(unsigned char applid, unsigned offset)
+unsigned capi_return_buffer(unsigned applid, unsigned offset)
 {
 	struct applinfo *ap;
 	struct recvbuffer *buf;
 
-	assert(validapplid(applid));
+	assert(capi_validapplid(applid));
 	ap = applinfo[applid];
 	assert(offset < ap->maxbufs);
 	buf = ap->buffers+offset;
@@ -438,43 +546,43 @@ unsigned return_buffer(unsigned char applid, unsigned offset)
 	return buf->datahandle;
 }
 
-void cleanup_buffers_for_ncci(unsigned char applid, unsigned ncci)
+void cleanup_buffers_for_ncci(unsigned applid, unsigned ncci)
 {
 	struct applinfo *ap;
 	unsigned i;
-	
-	assert(validapplid(applid));
+
+	assert(capi_validapplid(applid));
 	ap = applinfo[applid];
 
 	for (i = 0; i < ap->maxbufs; i++) {
 		if (ap->buffers[i].used) {
 			assert(ap->buffers[i].ncci != 0);
 			if (ap->buffers[i].ncci == ncci) {
-				return_buffer(applid, i);
+				capi_return_buffer(applid, i);
 			}
 		}
 	}
 }
 
-void cleanup_buffers_for_plci(unsigned char applid, unsigned plci)
+void cleanup_buffers_for_plci(unsigned applid, unsigned plci)
 {
 	struct applinfo *ap;
 	unsigned i;
-	
-	assert(validapplid(applid));
+
+	assert(capi_validapplid(applid));
 	ap = applinfo[applid];
 
 	for (i = 0; i < ap->maxbufs; i++) {
 		if (ap->buffers[i].used) {
 			assert(ap->buffers[i].ncci != 0);
 			if ((ap->buffers[i].ncci & 0xffff) == plci) {
-				return_buffer(applid, i);
+				capi_return_buffer(applid, i);
 			}
 		}
 	}
 }
 
-/* 
+/*
  * CAPI2.0 functions
  */
 
@@ -540,7 +648,9 @@ static int LoadModule( char *pnName ) {
 	/* Try to open module */
 	pHandle = dlopen( pnName, RTLD_GLOBAL | RTLD_LAZY );
 	if ( pHandle == NULL ) {
-		CapiDebug( 1, "Could not open module!\n" );
+		char etxt[1024];
+		snprintf(etxt, 1024, "Could not open module %s - %s!\n", pnName, dlerror());
+		CapiDebug(1, etxt);
 		return -1;
 	}
 
@@ -584,12 +694,14 @@ static void InitModules( char *pnModuleDir ) {
 	DIR *psDir;
 	struct dirent *psEntry;
 	char *pnFullName;
-	int nLen;
+	int nLen, pf_len;
+	char mod_vers[8];
 
 	/* try to open module directory */
 	psDir = opendir( pnModuleDir );
 	if ( psDir != NULL ) {
 		/* read entry by entry */
+		pf_len = snprintf(mod_vers, 8, ".so.%d", MODULE_LOADER_VERSION);
 		while ( ( psEntry = readdir( psDir ) ) != NULL )  {
 			/* skip ".", ".." and files which do not end with "so" */
 			nLen = strlen( psEntry -> d_name );
@@ -606,7 +718,7 @@ static void InitModules( char *pnModuleDir ) {
 					}
 					break;
 				default:
-					if ( strncmp( psEntry -> d_name + nLen - 3, ".so", nLen ) ) {
+					if ( strcmp( psEntry -> d_name + nLen - pf_len, mod_vers) ) {
 						continue;
 					}
 					break;
@@ -656,7 +768,7 @@ unsigned capi20_isinstalled( void ) {
 		/* backwards-compatible: check standard interface fist */
 		psList = psModuleList;
 		while ( psList != NULL ) {
-			
+
 			if ( !strcasecmp( psList -> psMod -> pnName, "standard" ) ) {
 				psModule = psList -> psMod;
 				capi_fd = psModule -> psOperations -> IsInstalled();
@@ -703,20 +815,20 @@ unsigned capi20_isinstalled( void ) {
 }
 
 unsigned capi20_register( unsigned MaxB3Connection, unsigned MaxB3Blks, unsigned MaxSizeB3, unsigned *ApplID ) {
-	int applid = 0;
+	unsigned int applid = 0;
 	int fd = -1;
 
-    *ApplID = 0;
+	*ApplID = 0;
 
-    if (capi20_isinstalled() != CapiNoError)
-       return CapiRegNotInstalled;
+	if (capi20_isinstalled() != CapiNoError)
+		return CapiRegNotInstalled;
 
 	fd = psModule -> psOperations -> Register( MaxB3Connection, MaxB3Blks, MaxSizeB3, &applid );
 	if ( fd < 0 ) {
 		return CapiRegOSResourceErr;
 	}
 
-	if (remember_applid(applid, fd) < 0) {
+	if (capi_remember_applid(applid, fd) < 0) {
 		close(fd);
 		return CapiRegOSResourceErr;
 	}
@@ -732,21 +844,24 @@ unsigned capi20_register( unsigned MaxB3Connection, unsigned MaxB3Blks, unsigned
 unsigned
 capi20_release (unsigned ApplID)
 {
+	int fd;
+
 	if (capi20_isinstalled() != CapiNoError)
 		return CapiRegNotInstalled;
 
-	if (!validapplid(ApplID))
+	if (!capi_validapplid(ApplID))
 		return CapiIllAppNr;
 
-	if ( psModule -> psOperations -> Release != NULL ) {
-		psModule -> psOperations -> Release( applid2fd( ApplID ), ApplID );
+	if (psModule -> psOperations -> Release != NULL) {
+		psModule -> psOperations -> Release(capi_applid2fd(ApplID), ApplID);
 	}
-
-	(void)close(applid2fd(ApplID));
-	freeapplid(ApplID);
+	fd = capi_applid2fd(ApplID);
+	/* maybe closed by the lower level */
+	if (fd > -1)
+		(void)close(fd);
+	capi_freeapplid(ApplID);
 	free_buffers(applinfo[ApplID]);
-	applinfo[ApplID] = 0;
-
+	applinfo[ApplID] = NULL;
 	return CapiNoError;
 }
 
@@ -759,7 +874,7 @@ capi20_release (unsigned ApplID)
  * \param nLen len of message
  * \return length of full packet
  */
-int processMessage( unsigned char *pnMsg, int nApplId, int nCommand, int nSubCommand, int nLen ) {
+int capi_processMessage( unsigned char *pnMsg, unsigned nApplId, unsigned nCommand, unsigned nSubCommand, int nLen ) {
 	/* DATA_B3_REQ specific:
 	 * we have to copy  the buffer and patch the buffer address!
 	 */
@@ -802,7 +917,7 @@ int processMessage( unsigned char *pnMsg, int nApplId, int nCommand, int nSubCom
 			memcpy( pnMsg + nLen, pDataPtr, nDataLen );
 			nLen += nDataLen;
 		} else if ( nSubCommand == CAPI_RESP ) {
-			capimsg_setu16( pnMsg, 12, return_buffer( nApplId, CAPIMSG_U16( pnMsg, 12 ) ) );
+			capimsg_setu16( pnMsg, 12, capi_return_buffer( nApplId, CAPIMSG_U16( pnMsg, 12 ) ) );
 		}
 	}
 
@@ -818,21 +933,21 @@ unsigned capi20_put_message( unsigned ApplID, unsigned char *Msg ) {
 		return CapiRegNotInstalled;
 	}
 
-	if (!validapplid(ApplID)) {
+	if (!capi_validapplid(ApplID)) {
 		return CapiIllAppNr;
 	}
 
-	return psModule -> psOperations -> PutMessage( applid2fd(ApplID), ApplID, Msg );
+	return psModule->psOperations->PutMessage(capi_applid2fd(ApplID), ApplID, Msg);
 }
 
 unsigned capi20_get_message( unsigned ApplID, unsigned char **Buf ) {
 	if (capi20_isinstalled() != CapiNoError)
 		return CapiRegNotInstalled;
 
-	if (!validapplid(ApplID))
+	if (!capi_validapplid(ApplID))
 		return CapiIllAppNr;
 
-	return psModule -> psOperations -> GetMessage( applid2fd(ApplID), ApplID, Buf );
+	return psModule->psOperations->GetMessage(capi_applid2fd(ApplID), ApplID, Buf);
 }
 
 unsigned char *capi20_get_manufacturer( unsigned Ctrl, unsigned char *Buf ) {
@@ -851,7 +966,7 @@ capi20_get_version(unsigned Ctrl, unsigned char *Buf)
 	return psModule -> psOperations -> GetVersion( capi_fd, Ctrl, Buf );
 }
 
-unsigned char * 
+unsigned char *
 capi20_get_serial_number(unsigned Ctrl, unsigned char *Buf)
 {
 	if (capi20_isinstalled() != CapiNoError)
@@ -878,28 +993,31 @@ capi20_waitformessage(unsigned ApplID, struct timeval *TimeOut)
 	int fd;
 	fd_set rfds;
 
-	FD_ZERO(&rfds);
-
 	if (capi20_isinstalled() != CapiNoError)
 		return CapiRegNotInstalled;
 
-	if (!validapplid(ApplID))
+	if (!capi_validapplid(ApplID))
 		return CapiIllAppNr;
-  
-	fd = applid2fd(ApplID);
 
+	/* default method */
+	fd = capi_applid2fd(ApplID);
+
+	if (psModule->psOperations->waitformessage)
+		return psModule->psOperations->waitformessage(fd, ApplID, TimeOut);
+
+	FD_ZERO(&rfds);
 	FD_SET(fd, &rfds);
 
 	if (select(fd + 1, &rfds, NULL, NULL, TimeOut) < 1)
 		return CapiReceiveQueueEmpty;
-  
+
 	return CapiNoError;
 }
 
 int
 capi20_fileno(unsigned ApplID)
 {
-	return applid2fd(ApplID);
+	return capi_applid2fd(ApplID);
 }
 
 /*
@@ -966,16 +1084,80 @@ static void initlib( void ) __attribute__( ( constructor ) );
 static void exitlib( void ) __attribute__( ( destructor ) );
 
 static void initlib( void ) {
-	int i;
+	int i, ret;
+	mode_t old_um;
+	struct stat stats;
+	int need_init = 0;
+	char sem_name[40], shr_name[40];
 
-	for ( i = 0; i < MAX_APPL; i++ ) {
-		applidmap[ i ] = -1;
-	}
+	if (!capi_sem) {
+		snprintf(sem_name, 32, "%s.v%08x", CAPI20_SEMAPHORE_NAME, CAPI20_SHARED_MEM_VERSION);
+		snprintf(shr_name, 32, "%s.v%08x", CAPI20_SHARED_MEM_NAME, CAPI20_SHARED_MEM_VERSION);
+		old_um = umask(0);
+		capi_sem = sem_open(sem_name, O_CREAT, CAPI20_SHARED_MEM_MODE, 1);
+		shm_mem_fd = shm_open(shr_name, O_CREAT | O_RDWR, CAPI20_SHARED_MEM_MODE);
+		umask(old_um);
+		if (capi_sem == SEM_FAILED) {
+			fprintf(stderr, "sem_open(%s, ...) failed - %s\n", sem_name, strerror(errno));
+			exit(1);
+		}
+		if (shm_mem_fd < 0) {
+			fprintf(stderr, "shm_open(%s, ...) failed - %s\n", shr_name, strerror(errno));
+			exit(1);
+		}
+
+		lock_capi_shared();
+
+		ret = fstat(shm_mem_fd, &stats);
+		if (ret) {
+			fprintf(stderr, "fstat(shm_mem_fd, &stats) failed - %s\n", strerror(errno));
+			exit(1);
+		}
+		if (stats.st_size == 0) {
+			/* We are the first user - so set size and init it */
+			ret = ftruncate(shm_mem_fd, CAPI20_SHARED_MEM_SIZE);
+			if (ret) {
+				fprintf(stderr, "ftruncate(shm_mem_fd, %zd) failed - %s\n", CAPI20_SHARED_MEM_SIZE, strerror(errno));
+				exit(1);
+			}
+			need_init = 1;
+		}
+		appids = mmap(NULL, CAPI20_SHARED_MEM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_mem_fd, 0);
+		if (appids ==  MAP_FAILED) {
+			fprintf(stderr, "mmap shm_mem_fd (%d) failed - %s\n", shm_mem_fd, strerror(errno));
+			exit(1);
+		}
+		if (need_init) {
+			for ( i = 0; i < MAX_APPL; i++ ) {
+				appids->id[i].fd = -1;
+			}
+			appids->init_done = 1;
+		}
+	} else
+		lock_capi_shared();
+	appids->usage++;
+	my_pid = getpid();
+	unlock_capi_shared();
 }
 
 static void exitlib( void ) {
+	int i, last_inuse = 0;
+
 	if ( capi_fd >= 0 ) {
 		close( capi_fd );
 		capi_fd = -1;
 	}
+	lock_capi_shared();
+	appids->usage--;
+	for (i = 0; i < MAX_APPL; i++ ) {
+		if (appids->id[i].pid == my_pid) {
+			appids->id[i].pid = 0;
+			appids->id[i].inuse = 0;
+			appids->id[i].fd = -1;
+		} else if (appids->id[i].inuse)
+			last_inuse = i;
+	}
+	appids->max_id = last_inuse;
+	munmap(appids, CAPI20_SHARED_MEM_SIZE);
+	unlock_capi_shared();
 }
