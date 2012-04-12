@@ -1,4 +1,4 @@
-/* $Id: fileheader.c,v 1.4 2001/03/01 14:59:12 paul Exp $ */
+/* $Id: fileheader.c,v 1.5 2007/03/05 18:04:35 keil Exp $ */
 /*
   Copyright 1998 by Henner Eisen
 
@@ -88,7 +88,8 @@ static char * tdu_print_file_par( int ct, unsigned char *pkt, unsigned char *end
 	if( pkt >= end )  goto  packet_too_small; 
 	if( (len = *(pkt++)) == 0xff ) {
 		if( pkt+2 > end )  goto packet_too_small; 
-		len = 0x100 * *(pkt++)  +  *(pkt++);
+		len = 0x100 * pkt[0] + pkt[1];
+		pkt += 2;
 	}
 	tdu_printf (ct,"len=%d)", len);
 	ret = pkt + len;
@@ -235,7 +236,7 @@ static time_t fh2timet(unsigned char *ts, int len){
 		tmp = 10*(ts[0]-'0') + (ts[1]-'0');
 		ts +=2;
 		len-=2;
-		/* y2k compatibilty hack */
+		/* y2k compatibility hack */
 		if( tmp < y2k_wrap ) tmp += 100;
 		t.tm_year = tmp;
 	}
