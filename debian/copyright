@@ -1,35 +1,24 @@
 This package was originally debianized by Paul Slootman <paul@debian.org>
 in the period June 2000 - September 2000.
 
-The source was downloaded from:
+Changes and packaging for Debian were prepared by Paul Slootman
+<paul@debian.org>, Rolf Leggewie <foss@rolf.leggewie.biz> and
+other Debian developers, and are licensed under GPL version 2.
 
-  ftp://ftp.isdn4linux.de/pub/isdn4linux/CVS-Snapshots/
+The latest source was downloaded from:
+
+  http://git.misdn.eu
 
 Upstream Authors: the i4l crew ( see http://www.isdn4linux.de/ )
 
 The following files and directories have been removed to comply with the
 Debian Free Software Guidelines:
 
-- act2000/firmware: no source code available
-- eicon/firmware: no source code available
-- eurofile/src/wuath: commercial use is forbidden
-- hisax/ISAR.bin: no source code available
-- icn/firmware: no source code available
-- isdnlog/isdnlog/ora*: commercial use is forbidden
 - isdnlog/tools/telrate/tt.js: no licence stated
 - pcbit/convhexbin.c: no licence stated
 
-Changes and packaging for Debian were prepared by Paul Slootman
-<paul@debian.org>, Rolf Leggewie <foss@rolf.leggewie.biz> and
-other Debian developers, and are licensed under GPL version 2.
-
 Specific copyrights etc. follow. If not listed, the component falls
 either under the GPL version 2 or LGPL version 2.
-
-On Debian systems, the complete text of the GNU General Public License
-version 2 can be found in `/usr/share/common-licenses/GPL-2' and the
-complete text of the GNU Library General Public License version 2 can
-be found in `/usr/share/common-licenses/LGPL-2'.
 
 FAQ:
     GPL
@@ -335,3 +324,8 @@ xisdnload:
     not be used in advertising or otherwise to promote the sale, use or
     other dealings in this Software without prior written authorization
     from the X Consortium.
+
+On Debian systems, the complete text of the GNU General Public License
+version 2 can be found in `/usr/share/common-licenses/GPL-2' and the
+complete text of the GNU Library General Public License version 2 can
+be found in `/usr/share/common-licenses/LGPL-2'.
