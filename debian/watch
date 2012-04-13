@@ -1,3 +1,8 @@
+# Upstream was dormant for a number of years but sprung back into life at
+# the beginning of 2012.  Sources are now hosted at http://git.misdn.eu
+# Upstream tags releases in git for the moment, proper tarball releases
+# are scheduled to follow.
+
 version=3
 opts="dversionmangle=s/.*(2[[:digit:]]+).dfsg.*/$1/,uversionmangle=s/-//g" \
   ftp://ftp.isdn4linux.de/pub/isdn4linux/CVS-Snapshots/isdn4k-utils-CVS-([-\d\.]*)\.tar\.bz2
