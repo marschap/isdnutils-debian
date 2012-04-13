@@ -1,5 +1,5 @@
-etc/isdn/vboxd.conf
-etc/isdn/vboxgetty.conf
+etc/vbox/vboxd.conf
+etc/vbox/vboxgetty.conf
 usr/sbin/vboxmail
 usr/sbin/vboxd
 usr/sbin/vboxgetty
