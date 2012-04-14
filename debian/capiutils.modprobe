@@ -1,1 +1,2 @@
-debian/capiutils.blacklist
+blacklist hisax
+blacklist hisax_fcpcipnp
