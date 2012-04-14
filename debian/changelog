@@ -3,6 +3,7 @@ isdnutils (1:3.22+dfsg1-1) experimental; urgency=low
   * NEW UPSTREAM release after 6 years of inactivity, Yay!
     - many of our patches were included upstream and can be dropped
     - fix authentication of local to remote host. Closes: #348943
+      Many thanks to Herbert Xu for providing the patch.
     - update German cellphone network number prefixes. Closes: #404458
     - update incorrect information in avmcapictrl(8). Closes: 309557
       Many thanks to Peter Marschall for providing the patch.
