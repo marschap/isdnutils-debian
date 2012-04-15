@@ -51,7 +51,7 @@ Description: ISDN utilities - PPP daemon
 Package: isdnlog
 Architecture: linux-any
 Depends: isdnutils-base (= ${binary:Version}), isdnlog-data (>= ${source:Version}),
- debconf (>=1.2.9) | debconf-2.0, ${shlibs:Depends}, ${misc:Depends}
+ debconf (>=1.2.9) | debconf-2.0, ucf, ${shlibs:Depends}, ${misc:Depends}
 Description: ISDN utilities - connection logger
  This package provides a set of utilities that can log ISDN connections and
  calculate the cost of calls. If sufficient data is available, it can even

@@ -5,21 +5,23 @@ set -e
 
 case "$1" in
        purge)
-         if [ -d /etc/isdn ]; then
-            cd /etc/isdn
-            rm isdnlog.isdnctrl[02468] isdnrate.conf 2>/dev/null || true
-            cd /
-	    # Use || true to survive from the error, just like dpkg would
-	    [ ! -d /var/run/isdnrate/ ] || rmdir /var/run/isdnrate/ || true
-         fi
-         ;;
+
+	pkg=isdnlog
+	for conffile in $(ucfq $pkg -w| grep $pkg | cut -f 1 -d ":");do
+	  ucf --purge $conffile && ucfr --purge $pkg $conffile && rm -f $conffile
+	  for ext in '~' '%' .bak .ucf-new .ucf-old .ucf-dist;  do
+	    rm -f $conffile$ext
+	  done
+	done
+	rmdir --ignore-fail-on-non-empty /var/run/isdnrate/ || true
+	;;
 
        remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
-         ;;
+	;;
 
     *)
-         echo "postrm called with unknown argument \`$1'" >&2
-         exit 0
+	echo "postrm called with unknown argument \`$1'" >&2
+	exit 0
 	 ;;
 esac
 

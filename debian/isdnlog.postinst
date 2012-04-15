@@ -10,8 +10,6 @@ OLDVERSION="$2"
 
 case "$DOWHAT" in
     configure)
-        somethingchanged=false
-        init=reload
         db_get isdnlog/country || true
         COUNTRY=$RET
 	if [ "$COUNTRY" = other ]; then
@@ -25,65 +23,64 @@ case "$DOWHAT" in
         if [ "$country" = other ]; then
             country=default
         fi
-	DEFDIR=/usr/share/isdn/default
-        message="First time configuration, c"
+        DEFDIR=/usr/share/doc/isdnlog/examples/
         CONF=/etc/isdn/isdn.conf
-        RATE=/etc/isdn/rate.conf
+        tempfile=$(mktemp -t isdnutils.XXXXXX)
+        trap 'rm -f "$tempfile"' EXIT
+        chmod uog+r "$tempfile"
 
 	for CFG in isdn.conf rate.conf; do
-	    if [ ! -s /etc/isdn/$CFG ]; then
-		echo "${message}reating /etc/isdn/$CFG ."
-                somethingchanged=true
-                message='C'
 		if [ -e $DEFDIR/$CFG.$country ]; then
-		    cp $DEFDIR/$CFG.$country /etc/isdn/$CFG
+		    cat $DEFDIR/$CFG.$country
 		elif [ -e $DEFDIR/$CFG.$country.gz ]; then
-		    gzip -dc $DEFDIR/$CFG.$country.gz > /etc/isdn/$CFG
+		    gzip -dc $DEFDIR/$CFG.$country.gz
 		elif [ -e $DEFDIR/$CFG.default ]; then
-		    cp $DEFDIR/$CFG.default /etc/isdn/$CFG
+		    cat $DEFDIR/$CFG.default
 		elif [ -e $DEFDIR/$CFG.default.gz ]; then
-		    gzip -dc $DEFDIR/$CFG.default.gz > /etc/isdn/$CFG
+		    gzip -dc $DEFDIR/$CFG.default.gz
 		elif [ -e $DEFDIR/$CFG ]; then
-		    cp $DEFDIR/$CFG /etc/isdn/$CFG
+		    cat $DEFDIR/$CFG
 		elif [ -e $DEFDIR/$CFG.gz ]; then
-		    gzip -dc $DEFDIR/$CFG.gz > /etc/isdn/$CFG
+		    gzip -dc $DEFDIR/$CFG.gz
                 else
-                    echo "Warning: no suitable $CFG file found, creating an empty one."
-                    touch $CFG
-		fi
-	    fi
+		    echo "Warning: no suitable $CFG file found, proceeding with an empty one." >&2
+		fi > "$tempfile"
+		#XXX isdn.conf wird später nochmal verhackstückt
+		ucf --three-way --debconf-ok "$tempfile" /etc/isdn/$CFG
+		ucfr isdnlog /etc/isdn/$CFG
 	done
+
 	db_get isdnlog/countryprefix || true; COUNTRYPREFIX=$RET
 	db_get isdnlog/countrycode   || true; COUNTRYCODE=$RET
 	db_get isdnlog/areaprefix    || true; AREAPREFIX=$RET
 	db_get isdnlog/areacode      || true; AREACODE=$RET
         db_get isdnlog/isdnrate-daemon || true; ISDNRATE_DAEMON=$RET
-	db_stop
-        $somethingchanged || md5sum=`md5sum $CONF`
 	perl -i -p \
 	 -e "s,^\s*COUNTRYPREFIX\s*=.*,COUNTRYPREFIX   = $COUNTRYPREFIX,;" \
 	 -e "s,^\s*COUNTRYCODE\s*=.*,COUNTRYCODE     = $COUNTRYCODE,;" \
 	 -e "s,^\s*AREAPREFIX\s*=.*,AREAPREFIX      = $AREAPREFIX,;" \
 	 -e "s,^\s*AREACODE\s*=.*,AREACODE        =  $AREACODE,;" \
-	 $CONF
+	 $CONF > "$tempfile"
+	ucf --three-way --debconf-ok "$tempfile" $CONF
+	ucfr isdnlog $CONF
+
 	 # -e "s,^\s*(RATEFILE.*(rate|country)-).*,\$1$country.dat,;"
 	 # -e "s,^\s*(RATEFILE.*zone-)..(.*),\$1$country\$2,;"
+
         if [ ! -s /etc/isdn/isdnlog.isdnctrl0 ]; then
             echo "Creating default /etc/isdn/isdnlog.isdnctrl0 ."
-            sed '/REMOVE the next line/,/REMOVE the above/d' < /usr/share/doc/isdnlog/examples/isdnlog.DEVICE > /etc/isdn/isdnlog.isdnctrl0
-            somethingchanged=true
-            init=start
-        fi
-        if $somethingchanged; then :; else
-            if [ "$md5sum" != "`md5sum $CONF`" ]; then
-                somethingchanged=true
+            sed '/REMOVE the next line/,/REMOVE the above/d' < /usr/share/doc/isdnlog/examples/isdnlog.DEVICE > "$tempfile"
+            if [ -x /etc/init.d/isdnutils-base ]; then
+              invoke-rc.d isdnutils-base start isdnlog
             fi
         fi
+        ucf --three-way --debconf-ok "$tempfile" /etc/isdn/isdnlog.isdnctrl0
+        ucfr isdnlog /etc/isdn/isdnlog.isdnctrl0
+
         CONF=/etc/isdn/isdnrate.conf
         daemon=false
         socket=/var/run/isdnrate/socket
         if [ -s $CONF ]; then
-            $somethingchanged || md5sum=`md5sum $CONF`
             set +e
             . $CONF
             set -e
@@ -93,34 +90,32 @@ case "$DOWHAT" in
               echo ""
               echo "# This file is sourced into a Bourne shell."
               echo ""
-            ) > $CONF
+            ) > "$tempfile"
+            ucf --three-way --debconf-ok "$tempfile" $CONF
+            ucfr isdnlog $CONF
         fi
         if [ "x$ISDNRATE_DAEMON" = "xyes" ]; then
             daemon=true
         else
             daemon=false
         fi
-        if grep '^daemon=' $CONF >/dev/null 2>&1; then
-            perl -i -pe "s/^daemon=.*/daemon=$daemon/" $CONF
+        cp $CONF "$tempfile"
+        if grep '^daemon=' "$tempfile" >/dev/null 2>&1; then
+            perl -i -pe "s/^daemon=.*/daemon=$daemon/" "$tempfile"
         else
-            echo "daemon=$daemon" >> $CONF
+            echo "daemon=$daemon" >> "$tempfile"
         fi
-        if grep '^socket=' $CONF >/dev/null 2>&1; then
-            perl -i -pe "s,^socket=.*,socket=$socket," $CONF
+        if grep '^socket=' "$tempfile" >/dev/null 2>&1; then
+            perl -i -pe "s,^socket=.*,socket=$socket," "$tempfile"
         else
-            echo "socket=$socket" >> $CONF
+            echo "socket=$socket" >> "$tempfile"
         fi
-        if $somethingchanged; then :; else
-            if [ "$md5sum" != "`md5sum $CONF`" ]; then
-                somethingchanged=true
-            fi
-        fi
-
-	if $somethingchanged; then
-            if [ -x /etc/init.d/isdnutils-base ]; then
-		invoke-rc.d isdnutils-base $init isdnlog
-	    fi
+	ucf --three-way --debconf-ok "$tempfile" $CONF
+	ucfr isdnlog $CONF
+	if [ -x /etc/init.d/isdnutils-base ]; then
+		invoke-rc.d isdnutils-base reload isdnlog
 	fi
+	rm -f "$tempfile"
         ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
@@ -133,7 +128,7 @@ case "$DOWHAT" in
     ;;
 esac
 
-db_stop # grrrr
+db_stop
 
 #DEBHELPER#
 
