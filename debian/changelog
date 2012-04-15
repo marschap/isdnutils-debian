@@ -1,3 +1,13 @@
+isdnutils (1:3.22+dfsg1-2) unstable; urgency=low
+
+  * capiutils: use dh_installmodules correctly. Closes: #667961
+  * isdnutils-base: use dh_link to do the linking
+  * README.Debian: point to separate isdnactivecards package
+  * debian/control: bump Standards-Version to 3.9.3
+    still not fully lintian-clean
+
+ -- Rolf Leggewie <foss@rolf.leggewie.biz>  Mon, 16 Apr 2012 05:49:58 +0800
+
 isdnutils (1:3.22+dfsg1-1) experimental; urgency=low
 
   * NEW UPSTREAM release after 6 years of inactivity, Yay!
