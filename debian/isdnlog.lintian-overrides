@@ -1,5 +1,0 @@
-# - again, examples scripts that shouldn't be executable
-## and again, example scripts should reside under examples in /usr/share
-# - and I *do* want a different default depending on the language!
-isdnlog: script-not-executable usr/share/isdn/default/provider
-isdnlog: script-not-executable usr/share/isdn/default/stop
