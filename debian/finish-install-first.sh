@@ -29,5 +29,3 @@
 	mv debian/tmp/usr/sbin/imon*               debian/tmp/usr/bin/.
 	mv debian/tmp/usr/share/man/man8/imon.8    debian/tmp/usr/share/man/man1/imon.1
 	mv debian/tmp/usr/share/man/man8/imontty.8 debian/tmp/usr/share/man/man1/imontty.1
-	# this _is_
-	mv debian/tmp/usr/bin/vboxmail             debian/tmp/usr/sbin/.

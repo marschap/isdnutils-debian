@@ -40,7 +40,7 @@ onlynotify() {
     ) | /usr/sbin/sendmail -oi -t
 }
 
-if [ ! -s "$MSNAME" ]; then	
+if [ ! -s "$MSNAME" ]; then
   onlynotify "message file appears to be missing!"
   exit 0
 fi
