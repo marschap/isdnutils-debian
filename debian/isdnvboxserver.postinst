@@ -118,7 +118,7 @@ if [ ! -d "$VBOX_SPOOL" ]; then
     # on initial installation it won't exist, and "old" name == new name
     # so create it here if necessary
     mkdir -p "$VBOX_SPOOL/incoming" "$VBOX_SPOOL/messages"
-    cp /usr/share/isdnvboxserver/default/standard.tcl "$VBOX_SPOOL/."
+    cp /usr/share/doc/isdnvboxserver/examples/standard.tcl.example "$VBOX_SPOOL/./standard.tcl"
 fi
 if chown -R "$VBOX_DUSER" "$VBOX_SPOOL"; then
     : #OK

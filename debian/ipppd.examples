@@ -1,0 +1,3 @@
+debian/ipppd.DEVICE
+debian/auth-down
+debian/auth-up

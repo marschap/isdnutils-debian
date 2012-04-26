@@ -145,8 +145,6 @@ install: build
 	# (the files get moved out by dh_movefiles later)
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
 
-	chmod +x debian/finish-install-first.sh
-	debian/finish-install-first.sh
 	mv debian/tmp/usr/bin/capifaxrcvd debian/tmp/usr/sbin/
 	mv debian/tmp/usr/share/man/man5/vbox_file.5 \
 	    debian/tmp/usr/share/man/man5/vbox.5
@@ -160,6 +158,11 @@ install: build
 	rm -f usr/share/doc/isdnutils-doc/isdn-faq.txt.gz				# already in ./Mini-FAQ/
 	rm -vf debian/tmp/etc/isdn/isdnlog.isdnctrl0.options
 	rm -vf debian/tmp/usr/share/man/man1/xmonisdn.1x*
+	rm -f debian/tmp/etc/isdn/eftusers \
+	      debian/isdnlog/usr/share/isdn/default/callerid.conf \
+	      debian/tmp/etc/isdn/callerid.conf \
+	      debian/tmp/etc/isdn/isdn.conf     \
+	      debian/tmp/etc/isdn/rate.conf
 
 	dh install
 
