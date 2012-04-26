@@ -1,3 +1,19 @@
+isdnutils (1:3.22+dfsg1-3) unstable; urgency=medium
+
+  * isdnutils-base: use dh_installcron instead of postinst. Closes: #197254
+  * isdnlog:
+    - handle conf files with ucf. Closes: #331116
+    - simplify and overhaul postinst
+  * ipppd: bring more config files under ucf control. drop md5sum file.
+  * libcapi20-dev: ship all *.h files. Closes: #670406
+  * isdnvboxserver:
+    - use "set -e" instead of "#!/bin/sh -e" in postinst
+    - vboxmail is a tool for the admin, install to proper path
+  * simplify build process (still ongoing process), leverage more of dh7
+  * drop obsolete lintian overrides
+
+ -- Rolf Leggewie <foss@rolf.leggewie.biz>  Mon, 30 Apr 2012 23:40:53 +0800
+
 isdnutils (1:3.22+dfsg1-2) unstable; urgency=low
 
   * capiutils: use dh_installmodules correctly. Closes: #667961
