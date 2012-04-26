@@ -14,10 +14,13 @@ set -e
 #          <failed-install-package> <version> `removing'
 #          <conflicting-package> <version>
 
+tempfile=$(mktemp -t isdnutils.XXXXXX)
+trap 'rm -f "$tempfile"' EXIT
+
 case "$1" in
     configure)
-	forcerestart=false
-	RET=ippp0
+        forcerestart=false
+        RET=ippp0
         db_get ipppd/whichif || true
         case "x$RET" in
             x|xnone|xmanual)
@@ -36,13 +39,19 @@ case "$1" in
                 db_get ipppd/eaz       || true; EAZ="$RET"
                 db_get ipppd/isplogin  || true; ISPLOGIN="$RET"
                 db_get ipppd/isppasswd || true; ISPPASSWD=$(echo "$RET" | sed 's,",\\&,g')
-                ucf /usr/share/isdn/default/device.DEVICE /etc/isdn/device.$IPPPX
-                ucfr ipppd /etc/isdn/device.$IPPPX
-                cp /usr/share/isdn/default/ipppd.DEVICE /etc/isdn/ipppd.$IPPPX
                 # escape any @ in the username, as perl wants to expand that as an arrary
                 ISPLOGIN=$(echo $ISPLOGIN | sed 's,@,\\@,')
-                perl -i -pe '$_ = "" if /^# REMOVE the/; $_ = "" if /^echo "Warning!/; $_ = "" if /^LEADINGZERO=0/; s,^LOCALMSN=\d+,LOCALMSN='"'$EAZ'"',; s,^REMOTEMSN=\d+,REMOTEMSN='"'$ISPPHONE'"',; s, out \$LEADINGZERO\$MSN, out \$MSN,;' /etc/isdn/device.$IPPPX
-                perl -i -pe '$_ = "" if /^# REMOVE the/; $_ = "" if /^# Warning! not configured yet!/; s,^name X.,name '"$ISPLOGIN"',; s,^#ms-get-dns,ms-get-dns,;' /etc/isdn/ipppd.$IPPPX
+
+                cp /usr/share/isdn/default/device.DEVICE "$tempfile"
+                perl -i -pe '$_ = "" if /^# REMOVE the/; $_ = "" if /^echo "Warning!/; $_ = "" if /^LEADINGZERO=0/; s,^LOCALMSN=\d+,LOCALMSN='"'$EAZ'"',; s,^REMOTEMSN=\d+,REMOTEMSN='"'$ISPPHONE'"',; s, out \$LEADINGZERO\$MSN, out \$MSN,;' "$tempfile"
+                ucf "$tempfile" /etc/isdn/device.$IPPPX
+                ucfr ipppd /etc/isdn/device.$IPPPX
+
+                gzip -dc /usr/share/doc/ipppd/examples/ipppd.DEVICE.gz > "$tempfile"
+                perl -i -pe '$_ = "" if /^# REMOVE the/; $_ = "" if /^# Warning! not configured yet!/; s,^name X.,name '"$ISPLOGIN"',; s,^#ms-get-dns,ms-get-dns,;' "$tempfile"
+                ucf "$tempfile" /etc/isdn/ipppd.$IPPPX
+                ucfr ipppd /etc/isdn/ipppd.$IPPPX
+
                 perl -i -pe "s,^\"?$ISPLOGIN\s,#\$&," /etc/ppp/pap-secrets /etc/ppp/chap-secrets
                 echo "# Added by automatic ipppd configuration" >> /etc/ppp/pap-secrets
                 echo "# Added by automatic ipppd configuration" >> /etc/ppp/chap-secrets
@@ -71,7 +80,7 @@ case "$1" in
             db_go
             set -e
         fi
-	;;
+        ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
 
