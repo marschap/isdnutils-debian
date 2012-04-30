@@ -5,58 +5,57 @@ set -e
 
 . /usr/share/debconf/confmodule
 
-DOWHAT="$1"
-OLDVERSION="$2"
+dowhat="$1"
 
-case "$DOWHAT" in
+case "$dowhat" in
     configure)
-	db_get isdnlog/countryprefix || true; COUNTRYPREFIX=$RET
-	db_get isdnlog/countrycode   || true; COUNTRYCODE=$RET
-	db_get isdnlog/areaprefix    || true; AREAPREFIX=$RET
-	db_get isdnlog/areacode      || true; AREACODE=$RET
-	db_get isdnlog/isdnrate-daemon || true; ISDNRATE_DAEMON=$RET
-	db_get isdnlog/country || true; COUNTRY=$RET
-	if [ "$COUNTRY" = other ]; then
+	db_get isdnlog/countryprefix || true; countryprefix=$RET
+	db_get isdnlog/countrycode   || true; countrycode=$RET
+	db_get isdnlog/areaprefix    || true; areaprefix=$RET
+	db_get isdnlog/areacode      || true; areacode=$RET
+	db_get isdnlog/isdnrate-daemon || true; isdnrate_daemon=$RET
+	db_get isdnlog/country       || true; country=$RET
+	if [ "$country" = other ]; then
             if db_get isdnlog/country_manual; then
-                COUNTRY=$RET
+                country=$RET
             else
-                COUNTRY=DE # cant happen
+                country=DE # cant happen
             fi
 	fi
-	country=`echo $COUNTRY | tr '[A-Z]' '[a-z]'`
+	country=`echo $country | tr '[A-Z]' '[a-z]'`
         if [ "$country" = other ]; then
             country=default
         fi
-        DEFDIR=/usr/share/doc/isdnlog/examples/
-        CONF=/etc/isdn/isdn.conf
+        defdir=/usr/share/doc/isdnlog/examples/
+        conffile=/etc/isdn/isdn.conf
         tempfile=$(mktemp -t isdnutils.XXXXXX)
         trap 'rm -f "$tempfile"' EXIT
         chmod uog+r "$tempfile"
 
-	for CFG in isdn.conf rate.conf; do
+	for cfg in isdn.conf rate.conf; do
 		# the sed call further down only affects isdn.conf
-		if [ -e $DEFDIR/$CFG.$country ]; then
-		    cat $DEFDIR/$CFG.$country
-		elif [ -e $DEFDIR/$CFG.$country.gz ]; then
-		    gzip -dc $DEFDIR/$CFG.$country.gz
-		elif [ -e $DEFDIR/$CFG.default ]; then
-		    cat $DEFDIR/$CFG.default
-		elif [ -e $DEFDIR/$CFG.default.gz ]; then
-		    gzip -dc $DEFDIR/$CFG.default.gz
-		elif [ -e $DEFDIR/$CFG ]; then
-		    cat $DEFDIR/$CFG
-		elif [ -e $DEFDIR/$CFG.gz ]; then
-		    gzip -dc $DEFDIR/$CFG.gz
+		if [ -e $defdir/$cfg.$country ]; then
+		    cat $defdir/$cfg.$country
+		elif [ -e $defdir/$cfg.$country.gz ]; then
+		    gzip -dc $defdir/$cfg.$country.gz
+		elif [ -e $defdir/$cfg.default ]; then
+		    cat $defdir/$cfg.default
+		elif [ -e $defdir/$cfg.default.gz ]; then
+		    gzip -dc $defdir/$cfg.default.gz
+		elif [ -e $defdir/$cfg ]; then
+		    cat $defdir/$cfg
+		elif [ -e $defdir/$cfg.gz ]; then
+		    gzip -dc $defdir/$cfg.gz
                 else
-		    echo "Warning: no suitable $CFG file found, proceeding with an empty one." >&2
+		    echo "Warning: no suitable $cfg file found, proceeding with an empty one." >&2
 		fi | sed \
-		 -e "/^[[:space:]]*COUNTRYPREFIX[[:space:]]*=/  c  COUNTRYPREFIX = $COUNTRYPREFIX" \
-		 -e "/^[[:space:]]*COUNTRYCODE[[:space:]]*=/    c  COUNTRYCODE   = $COUNTRYCODE" \
-		 -e "/^[[:space:]]*AREAPREFIX[[:space:]]*=/     c  AREAPREFIX    = $AREAPREFIX" \
-		 -e "/^[[:space:]]*AREACODE[[:space:]]*=/       c  ARECODE       = $ARECODE" \
+		 -e "/^[[:space:]]*COUNTRYPREFIX[[:space:]]*=/  c  COUNTRYPREFIX = $countryprefix" \
+		 -e "/^[[:space:]]*COUNTRYCODE[[:space:]]*=/    c  COUNTRYCODE   = $countrycode" \
+		 -e "/^[[:space:]]*AREAPREFIX[[:space:]]*=/     c  AREAPREFIX    = $areaprefix" \
+		 -e "/^[[:space:]]*AREACODE[[:space:]]*=/       c  AREACODE      = $areacode" \
 		  > "$tempfile"
-		ucf --three-way --debconf-ok "$tempfile" /etc/isdn/$CFG
-		ucfr isdnlog /etc/isdn/$CFG
+		ucf --three-way --debconf-ok "$tempfile" /etc/isdn/$cfg
+		ucfr isdnlog /etc/isdn/$cfg
 	done
 
         if [ ! -s /etc/isdn/isdnlog.isdnctrl0 ]; then
@@ -69,12 +68,12 @@ case "$DOWHAT" in
         ucf --three-way --debconf-ok "$tempfile" /etc/isdn/isdnlog.isdnctrl0
         ucfr isdnlog /etc/isdn/isdnlog.isdnctrl0
 
-        CONF=/etc/isdn/isdnrate.conf
+        conffile=/etc/isdn/isdnrate.conf
         daemon=false
         socket=/var/run/isdnrate/socket
-        if [ -s $CONF ]; then
+        if [ -s $conffile ]; then
             set +e
-            . $CONF
+            . $conffile
             set -e
         else
             md5sum=dummyvalue
@@ -83,15 +82,15 @@ case "$DOWHAT" in
               echo "# This file is sourced into a Bourne shell."
               echo ""
             ) > "$tempfile"
-            ucf --three-way --debconf-ok "$tempfile" $CONF
-            ucfr isdnlog $CONF
+            ucf --three-way --debconf-ok "$tempfile" $conffile
+            ucfr isdnlog $conffile
         fi
-        if [ "x$ISDNRATE_DAEMON" = "xyes" ]; then
+        if [ "x$isdnrate_daemon" = "xyes" ]; then
             daemon=true
         else
             daemon=false
         fi
-        cp -f $CONF "$tempfile"
+        cp -f $conffile "$tempfile"
         for var in socket daemon; do
           grep -e "^[[:space:]]*$var[[:space:]]*=" "$tempfile" || echo "$var=defaults" >> "$tempfile"
         done >/dev/null 2>&1
@@ -99,8 +98,8 @@ case "$DOWHAT" in
           -e "/^[[:space:]]*daemon[[:space:]]*=/  c  daemon=$daemon" \
           -e "/^[[:space:]]*socket[[:space:]]*=/  c  socket=$socket" \
           "$tempfile"
-	ucf --three-way --debconf-ok "$tempfile" $CONF
-	ucfr isdnlog $CONF
+	ucf --three-way --debconf-ok "$tempfile" $conffile
+	ucfr isdnlog $conffile
 	if [ -x /etc/init.d/isdnutils-base ]; then
 		invoke-rc.d isdnutils-base reload isdnlog
 	fi
@@ -112,7 +111,7 @@ case "$DOWHAT" in
     ;;
 
     *)
-        echo "postinst called with unknown argument \`$DOWHAT'" >&2
+        echo "postinst called with unknown argument \`$dowhat'" >&2
         exit 0
     ;;
 esac
