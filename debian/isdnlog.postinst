@@ -10,8 +10,12 @@ OLDVERSION="$2"
 
 case "$DOWHAT" in
     configure)
-        db_get isdnlog/country || true
-        COUNTRY=$RET
+	db_get isdnlog/countryprefix || true; COUNTRYPREFIX=$RET
+	db_get isdnlog/countrycode   || true; COUNTRYCODE=$RET
+	db_get isdnlog/areaprefix    || true; AREAPREFIX=$RET
+	db_get isdnlog/areacode      || true; AREACODE=$RET
+	db_get isdnlog/isdnrate-daemon || true; ISDNRATE_DAEMON=$RET
+	db_get isdnlog/country || true; COUNTRY=$RET
 	if [ "$COUNTRY" = other ]; then
             if db_get isdnlog/country_manual; then
                 COUNTRY=$RET
@@ -30,6 +34,7 @@ case "$DOWHAT" in
         chmod uog+r "$tempfile"
 
 	for CFG in isdn.conf rate.conf; do
+		# the perl call further down only affects isdn.conf
 		if [ -e $DEFDIR/$CFG.$country ]; then
 		    cat $DEFDIR/$CFG.$country
 		elif [ -e $DEFDIR/$CFG.$country.gz ]; then
@@ -44,28 +49,15 @@ case "$DOWHAT" in
 		    gzip -dc $DEFDIR/$CFG.gz
                 else
 		    echo "Warning: no suitable $CFG file found, proceeding with an empty one." >&2
-		fi > "$tempfile"
-		#XXX isdn.conf wird später nochmal verhackstückt
+		fi | perl -p \
+		 -e "s,^\s*COUNTRYPREFIX\s*=.*,COUNTRYPREFIX   = $COUNTRYPREFIX,;" \
+		 -e "s,^\s*COUNTRYCODE\s*=.*,COUNTRYCODE     = $COUNTRYCODE,;" \
+		 -e "s,^\s*AREAPREFIX\s*=.*,AREAPREFIX      = $AREAPREFIX,;" \
+		 -e "s,^\s*AREACODE\s*=.*,AREACODE        =  $AREACODE,;" \
+		  > "$tempfile"
 		ucf --three-way --debconf-ok "$tempfile" /etc/isdn/$CFG
 		ucfr isdnlog /etc/isdn/$CFG
 	done
-
-	db_get isdnlog/countryprefix || true; COUNTRYPREFIX=$RET
-	db_get isdnlog/countrycode   || true; COUNTRYCODE=$RET
-	db_get isdnlog/areaprefix    || true; AREAPREFIX=$RET
-	db_get isdnlog/areacode      || true; AREACODE=$RET
-        db_get isdnlog/isdnrate-daemon || true; ISDNRATE_DAEMON=$RET
-	perl -i -p \
-	 -e "s,^\s*COUNTRYPREFIX\s*=.*,COUNTRYPREFIX   = $COUNTRYPREFIX,;" \
-	 -e "s,^\s*COUNTRYCODE\s*=.*,COUNTRYCODE     = $COUNTRYCODE,;" \
-	 -e "s,^\s*AREAPREFIX\s*=.*,AREAPREFIX      = $AREAPREFIX,;" \
-	 -e "s,^\s*AREACODE\s*=.*,AREACODE        =  $AREACODE,;" \
-	 $CONF > "$tempfile"
-	ucf --three-way --debconf-ok "$tempfile" $CONF
-	ucfr isdnlog $CONF
-
-	 # -e "s,^\s*(RATEFILE.*(rate|country)-).*,\$1$country.dat,;"
-	 # -e "s,^\s*(RATEFILE.*zone-)..(.*),\$1$country\$2,;"
 
         if [ ! -s /etc/isdn/isdnlog.isdnctrl0 ]; then
             echo "Creating default /etc/isdn/isdnlog.isdnctrl0 ."
