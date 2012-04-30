@@ -34,7 +34,7 @@ case "$DOWHAT" in
         chmod uog+r "$tempfile"
 
 	for CFG in isdn.conf rate.conf; do
-		# the perl call further down only affects isdn.conf
+		# the sed call further down only affects isdn.conf
 		if [ -e $DEFDIR/$CFG.$country ]; then
 		    cat $DEFDIR/$CFG.$country
 		elif [ -e $DEFDIR/$CFG.$country.gz ]; then
@@ -49,11 +49,11 @@ case "$DOWHAT" in
 		    gzip -dc $DEFDIR/$CFG.gz
                 else
 		    echo "Warning: no suitable $CFG file found, proceeding with an empty one." >&2
-		fi | perl -p \
-		 -e "s,^\s*COUNTRYPREFIX\s*=.*,COUNTRYPREFIX   = $COUNTRYPREFIX,;" \
-		 -e "s,^\s*COUNTRYCODE\s*=.*,COUNTRYCODE     = $COUNTRYCODE,;" \
-		 -e "s,^\s*AREAPREFIX\s*=.*,AREAPREFIX      = $AREAPREFIX,;" \
-		 -e "s,^\s*AREACODE\s*=.*,AREACODE        =  $AREACODE,;" \
+		fi | sed \
+		 -e "/^[[:space:]]*COUNTRYPREFIX[[:space:]]*=/  c  COUNTRYPREFIX = $COUNTRYPREFIX" \
+		 -e "/^[[:space:]]*COUNTRYCODE[[:space:]]*=/    c  COUNTRYCODE   = $COUNTRYCODE" \
+		 -e "/^[[:space:]]*AREAPREFIX[[:space:]]*=/     c  AREAPREFIX    = $AREAPREFIX" \
+		 -e "/^[[:space:]]*AREACODE[[:space:]]*=/       c  ARECODE       = $ARECODE" \
 		  > "$tempfile"
 		ucf --three-way --debconf-ok "$tempfile" /etc/isdn/$CFG
 		ucfr isdnlog /etc/isdn/$CFG
@@ -91,17 +91,14 @@ case "$DOWHAT" in
         else
             daemon=false
         fi
-        cp $CONF "$tempfile"
-        if grep '^daemon=' "$tempfile" >/dev/null 2>&1; then
-            perl -i -pe "s/^daemon=.*/daemon=$daemon/" "$tempfile"
-        else
-            echo "daemon=$daemon" >> "$tempfile"
-        fi
-        if grep '^socket=' "$tempfile" >/dev/null 2>&1; then
-            perl -i -pe "s,^socket=.*,socket=$socket," "$tempfile"
-        else
-            echo "socket=$socket" >> "$tempfile"
-        fi
+        cp -f $CONF "$tempfile"
+        for var in socket daemon; do
+          grep -e "^[[:space:]]*$var[[:space:]]*=" "$tempfile" || echo "$var=defaults" >> "$tempfile"
+        done >/dev/null 2>&1
+        sed -i \
+          -e "/^[[:space:]]*daemon[[:space:]]*=/  c  daemon=$daemon" \
+          -e "/^[[:space:]]*socket[[:space:]]*=/  c  socket=$socket" \
+          "$tempfile"
 	ucf --three-way --debconf-ok "$tempfile" $CONF
 	ucfr isdnlog $CONF
 	if [ -x /etc/init.d/isdnutils-base ]; then
