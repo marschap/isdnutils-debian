@@ -5,7 +5,7 @@ Maintainer: Rolf Leggewie <foss@rolf.leggewie.biz>
 Uploaders: Jan-Michael Brummer <jan.brummer@tabos.org>
 DM-Upload-Allowed: yes
 Standards-Version: 3.9.3
-Build-Depends: debhelper (>= 7.0.50~), bzip2, libncurses5-dev | libncurses-dev,
+Build-Depends: debhelper (>= 8.1.0), bzip2, libncurses5-dev | libncurses-dev,
  xutils-dev | imake, tcl-dev, linuxdoc-tools (>=0.9.20), groff, libtool,
  libxaw7-dev, libreadline-dev, libpcap0.8-dev, autotools-dev,
  automake1.7, automake1.9, autoconf2.13, autoconf, libssl-dev, psutils,
