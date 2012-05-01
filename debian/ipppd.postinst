@@ -44,12 +44,12 @@ case "$1" in
 
                 cp /usr/share/isdn/default/device.DEVICE "$tempfile"
                 perl -i -pe '$_ = "" if /^# REMOVE the/; $_ = "" if /^echo "Warning!/; $_ = "" if /^LEADINGZERO=0/; s,^LOCALMSN=\d+,LOCALMSN='"'$EAZ'"',; s,^REMOTEMSN=\d+,REMOTEMSN='"'$ISPPHONE'"',; s, out \$LEADINGZERO\$MSN, out \$MSN,;' "$tempfile"
-                ucf "$tempfile" /etc/isdn/device.$IPPPX
+                ucf --three-way --debconf-ok "$tempfile" /etc/isdn/device.$IPPPX
                 ucfr ipppd /etc/isdn/device.$IPPPX
 
                 gzip -dc /usr/share/doc/ipppd/examples/ipppd.DEVICE.gz > "$tempfile"
                 perl -i -pe '$_ = "" if /^# REMOVE the/; $_ = "" if /^# Warning! not configured yet!/; s,^name X.,name '"$ISPLOGIN"',; s,^#ms-get-dns,ms-get-dns,;' "$tempfile"
-                ucf "$tempfile" /etc/isdn/ipppd.$IPPPX
+                ucf --three-way --debconf-ok "$tempfile" /etc/isdn/ipppd.$IPPPX
                 ucfr ipppd /etc/isdn/ipppd.$IPPPX
 
                 perl -i -pe "s,^\"?$ISPLOGIN\s,#\$&," /etc/ppp/pap-secrets /etc/ppp/chap-secrets
