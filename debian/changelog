@@ -1,3 +1,13 @@
+isdnutils (1:3.22+dfsg1-4) unstable; urgency=low
+
+  * isdnutils-base: stop shipping isdn_dwabclib.h. Closes: #671297
+  * {ipppd,isdnlog}.config: turn on abort on error
+  * ipppd: pass three-way and debconf-ok options to ucf
+  * debian/control: bump mimimum requirement for debhelper to version
+    8.1.0 for "dh build-arch"-support
+
+ -- Rolf Leggewie <foss@rolf.leggewie.biz>  Thu, 03 May 2012 16:10:35 +0800
+
 isdnutils (1:3.22+dfsg1-3) unstable; urgency=medium
 
   * isdnutils-base: use dh_installcron instead of postinst. Closes: #197254
