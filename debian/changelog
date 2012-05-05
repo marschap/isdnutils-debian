@@ -1,3 +1,10 @@
+isdnutils (1:3.22+dfsg1-5) unstable; urgency=low
+
+  * debian/rules: move to something resembling dh7 rules.tiny
+    still very ugly and with many long overrides in place
+
+ -- Rolf Leggewie <foss@rolf.leggewie.biz>  Sun, 06 May 2012 17:32:55 +0800
+
 isdnutils (1:3.22+dfsg1-4) unstable; urgency=low
 
   * isdnutils-base: stop shipping isdn_dwabclib.h. Closes: #671297
