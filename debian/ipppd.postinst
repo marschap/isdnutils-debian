@@ -69,16 +69,12 @@ case "$1" in
                 invoke-rc.d isdnutils-base reload ipppd || err=true
             fi
             if $err; then
-                set +e
-                db_input high ipppd/isdnutilsinitbad
+                db_input high ipppd/isdnutilsinitbad || true
                 db_go
-                set -e
             fi
         else
-            set +e
-            db_input high ipppd/noisdnutilsinit
+            db_input high ipppd/noisdnutilsinit || true
             db_go
-            set -e
         fi
         ;;
 
