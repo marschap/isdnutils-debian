@@ -111,6 +111,14 @@ override_dh_auto_install:
 
 	dh_auto_install
 
+override_dh_install:
+	set -e
+	for FILE in debian/*.install.in; \
+	do \
+		sed -e "s/@DEB_HOST_MULTIARCH@/$(DEB_HOST_MULTIARCH)/g" $$FILE > debian/`basename $$FILE .in`; \
+	done
+	dh_install
+
 override_dh_installexamples:
 	dh_installexamples -X.in
 

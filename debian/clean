@@ -10,6 +10,7 @@ capiinfo/configure
 capiinfo/Makefile.in
 capiinit/configure
 capiinit/Makefile.in
+debian/*.install
 eicon/configure
 isdnlog/client/config.cache
 isdnlog/client/config.status

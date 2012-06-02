@@ -1,0 +1,4 @@
+usr/include/*.h
+usr/lib/@DEB_HOST_MULTIARCH@/libcapi20*.a        usr/lib/@DEB_HOST_MULTIARCH@/
+usr/lib/@DEB_HOST_MULTIARCH@/libcapi20*.so       usr/lib/@DEB_HOST_MULTIARCH@/
+usr/lib/@DEB_HOST_MULTIARCH@/pkgconfig/capi20.pc usr/lib/@DEB_HOST_MULTIARCH@/pkgconfig/
