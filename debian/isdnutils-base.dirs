@@ -1,7 +1,6 @@
 etc/init.d
 etc/isdn
 usr/bin
-usr/lib/menu
 usr/sbin
 usr/share/doc/isdnutils-base/examples
 usr/share/isdn

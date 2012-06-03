@@ -1,0 +1,56 @@
+Description: add CONFIG_LIBDIR override to upstream build system.
+Author: Kees Cook <kees@debian.org>
+
+Index: isdnutils-3.9.20060704+dfsg.2/doc/Configure.help
+===================================================================
+--- isdnutils-3.9.20060704+dfsg.2.orig/doc/Configure.help	2011-12-08 12:38:24.511497774 -0800
++++ isdnutils-3.9.20060704+dfsg.2/doc/Configure.help	2011-12-08 12:40:22.569076580 -0800
+@@ -50,6 +50,12 @@
+   card configurationtools. All other programs are installed in
+   another directories, configurable in the previous options.
+ 
++Directory to install libraries
++CONFIG_LIBDIR
++  This option tells the installation process, where to put those
++  libraries which are usable for the entire system. This is usually
++  /usr/lib or /usr/lib/$arch_triplet.
++
+ Directory to install man pages
+ CONFIG_MANDIR
+   This option tells the installation process, where to put the
+Index: isdnutils-3.9.20060704+dfsg.2/scripts/defconfig
+===================================================================
+--- isdnutils-3.9.20060704+dfsg.2.orig/scripts/defconfig	2011-12-08 12:38:24.527497988 -0800
++++ isdnutils-3.9.20060704+dfsg.2/scripts/defconfig	2011-12-08 12:40:22.569076580 -0800
+@@ -15,6 +15,7 @@
+ CONFIG_BINDIR='/usr/bin'
+ CONFIG_SBINDIR='/sbin'
+ CONFIG_CARD_SBINDIR='/sbin'
++CONFIG_LIBDIR='/usr/lib'
+ CONFIG_MANDIR='/usr/man'
+ CONFIG_FIRMWAREDIR='/usr/lib/isdn'
+ CONFIG_RUNDIR='/var/run'
+Index: isdnutils-3.9.20060704+dfsg.2/Makefile
+===================================================================
+--- isdnutils-3.9.20060704+dfsg.2.orig/Makefile	2011-12-08 12:40:56.049524446 -0800
++++ isdnutils-3.9.20060704+dfsg.2/Makefile	2011-12-08 12:41:10.477717469 -0800
+@@ -9,7 +9,7 @@
+ 
+ all:	do-it-all
+ 
+-LIBDIR:=/usr/lib
++LIBDIR=$(CONFIG_LIBDIR)
+ 
+ #
+ # Make "config" the default target if there is no configuration file.
+diff --git a/scripts/config.in b/scripts/config.in
+--- a/scripts/config.in
++++ b/scripts/config.in
+@@ -26,6 +26,7 @@
+ string 'Directory to install binaries' CONFIG_BINDIR
+ string 'Directory to install admin binaries' CONFIG_SBINDIR
+ string 'Directory to install card configuration tools' CONFIG_CARD_SBINDIR
++string 'Directory to install libraries' CONFIG_LIBDIR
+ string 'Directory to install man pages' CONFIG_MANDIR
+ string 'Directory to install firmware' CONFIG_FIRMWAREDIR
+ comment 'Runtime defaults'

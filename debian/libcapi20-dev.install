@@ -1,4 +1,4 @@
 usr/include/*.h
-usr/lib/libcapi20*.a
-usr/lib/libcapi20*.so
-usr/lib/pkgconfig/capi20.pc
+usr/lib/*/libcapi20*.a
+usr/lib/*/libcapi20*.so
+usr/lib/*/pkgconfig/capi20.pc

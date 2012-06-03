@@ -2,6 +2,8 @@
 %:
 	dh $@
 
+DEB_HOST_MULTIARCH=$(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+
 override_dh_auto_build:
 	dh_testdir
 	: # update autotools files
@@ -65,8 +67,9 @@ override_dh_auto_build:
 	# so that local choice can be preserved.
 	test -f ../isdnutils.config && cp ../isdnutils.config .config || \
 	    sed -e "s#@KERNELDIR@#`pwd`/linux#" \
+	        -e "s#@LIBDIR@#/usr/lib/$(DEB_HOST_MULTIARCH)#" \
 		< debian/dotconfig > .config
-	$(MAKE) subconfig
+	CONFIG_LIBDIR=/usr/lib/$(DEB_HOST_MULTIARCH) $(MAKE) subconfig
 	$(MAKE)
 	cd isdnlog/tools/zone; $(MAKE) zonefiles
 	cd Mini-FAQ; make
@@ -105,6 +108,7 @@ override_dh_auto_install:
 	      debian/tmp/etc/isdn/isdn.conf     \
 	      debian/tmp/etc/isdn/rate.conf
 	rm -f debian/tmp/etc/services # this should be ignored
+
 	dh_auto_install
 
 override_dh_installexamples:
@@ -116,4 +120,4 @@ override_dh_link:
 	dh_link
 
 override_dh_shlibdeps:
-	dh_shlibdeps -L libcapi20-3 -l debian/libcapi20-3/usr/lib
+	dh_shlibdeps -L libcapi20-3 -l debian/libcapi20-3/usr/lib/$(DEB_HOST_MULTIARCH)
