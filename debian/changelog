@@ -1,3 +1,14 @@
+isdnutils (1:3.22+dfsg1-7) unstable; urgency=low
+
+  [ Kees Cook ]
+  * enable multi-arch. Closes: #651475
+
+  [ Rolf Leggewie ]
+  * backport 9f06a049dceb19 from upstream to fix FTBFS with compat 9
+  * dynamically create debian/*.install files to simplify backporting
+
+ -- Rolf Leggewie <foss@rolf.leggewie.biz>  Sun, 24 Jun 2012 00:56:11 +0800
+
 isdnutils (1:3.22+dfsg1-6) unstable; urgency=low
 
   * {isdnlog,ipppd}: protect more db_* calls with "||true". Closes:#671877
