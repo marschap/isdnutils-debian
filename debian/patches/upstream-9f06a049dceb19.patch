@@ -1,0 +1,57 @@
+Author: Peter Meiser <meiser@gmx-topmail.de>
+Date:   Mon May 21 11:36:29 2012 +0200
+
+    Fix some compile errors like:
+    
+    main.c: In function 'main':
+    main.c:243:9: error: format not a string literal and no format arguments [-Werror=format-security]
+    
+    Signed-off-by: Karsten Keil <kkeil@linux-pingi.de>
+
+picked from upstream 9f06a049dceb19b870132784b1b202bac8b682d9
+patch can be dropped after next upstream release
+
+diff --git a/ipppd/main.c b/ipppd/main.c
+index 57573b4..4752c29 100644
+--- a/ipppd/main.c
++++ b/ipppd/main.c
+@@ -240,7 +240,7 @@ int main(int argc,char **argv)
+         }
+     }
+     if (!ppp_ok) {
+-        fprintf(stderr, no_ppp_msg);
++        fprintf(stderr, "%s", no_ppp_msg);
+         exit(1);
+     }
+ 
+diff --git a/vbox/src/script.c b/vbox/src/script.c
+index 79977e6..2007fa3 100644
+--- a/vbox/src/script.c
++++ b/vbox/src/script.c
+@@ -450,7 +450,7 @@
+ 				break;
+ 
+ 			case VOICE_ACTION_TOUCHTONES:
+-				printstring(ip->result, touchtones);
++				printstring(ip->result, "%s", touchtones);
+ 				touchtones[0] = '\0';
+ 				break;
+ 
+@@ -499,7 +499,7 @@
+ 				break;
+ 
+ 			case VOICE_ACTION_TOUCHTONES:
+-				printstring(ip->result, touchtones);
++				printstring(ip->result, "%s", touchtones);
+ 				touchtones[0] = '\0';
+ 				break;
+ 
+@@ -548,7 +548,7 @@
+ 				break;
+ 
+ 			case VOICE_ACTION_TOUCHTONES:
+-				printstring(ip->result, touchtones);
++				printstring(ip->result, "%s", touchtones);
+ 				touchtones[0] = '\0';
+ 				break;
+ 
