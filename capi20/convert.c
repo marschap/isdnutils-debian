@@ -11,7 +11,11 @@
 #include <stddef.h>
 #include <time.h>
 #include <ctype.h>
+#ifdef HAVE_BYTESWAP_H
 #include <byteswap.h>
+#else
+#include "compat/byteswap.h"
+#endif
 
 #include "capi20.h"
 
@@ -547,13 +551,13 @@ unsigned capi_cmsg2message(_cmsg * cmsg, _cbyte * msg)
 
 	if (   cmsg->Command == CAPI_DATA_B3
 	    && (cmsg->Subcommand == CAPI_REQ || cmsg->Subcommand == CAPI_IND)) {
-		if (sizeof(void *) == 4) {
-			cmsg->Data32 = (_cdword) cmsg->Data;
-			cmsg->Data64 = 0;
-		} else {
-			cmsg->Data32 = 0;
-			cmsg->Data64 = (_cqword)(unsigned long)cmsg->Data;
-		}
+#if SIZEOF_VOID_P == 4
+		cmsg->Data32 = (_cdword) cmsg->Data;
+		cmsg->Data64 = 0;
+#else
+		cmsg->Data32 = 0;
+		cmsg->Data64 = (_cqword)(unsigned long)cmsg->Data;
+#endif
 	}
 
 	pars_2_message(cmsg);
@@ -633,11 +637,11 @@ unsigned capi_message2cmsg(_cmsg * cmsg, _cbyte * msg)
 
 	if (   cmsg->Command == CAPI_DATA_B3
 	    && (cmsg->Subcommand == CAPI_REQ || cmsg->Subcommand == CAPI_IND)) {
-		if (sizeof(void *) == 4) {
-				cmsg->Data = (void *) cmsg->Data32;
-		} else {
-				cmsg->Data = (void *)(unsigned long)cmsg->Data64;
-		}
+#if SIZEOF_VOID_P == 4
+			cmsg->Data = (void *) cmsg->Data32;
+#else
+			cmsg->Data = (void *)(unsigned long)cmsg->Data64;
+#endif
 	}
 
 	wordTRcpy(msg + 0, &cmsg->l);

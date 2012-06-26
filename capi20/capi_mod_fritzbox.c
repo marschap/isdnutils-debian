@@ -9,11 +9,24 @@
  * \author Jan-Michael Brummer, based upon the work by Marco Zissen
  */
 
+#ifndef __WIN32__
 #include <sys/socket.h>
+#include <netinet/in.h>
 #include <netdb.h>
+#else
+#include <winsock2.h>
+
+#define EMSGSIZE WSAEMSGSIZE
+#define MSG_DONTWAIT 0
+
+typedef unsigned int u_int32_t;
+typedef unsigned long u_int64_t;
+#endif
+
 #include <string.h>
 #include <stdio.h>
-#include <linux/capi.h>
+#include <stdint.h>
+#include "capi_defs.h"
 #include <errno.h>
 #include <unistd.h>
 #include "capi20.h"
@@ -57,30 +70,31 @@ static void fritzboxSetHeader( unsigned char **ppnPtr, short nLen, short nApplId
  */
 static int fritzboxRemoteCommand( int nHandle, unsigned char *pnBuffer, int nWrite ) {
 	unsigned char anTemp[ 2 ];
-	int nNum, nType, nLen;
+	int nLen;
+	ssize_t nNum;
 
 	/* write message to socket */
-	nNum = write( nHandle, pnBuffer, nWrite );
+	nNum = send( nHandle, ( char * ) pnBuffer, nWrite, 0 );
 	if ( nNum != nWrite ) {
 		return 0;
 	}
 
 	/* try to read header */
-	nNum = read( nHandle, anTemp, 2 );
+	nNum = recv( nHandle, ( char * ) anTemp, 2, 0 );
 	if ( nNum == 2 ) {
-		nType = anTemp[ 0 ];
+		/* Type: anTemp[ 0 ] */
 		nLen = anTemp[ 1 ];
 
 		/* ok, we have a header... now the rest */
-		nNum = read( nHandle, pnBuffer, nLen );
+		nNum = recv( nHandle, ( char * ) pnBuffer, nLen, 0 );
 		if ( nNum != nLen ) {
-			CapiDebug( 1, "[%s]: read got %x, want %x", __FUNCTION__, nNum, nLen );
+			CapiDebug( 1, "[%s]: read got %x, want %x\n", __FUNCTION__, nNum, nLen );
 			return 0;
 		}
 
 		return nNum;
 	} else {
-		CapiDebug( 1, "[%s]: read got %x, want 2", __FUNCTION__, nNum );
+		CapiDebug( 1, "[%s]: read got %x, want 2\n", __FUNCTION__, nNum );
 	}
 
 	/* uhm, error. return 0 */
@@ -96,28 +110,29 @@ static int fritzboxOpenSocket( void ) {
 	struct hostent *psHostInfo;
 	struct sockaddr_in sAddr;
 
-	/* Create new socket */
-	nHandle = socket( PF_INET, SOCK_STREAM, 0 );
-	if ( nHandle == -1 ) {
-		CapiDebug( 1, "[%s]: Could not create socket! (%d)", __FUNCTION__, nHandle );
-		return nHandle;
-	}
-
-	sAddr.sin_family = PF_INET;
-	sAddr.sin_port = htons( getPort() );
 	/* Retrieve hostname information */
-	psHostInfo = gethostbyname( getHostName() );
+	psHostInfo = gethostbyname( capi20ext_get_host() );
 	if ( psHostInfo != NULL ) {
+		/* Create new socket */
+		nHandle = socket( psHostInfo -> h_addrtype, SOCK_STREAM, 0 );
+		if ( nHandle == -1 ) {
+			CapiDebug( 1, "[%s]: Could not create socket! (%d)\n", __FUNCTION__, nHandle );
+			return nHandle;
+		}
+
+		sAddr.sin_family = psHostInfo -> h_addrtype;
+		sAddr.sin_port = htons( capi20ext_get_port() );
 		sAddr.sin_addr = *( struct in_addr * ) psHostInfo -> h_addr;
 
 		/* Connect socket to address */
-		if ( !connect( nHandle, ( struct sockaddr * ) &sAddr, sizeof( sAddr ) ) ) {
+		CapiDebug( 1, "[%s]; connect()\n", __FUNCTION__ );
+		if ( connect( nHandle, ( struct sockaddr * ) &sAddr, sizeof( sAddr ) ) != -1 ) {
 			/* no errors, return handle */
 			return nHandle;
 		}
-		CapiDebug( 1, "[%s]: Could not connect to port %d on '%s'. CapiOverTCP enabled??", __FUNCTION__, getPort(), getHostName() );
+		CapiDebug( 1, "[%s]: Could not connect to port %d on '%s'. CapiOverTCP enabled??\n", __FUNCTION__, capi20ext_get_port(), capi20ext_get_host() );
 	} else {
-		CapiDebug( 1, "[%s]: Could not resolve host '%s'", __FUNCTION__, getHostName() );
+		CapiDebug( 1, "[%s]: Could not resolve host '%s'\n", __FUNCTION__, capi20ext_get_host() );
 	}
 
 	/* error occured, either we could not connect to port or we couldn't find hostname
@@ -131,17 +146,17 @@ static int fritzboxOpenSocket( void ) {
  * \brief Check if fritzbox interface is available
  * \return file descriptor of socket (see fritzboxOpenSocket for more informations)
  */
-static unsigned fritzboxIsInstalled( void ) {
-	unsigned nHandle;
+static int fritzboxIsInstalled( void ) {
+	int nHandle;
 	char *pnHostName;
 
 	/* Check if we have valid data for hostname and port */
-	pnHostName = getHostName();
-	if ( strlen( pnHostName ) <= 0 ) {
-		setHostName( "fritz.box" );
+	pnHostName = capi20ext_get_host();
+	if ( pnHostName == NULL || strlen( pnHostName ) <= 0 ) {
+		return -1;
 	}
-	if ( getPort() == -1 ) {
-		setPort( 5031 );
+	if ( capi20ext_get_port() == -1 ) {
+		return -1;
 	}
 
 	/* we check if we can open a new socket to hostname:port */
@@ -197,7 +212,7 @@ static unsigned fritzboxRegister( unsigned nMaxB3Connection, unsigned nMaxB3Blks
 	/* Send message to socket and wait for answer */
 	if ( !( fritzboxRemoteCommand( nSock, anMessage, 23 ) ) ) {
 		/* Error occured, close socket and return error code -2 */
-		CapiDebug( 1, "Error: Unable to register CAPI! (ApplId: %d, MaxB3Con: %d, MaxB3Blks: %d, MaxB3Size: %d)", *pnApplId, nMaxB3Connection, nMaxB3Blks, nMaxSizeB3 );
+		CapiDebug( 1, "Error: Unable to register CAPI! (ApplId: %d, MaxB3Con: %d, MaxB3Blks: %d, MaxB3Size: %d)\n", *pnApplId, nMaxB3Connection, nMaxB3Blks, nMaxSizeB3 );
 		close( nSock );
 		return -2;
 	}
@@ -211,7 +226,7 @@ static unsigned fritzboxRegister( unsigned nMaxB3Connection, unsigned nMaxB3Blks
 
 	/* Fine, we have a new application id, set it to pnApplId and return socket handle */
 	*pnApplId = CAPIMSG_APPID( anMessage );
-	CapiDebug( 1, "Successfully registered CAPI (ApplId: %d, MaxB3Con: %d, MaxB3Blks: %d, MaxB3Size: %d)", *pnApplId, nMaxB3Connection, nMaxB3Blks, nMaxSizeB3 );
+	CapiDebug( 1, "Successfully registered CAPI (ApplId: %d, MaxB3Con: %d, MaxB3Blks: %d, MaxB3Size: %d)\n", *pnApplId, nMaxB3Connection, nMaxB3Blks, nMaxSizeB3 );
 
 	return nSock;
 }
@@ -238,15 +253,15 @@ static unsigned fritzboxRelease( int nSock, int nApplId ) {
 	put_byte( &pnPtr, 0x00 );
 
 	/* write message to socket */
-	if( write( nSock, anMessage, 17 ) != 17 ) {
+	if( send( nSock, ( char * ) anMessage, 17, MSG_DONTWAIT ) != 17 ) {
 		return 0;
 	}
 
 	/* try to read header */
-	read( nSock, anMessage, sizeof( anMessage ) );
+	recv( nSock, ( char * ) anMessage, sizeof( anMessage ), MSG_DONTWAIT );
 
 	/* well done, return no error */
-	CapiDebug( 3, "Successfully released CAPI (ApplId: %d)", nApplId );
+	CapiDebug( 3, "Successfully released CAPI (ApplId: %d)\n", nApplId );
 
 	return CapiNoError;
 }
@@ -285,13 +300,13 @@ static unsigned fritzboxPutMessage( int nSock, unsigned nApplId, unsigned char *
 	nLen += 3;
 
 	/* write data to socket */
-	nNum = write( nSock, anSendBuffer, nLen );
+	nNum = send( nSock, ( char * ) anSendBuffer, nLen, 0 );
 	if ( nNum != nLen ) {
-		CapiDebug( 3, "Error: Unable send CAPI_PUT_MESSAGE (nApplId: %d, Ctrl: %d, Cmd: %d, SubCmd: %d)", nApplId, anSendBuffer[ 11 ] & 0x7F, CAPIMSG_COMMAND( pnMsg ), CAPIMSG_SUBCOMMAND( pnMsg ) );
+		CapiDebug( 3, "Error: Unable send CAPI_PUT_MESSAGE (nApplId: %d, Ctrl: %d, Cmd: %d, SubCmd: %d)\n", nApplId, anSendBuffer[ 11 ] & 0x7F, CAPIMSG_COMMAND( pnMsg ), CAPIMSG_SUBCOMMAND( pnMsg ) );
 		return CapiMsgOSResourceErr;
 	}
 
-	CapiDebug( 3, "CAPI_PUT_MESSAGE (nApplId: %d, Ctrl: %d, Cmd: %d, SubCmd: %d)", nApplId, anSendBuffer[ 11 ] & 0x7F, CAPIMSG_COMMAND( pnMsg ), CAPIMSG_SUBCOMMAND( pnMsg ) );
+	CapiDebug( 3, "CAPI_PUT_MESSAGE (nApplId: %d, Ctrl: %d, Cmd: %d, SubCmd: %d)\n", nApplId, anSendBuffer[ 11 ] & 0x7F, CAPIMSG_COMMAND( pnMsg ), CAPIMSG_SUBCOMMAND( pnMsg ) );
 	return CapiNoError;
 }
 
@@ -303,22 +318,20 @@ static unsigned fritzboxPutMessage( int nSock, unsigned nApplId, unsigned char *
  * \return read len
  */
 static int readSocket( int nSock, unsigned char *pnBuffer, int nLen ) {
-	unsigned char anTemp[ 4096 ], *pnPtr;
-	int nTotLen, nReadLen, nActLen, nOrigLen, nType;
+	unsigned char anTemp[ 4096 ];
+	int nTotLen, nReadLen, nActLen, nOrigLen;
 	time_t nTime;
 
 	/* try to read the CAPI over TCP Header, 3 bytes */
-	if ( read( nSock, anTemp, 3 ) == 3 ) {
-		pnPtr = anTemp;
-
+	if ( recv( nSock, ( char * ) anTemp, 3, 0 ) == 3 ) {
 		/* Get message type and the total length of message */
-		nType = CAPIMSG_U8( anTemp, 0 );
+		/* nType = CAPIMSG_U8( anTemp, 0 ); */
 		nTotLen = nOrigLen = CAPIMSG_U16( anTemp, 1 );
 		nTime = time( NULL );
 		nReadLen = 0;
 
 		/* read message */
-		while ( ( ( nActLen = read( nSock, &anTemp[ nReadLen ], nTotLen ) ) < nTotLen ) && ( time( NULL ) < ( nTime + 5 ) ) ) {
+		while ( ( ( nActLen = recv( nSock, ( char * ) &anTemp[ nReadLen ], nTotLen, 0 ) ) < nTotLen ) && ( time( NULL ) < ( nTime + 5 ) ) ) {
 			if ( nActLen > 0 ) {
 				nTotLen -= nActLen;
 				nReadLen += nActLen;
@@ -381,37 +394,37 @@ static unsigned fritzboxGetMessage( int nSock, unsigned nApplId, unsigned char *
 			/* patch datahandle */
 			capimsg_setu16( pnBuffer, 18, nOffset );
 
-			if ( sizeof( void * ) == 4 ) {
-				/* 32bit case */
-				u_int32_t nData = ( ( ( u_int32_t ) pnBuffer ) + CAPIMSG_LEN( pnBuffer ) );
+#if SIZEOF_VOID_P == 4
+			/* 32bit case */
+			u_int32_t nData = ( ( ( u_int32_t ) pnBuffer ) + CAPIMSG_LEN( pnBuffer ) );
 
-				pnBuffer[ 12 ] = ( ( unsigned char ) nData & 0xFF );
-				pnBuffer[ 13 ] = ( ( unsigned char )( nData >> 8 ) & 0xFF );
-				pnBuffer[ 14 ] = ( ( unsigned char )( nData >> 16 ) & 0xFF );
-				pnBuffer[ 15 ] = ( ( unsigned char )( nData >> 24 ) & 0xFF );
-			} else {
-				/* 64bit case */
-				u_int64_t nData;
+			pnBuffer[ 12 ] = ( ( unsigned char ) nData & 0xFF );
+			pnBuffer[ 13 ] = ( ( unsigned char )( nData >> 8 ) & 0xFF );
+			pnBuffer[ 14 ] = ( ( unsigned char )( nData >> 16 ) & 0xFF );
+			pnBuffer[ 15 ] = ( ( unsigned char )( nData >> 24 ) & 0xFF );
+#else
+			/* 64bit case */
+			u_int64_t nData;
 
-				if ( CAPIMSG_LEN( pnBuffer ) < 30 ) {
-					memmove( pnBuffer + 30, pnBuffer + CAPIMSG_LEN( pnBuffer ), CAPIMSG_DATALEN( pnBuffer ) );
-					pnBuffer[ 0 ] = 30;
-					pnBuffer[ 1 ] = 0;
-				}
-
-				nData = ( ( ( ulong ) pnBuffer ) + CAPIMSG_LEN( pnBuffer ) );
-				pnBuffer[ 12 ] = pnBuffer[ 13 ] = pnBuffer[ 14 ] = pnBuffer[ 15 ] = 0;
-				pnBuffer[ 22 ] = nData & 0xFF;
-				pnBuffer[ 23 ] = ( nData >>  8 ) & 0xFF;
-				pnBuffer[ 24 ] = ( nData >> 16 ) & 0xFF;
-				pnBuffer[ 25 ] = ( nData >> 24 ) & 0xFF;
-				pnBuffer[ 26 ] = ( nData >> 32 ) & 0xFF;
-				pnBuffer[ 27 ] = ( nData >> 40 ) & 0xFF;
-				pnBuffer[ 28 ] = ( nData >> 48 ) & 0xFF;
-				pnBuffer[ 29 ] = ( nData >> 56 ) & 0xFF;
+			if ( CAPIMSG_LEN( pnBuffer ) < 30 ) {
+				memmove( pnBuffer + 30, pnBuffer + CAPIMSG_LEN( pnBuffer ), CAPIMSG_DATALEN( pnBuffer ) );
+				pnBuffer[ 0 ] = 30;
+				pnBuffer[ 1 ] = 0;
 			}
 
-			CapiDebug( 3, "CAPI_GET_MESSAGE (nApplId: %d, Ctrl: %d)", nApplId, pnBuffer[ 8 ] & 0x7F );
+			nData = ( ( ( ulong ) pnBuffer ) + CAPIMSG_LEN( pnBuffer ) );
+			pnBuffer[ 12 ] = pnBuffer[ 13 ] = pnBuffer[ 14 ] = pnBuffer[ 15 ] = 0;
+			pnBuffer[ 22 ] = nData & 0xFF;
+			pnBuffer[ 23 ] = ( nData >>  8 ) & 0xFF;
+			pnBuffer[ 24 ] = ( nData >> 16 ) & 0xFF;
+			pnBuffer[ 25 ] = ( nData >> 24 ) & 0xFF;
+			pnBuffer[ 26 ] = ( nData >> 32 ) & 0xFF;
+			pnBuffer[ 27 ] = ( nData >> 40 ) & 0xFF;
+			pnBuffer[ 28 ] = ( nData >> 48 ) & 0xFF;
+			pnBuffer[ 29 ] = ( nData >> 56 ) & 0xFF;
+#endif
+
+			CapiDebug( 3, "CAPI_GET_MESSAGE (nApplId: %d, Ctrl: %d)\n", nApplId, pnBuffer[ 8 ] & 0x7F );
 
 			/* keep buffer */
 			return CapiNoError;

@@ -8,13 +8,27 @@
  * \brief Melware remote capi implementation
  */
 
+#ifndef __WIN32__
 #include <sys/socket.h>
 #include <netdb.h>
+#include <netinet/in.h>
+#else
+#include <winsock2.h>
+
+#define EMSGSIZE WSAEMSGSIZE
+
+typedef unsigned short uint16_t;
+typedef unsigned int uint32_t;
+typedef unsigned int u_int32_t;
+typedef unsigned long u_int64_t;
+#endif
+
 #include <string.h>
 #include <stdio.h>
 #include <fcntl.h>
-#include <linux/capi.h>
+#include "capi_defs.h"
 #include <errno.h>
+#include <stdint.h>
 #include <unistd.h>
 #include "capi20.h"
 #include "capi_mod.h"
@@ -57,9 +71,9 @@ static int rcapiOpenSocket( void ) {
 	}
 
 	sAddr.sin_family = PF_INET;
-	sAddr.sin_port = htons( getPort() );
+	sAddr.sin_port = htons( capi20ext_get_port() );
 	/* Retrieve hostname information */
-	psHostInfo = gethostbyname( getHostName() );
+	psHostInfo = gethostbyname( capi20ext_get_host() );
 	if ( psHostInfo != NULL ) {
 		sAddr.sin_addr = *( struct in_addr * ) psHostInfo -> h_addr;
 
@@ -87,7 +101,7 @@ static int rcapiReadSocket( int nHandle, unsigned char *pnBuffer, int nLen ) {
 	time_t nTime;
 
 	/* try to read the header, 2 bytes */
-	if( read( nHandle, anTemp, 2 ) == 2 ) {
+	if( recv( nHandle, ( char * ) anTemp, 2, 0 ) == 2 ) {
 		pnPtr = anTemp;
 		/* Get message len */
 		nTotLen = nOrigLen = ( int ) get_netword( &pnPtr ) - 2;
@@ -95,7 +109,7 @@ static int rcapiReadSocket( int nHandle, unsigned char *pnBuffer, int nLen ) {
 		nReadLen = 0;
 
 		/* read message */
-		while ( ( ( nActLen = read( nHandle, &anTemp[ nReadLen ], nTotLen ) ) < nTotLen) && ( time( NULL ) < ( nTime + 5 ) ) ) {
+		while ( ( ( nActLen = recv( nHandle, ( char * ) &anTemp[ nReadLen ], nTotLen, 0 ) ) < nTotLen) && ( time( NULL ) < ( nTime + 5 ) ) ) {
 			if ( nActLen > 0 ) {
 				nTotLen -= nActLen;
 				nReadLen += nActLen;
@@ -134,10 +148,9 @@ static int rcapiReadSocket( int nHandle, unsigned char *pnBuffer, int nLen ) {
  */
 static int rcapiRemoteCommand( int nHandle, unsigned char *pnBuffer, int nLen, int nConf ) {
 	unsigned char *pnPtr;
-	int nNum;
 
 	/* write message to socket */
-	if ( write( nHandle, pnBuffer, nLen ) < nLen ) {
+	if ( send( nHandle, ( char * ) pnBuffer, nLen, 0 ) < nLen ) {
 		return 0;
 	}
 
@@ -183,7 +196,7 @@ static void rcapiSetHeader( unsigned char **ppnPtr, int nLen, _cword nCmd, _cdwo
  * \param nLength length of buffer
  * \param nDataMsg data message len
  */
-static void rcapiWriteCapiTrace(int nSend, unsigned char *pnBuffer, int nLength, int nDataMsg ) {
+void rcapiWriteCapiTrace(int nSend, unsigned char *pnBuffer, int nLength, int nDataMsg ) {
 	int nHandle;
 	_cdword nTime;
 	unsigned char anHeader[ 7 ];
@@ -193,7 +206,7 @@ static void rcapiWriteCapiTrace(int nSend, unsigned char *pnBuffer, int nLength,
 		return;
 	}
 
-	if ( getTraceLevel() < ( nDataMsg + 1 ) ) {
+	if ( capi20ext_get_tracelevel() < ( nDataMsg + 1 ) ) {
 		return;
 	}
 
@@ -211,10 +224,10 @@ static void rcapiWriteCapiTrace(int nSend, unsigned char *pnBuffer, int nLength,
  * \brief Check if rcapi interface is available
  * \return file descriptor of socket, or error code
  */
-static unsigned rcapiIsInstalled( void ) {
-	unsigned nHandle;
+static int rcapiIsInstalled( void ) {
+	int nHandle;
 
-	if ( strlen( getHostName() ) <= 0 || getPort() == -1 ) {
+	if ( strlen( capi20ext_get_host() ) <= 0 || capi20ext_get_port() == -1 ) {
 		return -1;
 	}
 
@@ -296,7 +309,7 @@ static unsigned rcapiPutMessage( int nSock, unsigned nApplId, unsigned char *pnM
 	memcpy( pnSendBuffer, pnMsg, nLen );
 
 	/* write data to socket */
-	nNum = write( nSock, anSendBuffer, nLen );
+	nNum = send( nSock, ( char * ) anSendBuffer, nLen, 0 );
     if ( nNum != nLen ) {
 	return CapiMsgOSResourceErr;
 	}
@@ -336,31 +349,31 @@ static unsigned rcapiGetMessage( int nSock, unsigned nApplId, unsigned char **pp
 			/* patch datahandle */
 			capimsg_setu16( pnBuffer, 18, nOffset );
 
-			if ( sizeof( void * ) == 4 ) {
-				u_int32_t nData = ( u_int32_t ) pnBuffer + CAPIMSG_LEN( pnBuffer );
-				pnBuffer[ 12 ] = nData & 0xFF;
-				pnBuffer[ 13 ] = ( nData >> 8 ) & 0xFF;
-				pnBuffer[ 14 ] = ( nData >> 16 ) & 0xFF;
-				pnBuffer[ 15 ] = ( nData >> 24 ) & 0xFF;
-			} else {
-				u_int64_t nData;
+#if SIZEOF_VOID_P == 4
+			u_int32_t nData = ( u_int32_t ) pnBuffer + CAPIMSG_LEN( pnBuffer );
+			pnBuffer[ 12 ] = nData & 0xFF;
+			pnBuffer[ 13 ] = ( nData >> 8 ) & 0xFF;
+			pnBuffer[ 14 ] = ( nData >> 16 ) & 0xFF;
+			pnBuffer[ 15 ] = ( nData >> 24 ) & 0xFF;
+#else
+			u_int64_t nData;
 
-				if ( CAPIMSG_LEN( pnBuffer ) < 30 ) {
-					memmove( pnBuffer + 30, pnBuffer + CAPIMSG_LEN( pnBuffer ), CAPIMSG_DATALEN( pnBuffer ) );
-					pnBuffer[ 0 ] = 30;
-					pnBuffer[ 1 ] = 0;
-				}
-				nData = ( ( ( ulong ) pnBuffer ) + CAPIMSG_LEN( pnBuffer ) );
-				pnBuffer[ 12 ] = pnBuffer[ 13 ] = pnBuffer[ 14 ] = pnBuffer[ 15 ] = 0;
-				pnBuffer[ 22 ] = nData & 0xFF;
-				pnBuffer[ 23 ] = ( nData >> 8 ) & 0xFF;
-				pnBuffer[ 24 ] = ( nData >> 16 ) & 0xFF;
-				pnBuffer[ 25 ] = ( nData >> 24 ) & 0xFF;
-				pnBuffer[ 26 ] = ( nData >> 32 ) & 0xFF;
-				pnBuffer[ 27 ] = ( nData >> 40 ) & 0xFF;
-				pnBuffer[ 28 ] = ( nData >> 48 ) & 0xFF;
-				pnBuffer[ 29 ] = ( nData >> 56 ) & 0xFF;
+			if ( CAPIMSG_LEN( pnBuffer ) < 30 ) {
+				memmove( pnBuffer + 30, pnBuffer + CAPIMSG_LEN( pnBuffer ), CAPIMSG_DATALEN( pnBuffer ) );
+				pnBuffer[ 0 ] = 30;
+				pnBuffer[ 1 ] = 0;
 			}
+			nData = ( ( ( ulong ) pnBuffer ) + CAPIMSG_LEN( pnBuffer ) );
+			pnBuffer[ 12 ] = pnBuffer[ 13 ] = pnBuffer[ 14 ] = pnBuffer[ 15 ] = 0;
+			pnBuffer[ 22 ] = nData & 0xFF;
+			pnBuffer[ 23 ] = ( nData >> 8 ) & 0xFF;
+			pnBuffer[ 24 ] = ( nData >> 16 ) & 0xFF;
+			pnBuffer[ 25 ] = ( nData >> 24 ) & 0xFF;
+			pnBuffer[ 26 ] = ( nData >> 32 ) & 0xFF;
+			pnBuffer[ 27 ] = ( nData >> 40 ) & 0xFF;
+			pnBuffer[ 28 ] = ( nData >> 48 ) & 0xFF;
+			pnBuffer[ 29 ] = ( nData >> 56 ) & 0xFF;
+#endif
 
 			/* keep buffer */
 			return CapiNoError;

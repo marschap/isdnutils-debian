@@ -24,7 +24,7 @@
 #include <sys/types.h>
 #define _LINUX_LIST_H
 #ifndef WIN32
-#include <linux/capi.h>
+#include "capi_defs.h"
 #endif
 #include <string.h>
 #include <unistd.h>
@@ -104,7 +104,7 @@ unsigned char *
 capi20_get_manufacturer(unsigned Ctrl, unsigned char *Buf)
 {
 	if (loadlib() < 0)
-		return "";
+		return (unsigned char *)"";
 	return fptr_capi20_get_manufacturer(Ctrl, Buf);
 }
 
@@ -116,7 +116,7 @@ unsigned char *
 capi20_get_version(unsigned Ctrl, unsigned char *Buf)
 {
 	if (loadlib() < 0)
-		return "";
+		return (unsigned char *)"";
 	return fptr_capi20_get_version(Ctrl, Buf);
 }
 
@@ -128,7 +128,7 @@ unsigned char *
 capi20_get_serial_number(unsigned Ctrl, unsigned char *Buf)
 {
 	if (loadlib() < 0)
-		return "";
+		return (unsigned char *)"";
 	return fptr_capi20_get_serial_number(Ctrl, Buf);
 }
 
