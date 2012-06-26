@@ -37,6 +37,11 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+@KERNEL_CAPI_TRUE@am__append_1 = lib_capi_mod_std.la
+@KERNEL_CAPI_TRUE@am__append_2 = -lrt
+@WIN32_TRUE@am__append_3 = -mwindows -mms-bitfields -Wl,-subsystem,windows -shared -Wl,-output-def,libcapi20.def --out-implib,libcapi20.dll.a -o libcapi20.dll -no-undefined -lws2_32
+@WIN32_TRUE@am__append_4 = -L.libs -lcapi20
+@WIN32_TRUE@am__append_5 = -L.libs -lcapi20
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(include_HEADERS) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
@@ -100,14 +105,17 @@ lib_capi_mod_rcapi_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(lib_capi_mod_rcapi_la_CFLAGS) $(CFLAGS) \
 	$(lib_capi_mod_rcapi_la_LDFLAGS) $(LDFLAGS) -o $@
-lib_capi_mod_std_la_DEPENDENCIES = libcapi20.la
-am_lib_capi_mod_std_la_OBJECTS = lib_capi_mod_std_la-capi_mod_std.lo
+@KERNEL_CAPI_TRUE@lib_capi_mod_std_la_DEPENDENCIES = libcapi20.la
+am__lib_capi_mod_std_la_SOURCES_DIST = capi_mod_std.c
+@KERNEL_CAPI_TRUE@am_lib_capi_mod_std_la_OBJECTS =  \
+@KERNEL_CAPI_TRUE@	lib_capi_mod_std_la-capi_mod_std.lo
 lib_capi_mod_std_la_OBJECTS = $(am_lib_capi_mod_std_la_OBJECTS)
 lib_capi_mod_std_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(lib_capi_mod_std_la_CFLAGS) $(CFLAGS) \
 	$(lib_capi_mod_std_la_LDFLAGS) $(LDFLAGS) -o $@
-libcapi20_la_LIBADD =
+@KERNEL_CAPI_TRUE@am_lib_capi_mod_std_la_rpath = -rpath $(modulesdir)
+libcapi20_la_DEPENDENCIES =
 am_libcapi20_la_OBJECTS = libcapi20_la-capi20.lo \
 	libcapi20_la-capifunc.lo libcapi20_la-convert.lo
 libcapi20_la_OBJECTS = $(am_libcapi20_la_OBJECTS)
@@ -133,7 +141,8 @@ SOURCES = $(libcapi20dyn_a_SOURCES) \
 DIST_SOURCES = $(libcapi20dyn_a_SOURCES) \
 	$(lib_capi_mod_fritzbox_la_SOURCES) \
 	$(lib_capi_mod_rcapi_la_SOURCES) \
-	$(lib_capi_mod_std_la_SOURCES) $(libcapi20_la_SOURCES)
+	$(am__lib_capi_mod_std_la_SOURCES_DIST) \
+	$(libcapi20_la_SOURCES)
 DATA = $(pc_DATA)
 HEADERS = $(include_HEADERS)
 ETAGS = etags
@@ -152,10 +161,12 @@ distcleancheck_listfiles = find . -type f -print
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AR = @AR@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BUILD = @BUILD@
 CAPI_MODULE_LOADER_VERSION = @CAPI_MODULE_LOADER_VERSION@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
@@ -165,6 +176,7 @@ CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -179,6 +191,7 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+KERNEL_CAPI = @KERNEL_CAPI@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBCAPI_VERSION = @LIBCAPI_VERSION@
@@ -192,6 +205,7 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -213,10 +227,12 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 VERSION = @VERSION@
+WIN32 = @WIN32@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
@@ -249,7 +265,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -273,25 +288,32 @@ include_HEADERS = capi20.h capiutils.h capicmd.h capi_mod.h capi_debug.h
 lib_LTLIBRARIES = libcapi20.la
 lib_LIBRARIES = libcapi20dyn.a
 libcapi20_la_SOURCES = capi20.c capifunc.c convert.c
-libcapi20_la_LDFLAGS = -version-info ${LIBCAPI_VERSION}:${LIBCAPI_VERSION_RELEASE}:${LIBCAPI_VERSION_AGE} -lrt -lc -ldl -rdynamic
+libcapi20_la_LDFLAGS = -version-info \
+	${LIBCAPI_VERSION}:${LIBCAPI_VERSION_RELEASE}:${LIBCAPI_VERSION_AGE} \
+	-lc -rdynamic $(am__append_2) $(am__append_3)
 libcapi20_la_CFLAGS = -fno-strict-aliasing -DLIBDIR=\"$(libdir)/capi\"
 modulesdir = $(libdir)/capi
-modules_LTLIBRARIES = lib_capi_mod_std.la lib_capi_mod_fritzbox.la lib_capi_mod_rcapi.la
-lib_capi_mod_std_la_SOURCES = capi_mod_std.c
-lib_capi_mod_std_la_CFLAGS = -fno-strict-aliasing
-lib_capi_mod_std_la_LDFLAGS = -shared -version-info @CAPI_MODULE_LOADER_VERSION@:0:0
-lib_capi_mod_std_la_LIBADD = libcapi20.la
+modules_LTLIBRARIES = lib_capi_mod_fritzbox.la lib_capi_mod_rcapi.la \
+	$(am__append_1)
+@KERNEL_CAPI_TRUE@lib_capi_mod_std_la_SOURCES = capi_mod_std.c
+@KERNEL_CAPI_TRUE@lib_capi_mod_std_la_CFLAGS = -fno-strict-aliasing
+@KERNEL_CAPI_TRUE@lib_capi_mod_std_la_LDFLAGS = -shared -version-info @CAPI_MODULE_LOADER_VERSION@:0:0 -module -no-undefined
+@KERNEL_CAPI_TRUE@lib_capi_mod_std_la_LIBADD = libcapi20.la
 lib_capi_mod_fritzbox_la_SOURCES = capi_mod_fritzbox.c
 lib_capi_mod_fritzbox_la_CFLAGS = -fno-strict-aliasing
-lib_capi_mod_fritzbox_la_LDFLAGS = -shared -version-info @CAPI_MODULE_LOADER_VERSION@:0:0
+lib_capi_mod_fritzbox_la_LDFLAGS = -shared -version-info \
+	@CAPI_MODULE_LOADER_VERSION@:0:0 -module -no-undefined \
+	$(am__append_4)
 lib_capi_mod_fritzbox_la_LIBADD = libcapi20.la
 lib_capi_mod_rcapi_la_SOURCES = capi_mod_rcapi.c
 lib_capi_mod_rcapi_la_CFLAGS = -fno-strict-aliasing
-lib_capi_mod_rcapi_la_LDFLAGS = -shared -version-info @CAPI_MODULE_LOADER_VERSION@:0:0
+lib_capi_mod_rcapi_la_LDFLAGS = -shared -version-info \
+	@CAPI_MODULE_LOADER_VERSION@:0:0 -module -no-undefined \
+	$(am__append_5)
 lib_capi_mod_rcapi_la_LIBADD = libcapi20.la
 libcapi20dyn_a_SOURCES = capidyn.c
 libcapi20dyn_a_CFLAGS = -fPIC
-# libcapi20_la_LIBADD = $(LIBADD_DL)
+libcapi20_la_LIBADD = $(LIBADD_DL)
 pcdir = ${libdir}/pkgconfig
 pc_DATA = capi20.pc
 all: all-am
@@ -437,7 +459,7 @@ lib_capi_mod_fritzbox.la: $(lib_capi_mod_fritzbox_la_OBJECTS) $(lib_capi_mod_fri
 lib_capi_mod_rcapi.la: $(lib_capi_mod_rcapi_la_OBJECTS) $(lib_capi_mod_rcapi_la_DEPENDENCIES) 
 	$(lib_capi_mod_rcapi_la_LINK) -rpath $(modulesdir) $(lib_capi_mod_rcapi_la_OBJECTS) $(lib_capi_mod_rcapi_la_LIBADD) $(LIBS)
 lib_capi_mod_std.la: $(lib_capi_mod_std_la_OBJECTS) $(lib_capi_mod_std_la_DEPENDENCIES) 
-	$(lib_capi_mod_std_la_LINK) -rpath $(modulesdir) $(lib_capi_mod_std_la_OBJECTS) $(lib_capi_mod_std_la_LIBADD) $(LIBS)
+	$(lib_capi_mod_std_la_LINK) $(am_lib_capi_mod_std_la_rpath) $(lib_capi_mod_std_la_OBJECTS) $(lib_capi_mod_std_la_LIBADD) $(LIBS)
 libcapi20.la: $(libcapi20_la_OBJECTS) $(libcapi20_la_DEPENDENCIES) 
 	$(libcapi20_la_LINK) -rpath $(libdir) $(libcapi20_la_OBJECTS) $(libcapi20_la_LIBADD) $(LIBS)
 

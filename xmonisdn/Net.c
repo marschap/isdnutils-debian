@@ -237,7 +237,7 @@ static void Initialize (request, new, args, num_args)
  * paranoia_check - enhanced security.
  *
  * refuse execution, if cmd is NOT owned by
- * root or writeable by group or world.
+ * root or writable by group or world.
  *
  */
 

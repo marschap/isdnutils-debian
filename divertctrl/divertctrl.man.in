@@ -97,7 +97,7 @@ A value of 0 lets the call to be ignored. The call will not be reported through 
 A value of 1 will report the call through the ascii interface but no other action will take place. If the value 2 is specified the call will be reported through the ascii interface and actively put in a local proceeding state.
 This means that the providers exchange is told, that your side needs more time to check whether the call may be handled and in which way this will be done.
 This value only is intended for use with local or remote client software watching the ascii interface and deciding what to do. No ringing signal is send to the caller until the decision has been made or a timeout (typically 5 to 15 seconds) occurs.
-An example would be a software which announces the call to a user and requests the desired action. At the moment a client software is under development, but still not available, so this value may only be intersting for programmers which want to write their own client.
+An example would be a software which announces the call to a user and requests the desired action. At the moment a client software is under development, but still not available, so this value may only be interesting for programmers which want to write their own client.
 If value of 4 is specified the call will be actively rejected.
 The value of 5 is not primary an diversion function and allows an i4l
 network device to be started for dialing out when the rule

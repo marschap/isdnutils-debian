@@ -78,6 +78,16 @@ char *capi20ext_get_raw_devname(
 
 int capi20ext_ncci_opencount(unsigned applid, unsigned ncci);
 
+void capi20ext_set_port( int nPortNumber );
+void capi20ext_set_host( char *pnHostName );
+void capi20ext_set_driver( char *pnDriver );
+void capi20ext_set_tracelevel( int level );
+
+char *capi20ext_get_driver( void );
+char *capi20ext_get_host( void );
+int capi20ext_get_port( void );
+int capi20ext_get_tracelevel( void );
+
 /* end extentions functions (no standard functions) */
 
 #ifdef __cplusplus

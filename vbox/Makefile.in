@@ -270,8 +270,8 @@ scripts-d:	  ignore
 		  @cd $(TOPDIR)/utils && $(MAKE) distclean
 
 scripts-i:	  ignore
-		  @echo "Installing '$(DESTDIR)$(bindir)/vboxmail'..."
-		  @$(INSTALL_SHBIN) $(TOPDIR)/utils/vboxmail $(DESTDIR)$(bindir)/vboxmail
+		  @echo "Installing '$(DESTDIR)$(sbindir)/vboxmail'..."
+		  @$(INSTALL_SHBIN) $(TOPDIR)/utils/vboxmail $(DESTDIR)$(sbindir)/vboxmail
 		  @echo "Installing '$(DESTDIR)$(bindir)/vboxplay'..."
 		  @$(INSTALL_SHBIN) $(TOPDIR)/utils/vboxplay $(DESTDIR)$(bindir)/vboxplay
 

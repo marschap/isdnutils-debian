@@ -71,8 +71,8 @@ Values are e.g. "010" for DE, "10" for AT, "16:17" for NL, "9" for FR.
 
 .TP
 .B \-R\fIprefix\fB	preselected="value"
-Set the preselected (i.e the provider choosen, if no prefix is dialed)
-provider to value. Value should be without \fIvbn\fR.
+Set the preselected provider (i.e the chosen provider, if no prefix is dialed)
+to value. Value should be without \fIvbn\fR.
 
 .TP
 .BI	 skipProv= skiplist
