@@ -18,7 +18,7 @@ will override variables in isdn.conf, and variables in ~/.isdn will
 override variables in both files. First all variables are read, then they
 are substituted, so a variable defined in ~/.isdn can be used in isdn.conf.
 This might be a security hole. However, if programs are to be run as root,
-these files (and the program) cannot be writeable for non-root users.
+these files (and the program) cannot be writable for non-root users.
 
 Using variables: if a reference to a non existing variable is used,
 isdnrep and isdnlog will give warning messages, and use the variable

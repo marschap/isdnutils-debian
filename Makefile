@@ -5,11 +5,9 @@
 
 .EXPORT_ALL_VARIABLES:
 
-export I4LVERSION = 3.22
+export I4LVERSION = 3.25
 
 all:	do-it-all
-
-LIBDIR:=/usr/lib
 
 #
 # Make "config" the default target if there is no configuration file.
@@ -49,9 +47,6 @@ ifeq ($(CONFIG_IPROFD),y)
 endif
 ifeq ($(CONFIG_ICNCTRL),y)
 	SUBDIRS := $(SUBDIRS) icn
-endif
-ifeq ($(CONFIG_PCBITCTL),y)
-	SUBDIRS := $(SUBDIRS) pcbit
 endif
 ifeq ($(CONFIG_HISAXCTRL),y)
 	SUBDIRS := $(SUBDIRS) hisax
@@ -204,10 +199,10 @@ subconfig: scripts/autoconf.h
 	@set -e; for i in `echo $(BUILD_ONLY) $(SUBDIRS)`; do \
 		if [ $$i = eicon ] ; then \
 			/bin/echo -e "\nRunning configure in $$i ...\n"; sleep 1; \
-			(cd $$i; ./configure --with-sbin=$(CONFIG_SBINDIR) --bindir=$(CONFIG_BINDIR) --with-man=$(CONFIG_MANDIR) --datadir=$(CONFIG_DATADIR) --libdir=$(LIBDIR) --with-firmware=$(CONFIG_DATADIR) || $(MAKE) -C ../ ERRDIR=$$i cfgerror); \
+			(cd $$i; ./configure --with-sbin=$(CONFIG_SBINDIR) --bindir=$(CONFIG_BINDIR) --with-man=$(CONFIG_MANDIR) --datadir=$(CONFIG_DATADIR) --libdir=$(CONFIG_LIBDIR) --with-firmware=$(CONFIG_DATADIR) || $(MAKE) -C ../ ERRDIR=$$i cfgerror); \
 		elif [ -x $$i/configure ] ; then \
 			/bin/echo -e "\nRunning configure in $$i ...\n"; sleep 1; \
-			(cd $$i; ./configure --sbindir=$(CONFIG_SBINDIR) --bindir=$(CONFIG_BINDIR) --mandir=$(CONFIG_MANDIR) --datadir=$(CONFIG_DATADIR) --libdir=$(LIBDIR) || $(MAKE) -C ../ ERRDIR=$$i cfgerror); \
+			(cd $$i; ./configure --sbindir=$(CONFIG_SBINDIR) --bindir=$(CONFIG_BINDIR) --mandir=$(CONFIG_MANDIR) --datadir=$(CONFIG_DATADIR) --libdir=$(CONFIG_LIBDIR) || $(MAKE) -C ../ ERRDIR=$$i cfgerror); \
 		elif [ -f $$i/Makefile.in ] ; then \
 			/bin/echo -e "\nRunning make -f Makefile.in config in $$i ...\n"; sleep 1; \
 			$(MAKE) -C $$i -f Makefile.in config; \

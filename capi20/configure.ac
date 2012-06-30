@@ -23,19 +23,22 @@ AC_ARG_ENABLE([V2],
 
 AM_INIT_AUTOMAKE(libcapi20,${LIBCAPI_VERSION}.${LIBCAPI_VERSION_RELEASE})
 AC_PREFIX_DEFAULT(/usr)
+AC_SUBST(BUILD)
 
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
 AM_PROG_LIBTOOL
+AC_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
 AC_OBJEXT
 AC_PATH_PROG(SED,sed)
 
+AC_LIBTOOL_WIN32_DLL
+
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS(fcntl.h sys/ioctl.h unistd.h)
-AC_CHECK_HEADERS(linux/capi.h)
 
 AC_COMPUTE_INT([CAPI_MODULE_LOADER_VERSION], [[MODULE_LOADER_VERSION]],
 	[
@@ -49,6 +52,36 @@ AC_SUBST(CAPI_MODULE_LOADER_VERSION)
 
 dnl Checks for library functions.
 AC_CHECK_FUNCS(select)
+AC_SEARCH_LIBS([dlopen], dl)
+
+dnl check OS
+AC_CANONICAL_HOST
+case "$host" in
+  *linux*)
+    AC_CHECK_HEADERS(linux/capi.h,,AC_MSG_ERROR( Required header (linux/capi.h) missing ))
+    kernel_capi=true
+    win32=false
+    ;;
+  *-*-*mingw*)
+    kernel_capi=false
+    win32=true
+    ;;
+  *)
+    kernel_capi=false
+    win32=false
+    ;;
+esac
+AM_CONDITIONAL(WIN32, test "x$win32" = xtrue)
+AC_SUBST(WIN32)
+
+AM_CONDITIONAL(KERNEL_CAPI, test x$kernel_capi = xtrue)
+AC_SUBST(KERNEL_CAPI)
+
+dnl Check for required types
+AC_TYPE_UINT16_T
+AC_TYPE_UINT32_T
+AC_CHECK_TYPE([ulong], [AC_DEFINE([C_ULONG_DEFINED], [1], [Define to 1 if the ulong type exists in C.])])
+AC_CHECK_SIZEOF(void *)
 
 AC_SUBST(INSTALL)
 AC_SUBST(LIBCAPI_VERSION)

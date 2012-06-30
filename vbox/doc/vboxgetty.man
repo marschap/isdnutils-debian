@@ -38,12 +38,12 @@ I5:2345:respawn:@SBINDIR@/vboxgetty -d /dev/ttyI5
 
 The next step is to set up a working configuration for all ports in
 @I4LCONFDIR@/vboxgetty.conf: read vboxgetty.conf(5) how to do this and
-look at the example config file in /usr/doc/isdnutils/examples.
+look at the example config file in /usr/share/doc/isdnvboxserver/examples.
 
 You should then create the spool directories for each user:
 @SPOOLDIR@/<user>, @SPOOLDIR@/<user>/incoming and
 @SPOOLDIR@/<user>/messages. Copy the example config files vbox.conf
-and standard.tcl from /usr/doc/isdnutils/examples to
+and standard.tcl from /usr/share/isdnvboxserver/default/ to
 @SPOOLDIR@/<user>, read the man pages vbox.conf(5) and vboxtcl(5)
 and edit these config files. 
 

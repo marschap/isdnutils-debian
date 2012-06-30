@@ -24,8 +24,15 @@
 #ifndef CAPI_MOD_H
 #define CAPI_MOD_H
 
+#include "capi20.h"
+
+/* define ulong if not defined */
+#ifndef C_ULONG_DEFINED
+typedef unsigned long ulong;
+#endif
+
 struct sModuleOperations {
-	unsigned ( *IsInstalled )( void );
+	int ( *IsInstalled )( void );
 	unsigned ( *Register )( unsigned nMaxB3Connection, unsigned nMaxB3Blks, unsigned nMaxSizeB3, unsigned *pnApplId );
 	unsigned ( *Release )( int nHandle, int nApplId );
 	unsigned ( *PutMessage )( int nHandle, unsigned nApplId, unsigned char *pnMessage );
@@ -51,8 +58,6 @@ struct sModule {
 	struct sModuleOperations *psOperations;
 } __attribute__ ((packed));
 
-char *getHostName( void );
-int getPort( void );
 unsigned char *capi_get_buffer( unsigned , size_t *, unsigned * );
 void capi_save_datahandle(unsigned, unsigned, unsigned, unsigned);
 unsigned capi_return_buffer(unsigned, unsigned);
@@ -67,6 +72,14 @@ int capi_validapplid(unsigned);
 int capi_applid2fd(unsigned);
 
 unsigned capi_return_buffer(unsigned applid, unsigned);
+
+void CapiDebug(int nLevel, const char *pnFormat, ...);
+unsigned short get_word( unsigned char **ppnPtr );
+unsigned short get_netword( unsigned char **ppnPtr );
+unsigned char *put_byte( unsigned char **ppnPtr, _cbyte nVal );
+unsigned char *put_word( unsigned char **ppnPtr, _cword nVal );
+unsigned char *put_dword( unsigned char **ppnPtr, _cdword nVal );
+unsigned char *put_netword( unsigned char **ppnPtr, _cword nVal );
 
 #define MODULE_LOADER_VERSION		2
 

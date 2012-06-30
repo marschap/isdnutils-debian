@@ -240,7 +240,7 @@ int main(int argc,char **argv)
         }
     }
     if (!ppp_ok) {
-        fprintf(stderr, no_ppp_msg);
+        fprintf(stderr, "%s", no_ppp_msg);
         exit(1);
     }
 

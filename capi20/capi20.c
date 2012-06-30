@@ -9,8 +9,19 @@
  *
  */
 
-#include <sys/types.h>
+#ifndef __WIN32__
 #include <sys/ioctl.h>
+#include <sys/mman.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#else
+#include <winsock2.h>
+typedef unsigned int u_int32_t;
+typedef unsigned long u_int64_t;
+#endif
+
+#include <sys/types.h>
 #include <dirent.h>
 #include <dlfcn.h>
 #include <fcntl.h>
@@ -23,15 +34,15 @@
 #include <assert.h>
 #include <stdarg.h>
 #define _LINUX_LIST_H
-#include <linux/capi.h>
+#include "capi_defs.h"
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <sys/mman.h>
 #include <sys/stat.h>
 #include <semaphore.h>
+#ifdef HAVE_BYTESWAP_H
+#include <byteswap.h>
+#else
+#include "compat/byteswap.h"
+#endif
 
 
 
@@ -50,8 +61,18 @@
 
 #define MAX_APPL 1024
 
-static sem_t	*capi_sem;
-static int	shm_mem_fd = -1;
+#ifdef _BIG_ENDIAN
+#define dword2ptr(x) (void *) bswap_32(x)
+#define qword2ptr(x) (void *) bswap_64(x)
+#else
+#define dword2ptr(x) x
+#define qword2ptr(x) x
+#endif
+
+#if __linux__
+static sem_t *capi_sem;
+static int shm_mem_fd = -1;
+#endif
 
 static struct shr_applids {
 	unsigned int	init_done :1;
@@ -79,27 +100,27 @@ static short port = -1;
 static char driver[1024] = "";
 static char hostname[1024] = "";
 
-static int tracelevel;
+static int tracelevel=0xff;
 static char *tracefile;
 
 static void lock_capi_shared(void)
 {
+#ifdef __linux__
 	while (sem_wait(capi_sem)) {
 		if (errno != EINTR) {
 			fprintf(stderr, "sem_wait() returned error %d - %s\n", errno, strerror(errno));
 		}
 	}
+#endif
 }
 
 static void unlock_capi_shared(void)
 {
+#ifdef __linux__
 	if (sem_post(capi_sem))
 		fprintf(stderr, "sem_post() returned error %d - %s\n", errno, strerror(errno));
+#endif
 }
-
-
-/** debug level, for debugging purpose */
-static int nDebugLevel = 0;
 
 
 static int stderr_vprint(const char *file, int line, const char *func, const char *fmt, va_list va)
@@ -136,7 +157,7 @@ void register_dbg_vprintf(capi_debug_t fn)
  * \param pnFormat formatted string
  */
 void CapiDebug(int nLevel, const char *pnFormat, ...) {
-	if (nLevel <= nDebugLevel) {
+	if (nLevel <= tracelevel) {
 		va_list pArgs;
 
 		va_start(pArgs, pnFormat);
@@ -151,12 +172,17 @@ void capi_dump_shared(void)
 
 	capi_dprintf("MapAddress: %p\n", appids);
 	capi_dprintf("MapSize:    %zd\n", CAPI20_SHARED_MEM_SIZE);
+#ifdef __linux__
 	if (capi_sem) {
 		ret = sem_getvalue(capi_sem, &val);
 	} else {
 		ret = 0;
 		val = 9999999;
 	}
+#else
+	ret = 0;
+	val = 9999999;
+#endif
 	capi_dprintf("Semaphore: %d (ret=%d)\n", val, ret);
 	if (appids) {
 		capi_dprintf("Shared memory %s\n", appids->init_done ? "initialized" : "not initialized");
@@ -334,20 +360,36 @@ static int read_config(void)
 	return(1);
 }
 
-int getPort( void ) {
+int capi20ext_get_port( void ) {
 	return port;
 }
 
-void setPort( int nPortNumber ) {
+void capi20ext_set_port( int nPortNumber ) {
 	port = nPortNumber;
 }
 
-char *getHostName( void ) {
+char *capi20ext_get_host( void ) {
 	return hostname;
 }
 
-void setHostName( char *pnHostName ) {
+void capi20ext_set_host( char *pnHostName ) {
 	snprintf( hostname, sizeof( hostname ), "%s", pnHostName );
+}
+
+char *capi20ext_get_driver( void ) {
+	return driver;
+}
+
+void capi20ext_set_driver( char *pnDriver ) {
+	snprintf( driver, sizeof( driver ), "%s", pnDriver );
+}
+
+int capi20ext_get_tracelevel() {
+	return tracelevel;
+}
+
+void capi20ext_set_tracelevel(int level) {
+	tracelevel = level;
 }
 
 /*
@@ -639,7 +681,7 @@ static int RegisterModule( struct sModule *psMod ) {
  * \param pnName full path name to module
  * \return error code, see RegisterModule
  */
-static int LoadModule( char *pnName ) {
+static int LoadCapiModule( char *pnName ) {
 	struct sModule *psMod;
 	void *pHandle;
 	typedef int ( *InitModule )( struct sModule *psModule );
@@ -695,15 +737,46 @@ static void InitModules( char *pnModuleDir ) {
 	struct dirent *psEntry;
 	char *pnFullName;
 	int nLen, pf_len;
-	char mod_vers[8];
+	char mod_vers[10];
+
+	if ( psModuleList != NULL ) {
+		CapiDebug( 1, "Already initialized\n" );
+		return;
+	}
 
 	/* try to open module directory */
+#ifdef WIN32
+	char anAppPath[ MAX_PATH ];
+	char anPath[ MAX_PATH ];
+	int nIndex;
+
+	memset( anAppPath, 0, sizeof( anAppPath ) );
+	GetModuleFileName( NULL, anAppPath, sizeof( anAppPath ) );
+	for ( nIndex = strlen( anAppPath ) - 1; nIndex >= 0; nIndex-- ) {
+		if ( anAppPath[ nIndex ] == '\\' ) {
+			anAppPath[ nIndex ] = '\0';
+			break;
+		}
+	}
+	snprintf( anPath, sizeof( anPath ), "%s/../%s", anAppPath, pnModuleDir );
+	pnModuleDir = anPath;
+	printf("path: %s\n", pnModuleDir );
 	psDir = opendir( pnModuleDir );
+#else
+	psDir = opendir( pnModuleDir );
+#endif
+
 	if ( psDir != NULL ) {
 		/* read entry by entry */
-		pf_len = snprintf(mod_vers, 8, ".so.%d", MODULE_LOADER_VERSION);
+#if __APPLE__ && __MACH__
+		pf_len = snprintf(mod_vers, 10, "%d.dylib", MODULE_LOADER_VERSION);
+#elif __WIN32__
+		pf_len = snprintf(mod_vers, 10, ".dll");
+#else
+		pf_len = snprintf(mod_vers, 10, ".so.%d", MODULE_LOADER_VERSION);
+#endif
 		while ( ( psEntry = readdir( psDir ) ) != NULL )  {
-			/* skip ".", ".." and files which do not end with "so" */
+			/* skip ".", ".." and files which do not end with module suffix */
 			nLen = strlen( psEntry -> d_name );
 
 			switch ( nLen ) {
@@ -731,7 +804,7 @@ static void InitModules( char *pnModuleDir ) {
 				/* create full name */
 				snprintf( pnFullName, nLen, "%s/%s", pnModuleDir, psEntry -> d_name );
 				/* load module */
-				LoadModule( pnFullName );
+				LoadCapiModule( pnFullName );
 
 				/* free full name */
 				free( pnFullName );
@@ -753,7 +826,11 @@ unsigned capi20_isinstalled( void ) {
 	}
 
 	/* Load and initialize modules */
+#ifdef __WIN32__
+	InitModules( "lib/capi/" );
+#else
 	InitModules( LIBDIR );
+#endif
 
 	if ( psModuleList == NULL ) {
 		/* if no modules are loaded, psModuleList is NULL, abort */
@@ -769,9 +846,11 @@ unsigned capi20_isinstalled( void ) {
 		psList = psModuleList;
 		while ( psList != NULL ) {
 
+			CapiDebug( 1, "[%s]: standard loop - module: %s\n", __FUNCTION__, psList -> psMod -> pnName );
 			if ( !strcasecmp( psList -> psMod -> pnName, "standard" ) ) {
 				psModule = psList -> psMod;
 				capi_fd = psModule -> psOperations -> IsInstalled();
+				CapiDebug( 1, "[%s]: capi_fd: %d\n", __FUNCTION__, capi_fd );
 				if ( capi_fd >= 0 ) {
 					/* no error */
 					return CapiNoError;
@@ -783,9 +862,11 @@ unsigned capi20_isinstalled( void ) {
 		/* no standard device detect, try the other modules */
 		psList = psModuleList;
 		while ( psList != NULL ) {
+			CapiDebug( 1, "[%s]: other loop - module: %s\n", __FUNCTION__, psList -> psMod -> pnName );
 			if ( strcasecmp( psList -> psMod -> pnName, "standard" ) ) {
 				psModule = psList -> psMod;
 				capi_fd = psModule -> psOperations -> IsInstalled();
+				CapiDebug( 1, "[%s]: capi_fd: %d\n", __FUNCTION__, capi_fd );
 				if ( capi_fd >= 0 ) {
 					/* no error */
 					return CapiNoError;
@@ -810,6 +891,7 @@ unsigned capi20_isinstalled( void ) {
 		}
 	}
 
+	CapiDebug( 1, "[%s]: CapiRegNotInstalled\n", __FUNCTION__ );
 	/* uhh, not installed */
 	return CapiRegNotInstalled;
 }
@@ -862,6 +944,12 @@ capi20_release (unsigned ApplID)
 	capi_freeapplid(ApplID);
 	free_buffers(applinfo[ApplID]);
 	applinfo[ApplID] = NULL;
+
+	if ( capi_fd >= 0 ) {
+		close( capi_fd );
+		capi_fd = -1;
+	}
+
 	return CapiNoError;
 }
 
@@ -883,32 +971,32 @@ int capi_processMessage( unsigned char *pnMsg, unsigned nApplId, unsigned nComma
 			int nDataLen = CAPIMSG_DATALEN( pnMsg );
 			void *pDataPtr;
 
-			if ( sizeof( void * ) != 4 ) {
-				if ( nLen >= 30 ) {
-					/* 64Bit CAPI-extension */
-					u_int64_t nData64;
+#if SIZEOF_VOID_P > 4
+			if ( nLen >= 30 ) {
+				/* 64Bit CAPI-extension */
+				u_int64_t nData64;
 
-					memcpy( &nData64, pnMsg + 22, sizeof( u_int64_t ) );
-					if ( nData64 != 0 ) {
-						pDataPtr = ( void * )( unsigned long ) nData64;
-					} else {
-						/* Assume data after message */
-						pDataPtr = pnMsg + nLen;
-					}
+				memcpy( &nData64, pnMsg + 22, sizeof( u_int64_t ) );
+				if ( nData64 != 0 ) {
+					pDataPtr = ( void * )( unsigned long ) qword2ptr( nData64 );
 				} else {
 					/* Assume data after message */
 					pDataPtr = pnMsg + nLen;
 				}
 			} else {
-				u_int32_t nData;
-
-				memcpy( &nData, pnMsg + 12, sizeof( u_int32_t ) );
-				if ( nData != 0 ) {
-					pDataPtr = ( void * )( ( unsigned long ) nData );
-				} else {
-					pDataPtr = pnMsg + nLen;
-				}
+				/* Assume data after message */
+				pDataPtr = pnMsg + nLen;
 			}
+#else
+			u_int32_t nData;
+
+			memcpy( &nData, pnMsg + 12, sizeof( u_int32_t ) );
+			if ( nData != 0 ) {
+				pDataPtr = ( void * )( ( unsigned long ) dword2ptr( nData ) );
+			} else {
+				pDataPtr = pnMsg + nLen;
+			}
+#endif
 
 			if ( nLen + nDataLen > SEND_BUFSIZ ) {
 				return CapiMsgOSResourceErr;
@@ -1084,7 +1172,10 @@ static void initlib( void ) __attribute__( ( constructor ) );
 static void exitlib( void ) __attribute__( ( destructor ) );
 
 static void initlib( void ) {
-	int i, ret;
+	int i;
+
+#ifdef __linux__
+	int ret;
 	mode_t old_um;
 	struct stat stats;
 	int need_init = 0;
@@ -1138,6 +1229,13 @@ static void initlib( void ) {
 	appids->usage++;
 	my_pid = getpid();
 	unlock_capi_shared();
+
+#else
+	appids = malloc( sizeof( struct shr_applids ) );
+	for ( i = 0; i < MAX_APPL; i++ ) {
+		appids->id[i].fd = -1;
+	}
+#endif
 }
 
 static void exitlib( void ) {
@@ -1158,6 +1256,8 @@ static void exitlib( void ) {
 			last_inuse = i;
 	}
 	appids->max_id = last_inuse;
+#ifdef __linux__
 	munmap(appids, CAPI20_SHARED_MEM_SIZE);
+#endif
 	unlock_capi_shared();
 }

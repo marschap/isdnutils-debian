@@ -450,7 +450,7 @@ int vbox_put_message(ClientData cd, Tcl_Interp *ip, int argc, char *argv[])
 				break;
 
 			case VOICE_ACTION_TOUCHTONES:
-				printstring(ip->result, touchtones);
+				printstring(ip->result, "%s", touchtones);
 				touchtones[0] = '\0';
 				break;
 
@@ -499,7 +499,7 @@ int vbox_get_message(ClientData cd, Tcl_Interp *ip, int argc, char *argv[])
 				break;
 
 			case VOICE_ACTION_TOUCHTONES:
-				printstring(ip->result, touchtones);
+				printstring(ip->result, "%s", touchtones);
 				touchtones[0] = '\0';
 				break;
 
@@ -548,7 +548,7 @@ int vbox_wait(ClientData cd, Tcl_Interp *ip, int argc, char *argv[])
 				break;
 
 			case VOICE_ACTION_TOUCHTONES:
-				printstring(ip->result, touchtones);
+				printstring(ip->result, "%s", touchtones);
 				touchtones[0] = '\0';
 				break;
 

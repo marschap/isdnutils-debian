@@ -31,7 +31,7 @@ static capi_ioctl_struct    ioctl_data;
  * \brief Check if standard interface is available
  * \return file descriptor of socket
  */
-static unsigned standardIsInstalled( void ) {
+static int standardIsInstalled( void ) {
 	int nHandle;
 
 	if ( ( nHandle = open( CAPI_DEVICE_NAME, O_RDWR, 0666 ) ) < 0 && ( errno == ENOENT ) ) {
@@ -193,33 +193,33 @@ static unsigned standardGetMessage( int nHandle, unsigned nApplId, unsigned char
 			/* patch datahandle */
 			capimsg_setu16( pnBuffer, 18, nOffset );
 
-			if ( sizeof( void * ) == 4 ) {
-				u_int32_t nData = ( u_int32_t ) pnBuffer + CAPIMSG_LEN( pnBuffer );
+#if SIZEOF_VOID_P == 4
+			u_int32_t nData = ( u_int32_t ) pnBuffer + CAPIMSG_LEN( pnBuffer );
 
-				pnBuffer[ 12 ] = nData & 0xFF;
-				pnBuffer[ 13 ] = ( nData >> 8 ) & 0xFF;
-				pnBuffer[ 14 ] = ( nData >> 16 ) & 0xFF;
-				pnBuffer[ 15 ] = ( nData >> 24 ) & 0xFF;
-			} else {
-				u_int64_t nData;
+			pnBuffer[ 12 ] = nData & 0xFF;
+			pnBuffer[ 13 ] = ( nData >> 8 ) & 0xFF;
+			pnBuffer[ 14 ] = ( nData >> 16 ) & 0xFF;
+			pnBuffer[ 15 ] = ( nData >> 24 ) & 0xFF;
+#else
+			u_int64_t nData;
 
-				if ( CAPIMSG_LEN( pnBuffer ) < 30 ) {
-					memmove( pnBuffer + 30, pnBuffer + CAPIMSG_LEN( pnBuffer ), CAPIMSG_DATALEN( pnBuffer ) );
-					pnBuffer[ 0 ] = 30;
-					pnBuffer[ 1 ] = 0;
-				}
-
-				nData = ( ( ( ulong ) pnBuffer ) + CAPIMSG_LEN( pnBuffer ) );
-				pnBuffer[ 12 ] = pnBuffer[ 13 ] = pnBuffer[ 14 ] = pnBuffer[ 15 ] = 0;
-				pnBuffer[ 22 ] = nData & 0xFF;
-				pnBuffer[ 23 ] = ( nData >> 8 ) & 0xFF;
-				pnBuffer[ 24 ] = ( nData >> 16 ) & 0xFF;
-				pnBuffer[ 25 ] = ( nData >> 24 ) & 0xFF;
-				pnBuffer[ 26 ] = ( nData >> 32 ) & 0xFF;
-				pnBuffer[ 27 ] = ( nData >> 40 ) & 0xFF;
-				pnBuffer[ 28 ] = ( nData >> 48 ) & 0xFF;
-				pnBuffer[ 29 ] = ( nData >> 56 ) & 0xFF;
+			if ( CAPIMSG_LEN( pnBuffer ) < 30 ) {
+				memmove( pnBuffer + 30, pnBuffer + CAPIMSG_LEN( pnBuffer ), CAPIMSG_DATALEN( pnBuffer ) );
+				pnBuffer[ 0 ] = 30;
+				pnBuffer[ 1 ] = 0;
 			}
+
+			nData = ( ( ( ulong ) pnBuffer ) + CAPIMSG_LEN( pnBuffer ) );
+			pnBuffer[ 12 ] = pnBuffer[ 13 ] = pnBuffer[ 14 ] = pnBuffer[ 15 ] = 0;
+			pnBuffer[ 22 ] = nData & 0xFF;
+			pnBuffer[ 23 ] = ( nData >> 8 ) & 0xFF;
+			pnBuffer[ 24 ] = ( nData >> 16 ) & 0xFF;
+			pnBuffer[ 25 ] = ( nData >> 24 ) & 0xFF;
+			pnBuffer[ 26 ] = ( nData >> 32 ) & 0xFF;
+			pnBuffer[ 27 ] = ( nData >> 40 ) & 0xFF;
+			pnBuffer[ 28 ] = ( nData >> 48 ) & 0xFF;
+			pnBuffer[ 29 ] = ( nData >> 56 ) & 0xFF;
+#endif
 
 			/* keep buffer */
 			return CapiNoError;
