@@ -10,7 +10,7 @@
 #include <sys/time.h>
 #include <time.h>
 
-#include <capicmd.h>
+#include "capicmd.h"
 
 #ifdef __cplusplus
 extern "C" {

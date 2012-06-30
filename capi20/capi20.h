@@ -95,7 +95,7 @@ int capi20ext_get_tracelevel( void );
 #endif
 
 #ifndef __NO_CAPIUTILS__
-#include <capiutils.h>
+#include "capiutils.h"
 #endif
 
 #endif /* __CAPI20_H */
