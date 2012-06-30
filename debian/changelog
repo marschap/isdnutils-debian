@@ -1,3 +1,10 @@
+isdnutils (1:3.25-1) unstable; urgency=low
+
+  * new upstream release (dfsg-free since 3.22)
+  * drop three patches that were incorporated into upstream
+
+ -- Rolf Leggewie <foss@rolf.leggewie.biz>  Sat, 30 Jun 2012 23:06:27 +0800
+
 isdnutils (1:3.22+dfsg1-7) unstable; urgency=low
 
   [ Kees Cook ]
