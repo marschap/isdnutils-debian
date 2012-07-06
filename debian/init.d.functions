@@ -236,6 +236,7 @@ start_devices() {
     check_isdncards # side-effect: sets $isdncards
     what=' interfaces'
     olddir=`pwd`
+    cd /etc/isdn
     listdevices
     if [ -z "$DEVS" -a ! -f /etc/isdn/noconfig ]; then
         log_success_msg "  There is apparently no configuration created yet."
