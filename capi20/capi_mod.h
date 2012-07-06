@@ -24,7 +24,7 @@
 #ifndef CAPI_MOD_H
 #define CAPI_MOD_H
 
-#include <capi20.h>
+#include "capi20.h"
 
 /* define ulong if not defined */
 #ifndef C_ULONG_DEFINED
