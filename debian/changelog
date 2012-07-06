@@ -1,3 +1,12 @@
+isdnutils (1:3.25+dfsg1-1) unstable; urgency=low
+
+  * debian/init.d.functions: reintroduce cd-command lost in 985a74cd63.
+    Closes: #679651
+  * upstream is in fact still not dfsg-free.  reintroduce dfsg-tarball
+    Closes: #680503
+
+ -- Rolf Leggewie <foss@rolf.leggewie.biz>  Fri, 06 Jul 2012 20:17:50 +0800
+
 isdnutils (1:3.25-1) unstable; urgency=low
 
   * new upstream release (dfsg-free since 3.22)
