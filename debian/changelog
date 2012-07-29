@@ -1,3 +1,14 @@
+isdnutils (1:3.25+dfsg1-2) unstable; urgency=low
+
+  [ Rolf Leggewie ]
+  * deactivate watch file until upstream starts releasing tarballs again
+
+  [ Peter Marschall ]
+  * simplify autotools stuff and drop dependency on obsolete automake
+    version 1.7. Closes: #549137
+
+ -- Rolf Leggewie <foss@rolf.leggewie.biz>  Mon, 30 Jul 2012 03:53:00 +0800
+
 isdnutils (1:3.25+dfsg1-1) unstable; urgency=low
 
   * debian/init.d.functions: reintroduce cd-command lost in 985a74cd63.
