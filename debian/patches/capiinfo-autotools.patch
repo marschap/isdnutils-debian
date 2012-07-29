@@ -1,3 +1,9 @@
+Author: Peter Marschall <peter@adpm.de>
+Description: make sure autoreconf works
+Applied-Upstream: commit:e23cdd55623a7c4f91a
+Forwarded: Yes
+Last-Update: 2012-07-30
+
 diff --git a/capiinfo/acconfig.h b/capiinfo/acconfig.h
 deleted file mode 100644
 --- a/capiinfo/acconfig.h
