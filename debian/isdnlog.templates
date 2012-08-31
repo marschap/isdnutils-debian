@@ -43,7 +43,7 @@ _Description: Country:
 
 Template: isdnlog/country_manual
 Type: string
-Description: Country's ISO two-letter code:
+_Description: Country's ISO two-letter code:
  Please enter the ISO code of the local country. As no rate
  tables are available, this setting will be unused.
 
