@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: isdnutils 1:3.9.20060704-5\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
 "POT-Creation-Date: 2012-08-31 13:10-0400\n"
-"PO-Revision-Date: 2009-10-13 19:33+0200\n"
+"PO-Revision-Date: 2012-09-01 12:42+0200\n"
 "Last-Translator: Martin Sin <martin.sin@zshk.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
 "Language: cs\n"
@@ -399,10 +399,9 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnlog.templates:3001
-#, fuzzy
 #| msgid "Country ITU code:"
 msgid "Country's ISO two-letter code:"
-msgstr "Kód země ITU:"
+msgstr "ISO kód země složený ze dvou písmen:"
 
 #. Type: string
 #. Description
@@ -411,6 +410,8 @@ msgid ""
 "Please enter the ISO code of the local country. As no rate tables are "
 "available, this setting will be unused."
 msgstr ""
+"Zadejte prosím ISO kód země. Pokud nebude pro danou zemi k dispozici tabulka "
+"s poplatky, zůstane tato volba nepoužita."
 
 #. Type: string
 #. Description
