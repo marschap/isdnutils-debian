@@ -1,14 +1,14 @@
 # Danish translation isdnutils.
-# Copyright (c) 2011 isdnutils & nedenstående oversættere.
+# Copyright (c) 2012 isdnutils & nedenstående oversættere.
 # This file is distributed under the same license as the isdnutils package.
-# Joe Hansen <joedalton2@yahoo.dk>, 2011.
+# Joe Hansen <joedalton2@yahoo.dk>, 2011, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: isdnutils\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
 "POT-Creation-Date: 2012-08-31 13:10-0400\n"
-"PO-Revision-Date: 2011-05-10 17:30+01:00\n"
+"PO-Revision-Date: 2012-09-01 17:30+01:00\n"
 "Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
 "Language-Team: Danish <debian-l10n-danish@lists.debian.org>\n"
 "Language: da\n"
@@ -400,10 +400,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnlog.templates:3001
-#, fuzzy
-#| msgid "Country ITU code:"
 msgid "Country's ISO two-letter code:"
-msgstr "Landes ITU-kode:"
+msgstr "Landes to-bogstavskode for ISO:"
 
 #. Type: string
 #. Description
@@ -412,6 +410,8 @@ msgid ""
 "Please enter the ISO code of the local country. As no rate tables are "
 "available, this setting will be unused."
 msgstr ""
+"Indtast venligst ISO-koden for stedets land. Da ingen betalingstabeller "
+"er tilgængelige, vil denne indstilling ikke blive brugt."
 
 #. Type: string
 #. Description
