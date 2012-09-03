@@ -1,0 +1,727 @@
+# Translation of isdnutils debconf templates to Polish.
+# Copyright (C) 2012
+# This file is distributed under the same license as the isdnutils package.
+#
+# Michał Kułach <michal.kulach@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: isdnutils\n"
+"Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
+"POT-Creation-Date: 2012-08-31 13:10-0400\n"
+"PO-Revision-Date: 2012-09-03 19:03+0200\n"
+"Last-Translator: Michał Kułach <michal.kulach@gmail.com>\n"
+"Language-Team: Polish <debian-l10n-polish@lists.debian.org>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.4\n"
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:2001
+msgid "ISP dialup configuration already exists"
+msgstr "Konfiguracja dostawcy połączenia dodzwanianego już istnieje"
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:2001
+msgid ""
+"The device.${IPPP0} and ipppd.${IPPP0} files already exist. Therefore, the "
+"ipppd configuration phase won't touch anything there, as it looks like it "
+"has already been configured."
+msgstr ""
+"Pliki device.${IPPP0} i ipppd.${IPPP0} już istnieją. Z tego powodu etap "
+"konfiguracji ipppd nie będzie nic modyfikował, ponieważ wygląda na to, że "
+"wszystko jest już skonfigurowane."
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:2001
+msgid ""
+"If it doesn't work yet, and you want to try the automatic configuration, "
+"stop all ISDN processes (use \"/etc/init.d/isdnutils stop\"), remove the "
+"files mentioned above, and rerun the configuration with \"dpkg-reconfigure "
+"ipppd\". After that, restart the ISDN processes with \"/etc/init.d/isdnutils "
+"start\"."
+msgstr ""
+"W celu wypróbowania automatycznej konfiguracji, gdy obecna nie działa "
+"poprawnie, proszę zatrzymać wszelkie procesy ISDN (za pomocą "
+"\"/etc/init.d/isdnutils stop\"), usunąć pliki o których wspomniano powyżej i "
+"uruchomić proces konfiguracji ponownie, używając \"dpkg-reconfigure ipppd\". "
+"Następnie proszę uruchomić procesy ISDN ponownie, korzystając z "
+"\"/etc/init.d/isdnutils start\"."
+
+#. Type: string
+#. Description
+#: ../ipppd.templates:3001
+msgid "Interface to configure:"
+msgstr "Interfejs do konfiguracji:"
+
+#. Type: string
+#. Description
+#: ../ipppd.templates:3001
+msgid "The default setting should be safe for most configurations."
+msgstr "Domyślne ustawienie powinno być zwykle bezpieczne."
+
+#. Type: string
+#. Description
+#: ../ipppd.templates:3001
+msgid ""
+"However, if you have special requirements or want to choose to configure "
+"another interface, please enter it here."
+msgstr ""
+"Jeśli jednak ma się specjalne wymagania lub chce się wybrać inny interfejs, "
+"proszę go wpisać w tym kroku."
+
+#. Type: string
+#. Description
+#: ../ipppd.templates:3001
+msgid "Leave the field blank if you do not want to configure anything now."
+msgstr "Można pozostawić pole puste, aby niczego teraz nie konfigurować."
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:4001
+msgid "Invalid interface name"
+msgstr "Niepoprawna nazwa interfejsu"
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:4001
+msgid ""
+"Valid interface names begin with \"ippp\" followed by a number between 0 and "
+"63."
+msgstr ""
+"Prawidłowe nazwy interfejsów zaczynają się od \"ippp\", po którym znajduje "
+"się liczba z zakresu 0-63."
+
+#. Type: string
+#. Description
+#: ../ipppd.templates:5001
+msgid "ISP's telephone number:"
+msgstr "Numer telefonu ISP:"
+
+#. Type: string
+#. Description
+#: ../ipppd.templates:5001
+msgid ""
+"At least one phone number has to be dialed in order to connect to an "
+"Internet service provider (ISP)."
+msgstr ""
+"Przynajmniej jeden numer musi być wybrany, aby połączyć się z dostawcą usług "
+"internetowych (ISP)."
+
+#. Type: string
+#. Description
+#: ../ipppd.templates:5001
+msgid ""
+"Please enter that telephone number here, including dialing prefixes, area "
+"codes, and so on, but without any spaces."
+msgstr ""
+"Proszę go wprowadzić tutaj, razem z wszystkimi prefiksami i numerami "
+"kierunkowymi, bez spacji."
+
+#. Type: string
+#. Description
+#: ../ipppd.templates:5001
+msgid ""
+"Multiple telephone numbers may be entered and should be separated by spaces."
+msgstr "Poszczególne numery telefonów proszę oddzielić spacją."
+
+#. Type: string
+#. Description
+#: ../ipppd.templates:5001
+msgid "Leave the field blank if you want to configure the connection manually."
+msgstr "Można pozostawić to pole puste, aby skonfigurować połączenie ręcznie."
+
+#. Type: string
+#. Description
+#: ../ipppd.templates:6001
+msgid "Local MSN:"
+msgstr "Lokalny MSN:"
+
+#. Type: string
+#. Description
+#: ../ipppd.templates:6001
+msgid ""
+"When making a call with ISDN, the MSN (phone number) that is originating the "
+"call must be given in the call-setup message. While a wrong MSN will usually "
+"be replaced by the main MSN for the ISDN line, especially on PABXes, a wrong "
+"MSN (often the extension number in this case) will cause the call-setup to "
+"fail. So, it is best to enter the correct local MSN here."
+msgstr ""
+"Podczas łączenia z ISDN, wewnętrzny numer telefonu (MSN) musi być podany w "
+"wiadomości zestawiającej połączenie. O ile nieprawidłowy MSN będzie zwykle "
+"zastąpiony przez główny MSN linii ISDN (szczególnie w centralach "
+"automatycznych - PABX), to spowoduje on (często jest wtedy numerem "
+"wewnętrznym) niepowodzenie zestawienia połączenia. Dlatego najlepiej jest "
+"podać "
+"prawidłowy lokalny MSN."
+
+#. Type: string
+#. Description
+#: ../ipppd.templates:6001
+msgid ""
+"This may also be necessary if you want the costs to be registered to one "
+"particular MSN, in case you have more than one MSN and this is supported by "
+"your telecommunication providing company."
+msgstr ""
+"Może być to również potrzebne, aby koszty połączenia były przypisane do "
+"danego, pojedynczego MSN, w przypadku jeśli ma się ich więcej i jest to "
+"obsługiwane przez firmę telekomunikacyjną."
+
+#. Type: string
+#. Description
+#: ../ipppd.templates:7001
+msgid "ISP account name:"
+msgstr "Nazwa konta ISP:"
+
+#. Type: string
+#. Description
+#: ../ipppd.templates:7001
+msgid ""
+"Most ISPs require an account name and password to be provided when "
+"connecting."
+msgstr "Większość dostawców do połączenia wymaga podania nazwy konta i hasła."
+
+#. Type: password
+#. Description
+#: ../ipppd.templates:8001
+msgid "ISP password:"
+msgstr "Hasło ISP:"
+
+#. Type: password
+#. Description
+#: ../ipppd.templates:8001
+msgid ""
+"Please enter the password to use when connecting to the ISP. This password "
+"will be kept in /etc/ppp/pap-secrets and /etc/ppp/chap-secrets together with "
+"the account name."
+msgstr ""
+"Proszę podać hasło używane do połączenia z dostawcą. Będzie ono przechowywane "
+"w /etc/ppp/pap-secrets i /etc/ppp/chap-secrets razem z nazwą konta."
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:9001
+msgid "ISP user name already in pap-secrets"
+msgstr "Nazwa użytkownika ISP znajduje się już w pap-secrets"
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:9001
+msgid ""
+"The user name you entered for logging into your ISP is already listed in "
+"the /etc/ppp/pap-secrets file. The existing entry will be commented out, and "
+"a new entry with the data you just entered will be inserted."
+msgstr ""
+"Nazwa użytkownika używana do zalogowania się do dostawcy już istnieje w pliku "
+"/etc/ppp/pap-secrets. Istniejący wpis zostanie ukryty, a używany będzie ten "
+"nowo podany."
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:10001
+msgid "ISP user name already in chap-secrets"
+msgstr "Nazwa użytkownika ISP znajduje się już w chap-secrets"
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:10001
+msgid ""
+"The user name you entered for logging into your ISP is already listed in "
+"the /etc/ppp/chap-secrets file. The existing entry will be commented out, "
+"and a new entry with the data you just entered will be inserted."
+msgstr ""
+"Nazwa użytkownika używana do zalogowania się do dostawcy już istnieje w pliku "
+"/etc/ppp/chap-secrets. Istniejący wpis zostanie ukryty, a używany będzie ten "
+"nowo podany."
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:11001
+msgid "ISP user name already in chap-secrets and pap-secrets"
+msgstr "Nazwa użytkownika ISP znajduje się już w chap-secrets i pap-secrets"
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:11001
+msgid ""
+"The user name you entered for logging into your ISP is already listed in the "
+"chap-secrets and pap-secrets files in /etc/ppp/. The existing entries will "
+"be commented out, and new entries with the data you just entered will be "
+"inserted."
+msgstr ""
+"Nazwa użytkownika używana do zalogowania się do dostawcy już istnieje w "
+"plikach chap-secrets i pap-secrets w katalogu /etc/ppp. Istniejące wpisy "
+"zostaną ukryte, a używane będą te nowo podane."
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:12001
+msgid "(Re)start ipppd manually"
+msgstr "Konieczny ręczny (re)start ipppd"
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:12001
+msgid ""
+"There is no /etc/init.d/isdnutils on this system; hence you will have to "
+"stop and start any ipppd daemons manually."
+msgstr ""
+"W tym systemie nie ma /etc/init.d/isdnutils, więc konieczne jest ręczne "
+"zatrzymanie i uruchomienie demonów ipppd."
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:13001
+msgid "Error running isdnutils init script"
+msgstr "Błąd skryptu inicjującego isdnutils"
+
+#. Type: error
+#. Description
+#: ../ipppd.templates:13001
+msgid ""
+"The /etc/init.d/isdnutils script ran with errors. Please check the "
+"installation of the isdnutils-base package; reinstall it if necessary. "
+"Perhaps moving /etc/init.d/isdnutils.dpkg-dist (if it exists) to /etc/init.d/"
+"isdnutils will also help."
+msgstr ""
+"Skrypt /etc/init.d/isdnutils uruchomił się z błędem. Proszę sprawdzić "
+"instalację pakietu isdnutils-base i zainstalować go ponownie, jeśli jest taka "
+"potrzeba. Może pomóc również przeniesienie /etc/init.d/isdnutils.dpkg-dist "
+"(jeśli istnieje) do /etc/init.d/isdnutils."
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Austria"
+msgstr "Austria"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "France"
+msgstr "Francja"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Germany"
+msgstr "Niemcy"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Luxembourg"
+msgstr "Luksemburg"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Netherlands"
+msgstr "Holandia"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Norway"
+msgstr "Norwegia"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Spain"
+msgstr "Hiszpania"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "Switzerland"
+msgstr "Szwajcaria"
+
+#. Type: select
+#. Choices
+#: ../isdnlog.templates:2001
+msgid "other"
+msgstr "inny"
+
+#. Type: select
+#. DefaultChoice
+#. Translators:
+#. You must NOT translate this string, but you can change its value.
+#. The comment between brackets is used to distinguish this msgid
+#. from the one in the Choices list; you do not have to worry about
+#. them, and have to simply choose a msgstr among the English values
+#. listed in the Choices field above, e.g. msgstr "Dutch (nl)"
+#.
+#. Please choose among
+#. "Austria, France, Germany, Luxembourg, Netherlands, Norway, Spain, Switzerland, other"
+#. In short, if your country is one of those, put its name
+#. in the msgstr and put it *in English*
+#. If your country is another one, put "other"....still in English
+#. Ignore the part that's between brackets, ie do NOT translate it
+#. Valid examples:
+#. ## Choice of the Dutch translator
+#. msgid "other[ default country]"
+#. msgstr "Netherlands"
+#. ## Choice of the Russian translator
+#. msgid "other[ default country]"
+#. msgstr "Russia"
+#. Invalid examples
+#. # Choice of the Italian translator
+#. msgid "other"
+#. msgstr "Italia"
+#: ../isdnlog.templates:2002
+msgid "other[ default country]"
+msgstr "other"
+
+#. Type: select
+#. Description
+#: ../isdnlog.templates:2003
+msgid "Country:"
+msgstr "Kraj:"
+
+#. Type: select
+#. Description
+#: ../isdnlog.templates:2003
+msgid ""
+"Please choose the local country. This will be used to set the rate table to "
+"use for calculating the costs of calls."
+msgstr ""
+"Proszę wybrać swój kraj. Zostanie on użyty aby utworzyć tabelę stawek do "
+"podliczenia kosztów połączeń."
+
+#. Type: string
+#. Description
+#: ../isdnlog.templates:3001
+msgid "Country's ISO two-letter code:"
+msgstr "Dwuliterowy kod ISO kraju:"
+
+#. Type: string
+#. Description
+#: ../isdnlog.templates:3001
+msgid ""
+"Please enter the ISO code of the local country. As no rate tables are "
+"available, this setting will be unused."
+msgstr ""
+"Proszę podać kod ISO swojego kraju. Ponieważ tabele stawek nie są dostępne, "
+"ustawienie to nie będzie używane."
+
+#. Type: string
+#. Description
+#: ../isdnlog.templates:4001
+msgid "Prefix to dial before international number:"
+msgstr "Prefiks wybierany przed połączeniami międzynarodowymi:"
+
+#. Type: string
+#. Description
+#: ../isdnlog.templates:5001
+msgid "Country ITU code:"
+msgstr "Kod ITU kraju:"
+
+#. Type: string
+#. Description
+#: ../isdnlog.templates:5001
+msgid "Please enter the international code for the local country."
+msgstr "Proszę podać międzynarodowy kod swojego kraju."
+
+#. Type: string
+#. Description
+#. Translators: do not translate ${default_countrycode} and ${default_country}
+#: ../isdnlog.templates:5001
+msgid "Example: ${default_countrycode} for ${default_country}"
+msgstr "Przykład: ${default_countrycode} dla ${default_country}"
+
+#. Type: string
+#. Description
+#: ../isdnlog.templates:6001
+msgid "Prefix for area code, if applicable:"
+msgstr "Prefiks numeru kierunkowego, jeśli jest konieczny:"
+
+#. Type: string
+#. Description
+#: ../isdnlog.templates:7001
+msgid "Local area code, if applicable:"
+msgstr "Numer kierunkowy, jeśli jest konieczny:"
+
+#. Type: boolean
+#. Description
+#: ../isdnlog.templates:8001
+msgid "Run isdnrate as a daemon?"
+msgstr "Uruchomić isdnrate jako demon?"
+
+#. Type: boolean
+#. Description
+#: ../isdnlog.templates:8001
+msgid ""
+"The isdnrate utility calculates the costs of a connection to a given phone "
+"number, used e.g. for LCR systems to find the cheapest carrier on a call-by-"
+"call basis. Having it run as a daemon speeds things up as then it only has "
+"to load all the data once."
+msgstr ""
+"Narzędzie isdnrate podlicza koszt połączeń na dany numer telefoniczny, np. "
+"dla systemów LCR (trasowanie wg najtańszego połączenia), do znalezienia "
+"najtańszego pośrednika przy połączenia rozliczanych indywidualnie. Jeśli "
+"zostanie ono uruchomione jako demon, działa szybciej i musi załadować swe "
+"wszystkie dane tylko raz."
+
+#. Type: boolean
+#. Description
+#: ../isdnlog.templates:8001
+msgid ""
+"This setting is only useful for special setups, such as for an ISDN-to-H.323 "
+"gateway."
+msgstr ""
+"Ustawienie jest przydatne tylko w przypadku specjalnych konfiguracji, jak np. "
+"brama ISDN do H.323."
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:2001
+msgid "Number that vbox should answer:"
+msgstr "Numer, pod jakim vbox powinien się zgłosić:"
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:2001
+msgid ""
+"Vbox must know what number to listen to. Depending on the country's ISDN "
+"system, this may or may not include the area code. Leading \"0\" should most "
+"often be dropped."
+msgstr ""
+"Vbox musi znać numer do nasłuchiwania. W zależności od systemu ISDN danego "
+"kraju, może on (lub nie) zawierać numer kierunkowy. Początkowe \"0\" powinno "
+"być w większości przypadków pominięte."
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:2001
+msgid ""
+"Leave the field blank if you want to configure by hand, or if you already "
+"use an existing (working) vbox configuration from the time when this was "
+"still part of isdnutils (unless you want to create a new configuration)."
+msgstr ""
+"Proszę pozostawić to pole puste, aby przeprowadzić ręczną konfigurację lub "
+"jeśli używa się już istniejącej (działającej) konfiguracji vbox z czasów, gdy "
+"była ona częścią isdnutils (chyba że chce się utworzyć nową konfigurację)."
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:3001
+msgid "Number of rings for vbox to pick up the line:"
+msgstr "Liczba dzwonków, po jakiej ma się zgłosić vbox:"
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:3001
+msgid ""
+"One ring is about 5 seconds. This setting can later be fine-tuned for each "
+"incoming telephone number, for instance to aggressively filter some incoming "
+"numbers."
+msgstr ""
+"Jeden dzwonek trwa około 5 sekund. Ustawienie może później zostać dostosowane "
+"do każdego z numerów przychodzących np. aby agresywniej filtrować niektórych "
+"rozmówców."
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:3001
+msgid "You should read vbox.conf(5) for more information."
+msgstr "Podręcznik vbox.conf(5) zawiera więcej informacji na ten temat."
+
+#. Type: boolean
+#. Description
+#: ../isdnvboxserver.templates:4001
+msgid "Should incoming messages be attached to notification mails?"
+msgstr ""
+"Czy wiadomości przychodzące mają być dołączane do poczty z powiadomieniami?"
+
+#. Type: boolean
+#. Description
+#: ../isdnvboxserver.templates:4001
+msgid ""
+"When a message is recorded, an email notification is sent. If that email "
+"should contain the message as an attachment, choose the option."
+msgstr ""
+"Gdy wiadomość jest nagrywana, wysyłane jest powiadomienie za pomocą poczty "
+"elektronicznej. Proszę wybrać tę opcję, aby zawierało ono wiadomość jako "
+"załącznik."
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:5001
+msgid "Run the answering machine as:"
+msgstr "Uruchomić program odpowiadający jako:"
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:5001
+msgid ""
+"The vboxd daemon should run as an unprivileged (non-root) user. It must be a "
+"member of the \"dialout\" group."
+msgstr ""
+"Demon vboxd powinien działać jako użytkownik nieuprzywilejowany (nie root). "
+"Musi być on członkiem grupy \"dialout\"."
+
+#. Type: text
+#. Description
+#. Translators, do not translate "Daemonuser"
+#: ../isdnvboxserver.templates:6001
+msgid "${Daemonuser} unknown"
+msgstr "${Daemonuser} jest nieznany"
+
+#. Type: text
+#. Description
+#: ../isdnvboxserver.templates:6001
+msgid ""
+"The user you chose does not exist on this machine. You must choose a valid "
+"username."
+msgstr ""
+"Użytkownik, którego wybrano nie istnieje na tym komputerze. Konieczne jest "
+"podanie prawidłowej nazwy użytkownika."
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:7001
+msgid "Login for the answering machine:"
+msgstr "Login komputera odpowiadającego:"
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:7001
+msgid ""
+"Connections to the answering machine (using the vbox program provided by the "
+"isdnvboxclient package) will be prompted for a username and password."
+msgstr ""
+"Połączenia do komputera odpowiadającego (za pomocą programu vbox "
+"udostępnianego przez pakiet isdnvboxclient), wymagają podania loginu i hasła."
+
+#. Type: string
+#. Description
+#: ../isdnvboxserver.templates:7001
+msgid ""
+"The username you define here does not have to correspond to a login account "
+"on this system."
+msgstr ""
+"Nazwa użytkownika, którą tu zdefiniowano nie posiada odpowiadającego konta w "
+"tym systemie."
+
+#. Type: password
+#. Description
+#. Translators, do not translate "${User}"
+#: ../isdnvboxserver.templates:8001
+msgid "Password for ${User}:"
+msgstr "Hasło dla ${User}:"
+
+#. Type: password
+#. Description
+#: ../isdnvboxserver.templates:8001
+msgid "Please choose the password for the ${User} connection user."
+msgstr "Proszę wybrać hasło dla użytkownika ${User}, służącego do połączeń."
+
+#. Type: error
+#. Description
+#: ../isdnvboxserver.templates:9001
+msgid "No home directory"
+msgstr "Brak katalogu domowego"
+
+#. Type: error
+#. Description
+#: ../isdnvboxserver.templates:9001
+msgid ""
+"The home directory \"${DIR}\" for user \"${USER}\" does not exist. This "
+"means that the file \"${DIR}/.vbox.conf\" cannot be created."
+msgstr ""
+"Katalog domowy \"${DIR}\" dla użytkownika \"${USER}\" nie istnieje. Oznacza "
+"to, że nie można utworzyć pliku \"${DIR}/.vbox.conf\"."
+
+#. Type: error
+#. Description
+#: ../isdnvboxserver.templates:10001
+msgid "Non-existing user"
+msgstr "Nieistniejący użytkownik"
+
+#. Type: error
+#. Description
+#: ../isdnvboxserver.templates:10001
+msgid ""
+"The user \"${USER}\" doesn't exist on the system. Please rerun the "
+"configuration with \"dpkg-reconfigure isdnvboxserver\" to enter another "
+"username, or after creating the user."
+msgstr ""
+"Użytkownik \"${USER}\" nie istnieje w tym systemie. Proszę uruchomić "
+"konfigurację ponownie, wykonując \"dpkg-reconfigure isdnvboxserver\", aby "
+"wprowadzić inną nazwę użytkownika lub utworzyć wcześniej podanego użytkownika."
+
+#. Type: boolean
+#. Description
+#: ../isdnvboxserver.templates:11001
+msgid "Should vboxgetty be enabled?"
+msgstr "Czy vboxgetty ma być włączone?"
+
+#. Type: boolean
+#. Description
+#: ../isdnvboxserver.templates:11001
+msgid ""
+"A call for vboxgetty is defined in /etc/inittab, but not yet enabled. "
+"Choosing this option will enable it once this package is fully configured. "
+"Refuse this option if you want to tweak it manually."
+msgstr ""
+"Wywołanie vboxgetty jest zdefiniowane w pliku /etc/inittab, lecz nie jest "
+"aktywowane. Wybranie tej opcji włączy je, zaraz po całkowitym zakończeniu "
+"konfiguracji pakietu. Proszę wybrać \"nie\", aby skorzystać z możliwości "
+"ręcznego dostosowania go."
+
+#. Type: error
+#. Description
+#: ../isdnvboxserver.templates:12001
+msgid "Device in inittab doesn't agree with devfs mode"
+msgstr "Urządzenie w inittab nie zgadza się z trybem devfs"
+
+#. Type: error
+#. Description
+#: ../isdnvboxserver.templates:12001
+msgid ""
+"The entry for vboxgetty in /etc/inittab uses a device name that does not "
+"correspond to the current devfs usage; either a devfs (/dev/isdn/ttyIxx) "
+"name is used in inittab while devfs is not mounted, or the non-devfs name is "
+"used while devfs is mounted."
+msgstr ""
+"Wpis dla vboxgetty w /etc/inittab używa nazwy urządzenia, która nie odpowiada "
+"bieżącemu użyciu devfs; albo nazwa devfs (/dev/isdn/ttyIxx) jest używana w "
+"inittab, a devfs nie jest zamontowane, albo używana jest nazwa nie devfs, "
+"podczas gdy devfs jest zamontowane."
+
+#. Type: error
+#. Description
+#. Type: error
+#. Description
+#: ../isdnvboxserver.templates:12001 ../isdnvboxserver.templates:13001
+msgid "This problem has to be fixed manually."
+msgstr "Konieczne jest ręczne naprawienie problemu."
+
+#. Type: error
+#. Description
+#: ../isdnvboxserver.templates:13001
+msgid "Device in vboxgetty.conf doesn't agree with devfs mode"
+msgstr "Urządzenie w vboxgetty.conf nie zgadza się z trybem devfs"
+
+#. Type: error
+#. Description
+#: ../isdnvboxserver.templates:13001
+msgid ""
+"The device entry in /etc/isdn/vboxgetty.conf uses a device name that does "
+"not correspond to the current devfs usage; either a devfs (/dev/isdn/ttyIxx) "
+"name is used in vboxgetty.conf while devfs is not mounted, or the non-devfs "
+"name is used while devfs is mounted."
+msgstr ""
+"Wpis urządzenia w /etc/isdn/vboxgetty.conf używa nazwy urządzenia, która nie "
+"odpowiada bieżącemu użyciu devfs; albo nazwa devfs (/dev/isdn/ttyIxx) jest "
+"używa w vboxgetty.conf, podczas gdy devfs nie jest zamontowane, albo używana "
+"jest nazwa nie devfs, a devfs jest zamontowane."
+
+
