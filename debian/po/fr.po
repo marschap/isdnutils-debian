@@ -5,20 +5,20 @@
 # Translators:
 #
 # Philippe Batailler <philippe.batailler@free.fr>, 2004.
-# Christian Perrier <bubulle@debian.org>, 2009.
+# Christian Perrier <bubulle@debian.org>, 2009, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: 1:3.3-5\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
 "POT-Creation-Date: 2012-08-31 13:10-0400\n"
-"PO-Revision-Date: 2009-10-14 19:33+0200\n"
+"PO-Revision-Date: 2012-09-01 07:21+0200\n"
 "Last-Translator: Christian Perrier <bubulle@debian.org>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.0\n"
+"X-Generator: Lokalize 1.4\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. Type: error
@@ -48,8 +48,8 @@ msgid ""
 "ipppd\". After that, restart the ISDN processes with \"/etc/init.d/isdnutils "
 "start\"."
 msgstr ""
-"Si, pour l'instant rien ne fonctionne et que vous vouliez essayer la "
-"configuration automatique, arrêtez tous les processus RNIS avec la commande "
+"Si, pour l'instant rien ne fonctionne et si vous voulez essayer la "
+"configuration automatique, arrêtez tous les processus RNIS avec la commande "
 "« /etc/init.d/isdnutils stop », supprimez les fichiers mentionnés "
 "précédemment et relancez la configuration avec la commande « dpkg-"
 "reconfigure ipppd ». Ensuite relancez les processus RNIS avec la commande « /"
@@ -410,10 +410,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnlog.templates:3001
-#, fuzzy
-#| msgid "Country ITU code:"
 msgid "Country's ISO two-letter code:"
-msgstr "Code ITU du pays :"
+msgstr "Code ISO à deux lettres du pays :"
 
 #. Type: string
 #. Description
@@ -422,6 +420,8 @@ msgid ""
 "Please enter the ISO code of the local country. As no rate tables are "
 "available, this setting will be unused."
 msgstr ""
+"Veuillez indiquer le code ISO du pays local. Dans la pratique, en l'absence "
+"de tables de tarifs, ce réglage ne sera pas réellement utilisé. "
 
 #. Type: string
 #. Description
@@ -490,7 +490,7 @@ msgid ""
 "gateway."
 msgstr ""
 "Ce réglage n'est utile que pour des environnements spécifiques, par exemple "
-"une passerelle RNSI vers H.323."
+"une passerelle RNIS vers H.323."
 
 #. Type: string
 #. Description
@@ -639,7 +639,7 @@ msgstr "Mot de passe pour ${User} :"
 #: ../isdnvboxserver.templates:8001
 msgid "Please choose the password for the ${User} connection user."
 msgstr ""
-"Veuillez choisir le mot de passe pour l'identifiant de connexion ${user}."
+"Veuillez choisir le mot de passe pour l'identifiant de connexion ${User}."
 
 #. Type: error
 #. Description
