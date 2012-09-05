@@ -133,15 +133,12 @@ msgstr "設定を手動で行いたい場合はこの欄を空にしておいて
 #. Type: string
 #. Description
 #: ../ipppd.templates:6001
-#, fuzzy
 msgid "Local MSN:"
-msgstr "地域の複数加入者番号 (MSN):"
+msgstr "ローカルの複数加入者番号 (MSN):"
 
-# FIXME not complate translation
 #. Type: string
 #. Description
 #: ../ipppd.templates:6001
-#, fuzzy
 msgid ""
 "When making a call with ISDN, the MSN (phone number) that is originating the "
 "call must be given in the call-setup message. While a wrong MSN will usually "
@@ -149,10 +146,11 @@ msgid ""
 "MSN (often the extension number in this case) will cause the call-setup to "
 "fail. So, it is best to enter the correct local MSN here."
 msgstr ""
-"ISDN でダイヤルする際、複数加入者番号 (電話番号) 誤った複数加入者番号の場合"
-"は、大抵は ISDN 回線の複数加入者主番号に変更される (特に自動構内交換機上で"
-"は) ので、誤った複数加入者番号 (この場合は追加番号が多い) は呼設定に失敗しま"
-"す。そのため、ここで正しい地域の複数加入者番号を入力するのがベストです。"
+"ISDN でダイヤルする際、発信元となる複数加入者番号 (電話番号) が呼設定で指示さ"
+"れないといけません。誤った複数加入者番号の場合は、大抵は (特に自動構内交換機"
+"上では) ISDN 回線の複数加入者主番号に変更されるので、誤った複数加入者番号 (こ"
+"の場合は追加番号が多い) は呼設定に失敗します。そのため、ここで正確なローカル"
+"の複数加入者番号を入力するのがベストです。"
 
 #. Type: string
 #. Description
@@ -162,6 +160,8 @@ msgid ""
 "particular MSN, in case you have more than one MSN and this is supported by "
 "your telecommunication providing company."
 msgstr ""
+"複数加入者番号を複数持っていて遠距離通信会社がサポートしている場合ですが、あ"
+"る一つの複数加入者番号に経費をまとめたい場合にこの設定も必要かもしれません。"
 
 #. Type: string
 #. Description
@@ -369,7 +369,7 @@ msgstr "other"
 #. msgstr "Italia"
 #: ../isdnlog.templates:2002
 msgid "other[ default country]"
-msgstr ""
+msgstr "Japan"
 
 #. Type: select
 #. Description
@@ -380,10 +380,6 @@ msgstr "国名:"
 #. Type: select
 #. Description
 #: ../isdnlog.templates:2003
-#, fuzzy
-#| msgid ""
-#| "Please choose the local country. This will be used to set the rate table "
-#| "to use for calculating the costs of costs."
 msgid ""
 "Please choose the local country. This will be used to set the rate table to "
 "use for calculating the costs of calls."
@@ -393,10 +389,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnlog.templates:3001
-#, fuzzy
-#| msgid "Country ITU code:"
 msgid "Country's ISO two-letter code:"
-msgstr "国別 ITU 番号:"
+msgstr "国の ISO 2 ケタコード:"
 
 #. Type: string
 #. Description
@@ -405,6 +399,8 @@ msgid ""
 "Please enter the ISO code of the local country. As no rate tables are "
 "available, this setting will be unused."
 msgstr ""
+"地元の国の ISO コードを入力してください。利用可能なレート表がないため、この設"
+"定は使用されません。"
 
 #. Type: string
 #. Description
@@ -475,14 +471,12 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:2001
-#, fuzzy
 msgid "Number that vbox should answer:"
 msgstr "vbox が応答する必要がある番号:"
 
 #. Type: string
 #. Description
 #: ../isdnvboxserver.templates:2001
-#, fuzzy
 msgid ""
 "Vbox must know what number to listen to. Depending on the country's ISDN "
 "system, this may or may not include the area code. Leading \"0\" should most "
@@ -531,7 +525,6 @@ msgstr "詳細な情報については vbox.conf(5) を読む必要がありま�
 #. Type: boolean
 #. Description
 #: ../isdnvboxserver.templates:4001
-#, fuzzy
 msgid "Should incoming messages be attached to notification mails?"
 msgstr "通知メールに incoming message を添付しますか?"
 
@@ -539,7 +532,6 @@ msgstr "通知メールに incoming message を添付しますか?"
 #. Type: boolean
 #. Description
 #: ../isdnvboxserver.templates:4001
-#, fuzzy
 msgid ""
 "When a message is recorded, an email notification is sent. If that email "
 "should contain the message as an attachment, choose the option."
