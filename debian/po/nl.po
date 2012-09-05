@@ -1,15 +1,15 @@
 # Dutch translation of isdnutils debconf templates.
-# Copyright (C) 2007-2011 THE PACKAGE'S COPYRIGHT HOLDER
+# Copyright (C) 2007, 2011, 2012 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the isdnutils package.
 # Bart Cornelis <cobaco@linux.be>, 2007.
-# Jeroen Schot <schot@a-eskwadraat.nl>, 2011.
+# Jeroen Schot <schot@a-eskwadraat.nl>, 2011, 2012.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: isdnutils 3.9.20060704+dfsg.2-8\n"
+"Project-Id-Version: isdnutils 1:3.25+dfsg1-3\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
 "POT-Creation-Date: 2012-08-31 13:10-0400\n"
-"PO-Revision-Date: 2011-05-16 10:28+0200\n"
+"PO-Revision-Date: 2012-09-03 16:58+0200\n"
 "Last-Translator: Jeroen Schot <schot@a-eskwadraat.nl>\n"
 "Language-Team: Debian l10n Dutch <debian-l10n-dutch@lists.debian.org>\n"
 "Language: nl\n"
@@ -405,10 +405,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnlog.templates:3001
-#, fuzzy
-#| msgid "Country ITU code:"
 msgid "Country's ISO two-letter code:"
-msgstr "Landnummer:"
+msgstr "Tweeletterige ISO-landcode:"
 
 #. Type: string
 #. Description
@@ -417,6 +415,8 @@ msgid ""
 "Please enter the ISO code of the local country. As no rate tables are "
 "available, this setting will be unused."
 msgstr ""
+"Wat is de ISO-code van uw land? Omdat er geen kostentabellen beschikbaar "
+"zijn zal deze instelling niet worden gebruikt."
 
 #. Type: string
 #. Description
@@ -730,98 +730,3 @@ msgstr ""
 "niet overeenkomt met huidig devfs-gebruik; er wordt of een devfs-naam (/dev/"
 "isdn/ttylxx) gebruikt in inittab terwijl devfs niet aangekoppeld is, of er "
 "wordt een niet-devfs-naam gebruikt terwijl devfs wel aangekoppeld is."
-
-#~ msgid "/etc/ppp/ip-up.d/00-isdnutils still exists"
-#~ msgstr "/etc/ppp/ip-up.d/00-isdnutils bestaat nog steeds"
-
-#~ msgid ""
-#~ "The /etc/ppp/ip-up.d/00-isdnutils file from the old isdnutils package "
-#~ "still exists. If you changed that file at some point, you may need to "
-#~ "redo those changes in the 00-ipppd file (which is the new name). After "
-#~ "that, please delete the old 00-isdnutils file."
-#~ msgstr ""
-#~ "Het /etc/ppp/ip-up.d/00-isdnutils bestand van het oude isdnutils-pakket "
-#~ "is nog aanwezig. Als u dit bestand ooit heeft aangepast, dient u de "
-#~ "wijzigingen opnieuw door te voeren in het bestand 00-ipppd (de nieuwe "
-#~ "naam voor dit bestand). Gelieve daarna het oude 00-isdnutils bestand te "
-#~ "verwijderen."
-
-#~ msgid ""
-#~ "Until it is deleted, it will still be used. This may cause conflicts."
-#~ msgstr ""
-#~ "Zolang dit bestand niet verwijderd is zal het gebruikt worden. Dit kan "
-#~ "conflicten veroorzaken."
-
-#~ msgid "/etc/ppp/ip-down.d/99-isdnutils still exists"
-#~ msgstr "/etc/ppp/ip-down.d/99-isdnutils bestaat nog steeds"
-
-#~ msgid ""
-#~ "The /etc/ppp/ip-down.d/99-isdnutils file from the old isdnutils package "
-#~ "still exists. If you changed that file at some point, you may need to "
-#~ "redo those changes in the 99-ipppd file (which is the new name). After "
-#~ "that, please delete the old 99-isdnutils file."
-#~ msgstr ""
-#~ "Het /etc/ppp/ip-down.d/99-isdnutils bestand van het oude isdnutils-pakket "
-#~ "is nog aanwezig. Als u dit bestand ooit heeft aangepast, dient u de "
-#~ "wijzigingen opnieuw door te voeren in het bestand 99-ipppd (de nieuwe "
-#~ "naam voor dit bestand). Gelieve daarna het oude 99-isdnutils bestand te "
-#~ "verwijderen."
-
-#~ msgid "old /etc/ppp/ip-up.d and ip-down.d scripts still exist"
-#~ msgstr ""
-#~ "oude /etc/ppp/ip-up.d en /etc/ppp/ip-down.d scripts zijn nog aanwezig"
-
-#~ msgid ""
-#~ "The /etc/ppp/ip-up.d/00-isdnutils and /etc/ppp/ip-down.d/99-isdnutils "
-#~ "files from the old isdnutils package still exist. If you changed those "
-#~ "files at some point, you may need to redo those changes in the 00-ipppd "
-#~ "and 99-ipppd files (which are the new names). After that, please delete "
-#~ "the old 00-isdnutils and 99-isdnutils files."
-#~ msgstr ""
-#~ "De /etc/ppp/ip-up.d/00-isdnutils en /etc/ppp/ip-down.d/99-isdnutils "
-#~ "bestanden uit het oude isdnutils-pakket zijn nog aanwezig. Als u deze "
-#~ "bestanden ooit heeft aangepast, dient u de wijzigingen opnieuw door te "
-#~ "voeren in de 00-ipppd en 99-ipppd (de nieuwe namen voor deze bestanden). "
-#~ "Gelieve daarna de oude bestanden 00-isndutils en 99-isdnutils te "
-#~ "verwijderen."
-
-#~ msgid ""
-#~ "Until they are deleted, they will still be used. This may cause conflicts."
-#~ msgstr ""
-#~ "Zolang deze bestanden niet verwijderd zijn zullen ze gebruikt worden. Dit "
-#~ "kan conflicten veroorzaken."
-
-#~ msgid "none"
-#~ msgstr "geen"
-
-#~ msgid "Firmware to load:"
-#~ msgstr "Firmware die moet worden geladen:"
-
-#~ msgid ""
-#~ "Some ISDN cards can't function properly until some firmware has been "
-#~ "loaded. A notable example is the Sedlbauer SpeedFax+ PCI or Siemens I-"
-#~ "Surf, which need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is "
-#~ "necessary."
-#~ msgstr ""
-#~ "Sommige ISDN kaarten werken pas wanneer firmware in die kaarten geladen "
-#~ "is. De Sedlbauer SpeedFax+ PCI of de Siemens I-Surf zijn voorbeelden "
-#~ "hiervan. Deze kaarten hebben ISAR.BIN nodig. Kies \"ISAR.BIN\" als dit "
-#~ "ook voor uw kaart nodig is."
-
-#~ msgid "ISDN card numbers to load with the firmware:"
-#~ msgstr "ISDN-kaarten waarnaar firmware moet worden geladen:"
-
-#~ msgid ""
-#~ "If you use more than one card, enter the number of the card(s) in need of "
-#~ "firmware."
-#~ msgstr ""
-#~ "Als u meer dan één kaart gebruikt dient u het nummer van de kaart(en) die "
-#~ "firmware nodig hebben op te geven."
-
-#~ msgid ""
-#~ "Multiple entries should be separated by commas. Card numbers are integers "
-#~ "where \"1\" is the first card, \"2\" the second, etc."
-#~ msgstr ""
-#~ "Meerdere items dienen door komma's te worden gescheiden. Kaartnummers "
-#~ "zijn gehele getallen waarbij \"1\" de eerste kaart aanduidt, \"2\" de "
-#~ "tweede, enzovoort."
