@@ -5,6 +5,9 @@
 # Changes:
 #   - Initial translation
 #       Francisco Javier Cuadrado <fcocuadrado@gmail.com>, 2009
+#   - Update and review
+#       Omar Campagne <ocampagne@gmail.com>, 2012.
+#       Javier Fernández-Sanguino <jfs@debian.org>, 2012
 #
 # Traductores, si no conocen el formato PO, merece la pena leer la
 # documentación de gettext, especialmente las secciones dedicadas a este
@@ -29,13 +32,21 @@ msgstr ""
 "Project-Id-Version: isdnutils 1:3.9.20060704-5\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
 "POT-Creation-Date: 2012-08-31 13:10-0400\n"
-"PO-Revision-Date: 2009-10-14 12:00+0200\n"
-"Last-Translator: Francisco Javier Cuadrado <fcocuadrado@gmail.com>\n"
+"PO-Revision-Date: 2012-09-04 21:05+0200\n"
+"Last-Translator: Javier Fernández-Sanguino <jfs@debian.org>\n"
 "Language-Team: Debian l10n Spanish <debian-l10n-spanish@lists.debian.org>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-POFile-SpellExtra: dist isdn ippp ISP inittab Subscriber MSN chap ppp\n"
+"X-POFile-SpellExtra: USER conf vboxgetty home RDSI isdnutils\n"
+"X-POFile-SpellExtra: defaultcountrycode Multiple script ipppd PABX start\n"
+"X-POFile-SpellExtra: init User isdnvboxserver Spain Daemonuser ttyIxx pap\n"
+"X-POFile-SpellExtra: IPPP isdnrate stop Vbox dialout device defaultcountry\n"
+"X-POFile-SpellExtra: dpkg Luxemburgo LCR Re secrets Number dev\n"
+"X-POFile-SpellExtra: isdnvboxclient vbox DIR ITU root vboxd devfs\n"
 
 #. Type: error
 #. Description
@@ -66,10 +77,10 @@ msgid ""
 "start\"."
 msgstr ""
 "Si no funciona todavía, y quiere intentar la configuración automática, pare "
-"todos los procesos de ISDN (utilice «/etc/init.d/isdnutils stop»), borre los "
+"todos los procesos de RDSI (utilice «/etc/init.d/isdnutils stop»), borre los "
 "archivos mencionados anteriormente, y ejecute de nuevo el proceso de "
 "configuración mediante «dpkg-reconfigure ipppd». Después de esto, reinicie "
-"los procesos de ISDN mediante «/etc/init.d/isdnutils start»."
+"los procesos de RDSI mediante «/etc/init.d/isdnutils start»."
 
 #. Type: string
 #. Description
@@ -175,12 +186,12 @@ msgid ""
 "MSN (often the extension number in this case) will cause the call-setup to "
 "fail. So, it is best to enter the correct local MSN here."
 msgstr ""
-"Cuando se realiza una llamada al ISDN, el MSN (número de teléfono) que "
-"origina la llamada debe proporcionarse en el mensaje de configuración de la "
-"llamada. Un MSN incorrecto normalmente se reemplazará por el MSN principal "
-"para la línea del ISDN, especialmente en PABX, un MSN incorrecto (en este "
-"caso el número de extensión) provocará que la configuración falle. Por lo "
-"que es mejor introducir el MSN local correcto aquí."
+"Cuando se realiza una llamada RDSI, el MSN (número de teléfono) que origina "
+"la llamada debe proporcionarse en el mensaje de configuración de la llamada. "
+"Un MSN incorrecto normalmente se reemplazará por el MSN principal para la "
+"línea RDSI, especialmente en PABX, un MSN incorrecto (en este caso el número "
+"de extensión) provocará que la configuración falle. Por lo que es mejor "
+"introducir el MSN local correcto aquí."
 
 #. Type: string
 #. Description
@@ -424,10 +435,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnlog.templates:3001
-#, fuzzy
-#| msgid "Country ITU code:"
 msgid "Country's ISO two-letter code:"
-msgstr "Código ITU del país:"
+msgstr "Código ISO de dos letras del país:"
 
 #. Type: string
 #. Description
@@ -436,6 +445,9 @@ msgid ""
 "Please enter the ISO code of the local country. As no rate tables are "
 "available, this setting will be unused."
 msgstr ""
+"Introduzca el código ISO del país local. Esta opción no se utilizará dado "
+"que no hay disponibles tablas de tasas disponibles para calcular los costes "
+"de las llamadas."
 
 #. Type: string
 #. Description
@@ -502,7 +514,7 @@ msgid ""
 "gateway."
 msgstr ""
 "Este valor sólo es útil para configuraciones especiales, tales como una "
-"puerta de enlace de ISDN a H.323."
+"puerta de enlace de RDSI a H.323."
 
 #. Type: string
 #. Description
@@ -519,7 +531,7 @@ msgid ""
 "often be dropped."
 msgstr ""
 "Vbox debe conocer a que número escuchar. Dependiendo del país del sistema "
-"ISDN, este puede o no incluir el código de área. El cero inicial normalmente "
+"RDSI, este puede o no incluir el código de área. El cero inicial normalmente "
 "se debería quitar."
 
 #. Type: string
@@ -821,13 +833,13 @@ msgstr ""
 #~ "Surf, which need ISAR.BIN to be loaded. Choose \"ISAR.BIN\" if this is "
 #~ "necessary."
 #~ msgstr ""
-#~ "Algunas tarjetas ISDN no funcionan adecuadamente hasta que se carga algún "
+#~ "Algunas tarjetas RDSI no funcionan adecuadamente hasta que se carga algún "
 #~ "firmware. Un ejemplo claro es el Sedlbauer SpeedFax+ PCI o el Siemens I-"
 #~ "Surf, que necesitan cargar el firmware «ISAR.BIN». Escoja «ISAR.BIN» si "
 #~ "esto es necesario."
 
 #~ msgid "ISDN card numbers to load with the firmware:"
-#~ msgstr "Número de tarjeta(s) ISDN que cargan el firmware:"
+#~ msgstr "Número de tarjeta(s) RDSI que cargan el firmware:"
 
 #~ msgid ""
 #~ "If you use more than one card, enter the number of the card(s) in need of "
