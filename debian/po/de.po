@@ -3,19 +3,19 @@
 #
 # Mathias Klein <ma_klein@gmx.de>, 2006.
 # Thomas Mueller <thomas.mueller@tmit.eu>, 2009.
+# Holger Wansing <linux@wansing-online.de>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: isdnutils 3.8\n"
 "Report-Msgid-Bugs-To: isdnutils@packages.debian.org\n"
 "POT-Creation-Date: 2012-08-31 13:10-0400\n"
-"PO-Revision-Date: 2009-10-17 23:01+0200\n"
-"Last-Translator: Thomas Mueller <thomas.mueller@tmit.eu>\n"
+"PO-Revision-Date: 2012-09-05 07:29+0200\n"
+"Last-Translator: Holger Wansing <linux@wansing-online.de>\n"
 "Language-Team: Deutsch <debian-l10n-german@lists.debian.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #. Type: error
@@ -112,7 +112,7 @@ msgid ""
 "Internet service provider (ISP)."
 msgstr ""
 "Wenigstens eine Telefonnummer muss gewählt werden, um sich mit einem "
-"Internet-Service-Provider(ISP) zu verbinden."
+"Internet-Service-Provider (ISP) zu verbinden."
 
 #. Type: string
 #. Description
@@ -173,7 +173,7 @@ msgid ""
 "your telecommunication providing company."
 msgstr ""
 "Dies kann ebenfalls nötig sein, wenn Sie die Telefonkosten für eine einzelne "
-"MSN verbuchen lassen wollen, und Sie mehr als eine MSN haben und dies von "
+"MSN verbuchen lassen wollen, falls Sie mehr als eine MSN haben und dies von "
 "Ihrer Telefongesellschaft unterstützt wird."
 
 #. Type: string
@@ -189,7 +189,7 @@ msgid ""
 "Most ISPs require an account name and password to be provided when "
 "connecting."
 msgstr ""
-"Die meisten ISPs benötigen einen Zugangsnamen und ein Passwort, um eine "
+"Die meisten ISP benötigen einen Zugangsnamen und ein Passwort, um eine "
 "Verbindung herzustellen."
 
 #. Type: password
@@ -272,7 +272,7 @@ msgstr ""
 "Der Benutzername, den Sie für die Anmeldung bei Ihrem ISP eingegeben haben, "
 "ist bereits in den Dateien chap-secrets und pap-secrets im Verzeichnis /etc/"
 "ppp/ aufgeführt. Die existierenden Einträge werden auskommentiert und neue "
-"Einträge mit den Daten, die Sie gerade eingegebenhaben, werden eingefügt."
+"Einträge mit den Daten, die Sie gerade eingegeben haben, werden eingefügt."
 
 #. Type: error
 #. Description
@@ -306,7 +306,7 @@ msgid ""
 "isdnutils will also help."
 msgstr ""
 "Das Skript /etc/init.d/isdnutils war nicht erfolgreich. Bitte überprüfen Sie "
-"die Installation des Paketes isdnutils-base; installieren Sie es erneut wenn "
+"die Installation des Pakets isdnutils-base; installieren Sie es erneut wenn "
 "nötig. Unter Umständen kann es helfen, /etc/init.d/isdnutils.dpkg-dist (wenn "
 "die Datei existiert) in /etc/init.d/isdnutils umzubenennen (überschreiben)."
 
@@ -362,7 +362,7 @@ msgstr "Schweiz"
 #. Choices
 #: ../isdnlog.templates:2001
 msgid "other"
-msgstr "anderes"
+msgstr "andere"
 
 #. Type: select
 #. DefaultChoice
@@ -413,10 +413,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../isdnlog.templates:3001
-#, fuzzy
-#| msgid "Country ITU code:"
 msgid "Country's ISO two-letter code:"
-msgstr "Landesvorwahl:"
+msgstr "Länder-Code laut ISO (2 Buchstaben):"
 
 #. Type: string
 #. Description
@@ -425,6 +423,8 @@ msgid ""
 "Please enter the ISO code of the local country. As no rate tables are "
 "available, this setting will be unused."
 msgstr ""
+"Bitte geben Sie den ISO-Code für das Land vor Ort ein. Falls keine "
+"Kostentabellen verfügbar sind, bleibt diese Einstellung ungenutzt."
 
 #. Type: string
 #. Description
@@ -490,7 +490,7 @@ msgid ""
 "This setting is only useful for special setups, such as for an ISDN-to-H.323 "
 "gateway."
 msgstr ""
-"Dies Einstellung ist nur für besondere Installationen nützlich; wie etwa für "
+"Diese Einstellung ist nur für besondere Installationen nützlich; wie etwa für "
 "ein ISDN-H.323-Gateway."
 
 #. Type: string
@@ -509,7 +509,7 @@ msgid ""
 msgstr ""
 "Vbox muss die Nummer kennen, auf der es auf Anfragen warten soll. Abhängig "
 "von dem ISDN-System in Ihrem Land gehört die Ortsvorwahl dazu oder auch "
-"nicht. Die führende »0« sollten meist weggelassen werden."
+"nicht. Die führende »0« sollte meist weggelassen werden."
 
 #. Type: string
 #. Description
@@ -528,7 +528,7 @@ msgstr ""
 #. Description
 #: ../isdnvboxserver.templates:3001
 msgid "Number of rings for vbox to pick up the line:"
-msgstr "Anzahl von Klingeln, nachdem Vbox den Anruf entgegennehmen soll:"
+msgstr "Anzahl von Klingeltönen, nachdem Vbox den Anruf entgegennehmen soll:"
 
 #. Type: string
 #. Description
@@ -566,7 +566,7 @@ msgid ""
 msgstr ""
 "Wenn eine Nachricht aufgezeichnet wurde, wird eine E-Mail zur "
 "Benachrichtigung verschickt. Soll diese E-Mail die Nachricht als Anhang "
-"enthalten, wählen Sie diese Option aus."
+"enthalten, dann wählen Sie diese Option aus."
 
 #. Type: string
 #. Description
@@ -639,7 +639,7 @@ msgstr "Passwort für ${User}:"
 #. Description
 #: ../isdnvboxserver.templates:8001
 msgid "Please choose the password for the ${User} connection user."
-msgstr "Bitte geben Sie das Passwort für den Verbindungsbenutzer ${User} an."
+msgstr "Bitte geben Sie das Passwort für den Verbindungsnutzer ${User} an."
 
 #. Type: error
 #. Description
@@ -690,7 +690,7 @@ msgid ""
 "Refuse this option if you want to tweak it manually."
 msgstr ""
 "Ein Aufruf von vboxgetty ist in /etc/inittab eingetragen, aber noch nicht "
-"eingeschaltet. Schalten Sie diese Option ein, wird dieser eingeschaltet, "
+"gestartet. Schalten Sie diese Option ein, wird dieser gestartet, "
 "sobald dieses Paket voll konfiguriert ist. Lehnen Sie diese Option ab, wenn "
 "Sie diese manuell anpassen wollen."
 
